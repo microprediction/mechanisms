@@ -18,6 +18,7 @@ pm_amm          Paradigm's pm-AMM for binary prediction markets (Gaussian scores
 cda             Continuous double auction / limit order book.
 fba             Frequent batch auction (uniform-price discrete clearing).
 perp            Perpetual futures funding-rate mechanism.
+pdlp            Perpetual demand lending pools (GMX/Jupiter/Hyperliquid model).
 peer_prediction Truth elicitation without ground truth (Bayesian Truth Serum).
 aggregation     Opinion pools (linear, logarithmic, depth-trimmed).
 calibration     Reliability, sharpness, and calibration diagnostics.
@@ -34,6 +35,7 @@ from . import pm_amm
 from . import cda
 from . import fba
 from . import perp
+from . import pdlp
 from . import peer_prediction
 from . import aggregation
 from . import calibration
@@ -50,6 +52,7 @@ __all__ = [
     "cda",
     "fba",
     "perp",
+    "pdlp",
     "peer_prediction",
     "aggregation",
     "calibration",

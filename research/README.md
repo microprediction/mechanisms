@@ -10,6 +10,7 @@ and back to the consolidated [`bibliography.bib`](bibliography.bib).
 | [parimutuel-and-scoring-rules.md](parimutuel-and-scoring-rules.md) | Pool betting, favourite–longshot bias, dynamic & combinatorial parimutuels; strictly proper scoring rules (log, Brier, spherical), CRPS | `parimutuel`, `scoring_rules` |
 | [market-scoring-rules-and-amms.md](market-scoring-rules-and-amms.md) | Hanson's LMSR, cost-function market makers, liquidity sensitivity; DeFi CFMMs (constant product / mean / StableSwap), impermanent loss, LVR | `lmsr`, `cmm`, `amm` |
 | [perps-cda-monteprediction.md](perps-cda-monteprediction.md) | Perpetual futures & funding; continuous double auctions; sample-based distributional forecasting & the energy score | `perp`, `cda`, `scoring_rules` |
+| [perpetual-demand-lending-pools.md](perpetual-demand-lending-pools.md) | **Full model of Chitra et al. (2025)** — funding/price-impact arbitrage, the target-weight mechanism, GMX's discount function, delta hedging | `pdlp` |
 
 The PDF sources sit in [`../assets/pdf-literature/`](../assets/pdf-literature/):
 the prediction-aggregation survey and Chitra et al.'s *Perpetual Demand Lending

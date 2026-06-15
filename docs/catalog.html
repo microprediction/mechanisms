@@ -152,6 +152,31 @@
     </p>
     <p class="muted">Code: <code>mechanisms/perp.py</code></p>
 
+    <h2 id="pdlp">Perpetual demand lending pools</h2>
+    <p>
+      The liquidity pools behind decentralised perpetuals exchanges (GMX's GLP,
+      Jupiter's JLP, Hyperliquid's HLP). LPs deposit a basket; traders borrow
+      <em>under-collateralised, single-purpose</em> loans to open levered
+      positions and pay a fee; arbitrageurs keep the pool at a target composition.
+      A price move opens two arbitrages that bracket a sustainable fee
+      $f = \Theta(1/L_0)$: funding-rate arbitrage of size
+      $\ell = L_0(p/p_0-1)$ and a CFMM-style price-impact arbitrage solving
+      $G'(x^\star)=1/p$. The <strong>target-weight mechanism</strong> pays a
+      discount to LPs who rebalance the pool — GMX's discount function is an
+      explicit PID-like instance — and provably <em>bounds</em> an LP's delta,
+      which is why PDLP positions are so much easier to delta-hedge than CFMM
+      positions.
+    </p>
+    <div class="equation-card">
+      $\gamma_L=\kappa\!\left(\tfrac{L}{S}-\tfrac{p}{p_0}\right),\qquad
+       w(p,R)=\tfrac{p\odot R}{p^\top R},\qquad
+       \pi_{\text{new}}=\tfrac{f}{\gamma}\Sigma^{-1}\ell-\Delta$
+    </div>
+    <p class="muted">Code: <code>mechanisms/pdlp.py</code> ·
+      Demo: <code>examples/pdlp_demo.py</code> ·
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perpetual-demand-lending-pools.md">perpetual-demand-lending-pools.md</a> ·
+      Paper: <a href="https://arxiv.org/abs/2502.06028">arXiv:2502.06028</a></p>
+
     <h2 id="peer-prediction">Peer prediction</h2>
     <p>
       When there is no verifiable ground truth, reward a report by its statistical

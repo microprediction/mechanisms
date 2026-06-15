@@ -27,6 +27,7 @@ market maker is the convex conjugate of that cost-function market maker.
 | [`cda`](mechanisms/cda.py) | Continuous double auction / limit order book | Smith (1962); Gode & Sunder (1993) |
 | [`fba`](mechanisms/fba.py) | Frequent batch auction (uniform-price clearing) | Budish, Cramton & Shim (2015) |
 | [`perp`](mechanisms/perp.py) | Perpetual futures funding rate, mark-price liquidation | Shiller (1993); BitMEX |
+| [`pdlp`](mechanisms/pdlp.py) | Perpetual demand lending pools — funding/price-impact arbitrage, target-weight mechanism, delta hedge | Chitra et al. (2025) |
 | [`peer_prediction`](mechanisms/peer_prediction.py) | Truth elicitation without ground truth (Bayesian Truth Serum) | Prelec (2004) |
 | [`aggregation`](mechanisms/aggregation.py) | Linear / logarithmic / depth-trimmed opinion pools | Genest & Zidek (1986) |
 | [`calibration`](mechanisms/calibration.py) | Reliability diagrams, ECE, Brier decomposition | Murphy (1973) |
