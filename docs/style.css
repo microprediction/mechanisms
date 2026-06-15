@@ -1,0 +1,127 @@
+:root {
+  --bg: #fafafa;
+  --panel: #ffffff;
+  --text: #1a1a1a;
+  --muted: #5a5a5a;
+  --faint: #9a9a9a;
+  --accent: #0d7d8c;
+  --accent-soft: #e3f2f3;
+  --border: #e2e2e2;
+  --ink: #0f2730;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0;
+  background: var(--bg); color: var(--text);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6; font-size: 17px;
+}
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+header.site-header {
+  background: var(--ink); color: #fff;
+  padding: 14px 24px; border-bottom: 1px solid #08171d;
+}
+header.site-header .nav-inner {
+  max-width: 900px; margin: 0 auto;
+  display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+}
+header.site-header .brand { font-weight: 600; font-size: 1.1rem; color: #fff; }
+header.site-header nav { display: flex; flex-wrap: wrap; gap: 0 18px; }
+header.site-header nav a { color: #fff; opacity: 0.85; font-size: 0.95rem; }
+header.site-header nav a:hover { opacity: 1; }
+
+main { max-width: 900px; margin: 32px auto; padding: 0 24px 60px; }
+h1 { font-size: 2.1rem; margin: 0 0 4px; line-height: 1.2; }
+.subtitle { color: var(--muted); font-size: 1.12rem; margin: 0 0 24px; }
+h2 {
+  font-size: 1.3rem; margin: 2.2em 0 0.6em;
+  border-bottom: 1px solid var(--border); padding-bottom: 4px;
+}
+h3 { font-size: 1.05rem; margin: 1.5em 0 0.4em; }
+p { margin: 0.8em 0; }
+.lead { font-size: 1.07rem; }
+ul { padding-left: 1.3em; }
+li { margin-bottom: 8px; }
+.muted { color: var(--muted); }
+code {
+  background: #eef3f4; padding: 1px 5px;
+  border-radius: 3px; font-size: 0.92em;
+  font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+}
+pre {
+  background: #0f2730; color: #e6edf0; padding: 14px 16px;
+  border-radius: 8px; overflow-x: auto; font-size: 0.86em;
+  font-family: "SFMono-Regular", Menlo, Consolas, monospace; line-height: 1.5;
+}
+pre code { background: none; padding: 0; color: inherit; }
+blockquote {
+  margin: 18px 0; padding: 10px 18px;
+  border-left: 3px solid #ddd; color: var(--muted);
+}
+.equation-card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 8px; padding: 14px 18px; margin: 18px 0;
+  text-align: center; overflow-x: auto;
+}
+
+/* mechanism catalog cards */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 14px; margin: 22px 0; }
+.card {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 16px 18px; display: block;
+}
+.card:hover { border-color: var(--accent); text-decoration: none; }
+.card h3 { margin: 0 0 4px; color: var(--ink); font-size: 1.02rem; }
+.card p { margin: 0; color: var(--muted); font-size: 0.92rem; }
+.card .tag { display: inline-block; font-size: 0.7rem; text-transform: uppercase;
+  letter-spacing: 0.04em; color: var(--accent); background: var(--accent-soft);
+  padding: 2px 8px; border-radius: 10px; margin-top: 10px; }
+
+/* diagram */
+.diagram { margin: 26px 0 10px; }
+.diagram svg { width: 100%; height: auto; display: block; }
+.diagram .caption { text-align: center; color: var(--muted); font-size: 0.9rem; margin: 6px 0 0; }
+
+/* tables */
+.table-wrap { overflow-x: auto; margin: 18px 0; }
+table.impl { width: 100%; border-collapse: collapse; font-size: 0.95rem; }
+table.impl th, table.impl td {
+  text-align: left; padding: 11px 14px;
+  border-bottom: 1px solid var(--border); vertical-align: top;
+}
+table.impl thead th {
+  font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.04em;
+  color: var(--muted); font-weight: 600; border-bottom: 2px solid var(--border);
+}
+table.impl tbody td:first-child { font-weight: 600; white-space: nowrap; }
+table.impl tr:last-child td { border-bottom: none; }
+
+/* interactive demos */
+.demo {
+  background: var(--panel); border: 1px solid var(--border);
+  border-radius: 10px; padding: 18px 20px; margin: 20px 0;
+}
+.demo label { display: inline-block; min-width: 120px; color: var(--muted); font-size: 0.92rem; }
+.demo input[type="range"] { vertical-align: middle; width: 240px; }
+.demo .readout { font-family: "SFMono-Regular", Menlo, Consolas, monospace;
+  font-size: 0.95rem; margin: 10px 0; }
+.demo .bar { height: 26px; background: var(--accent); border-radius: 4px;
+  transition: width 0.1s; display: inline-block; }
+.demo .bar.alt { background: #b0791f; }
+.demo .row { margin: 8px 0; display: flex; align-items: center; gap: 10px; }
+
+/* bibliography */
+.bib h3 { font-size: 1.02rem; margin-top: 1.4em; color: var(--ink); }
+.bib ul { list-style: none; padding-left: 0; }
+.bib li { margin-bottom: 12px; padding-left: 1.2em; text-indent: -1.2em; }
+
+.pagenav { margin: 0 0 22px; font-size: 0.95rem; }
+.next-steps { background: var(--accent-soft); border-radius: 8px; padding: 4px 20px; margin: 24px 0; }
+
+footer {
+  max-width: 900px; margin: 40px auto 24px; padding: 16px 24px;
+  font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--border);
+}

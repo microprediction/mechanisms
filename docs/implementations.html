@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Implementations</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">mechanisms</a>
+      <nav>
+        <a href="./catalog.html">Catalog</a>
+        <a href="./demos.html">Demos</a>
+        <a href="./implementations.html">Implementations</a>
+        <a href="./bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
+    <h1>Implementations</h1>
+    <p class="subtitle">A small Python library, mirrored by parity-tested
+    JavaScript ports.</p>
+
+    <p class="lead">
+      Every mechanism has a Python reference implementation in the
+      <code>mechanisms</code> package — dependency-light (<code>numpy</code> only)
+      and written to be read. The core deterministic mechanisms additionally have
+      JavaScript ports that power the <a href="./demos.html">browser demos</a> and
+      are checked for numerical parity against Python in the test suite.
+    </p>
+
+    <h2>Python package</h2>
+    <pre><code>pip install -e ".[test]"</code></pre>
+    <div class="table-wrap">
+      <table class="impl">
+        <thead><tr><th>Module</th><th>Mechanism</th></tr></thead>
+        <tbody>
+          <tr><td>scoring_rules</td><td>Log, Brier, spherical; pinball &amp; interval; CRPS; energy score</td></tr>
+          <tr><td>parimutuel</td><td>Pool betting; dynamic parimutuel market</td></tr>
+          <tr><td>lmsr</td><td>Logarithmic market scoring rule</td></tr>
+          <tr><td>cmm</td><td>Generic convex cost-function market maker</td></tr>
+          <tr><td>amm</td><td>Constant-product / constant-mean CFMMs; impermanent loss</td></tr>
+          <tr><td>pm_amm</td><td>Paradigm's pm-AMM (Gaussian score dynamics)</td></tr>
+          <tr><td>cda</td><td>Continuous double auction / limit order book</td></tr>
+          <tr><td>fba</td><td>Frequent batch auction (uniform-price clearing)</td></tr>
+          <tr><td>perp</td><td>Perpetual futures funding &amp; liquidation</td></tr>
+          <tr><td>peer_prediction</td><td>Bayesian Truth Serum; output agreement</td></tr>
+          <tr><td>aggregation</td><td>Linear / logarithmic / depth-trimmed opinion pools</td></tr>
+          <tr><td>calibration</td><td>Reliability diagram, ECE, Brier decomposition</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>JavaScript ports, tested against Python</h2>
+    <p>
+      The browser demos must not quietly drift from the library, so the JavaScript
+      in <code>docs/js/mechanisms.js</code> is a faithful port of the Python
+      reference and is verified against it: <code>tests/test_js_parity.py</code>
+      runs each JS function in a Node subprocess (via
+      <code>tests/js_parity_runner.js</code>) and asserts the result equals the
+      Python implementation to floating-point tolerance. The parity tests skip
+      cleanly if <code>node</code> is not installed, so Python-only CI is
+      unaffected. <span class="muted">(Pattern borrowed from
+      <a href="https://github.com/microprediction/humpday">microprediction/humpday</a>,
+      where JS optimizers are validated against their Python counterparts.)</span>
+    </p>
+    <pre><code># Python reference, JS port, and the parity check
+pytest -q                          # full suite (Python + JS parity)
+node tests/js_parity_runner.js lmsrPrices '[[10,-5,3],50]'</code></pre>
+
+    <h2>Run the tour</h2>
+    <pre><code>python examples/quickstart.py</code></pre>
+
+    <div class="next-steps">
+      <p>New implementation, port, or integration? Open an issue on
+      <a href="https://github.com/microprediction/mechanisms">microprediction/mechanisms</a>.</p>
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>
