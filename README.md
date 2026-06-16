@@ -92,6 +92,7 @@ plotting dependencies). They run anywhere:
 | [`sim_calibration.py`](examples/sim_calibration.py) | Diagnose an overconfident forecaster (reliability diagram, ECE, Brier decomposition) and fix it by temperature recalibration |
 | [`sim_pipeline.py`](examples/sim_pipeline.py) | **Composing two mechanisms** — an elicitation market produces a forecast, a calibration critic PITs it for uniformity, and wealth flows to the calibrated reports until the critic's edge collapses |
 | [`sim_local_scoring.py`](examples/sim_local_scoring.py) | Rank *unnormalised* models with the Hyvärinen score — no partition function — and confirm invariance to the normalizing constant |
+| [`sim_correlated_agreement.py`](examples/sim_correlated_agreement.py) | Correlated Agreement elicits truth with no ground truth, defeats the constant-report exploit, and is stochastic-dominance (enforced) truthful |
 
 ```bash
 python examples/sim_lmsr.py

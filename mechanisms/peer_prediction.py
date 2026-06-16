@@ -30,7 +30,7 @@ from typing import List, Sequence
 
 import numpy as np
 
-__all__ = ["output_agreement", "bayesian_truth_serum"]
+__all__ = ["output_agreement", "bayesian_truth_serum", "correlated_agreement"]
 
 _EPS = 1e-12
 
@@ -97,4 +97,84 @@ def bayesian_truth_serum(information_reports: Sequence[int],
             x_bar * (np.log(np.clip(y[i], _EPS, 1.0)) - np.log(np.clip(x_bar, _EPS, 1.0)))
         )
         scores[i] = info + pred
+    return scores
+
+
+def _ca_sign_matrix(reports: np.ndarray, n_signals: int) -> np.ndarray:
+    r"""Detail-free sign matrix ``S = sign(\Delta)`` for Correlated Agreement.
+
+    ``\Delta[a,b] = P_same(a,b) - P(a)P(b)``, where ``P_same`` is the empirical
+    joint of two agents' reports on the *same* task and ``P(a)P(b)`` is the
+    independent baseline (peers on *unrelated* tasks). ``S[a,b]`` is +1 where
+    co-reporting ``a,b`` is more common than chance, -1 where rarer.
+    """
+    n_agents, n_tasks = reports.shape
+    marg = np.bincount(reports.ravel(), minlength=n_signals).astype(float)
+    marg /= marg.sum()
+    p_same = np.zeros((n_signals, n_signals))
+    pairs = 0
+    for t in range(n_tasks):
+        col = reports[:, t]
+        for a in range(n_agents):
+            for b in range(n_agents):
+                if a != b:
+                    p_same[col[a], col[b]] += 1.0
+                    pairs += 1
+    p_same /= max(pairs, 1)
+    return np.sign(p_same - np.outer(marg, marg))
+
+
+def correlated_agreement(reports, n_signals: int = None):
+    r"""Correlated Agreement (Dasgupta–Ghosh 2013; Shnayder et al. 2016).
+
+    A multi-task peer-prediction mechanism that is **informed-truthful** and needs
+    no elicited prediction report (unlike BTS) — only each agent's signal on a
+    shared pool of tasks. Each agent is rewarded for agreeing with peers on the
+    *same* task, beyond the chance agreement expected from unrelated tasks, scored
+    through the sign matrix ``S`` (see :func:`_ca_sign_matrix`):
+
+    .. math::
+        \mathrm{score}_i = \operatorname{mean}_{j\neq i,\,t} S[r_{i,t}, r_{j,t}]
+        \;-\; \operatorname{mean}_{j\neq i,\,t}\ \mathbb{E}_{b\sim\text{marg}} S[r_{i,t}, b].
+
+    The baseline subtraction is what defeats the degenerate equilibrium of
+    :func:`output_agreement`: a constant report agrees with peers but agrees
+    *equally* on unrelated tasks, so it nets zero. Truthful reporting is the
+    highest-paying strategy whenever the sign matrix captures the true correlation.
+
+    In **binary** settings this is the mechanism for which truthful reporting is
+    *stochastically-dominant* truthful (Schoenebeck et al.), i.e. robust to any
+    monotone, risk-averse utility — the "Enforced Agreement" property
+    (demonstrated in ``examples/sim_peer_prediction.py``).
+
+    Parameters
+    ----------
+    reports : integer array, shape ``(n_agents, n_tasks)``; each entry a signal.
+    n_signals : number of distinct signals (default: inferred from the data).
+
+    Returns
+    -------
+    numpy array of per-agent scores.
+    """
+    reports = np.asarray(reports, dtype=int)
+    if reports.ndim != 2:
+        raise ValueError("reports must be 2-D (n_agents, n_tasks)")
+    n_agents, n_tasks = reports.shape
+    if n_signals is None:
+        n_signals = int(reports.max()) + 1
+    S = _ca_sign_matrix(reports, n_signals)
+    marg = np.bincount(reports.ravel(), minlength=n_signals).astype(float)
+    marg /= marg.sum()
+    baseline = S @ marg  # expected S-score of report a against an independent peer
+
+    scores = np.zeros(n_agents)
+    for i in range(n_agents):
+        agree = 0.0
+        for j in range(n_agents):
+            if i == j:
+                continue
+            agree += float(np.sum(S[reports[i], reports[j]]))
+        cnt = (n_agents - 1) * n_tasks
+        base = (n_agents - 1) * float(np.sum(baseline[reports[i]]))
+        scores[i] = (agree - base) / max(cnt, 1)
     return scores

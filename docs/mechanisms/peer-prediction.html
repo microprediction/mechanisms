@@ -168,10 +168,36 @@
       advance.
     </p>
 
-    <p class="muted">Code: <code>mechanisms/peer_prediction.py</code> &middot;
-      Demo: <code>examples/sim_peer_prediction.py</code> &middot;
+    <h2>Correlated Agreement, and enforced (stochastic-dominance) truthfulness</h2>
+    <p>
+      Correlated Agreement needs no prediction report at all — only each agent's
+      signal on a shared pool of tasks. It scores agent $i$ by agreement with
+      peers on the <em>same</em> task, beyond the chance agreement expected from
+      <em>unrelated</em> tasks, read through a sign matrix $S = \operatorname{sign}(\Delta)$,
+      $\Delta_{ab} = P_{\text{same}}(a,b) - P(a)P(b)$:
+    </p>
+    <div class="equation-card">
+      $\operatorname{score}_i = \operatorname{mean}_{j\neq i,\,t} S[r_{i,t}, r_{j,t}]
+       \;-\; \operatorname{mean}_{j\neq i,\,t}\ \mathbb{E}_{b}\, S[r_{i,t}, b].$
+    </div>
+    <p>
+      The baseline subtraction is what kills the degenerate equilibrium: a constant
+      report agrees with peers but agrees <em>equally</em> on unrelated tasks, so it
+      nets zero. In the binary case truthful reporting is moreover
+      <strong>stochastically-dominant</strong> truthful (the "Enforced Agreement"
+      property): its entire score distribution lies to the right of any deviation's,
+      so honesty wins for every risk-averse, monotone utility — not just in
+      expectation. The demo shows the truthful 10th percentile beating 100% of a
+      constant deviator's outcomes.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/peer_prediction.py</code>
+      (<code>bayesian_truth_serum</code>, <code>correlated_agreement</code>) &middot;
+      Demo: <code>examples/sim_peer_prediction.py</code>,
+      <code>examples/sim_correlated_agreement.py</code> &middot;
       Related: <a href="./scoring-rules.html">scoring rules</a>,
-      <a href="./aggregation.html">aggregation</a></p>
+      <a href="./aggregation.html">aggregation</a> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/gaps-and-roadmap.md">gaps-and-roadmap.md</a></p>
   </main>
 
   <footer>
