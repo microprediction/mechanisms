@@ -78,6 +78,22 @@ node tests/js_parity_runner.js lmsrPrices '[[10,-5,3],50]'</code></pre>
     <h2>Run the tour</h2>
     <pre><code>python examples/quickstart.py</code></pre>
 
+    <h2>Example simulations</h2>
+    <p>
+      Each demo in <code>examples/</code> drives one mechanism through a short
+      Monte-Carlo story and prints the result as a terminal chart
+      (<code>numpy</code>-only, no plotting dependencies), so they run anywhere.
+    </p>
+    <ul>
+      <li><code>sim_scoring_rules.py</code> &mdash; honest reporting beats a confident misreport under the log, Brier &amp; spherical rules: what <em>strictly proper</em> means.</li>
+      <li><code>sim_lmsr.py</code> &mdash; informed traders move an LMSR market to the true probability while the maker's loss stays under <code>b&middot;log n</code>.</li>
+      <li><code>sim_parimutuel.py</code> &mdash; a pool aggregates noisy private beliefs, then reproduces the favourite&ndash;longshot bias.</li>
+      <li><code>sim_cda.py</code> &mdash; zero-intelligence traders drive a continuous double auction to competitive equilibrium (Gode &amp; Sunder, 1993).</li>
+      <li><code>sim_amm.py</code> &mdash; a constant-product LP's fees raced against impermanent loss under a random-walk price.</li>
+      <li><code>sim_perp.py</code> &mdash; the funding rate tethers a perpetual to its index; a 5&times; leveraged long gets liquidated.</li>
+    </ul>
+    <pre><code>python examples/sim_lmsr.py</code></pre>
+
     <div class="next-steps">
       <p>New implementation, port, or integration? Open an issue on
       <a href="https://github.com/microprediction/mechanisms">microprediction/mechanisms</a>.</p>

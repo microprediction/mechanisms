@@ -69,6 +69,25 @@ samples = np.random.default_rng(0).normal([0.5, -0.3], 1.0, size=(1000, 2))
 sr.energy_score(samples, y=[0.5, -0.3])
 ```
 
+## Example simulations
+
+Each demo in [`examples/`](examples/) drives one mechanism through a short
+Monte-Carlo story and prints the result as a terminal chart (`numpy`-only, no
+plotting dependencies). They run anywhere:
+
+| Demo | What it shows |
+|------|---------------|
+| [`sim_scoring_rules.py`](examples/sim_scoring_rules.py) | Honest reporting beats a confident misreport under the log, Brier & spherical rules — what *strictly proper* means |
+| [`sim_lmsr.py`](examples/sim_lmsr.py) | Informed traders move an LMSR market to the true probability while the maker's loss stays under `b·log n` |
+| [`sim_parimutuel.py`](examples/sim_parimutuel.py) | A pool aggregates noisy private beliefs, then reproduces the favourite–longshot bias |
+| [`sim_cda.py`](examples/sim_cda.py) | Zero-intelligence traders drive a continuous double auction to competitive equilibrium (Gode & Sunder, 1993) |
+| [`sim_amm.py`](examples/sim_amm.py) | A constant-product LP's fees raced against impermanent loss under a random-walk price |
+| [`sim_perp.py`](examples/sim_perp.py) | The funding rate tethers a perpetual to its index; a 5× leveraged long gets liquidated |
+
+```bash
+python examples/sim_lmsr.py
+```
+
 ## Tests
 
 ```bash
