@@ -89,6 +89,7 @@ plotting dependencies). They run anywhere:
 | [`sim_aggregation.py`](examples/sim_aggregation.py) | Linear vs log vs depth-trimmed opinion pools under confidently-wrong nodes — trimming wins |
 | [`sim_cmm.py`](examples/sim_cmm.py) | One convex potential subsumes LMSR (and a quadratic maker); the finite-difference price fallback matches the analytic gradient |
 | [`sim_calibration.py`](examples/sim_calibration.py) | Diagnose an overconfident forecaster (reliability diagram, ECE, Brier decomposition) and fix it by temperature recalibration |
+| [`sim_pipeline.py`](examples/sim_pipeline.py) | **Composing two mechanisms** — an elicitation market produces a forecast, a calibration critic PITs it for uniformity, and wealth flows to the calibrated reports until the critic's edge collapses |
 
 ```bash
 python examples/sim_lmsr.py
@@ -119,7 +120,12 @@ node tests/js_parity_runner.js lmsrPrices '[[10,-5,3],50]'
 The [`research/`](research/) directory contains literature notes — parimutuels and
 scoring rules, market scoring rules and AMMs, perpetuals and distributional
 forecasting — each cross-linked to the code and to a consolidated
-[`bibliography.bib`](research/bibliography.bib).
+[`bibliography.bib`](research/bibliography.bib). A standalone note,
+[composition-and-the-algebra-of-mechanisms](research/composition-and-the-algebra-of-mechanisms.md),
+develops how the mechanisms compose: a `skaters`-style operator algebra over
+distributional beliefs, Savage's characterisation and the convex-duality
+generator (with proof sketches), and the worked elicitation→calibration
+pipeline in [`examples/sim_pipeline.py`](examples/sim_pipeline.py).
 
 ## Site
 
