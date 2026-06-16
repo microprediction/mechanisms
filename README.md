@@ -87,6 +87,8 @@ plotting dependencies). They run anywhere:
 | [`sim_fba.py`](examples/sim_fba.py) | A frequent batch auction clears everyone at one uniform price at the equilibrium volume (Budish, Cramton & Shim) |
 | [`sim_peer_prediction.py`](examples/sim_peer_prediction.py) | The Bayesian Truth Serum out-scores a strategist with no ground truth (Prelec) |
 | [`sim_aggregation.py`](examples/sim_aggregation.py) | Linear vs log vs depth-trimmed opinion pools under confidently-wrong nodes — trimming wins |
+| [`sim_cmm.py`](examples/sim_cmm.py) | One convex potential subsumes LMSR (and a quadratic maker); the finite-difference price fallback matches the analytic gradient |
+| [`sim_calibration.py`](examples/sim_calibration.py) | Diagnose an overconfident forecaster (reliability diagram, ECE, Brier decomposition) and fix it by temperature recalibration |
 
 ```bash
 python examples/sim_lmsr.py
