@@ -29,21 +29,128 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Automated market makers (CFMMs)</h1>
-    <p>
-      A constant-function market maker holds reserves and accepts any trade that
-      leaves a trading function unchanged. The constant-product rule (Uniswap)
-      $x\cdot y=k$ is the canonical case; Balancer generalises to a weighted
-      geometric mean $\prod_i R_i^{w_i}=k$. Liquidity providers earn fees but bear
-      <strong>impermanent loss</strong> against a price move of factor $r$:
+
+    <p class="lead">
+      A <strong>constant-function market maker</strong> replaces the order book
+      with a formula. It holds reserves of two or more assets and will accept
+      <em>any</em> trade that leaves a chosen <em>trading function</em> of those
+      reserves unchanged. Price is therefore not quoted by anyone — it is read
+      off the reserves. The same convex object that prices a prediction market
+      (a <a href="./cmm.html">cost-function maker</a>), priced from the
+      <em>reserves</em> side, becomes the AMM that underpins decentralised
+      exchanges.
     </p>
-    <div class="equation-card">$\mathrm{IL}(r)=\dfrac{2\sqrt r}{1+r}-1\le 0$</div>
+
+    <h2>The constant-product rule</h2>
     <p>
-      A CFMM is the <em>convex conjugate</em> of a
-      <a href="./cmm.html">cost-function market maker</a> — the same object as LMSR
-      seen from the reserves side.
+      The canonical instance (Uniswap) holds reserves $x, y$ of two assets and
+      keeps their product fixed:
     </p>
+    <div class="equation-card">$x \cdot y = k.$</div>
+    <p>
+      The marginal (spot) price of $X$ in units of $Y$ is the slope of the
+      reserve curve, $p = y / x$. A swap of $\Delta x$ into the pool (after a fee
+      $\gamma$, e.g. $0.3\%$, is skimmed from the input) returns
+    </p>
+    <div class="equation-card">
+      $\Delta y = \dfrac{y\,(1-\gamma)\,\Delta x}{x + (1-\gamma)\,\Delta x},$
+    </div>
+    <p>
+      obtained by solving $\big(x + (1-\gamma)\Delta x\big)\,(y - \Delta y) = k$.
+      Because the curve is convex, every finite trade executes at an average
+      price strictly worse than the spot price — the <strong>slippage</strong>,
+      or price impact, which grows with trade size relative to the reserves.
+      Deep pools (large $k$) absorb trades with little impact; thin pools move
+      sharply.
+    </p>
+    <p class="muted">
+      In code: <code>ConstantProductAMM</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/amm.py">mechanisms/amm.py</a>
+      exposes <code>spot_price()</code>, <code>amount_out()</code>,
+      <code>swap()</code>, and <code>price_impact()</code>.
+    </p>
+
+    <h2>Constant mean, and StableSwap</h2>
+    <p>
+      Balancer generalises the product to a <strong>weighted geometric mean</strong>
+      over $n$ assets — a self-rebalancing index fund:
+    </p>
+    <div class="equation-card">
+      $\displaystyle\prod_{i} R_i^{\,w_i} = k, \qquad \sum_i w_i = 1.$
+    </div>
+    <p>
+      Constant product is the two-asset, equal-weight case $w_i = \tfrac12$. The
+      spot price of asset $i$ in units of $j$ is the weighted reserve ratio
+      $(R_j/w_j)\,/\,(R_i/w_i)$. Curve's <strong>StableSwap</strong> instead
+      interpolates between a constant-<em>sum</em> curve (zero slippage, for
+      assets meant to trade near par) and constant product (which guarantees the
+      pool can never be fully drained), tuned by an amplification coefficient
+      $A$ — the right shape for stablecoin pairs.
+    </p>
+    <p class="muted">
+      In code: <code>ConstantMeanAMM</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/amm.py">mechanisms/amm.py</a>.
+    </p>
+
+    <h2>Impermanent loss and LVR</h2>
+    <p>
+      An LP is effectively short volatility. Arbitrageurs always trade the pool
+      back to the external market price, so it ends up holding more of whichever
+      asset fell — the LP underperforms simply holding the initial basket. If the
+      price ratio moves by a factor $r$, the constant-product pool's value
+      relative to holding is
+    </p>
+    <div class="equation-card">$\mathrm{IL}(r) = \dfrac{2\sqrt{r}}{1+r} - 1 \;\le\; 0,$</div>
+    <p>
+      zero only at $r = 1$ and negative for any move in either direction. It
+      follows from the pool rebalancing along $xy=k$: at price $p = r p_0$ the
+      reserves become $x = \sqrt{k/p},\ y = \sqrt{kp}$, so the pool is worth
+      $2\sqrt{kp}$ against a held basket worth $\sqrt{k}\,(p_0+p)/\sqrt{p_0}$, and
+      the ratio is exactly the expression above. Fees are the LP's compensation;
+      LPing beats holding only when accumulated fees exceed this divergence.
+    </p>
+    <p>
+      <strong>Loss-versus-rebalancing</strong> (Milionis–Moallemi–Roughgarden–Zhang,
+      2022) is the sharper modern metric: it benchmarks the LP not against a
+      static HODL but against a continuously rebalancing portfolio, isolating the
+      value that leaks to arbitrageurs and making the LP's running cost a clean
+      function of volatility.
+    </p>
+    <p class="muted">
+      In code: <code>impermanent_loss()</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/amm.py">mechanisms/amm.py</a>;
+      raced against fees in the demo
+      <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_amm.py">examples/sim_amm.py</a>.
+    </p>
+
+    <h2>Concentrated liquidity</h2>
+    <p>
+      Uniswap v3 lets an LP confine capital to a price range $[p_a, p_b]$, where
+      it behaves like a constant-product position on shifted "virtual" reserves.
+      Inside the range capital efficiency is far higher; once price exits, the
+      position goes one-sided and inactive. Concentrated liquidity turns the LP's
+      impermanent-loss / fee trade-off into a deliberate range-selection decision.
+    </p>
+
+    <h2>Why it is the dual of a cost-function maker</h2>
+    <p>
+      A prediction-market maker is a convex potential $C(q)$ with prices
+      $\nabla C(q)$; a CFMM is a concave trading function $\varphi(R)$ with spot
+      prices read from the ratio of its partials. Up to sign and a change of
+      variables these are the <em>same object viewed through convex duality</em>:
+      convexity is exactly no-arbitrage, and a bounded conjugate domain is exactly
+      bounded loss. So <a href="./lmsr.html">LMSR</a>, the general
+      <a href="./cmm.html">cost-function maker</a>, and Uniswap/Balancer/Curve are
+      all instances of convex-potential market making — the prediction-market side
+      emphasising bounded-loss information elicitation, the DeFi side emphasising
+      fees, impermanent loss, and capital efficiency.
+    </p>
+
     <p class="muted">Code: <code>mechanisms/amm.py</code> &middot;
-      Demo: <code>examples/sim_amm.py</code></p>
+      Demo: <code>examples/sim_amm.py</code> &middot;
+      Related: <a href="./cmm.html">cost-function makers</a>,
+      <a href="./pm-amm.html">pm-AMM</a> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
   </main>
 
   <footer>
