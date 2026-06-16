@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Hybrid CLOB + AMM market</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Hybrid CLOB + AMM market</h1>
+
+    <p class="lead">
+      An <a href="./amm.html">AMM</a> guarantees liquidity but charges slippage on
+      every trade; a <a href="./cda.html">limit order book</a> offers zero-slippage
+      fills but only when a counterparty happens to be resting. A hybrid takes both:
+      match a taker against resting limit orders first, and route only the unmatched
+      remainder to the AMM backstop — the book removes the spread that deters size,
+      the AMM removes the empty-book problem.
+    </p>
+
+    <h2>Complementary matching in a binary market</h2>
+    <p>
+      For a binary outcome the matchable counterparties are <em>complementary</em>.
+      A buyer of YES at price $a$ and a buyer of NO at price $b$ can be paired
+      whenever
+    </p>
+    <div class="equation-card">$a + b \ge 1,$</div>
+    <p>
+      because together they fund the mint of one YES+NO pair — which costs \$1 and
+      always settles to \$1 — each receiving the side they wanted, with no AMM
+      involvement and <strong>no slippage</strong>. A YES taker matched against a
+      resting NO bid at price $b$ therefore pays $1 - b$ per share. Whatever the
+      book cannot fill is routed to an <a href="./lmsr.html">LMSR</a> backstop,
+      which always quotes a price.
+    </p>
+
+    <h2>Why the split matters</h2>
+    <p>
+      A large taker against an AMM alone walks up the curve, paying a rising
+      average price and dragging the quote against itself. With a resting
+      complementary book the same order is mostly filled at a fixed price and the
+      AMM is barely disturbed. In the demo a 150-share YES buy costs an average
+      $0.67$ and moves the AMM from $0.50$ to $0.82$ on its own, versus $0.49$ and
+      a move to $0.57$ through the hybrid — most of the flow absorbed P2P at zero
+      slippage. This is the architecture of on-chain venues that layer a P2P order
+      book over an AMM (e.g. PulsePlay over Yellow Network state channels).
+    </p>
+
+    <h2>In this repo</h2>
+    <p>
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/hybrid_market.py">mechanisms/hybrid_market.py</a>
+      provides <code>HybridBinaryMarket(b)</code> with <code>rest(side, price, size)</code>
+      to post resting buy orders and <code>market_buy(side, qty)</code>, which
+      returns the P2P/AMM split, the average price, and the AMM price before and
+      after. The demo
+      <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_hybrid_market.py">examples/sim_hybrid_market.py</a>
+      contrasts an AMM-only fill with the hybrid.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/hybrid_market.py</code> &middot;
+      Demo: <code>examples/sim_hybrid_market.py</code> &middot;
+      Related: <a href="./amm.html">CFMMs</a>, <a href="./lmsr.html">LMSR</a>,
+      <a href="./cda.html">continuous double auction</a> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/gaps-and-roadmap.md">gaps-and-roadmap.md</a></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

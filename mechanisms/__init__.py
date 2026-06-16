@@ -29,14 +29,17 @@ See https://mechanisms.microprediction.org for the accompanying literature.
 """
 
 from . import scoring_rules
+from . import local_scoring
 from . import parimutuel
 from . import nearest_the_pin
 from . import lmsr
 from . import cmm
 from . import amm
 from . import pm_amm
+from . import combinatorial
 from . import cda
 from . import fba
+from . import hybrid_market
 from . import perp
 from . import pdlp
 from . import peer_prediction
@@ -47,14 +50,17 @@ __version__ = "0.1.0"
 
 __all__ = [
     "scoring_rules",
+    "local_scoring",
     "parimutuel",
     "nearest_the_pin",
     "lmsr",
     "cmm",
     "amm",
     "pm_amm",
+    "combinatorial",
     "cda",
     "fba",
+    "hybrid_market",
     "perp",
     "pdlp",
     "peer_prediction",

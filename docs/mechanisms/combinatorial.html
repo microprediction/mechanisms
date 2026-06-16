@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Combinatorial &amp; conditional markets</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Combinatorial &amp; conditional markets</h1>
+
+    <p class="lead">
+      Hanson designed the market scoring rule for <em>modular combinatorial</em>
+      information aggregation: a single maker over the joint outcome space of
+      several base variables prices every logical combination of them at once and
+      keeps the implied joint distribution coherent — no Dutch book across related
+      securities. Running one <a href="./lmsr.html">LMSR</a> over the $2^n$ joint
+      states of $n$ binary variables turns a bag of separate binaries into a real
+      probabilistic model.
+    </p>
+
+    <h2>One maker over the joint states</h2>
+    <p>
+      With $n$ binary variables there are $2^n$ joint states; the LMSR holds a
+      share vector $q$ over them and quotes the joint distribution as the softmax
+    </p>
+    <div class="equation-card">
+      $p_s(q) = \dfrac{e^{q_s/b}}{\sum_{s'} e^{q_{s'}/b}}, \qquad
+       C(q) = b\log\textstyle\sum_s e^{q_s/b}.$
+    </div>
+    <p>
+      The worst-case maker loss is bounded by $b\log(2^n)$, exactly as for a flat
+      LMSR — the combinatorial structure costs nothing in risk.
+    </p>
+
+    <h2>Events, marginals, conditionals</h2>
+    <p>
+      An <strong>event</strong> is any subset of states (a logical formula over the
+      variables); its implied probability is the sum of the state prices it covers.
+      From the one joint distribution you read every derived quantity coherently:
+    </p>
+    <div class="equation-card">
+      $P(\text{event}) = \!\!\sum_{s\,\in\,\text{event}}\!\! p_s, \qquad
+       P(A \mid B) = \dfrac{P(A \cap B)}{P(B)}.$
+    </div>
+    <p>
+      The conditional is what makes the market combinatorial rather than a set of
+      independent binaries: a trader who buys the security paying out on the joint
+      event $A \wedge B$ moves not only the marginals $P(A)$ and $P(B)$ but the
+      conditional $P(A \mid B)$ — the market <em>learns a dependence</em>. This is
+      the substrate for "if $B$ then $A$" conditional markets and the
+      reputation-weighted combinatorial markets of platforms like SciCast.
+    </p>
+
+    <h2>In this repo</h2>
+    <p>
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/combinatorial.py">mechanisms/combinatorial.py</a>
+      provides <code>CombinatorialMarket(n_vars, b)</code> with
+      <code>prices()</code> (the joint), <code>prob(event)</code>,
+      <code>marginal(i)</code>, <code>conditional(a, b)</code>,
+      <code>buy_event(event, shares)</code>, and <code>max_loss</code>. Events are
+      boolean masks built with <code>var(i, value)</code> and combined with
+      <code>&amp;</code>, <code>|</code>, <code>~</code>. The demo
+      <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_combinatorial.py">examples/sim_combinatorial.py</a>
+      starts from independence, buys $A \wedge B$, and watches $P(A \mid B)$ rise
+      above $P(A)$ while Bayes consistency holds.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/combinatorial.py</code> &middot;
+      Demo: <code>examples/sim_combinatorial.py</code> &middot;
+      Related: <a href="./lmsr.html">LMSR</a>, <a href="./cmm.html">cost-function makers</a> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/gaps-and-roadmap.md">gaps-and-roadmap.md</a></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

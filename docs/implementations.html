@@ -100,6 +100,8 @@ node tests/js_parity_runner.js lmsrPrices '[[10,-5,3],50]'</code></pre>
       <li><code>sim_pipeline.py</code> &mdash; <em>composing two mechanisms</em>: an elicitation market produces a forecast, a calibration critic PITs it for uniformity, and wealth flows to the calibrated reports until the critic's edge collapses.</li>
       <li><code>sim_local_scoring.py</code> &mdash; rank <em>unnormalised</em> models with the Hyvärinen score (no partition function) and confirm invariance to the normalizing constant.</li>
       <li><code>sim_correlated_agreement.py</code> &mdash; Correlated Agreement elicits truth with no ground truth, defeats the constant-report exploit, and is stochastic-dominance (enforced) truthful.</li>
+      <li><code>sim_combinatorial.py</code> &mdash; a combinatorial LMSR learns a dependence: buying <code>A&amp;B</code> lifts <code>P(A|B)</code> above <code>P(A)</code> while Bayes consistency holds.</li>
+      <li><code>sim_hybrid_market.py</code> &mdash; hybrid CLOB+AMM: complementary resting orders fill a large buy at near-zero slippage where the AMM alone would move the price hard.</li>
     </ul>
     <pre><code>python examples/sim_lmsr.py</code></pre>
 

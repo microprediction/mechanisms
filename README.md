@@ -25,7 +25,9 @@ market maker is the convex conjugate of that cost-function market maker.
 | [`cmm`](mechanisms/cmm.py) | Generic convex cost-function market maker | Abernethy, Chen & Wortman Vaughan (2013) |
 | [`amm`](mechanisms/amm.py) | Constant-product / constant-mean AMMs, impermanent loss | Angeris et al. (2021) |
 | [`pm_amm`](mechanisms/pm_amm.py) | Parimutuel AMM for binary markets (Gaussian score dynamics) | Moallemi & Robinson (2024) |
+| [`combinatorial`](mechanisms/combinatorial.py) | Combinatorial / conditional LMSR markets — coherent marginals and conditionals over joint states | Hanson (2003, 2007) |
 | [`cda`](mechanisms/cda.py) | Continuous double auction / limit order book | Smith (1962); Gode & Sunder (1993) |
+| [`hybrid_market`](mechanisms/hybrid_market.py) | Hybrid CLOB + AMM — complementary limit orders at zero slippage, AMM backstop | — |
 | [`fba`](mechanisms/fba.py) | Frequent batch auction (uniform-price clearing) | Budish, Cramton & Shim (2015) |
 | [`perp`](mechanisms/perp.py) | Perpetual futures funding rate, mark-price liquidation | Shiller (1993); BitMEX |
 | [`pdlp`](mechanisms/pdlp.py) | Perpetual demand lending pools — funding/price-impact arbitrage, target-weight mechanism, delta hedge | Chitra et al. (2025) |
@@ -93,6 +95,8 @@ plotting dependencies). They run anywhere:
 | [`sim_pipeline.py`](examples/sim_pipeline.py) | **Composing two mechanisms** — an elicitation market produces a forecast, a calibration critic PITs it for uniformity, and wealth flows to the calibrated reports until the critic's edge collapses |
 | [`sim_local_scoring.py`](examples/sim_local_scoring.py) | Rank *unnormalised* models with the Hyvärinen score — no partition function — and confirm invariance to the normalizing constant |
 | [`sim_correlated_agreement.py`](examples/sim_correlated_agreement.py) | Correlated Agreement elicits truth with no ground truth, defeats the constant-report exploit, and is stochastic-dominance (enforced) truthful |
+| [`sim_combinatorial.py`](examples/sim_combinatorial.py) | A combinatorial LMSR learns a dependence — buying `A∧B` lifts `P(A\|B)` above `P(A)` while Bayes consistency holds |
+| [`sim_hybrid_market.py`](examples/sim_hybrid_market.py) | Hybrid CLOB+AMM: complementary resting orders fill a large buy at near-zero slippage where the AMM alone would move the price hard |
 
 ```bash
 python examples/sim_lmsr.py

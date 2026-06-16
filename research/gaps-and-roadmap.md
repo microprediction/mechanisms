@@ -45,16 +45,18 @@ being added:
 4. **Combinatorial / conditional markets** (Gap 4). LMSR over a combinatorial
    outcome space and conditional ("if A then B") markets — the cost-function
    machinery already in [`cmm.py`](../mechanisms/cmm.py) extends to this.
-   *Planned.*
+   *Implemented:* [`combinatorial.py`](../mechanisms/combinatorial.py).
 5. **Decision markets / futarchy as a mechanism** (Gap 6). The *mechanism* layer
    (conditional markets on a decision variable) is in scope even though the
-   execution/governance plumbing is not. *Planned.*
+   execution/governance plumbing is not. The conditional machinery is now in
+   [`combinatorial.py`](../mechanisms/combinatorial.py); a dedicated
+   decision-market wrapper is *planned.*
 6. **Hybrid CLOB + AMM matching** (Gap 4). The repo has the
    [continuous double auction](../mechanisms/cda.py), the
    [frequent batch auction](../mechanisms/fba.py), and
    [CFMMs](../mechanisms/amm.py) separately; a matcher that fills against resting
-   limit orders first and an AMM backstop second is a small, clean addition.
-   *Planned.*
+   limit orders first and an AMM backstop second.
+   *Implemented:* [`hybrid_market.py`](../mechanisms/hybrid_market.py).
 
 ## Out of scope for a mechanism library
 
@@ -80,10 +82,11 @@ all while remaining free of the normalizing constant.
 
 ## Priority
 
-The highest-value, lowest-risk additions — because they are mathematically
-clean, unit-testable, and extend modules already here — are **(1) local scoring
-rules** and **(2) CA/EA peer prediction**, both delivered alongside this note.
-Kelly sizing, combinatorial/conditional markets, and a hybrid matcher follow.
+Delivered so far: **local scoring rules**, **CA/EA peer prediction**,
+**combinatorial/conditional markets**, and a **hybrid CLOB+AMM matcher** — all
+mathematically clean, unit-tested, and extending modules already here. Still
+open: **Kelly sizing** and a dedicated **decision-market / futarchy** wrapper
+over the conditional machinery.
 
 ## References
 
