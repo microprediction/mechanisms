@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Perpetual demand lending pools</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Perpetual demand lending pools</h1>
+    <p>
+      The liquidity pools behind decentralised perpetuals exchanges (GMX's GLP,
+      Jupiter's JLP, Hyperliquid's HLP). LPs deposit a basket; traders borrow
+      <em>under-collateralised, single-purpose</em> loans to open levered
+      positions and pay a fee; arbitrageurs keep the pool at a target composition.
+      A price move opens two arbitrages that bracket a sustainable fee
+      $f = \Theta(1/L_0)$: funding-rate arbitrage of size
+      $\ell = L_0(p/p_0-1)$ and a CFMM-style price-impact arbitrage solving
+      $G'(x^\star)=1/p$. The <strong>target-weight mechanism</strong> pays a
+      discount to LPs who rebalance the pool — GMX's discount function is an
+      explicit PID-like instance — and provably <em>bounds</em> an LP's delta,
+      which is why PDLP positions are so much easier to delta-hedge than CFMM
+      positions.
+    </p>
+    <div class="equation-card">
+      $\gamma_L=\kappa\!\left(\tfrac{L}{S}-\tfrac{p}{p_0}\right),\qquad
+       w(p,R)=\tfrac{p\odot R}{p^\top R},\qquad
+       \pi_{\text{new}}=\tfrac{f}{\gamma}\Sigma^{-1}\ell-\Delta$
+    </div>
+    <p class="muted">Code: <code>mechanisms/pdlp.py</code> &middot;
+      Demo: <code>examples/pdlp_demo.py</code> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perpetual-demand-lending-pools.md">perpetual-demand-lending-pools.md</a></p>
+    <p class="muted">Paper: <a href="https://arxiv.org/abs/2502.06028">arXiv:2502.06028</a></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

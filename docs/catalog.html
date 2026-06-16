@@ -29,189 +29,36 @@
   <main>
     <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
     <h1>Catalog</h1>
-    <p class="subtitle">Each mechanism, its defining formula, and where to find the
-    reference implementation and the literature.</p>
+    <p class="subtitle">One page per mechanism — its defining formula, reference
+    implementation, runnable demo, and the literature. Pick a mechanism:</p>
 
-    <h2 id="scoring-rules">Proper scoring rules</h2>
-    <p>
-      A scoring rule <code>S(p, y)</code> rewards a probabilistic forecast once the
-      outcome <code>y</code> is seen. It is <strong>strictly proper</strong> if the
-      forecaster's expected reward is uniquely optimised by reporting their true
-      belief — the property that makes honest reporting a dominant strategy. The
-      three classics, in loss form:
-    </p>
-    <div class="equation-card">
-      $S_{\log}=-\log p_y, \qquad
-       S_{\text{Brier}}=\textstyle\sum_i (p_i-\mathbf 1\{i=y\})^2, \qquad
-       S_{\text{sph}}=1-\dfrac{p_y}{\lVert p\rVert_2}$
-    </div>
-    <p>
-      For point forecasts, the <strong>pinball loss</strong>
-      $L_\tau(z,y)=(y-z)(\tau-\mathbf 1\{y&lt;z\})$ elicits the $\tau$-quantile, and
-      the <strong>interval score</strong> rewards narrow, well-calibrated
-      prediction intervals. For full distributional forecasts the <strong>CRPS</strong>
-      and its multivariate generalisation the <strong>energy score</strong>
-      $\mathrm{ES}=\mathbb E\lVert X-y\rVert-\tfrac12\mathbb E\lVert X-X'\rVert$
-      are the gold standard — the energy score is what scores sample-based
-      forecasts in contests like monteprediction.com.
-    </p>
-    <p class="muted">Code: <code>mechanisms/scoring_rules.py</code> ·
-      Demo: <code>examples/sim_scoring_rules.py</code> ·
-      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/parimutuel-and-scoring-rules.md">parimutuel-and-scoring-rules.md</a></p>
+    <h2>Scoring &amp; elicitation</h2>
+    <ul class="mechanism-index">
+      <li><a href="./mechanisms/scoring-rules.html">Proper scoring rules</a> — Log, Brier, spherical, pinball, CRPS, energy — honesty as a dominant strategy.</li>
+      <li><a href="./mechanisms/peer-prediction.html">Peer prediction</a> — Eliciting truth without ground truth (Bayesian Truth Serum).</li>
+      <li><a href="./mechanisms/aggregation.html">Forecast aggregation</a> — Linear, logarithmic, and depth-trimmed opinion pools.</li>
+    </ul>
 
-    <h2 id="parimutuel">Parimutuel markets</h2>
-    <p>
-      Pool betting: all stakes go into one pool, the operator removes a takeout
-      $\tau$, and winners split the rest pro rata. Odds are <em>endogenous</em> —
-      fixed only at close — and the operator bears no risk. The pool fractions are
-      the market's implied probabilities. A bettor staking $w$ on winning outcome
-      $j$ receives
-    </p>
-    <div class="equation-card">$\text{payout}=w\cdot\dfrac{(1-\tau)\,W}{W_j}$</div>
-    <p>
-      Pennock's <strong>dynamic parimutuel market</strong> adds continuous price
-      discovery: shares are priced by a cost function so early buyers profit when
-      later buying lifts the price, combining the pool's no-operator-risk property
-      with a live price.
-    </p>
-    <p class="muted">Code: <code>mechanisms/parimutuel.py</code> ·
-      Demo: <code>examples/sim_parimutuel.py</code></p>
+    <h2>Markets &amp; makers</h2>
+    <ul class="mechanism-index">
+      <li><a href="./mechanisms/parimutuel.html">Parimutuel markets</a> — Pool betting and Pennock's dynamic parimutuel market.</li>
+      <li><a href="./mechanisms/lmsr.html">Logarithmic Market Scoring Rule (LMSR)</a> — Hanson's logarithmic market scoring rule; bounded loss $b\log n$.</li>
+      <li><a href="./mechanisms/cmm.html">Cost-function market makers</a> — Any convex potential $C(q)$ is a no-arbitrage maker with prices $\nabla C$.</li>
+      <li><a href="./mechanisms/amm.html">Automated market makers (CFMMs)</a> — Constant-product / constant-mean CFMMs and impermanent loss.</li>
+      <li><a href="./mechanisms/pm-amm.html">pm-AMM — parimutuel AMM for binary markets</a> — Gaussian-score AMM for binary markets; price is a probability.</li>
+    </ul>
 
-    <h2 id="lmsr">LMSR &amp; cost-function market makers</h2>
-    <p>
-      Hanson's <strong>logarithmic market scoring rule</strong> turns the log
-      score into an automated market maker with a closed-form cost function over
-      outstanding shares $q$:
-    </p>
-    <div class="equation-card">
-      $C(q)=b\,\log\textstyle\sum_i e^{q_i/b}, \qquad
-       p_i(q)=\dfrac{e^{q_i/b}}{\sum_j e^{q_j/b}}$
-    </div>
-    <p>
-      Prices are non-negative and sum to one — the implied probabilities — and the
-      market maker's worst-case loss is bounded by $b\log n$. The liquidity
-      parameter $b$ trades depth against that subsidy. LMSR is one point in the
-      <strong>convex cost-function</strong> family (Abernethy–Chen–Wortman Vaughan):
-      any convex potential $C$ gives a no-arbitrage maker with prices $\nabla C$.
-    </p>
-    <p class="muted">Code: <code>mechanisms/lmsr.py</code>, <code>mechanisms/cmm.py</code> ·
-      Demo: <code>examples/sim_lmsr.py</code>, <code>examples/sim_cmm.py</code> ·
-      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
+    <h2>Auctions</h2>
+    <ul class="mechanism-index">
+      <li><a href="./mechanisms/cda.html">Continuous double auction</a> — Price-time-priority limit order book.</li>
+      <li><a href="./mechanisms/fba.html">Frequent batch auction</a> — Uniform-price batch clearing that neutralises the latency race.</li>
+    </ul>
 
-    <h2 id="amm">Automated market makers (CFMMs)</h2>
-    <p>
-      A constant-function market maker holds reserves and accepts any trade that
-      leaves a trading function unchanged. The constant-product rule (Uniswap)
-      $x\cdot y=k$ is the canonical case; Balancer generalises to a weighted
-      geometric mean $\prod_i R_i^{w_i}=k$. Liquidity providers earn fees but bear
-      <strong>impermanent loss</strong> against a price move of factor $r$:
-    </p>
-    <div class="equation-card">$\mathrm{IL}(r)=\dfrac{2\sqrt r}{1+r}-1\le 0$</div>
-    <p>
-      A CFMM is the <em>convex conjugate</em> of a cost-function market maker — the
-      same object as LMSR seen from the reserves side.
-    </p>
-    <p class="muted">Code: <code>mechanisms/amm.py</code> ·
-      Demo: <code>examples/sim_amm.py</code></p>
-
-    <h2 id="pm-amm">pm-AMM — parimutuel AMM for binary markets</h2>
-    <p>
-      Generic CFMMs are catastrophic for binary outcome tokens, whose price
-      resolves to 0 or 1. Paradigm's <strong>pm-AMM</strong> derives its invariant
-      from <em>Gaussian score dynamics</em> — the signal follows a Brownian motion
-      and the price is the Black-Scholes binary-option probability. The static
-      invariant over the two tokens' reserves, with liquidity scale $L$:
-    </p>
-    <div class="equation-card">
-      $(y-x)\,\Phi\!\left(\tfrac{y-x}{L}\right)+L\,\phi\!\left(\tfrac{y-x}{L}\right)-y=0,
-       \qquad \text{price}=\Phi\!\left(\tfrac{y-x}{L}\right)$
-    </div>
-    <p>
-      This concentrates liquidity near the 0.50 mark and thins it at the extremes,
-      normalising loss-versus-rebalancing across price levels.
-    </p>
-    <p class="muted">Code: <code>mechanisms/pm_amm.py</code> ·
-      Demo: <code>examples/sim_pm_amm.py</code></p>
-
-    <h2 id="cda">Order books &amp; batch auctions</h2>
-    <p>
-      The <strong>continuous double auction</strong> matches incoming orders
-      against a limit order book by price-then-time priority — the engine of modern
-      exchanges, but one that rewards latency and lets fast traders snipe stale
-      quotes. The <strong>frequent batch auction</strong> (Budish–Cramton–Shim)
-      discretises time: orders in a short interval clear together at a single
-      uniform price that maximises volume, neutralising speed advantages and, on
-      chain, transaction-ordering (MEV) attacks.
-    </p>
-    <p class="muted">Code: <code>mechanisms/cda.py</code>, <code>mechanisms/fba.py</code> ·
-      Demo: <code>examples/sim_cda.py</code>, <code>examples/sim_fba.py</code> ·
-      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
-
-    <h2 id="perp">Perpetual futures</h2>
-    <p>
-      A perpetual never expires; a periodic <strong>funding</strong> payment tethers
-      it to an index. With a positive rate longs pay shorts. The BitMEX-style rate
-      clamps the premium against an interest term:
-    </p>
-    <div class="equation-card">$F=P+\operatorname{clamp}(I-P,\,-c,\,+c)$</div>
-    <p>
-      Liquidation is judged against a manipulation-resistant <em>mark price</em>,
-      not the last trade. The concept traces to Shiller's (1993) perpetual claim.
-    </p>
-    <p class="muted">Code: <code>mechanisms/perp.py</code> ·
-      Demo: <code>examples/sim_perp.py</code></p>
-
-    <h2 id="pdlp">Perpetual demand lending pools</h2>
-    <p>
-      The liquidity pools behind decentralised perpetuals exchanges (GMX's GLP,
-      Jupiter's JLP, Hyperliquid's HLP). LPs deposit a basket; traders borrow
-      <em>under-collateralised, single-purpose</em> loans to open levered
-      positions and pay a fee; arbitrageurs keep the pool at a target composition.
-      A price move opens two arbitrages that bracket a sustainable fee
-      $f = \Theta(1/L_0)$: funding-rate arbitrage of size
-      $\ell = L_0(p/p_0-1)$ and a CFMM-style price-impact arbitrage solving
-      $G'(x^\star)=1/p$. The <strong>target-weight mechanism</strong> pays a
-      discount to LPs who rebalance the pool — GMX's discount function is an
-      explicit PID-like instance — and provably <em>bounds</em> an LP's delta,
-      which is why PDLP positions are so much easier to delta-hedge than CFMM
-      positions.
-    </p>
-    <div class="equation-card">
-      $\gamma_L=\kappa\!\left(\tfrac{L}{S}-\tfrac{p}{p_0}\right),\qquad
-       w(p,R)=\tfrac{p\odot R}{p^\top R},\qquad
-       \pi_{\text{new}}=\tfrac{f}{\gamma}\Sigma^{-1}\ell-\Delta$
-    </div>
-    <p class="muted">Code: <code>mechanisms/pdlp.py</code> ·
-      Demo: <code>examples/pdlp_demo.py</code> ·
-      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perpetual-demand-lending-pools.md">perpetual-demand-lending-pools.md</a> ·
-      Paper: <a href="https://arxiv.org/abs/2502.06028">arXiv:2502.06028</a></p>
-
-    <h2 id="peer-prediction">Peer prediction</h2>
-    <p>
-      When there is no verifiable ground truth, reward a report by its statistical
-      relationship to others'. Naive output-agreement collapses to a degenerate
-      equilibrium (everyone reports the same thing). Prelec's <strong>Bayesian
-      Truth Serum</strong> fixes this by asking for both an answer and a prediction
-      of the population distribution, rewarding answers that are
-      <em>surprisingly common</em>:
-    </p>
-    <div class="equation-card">
-      $\text{score}_i=\log\dfrac{\bar x_k}{\bar y_k}
-       +\alpha\textstyle\sum_m \bar x_m\log\dfrac{y_{i,m}}{\bar x_m}$
-    </div>
-    <p class="muted">Code: <code>mechanisms/peer_prediction.py</code> ·
-      Demo: <code>examples/sim_peer_prediction.py</code></p>
-
-    <h2 id="aggregation">Forecast aggregation</h2>
-    <p>
-      Combining many forecasts into one. The <strong>linear opinion pool</strong> is
-      a weighted arithmetic mean (robust, tends to under-confidence); the
-      <strong>logarithmic opinion pool</strong> a normalised geometric mean
-      (sharper, multiplies evidence). A <strong>depth-trimmed</strong> pool drops the
-      most outlying forecasts before averaging for robustness against bad nodes.
-    </p>
-    <p class="muted">Code: <code>mechanisms/aggregation.py</code> ·
-      Demo: <code>examples/sim_aggregation.py</code></p>
+    <h2>Derivatives</h2>
+    <ul class="mechanism-index">
+      <li><a href="./mechanisms/perp.html">Perpetual futures</a> — No-expiry contract tethered to an index by a funding rate.</li>
+      <li><a href="./mechanisms/pdlp.html">Perpetual demand lending pools</a> — Demand lending pools (GLP/JLP/HLP) with a target-weight mechanism.</li>
+    </ul>
 
     <div class="next-steps">
       <p>Missing a mechanism? Open an issue on

@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Frequent batch auction</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Frequent batch auction</h1>
+    <p>
+      The <strong>frequent batch auction</strong> (Budish–Cramton–Shim)
+      discretises time: orders arriving in a short interval clear together at a
+      single uniform price that maximises matched volume, neutralising the latency
+      arms race of the <a href="./cda.html">continuous double auction</a> and, on
+      chain, transaction-ordering (MEV) attacks. Within a batch time priority is
+      irrelevant — every matched order transacts at the same price.
+    </p>
+    <p class="muted">Code: <code>mechanisms/fba.py</code> &middot;
+      Demo: <code>examples/sim_fba.py</code> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

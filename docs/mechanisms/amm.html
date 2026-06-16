@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Automated market makers (CFMMs)</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Automated market makers (CFMMs)</h1>
+    <p>
+      A constant-function market maker holds reserves and accepts any trade that
+      leaves a trading function unchanged. The constant-product rule (Uniswap)
+      $x\cdot y=k$ is the canonical case; Balancer generalises to a weighted
+      geometric mean $\prod_i R_i^{w_i}=k$. Liquidity providers earn fees but bear
+      <strong>impermanent loss</strong> against a price move of factor $r$:
+    </p>
+    <div class="equation-card">$\mathrm{IL}(r)=\dfrac{2\sqrt r}{1+r}-1\le 0$</div>
+    <p>
+      A CFMM is the <em>convex conjugate</em> of a
+      <a href="./cmm.html">cost-function market maker</a> — the same object as LMSR
+      seen from the reserves side.
+    </p>
+    <p class="muted">Code: <code>mechanisms/amm.py</code> &middot;
+      Demo: <code>examples/sim_amm.py</code></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

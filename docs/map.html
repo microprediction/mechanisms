@@ -78,44 +78,44 @@ const CLUSTERS = {
 
 const NODES = [
   // scoring rules
-  {id:"logscore",  label:"Log score",        c:"scoring", url:"./catalog.html#scoring-rules", note:"The unique local strictly proper rule, S=-log p_y. Run sequentially it becomes LMSR; it is the entropy generating the softmax cost function."},
-  {id:"brier",     label:"Brier score",      c:"scoring", url:"./catalog.html#scoring-rules", note:"Quadratic strictly proper rule. CRPS is its threshold integral."},
-  {id:"spherical", label:"Spherical score",  c:"scoring", url:"./catalog.html#scoring-rules", note:"Strictly proper rule p_y/||p||. The dynamic parimutuel's projection game is strategically equivalent to it."},
-  {id:"pinball",   label:"Pinball / quantile loss", c:"scoring", url:"./catalog.html#scoring-rules", note:"Consistent scoring function for the tau-quantile; the elementary building block of CRPS."},
-  {id:"crps",      label:"CRPS",             c:"scoring", url:"./catalog.html#scoring-rules", note:"Continuous Ranked Probability Score: integral of Brier over thresholds; the 1-D special case of the energy score."},
-  {id:"energy",    label:"Energy score",     c:"scoring", url:"./catalog.html#scoring-rules", note:"Multivariate, sample-friendly strictly proper score. Governs sample-based contests (monteprediction) and the nearest-the-pin parimutuel."},
+  {id:"logscore",  label:"Log score",        c:"scoring", url:"./mechanisms/scoring-rules.html", note:"The unique local strictly proper rule, S=-log p_y. Run sequentially it becomes LMSR; it is the entropy generating the softmax cost function."},
+  {id:"brier",     label:"Brier score",      c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Quadratic strictly proper rule. CRPS is its threshold integral."},
+  {id:"spherical", label:"Spherical score",  c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Strictly proper rule p_y/||p||. The dynamic parimutuel's projection game is strategically equivalent to it."},
+  {id:"pinball",   label:"Pinball / quantile loss", c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Consistent scoring function for the tau-quantile; the elementary building block of CRPS."},
+  {id:"crps",      label:"CRPS",             c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Continuous Ranked Probability Score: integral of Brier over thresholds; the 1-D special case of the energy score."},
+  {id:"energy",    label:"Energy score",     c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Multivariate, sample-friendly strictly proper score. Governs sample-based contests (monteprediction) and the nearest-the-pin parimutuel."},
 
   // market makers
-  {id:"cmm",   label:"Cost-function maker", c:"maker", url:"./catalog.html#lmsr", note:"Any convex potential C(q): prices = grad C, convexity = no-arbitrage, bounded gradient = bounded loss (Abernethy-Chen-Wortman Vaughan)."},
-  {id:"lmsr",  label:"LMSR",                c:"maker", url:"./catalog.html#lmsr", note:"Hanson's logarithmic market scoring rule: C(q)=b log sum e^{q_i/b}. The entropic cost-function maker; bounded loss b log n."},
-  {id:"lslmsr",label:"LS-LMSR",             c:"maker", url:"./catalog.html#lmsr", note:"Liquidity-sensitive LMSR (Othman-Sandholm): b scales with volume, so the maker earns a spread instead of a guaranteed subsidy."},
-  {id:"cfmm",  label:"Constant-product AMM",c:"maker", url:"./catalog.html#amm", note:"Uniswap x*y=k. The convex dual (trading-function side) of a cost-function maker."},
-  {id:"cmean", label:"Constant-mean (Balancer)", c:"maker", url:"./catalog.html#amm", note:"Weighted geometric-mean invariant prod R_i^{w_i}=k; constant product is the 2-asset equal-weight case."},
-  {id:"pmamm", label:"pm-AMM",              c:"maker", url:"./catalog.html#pm-amm", note:"Paradigm's parimutuel AMM for binary tokens via Gaussian score dynamics: a CFMM whose invariant is the Black-Scholes binary price."},
+  {id:"cmm",   label:"Cost-function maker", c:"maker", url:"./mechanisms/cmm.html", note:"Any convex potential C(q): prices = grad C, convexity = no-arbitrage, bounded gradient = bounded loss (Abernethy-Chen-Wortman Vaughan)."},
+  {id:"lmsr",  label:"LMSR",                c:"maker", url:"./mechanisms/lmsr.html", note:"Hanson's logarithmic market scoring rule: C(q)=b log sum e^{q_i/b}. The entropic cost-function maker; bounded loss b log n."},
+  {id:"lslmsr",label:"LS-LMSR",             c:"maker", url:"./mechanisms/lmsr.html", note:"Liquidity-sensitive LMSR (Othman-Sandholm): b scales with volume, so the maker earns a spread instead of a guaranteed subsidy."},
+  {id:"cfmm",  label:"Constant-product AMM",c:"maker", url:"./mechanisms/amm.html", note:"Uniswap x*y=k. The convex dual (trading-function side) of a cost-function maker."},
+  {id:"cmean", label:"Constant-mean (Balancer)", c:"maker", url:"./mechanisms/amm.html", note:"Weighted geometric-mean invariant prod R_i^{w_i}=k; constant product is the 2-asset equal-weight case."},
+  {id:"pmamm", label:"pm-AMM",              c:"maker", url:"./mechanisms/pm-amm.html", note:"Paradigm's parimutuel AMM for binary tokens via Gaussian score dynamics: a CFMM whose invariant is the Black-Scholes binary price."},
 
   // parimutuel
-  {id:"pari", label:"Parimutuel (pool)", c:"parimutuel", url:"./catalog.html#parimutuel", note:"Pool betting: winners split the pot pro rata; odds are endogenous and the house bears no risk."},
-  {id:"dpm",  label:"Dynamic parimutuel", c:"parimutuel", url:"./catalog.html#parimutuel", note:"Pennock's DPM: a cost-function priced parimutuel with continuous price discovery; hybridizes the pool with a CDA."},
+  {id:"pari", label:"Parimutuel (pool)", c:"parimutuel", url:"./mechanisms/parimutuel.html", note:"Pool betting: winners split the pot pro rata; odds are endogenous and the house bears no risk."},
+  {id:"dpm",  label:"Dynamic parimutuel", c:"parimutuel", url:"./mechanisms/parimutuel.html", note:"Pennock's DPM: a cost-function priced parimutuel with continuous price discovery; hybridizes the pool with a CDA."},
   {id:"ntp",  label:"Nearest-the-pin parimutuel", c:"parimutuel", r:13, url:"./papers.html#nearest-the-pin", note:"Continuous / Monte-Carlo parimutuel: payout proportional to the density a participant placed at the realized outcome, relative to the crowd. One of the reward mechanisms in the microprediction vision. (Working draft.)"},
 
   // auctions
-  {id:"cda",  label:"Continuous double auction", c:"auction", url:"./catalog.html#cda", note:"Price-time-priority limit order book; the engine of modern exchanges."},
-  {id:"fba",  label:"Frequent batch auction",    c:"auction", url:"./catalog.html#cda", note:"Discrete-time uniform-price clearing (Budish-Cramton-Shim); neutralizes latency and MEV."},
-  {id:"call", label:"Call auction",              c:"auction", url:"./catalog.html#cda", note:"Single uniform-price clearing of a batch of orders; the open/close auction."},
+  {id:"cda",  label:"Continuous double auction", c:"auction", url:"./mechanisms/cda.html", note:"Price-time-priority limit order book; the engine of modern exchanges."},
+  {id:"fba",  label:"Frequent batch auction",    c:"auction", url:"./mechanisms/fba.html", note:"Discrete-time uniform-price clearing (Budish-Cramton-Shim); neutralizes latency and MEV."},
+  {id:"call", label:"Call auction",              c:"auction", url:"./mechanisms/fba.html", note:"Single uniform-price clearing of a batch of orders; the open/close auction."},
 
   // perpetuals
-  {id:"perp",   label:"Perpetual future", c:"perp", url:"./catalog.html#perp", note:"No-expiry contract tethered to an index by periodic funding."},
-  {id:"funding",label:"Funding rate",     c:"perp", url:"./catalog.html#perp", note:"The periodic cash flow that pins a perp to spot; F=P+clamp(I-P)."},
-  {id:"pdlp",   label:"Demand lending pool (PDLP)", c:"perp", url:"./catalog.html#pdlp", note:"GMX/Jupiter/Hyperliquid pool that lends to perp traders; its price-impact arbitrage is CFMM loss-versus-rebalancing."},
+  {id:"perp",   label:"Perpetual future", c:"perp", url:"./mechanisms/perp.html", note:"No-expiry contract tethered to an index by periodic funding."},
+  {id:"funding",label:"Funding rate",     c:"perp", url:"./mechanisms/perp.html", note:"The periodic cash flow that pins a perp to spot; F=P+clamp(I-P)."},
+  {id:"pdlp",   label:"Demand lending pool (PDLP)", c:"perp", url:"./mechanisms/pdlp.html", note:"GMX/Jupiter/Hyperliquid pool that lends to perp traders; its price-impact arbitrage is CFMM loss-versus-rebalancing."},
 
   // peer prediction
-  {id:"oa",  label:"Output agreement", c:"peer", url:"./catalog.html#peer-prediction", note:"Reward = agreement with a peer. Collapses to a degenerate everyone-agrees equilibrium."},
-  {id:"bts", label:"Bayesian Truth Serum", c:"peer", url:"./catalog.html#peer-prediction", note:"Prelec: rewards 'surprisingly common' answers; breaks the degenerate equilibrium without ground truth."},
-  {id:"ca",  label:"Correlated agreement", c:"peer", url:"./catalog.html#peer-prediction", note:"Multi-task peer prediction that needs no elicited peer distribution (Shnayder et al.)."},
+  {id:"oa",  label:"Output agreement", c:"peer", url:"./mechanisms/peer-prediction.html", note:"Reward = agreement with a peer. Collapses to a degenerate everyone-agrees equilibrium."},
+  {id:"bts", label:"Bayesian Truth Serum", c:"peer", url:"./mechanisms/peer-prediction.html", note:"Prelec: rewards 'surprisingly common' answers; breaks the degenerate equilibrium without ground truth."},
+  {id:"ca",  label:"Correlated agreement", c:"peer", url:"./mechanisms/peer-prediction.html", note:"Multi-task peer prediction that needs no elicited peer distribution (Shnayder et al.)."},
 
   // aggregation
-  {id:"linpool", label:"Linear opinion pool", c:"agg", url:"./catalog.html#aggregation", note:"Weighted arithmetic mean of forecasts; robust, tends to under-confidence."},
-  {id:"logpool", label:"Logarithmic opinion pool", c:"agg", url:"./catalog.html#aggregation", note:"Normalized weighted geometric mean; sharper, multiplies evidence, related to the log score."},
+  {id:"linpool", label:"Linear opinion pool", c:"agg", url:"./mechanisms/aggregation.html", note:"Weighted arithmetic mean of forecasts; robust, tends to under-confidence."},
+  {id:"logpool", label:"Logarithmic opinion pool", c:"agg", url:"./mechanisms/aggregation.html", note:"Normalized weighted geometric mean; sharper, multiplies evidence, related to the log score."},
 
   // microprediction
   {id:"zstream", label:"Z-stream calibration", c:"micro", url:"./papers.html#nearest-the-pin", note:"z = Phi^{-1}(F(x)); a calibrated aggregate market yields standard-normal z, and any deviation is an exploitable anomaly."},

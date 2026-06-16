@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — pm-AMM</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>pm-AMM — parimutuel AMM for binary markets</h1>
+    <p>
+      Generic CFMMs are catastrophic for binary outcome tokens, whose price
+      resolves to 0 or 1. Paradigm's <strong>pm-AMM</strong> derives its invariant
+      from <em>Gaussian score dynamics</em> — the signal follows a Brownian motion
+      and the price is the Black-Scholes binary-option probability. The static
+      invariant over the two tokens' reserves, with liquidity scale $L$:
+    </p>
+    <div class="equation-card">
+      $(y-x)\,\Phi\!\left(\tfrac{y-x}{L}\right)+L\,\phi\!\left(\tfrac{y-x}{L}\right)-y=0,
+       \qquad \text{price}=\Phi\!\left(\tfrac{y-x}{L}\right)$
+    </div>
+    <p>
+      This concentrates liquidity near the 0.50 mark and thins it at the extremes,
+      normalising loss-versus-rebalancing across price levels.
+    </p>
+    <p class="muted">Code: <code>mechanisms/pm_amm.py</code> &middot;
+      Demo: <code>examples/sim_pm_amm.py</code></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

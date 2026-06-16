@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — LMSR</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Logarithmic Market Scoring Rule (LMSR)</h1>
+    <p>
+      Hanson's <strong>logarithmic market scoring rule</strong> turns the log
+      score into an automated market maker with a closed-form cost function over
+      outstanding shares $q$:
+    </p>
+    <div class="equation-card">
+      $C(q)=b\,\log\textstyle\sum_i e^{q_i/b}, \qquad
+       p_i(q)=\dfrac{e^{q_i/b}}{\sum_j e^{q_j/b}}$
+    </div>
+    <p>
+      Prices are non-negative and sum to one — the implied probabilities — and the
+      market maker's worst-case loss is bounded by $b\log n$. The liquidity
+      parameter $b$ trades depth against that subsidy. LMSR is the entropic special
+      case of the generic <a href="./cmm.html">cost-function market maker</a>.
+    </p>
+    <p class="muted">Code: <code>mechanisms/lmsr.py</code> &middot;
+      Demo: <code>examples/sim_lmsr.py</code> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

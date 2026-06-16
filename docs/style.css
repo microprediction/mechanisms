@@ -119,6 +119,9 @@ table.impl tr:last-child td { border-bottom: none; }
 .bib li { margin-bottom: 12px; padding-left: 1.2em; text-indent: -1.2em; }
 
 .pagenav { margin: 0 0 22px; font-size: 0.95rem; }
+.mechanism-index { list-style: none; padding-left: 0; }
+.mechanism-index li { margin-bottom: 10px; line-height: 1.5; }
+.mechanism-index a { font-weight: 600; }
 .next-steps { background: var(--accent-soft); border-radius: 8px; padding: 4px 20px; margin: 24px 0; }
 
 footer {
