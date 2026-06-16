@@ -23,8 +23,9 @@ with LMSR" — is already the repository's position.
 
 ## Genuine gaps: clean reference-implementation candidates
 
-These are well-defined mechanisms that belong in a reference library and are
-being added:
+These are well-defined additions that belong in a reference library and are
+being added — all mechanisms except (3), which is an agent-side *sizing
+primitive* the mechanisms compose with:
 
 1. **Local / m-local proper scoring rules** (Gap 2). Proper rules that depend on
    the quoted density only through its value *and a finite number of
@@ -39,8 +40,19 @@ being added:
    distribution; EA / **stochastically-dominant** truthfulness (Schoenebeck et
    al.) hardens this against non-linear (risk-averse) utilities. *Implemented:*
    added to [`peer_prediction.py`](../mechanisms/peer_prediction.py).
-3. **Kelly-optimal sizing** (Gap 5). The log-optimal bet size; abstracts the
-   exact wealth dynamics already driving [`sim_pipeline.py`](../examples/sim_pipeline.py).
+3. **Kelly-optimal sizing** (Gap 5) — a *sizing primitive*, not a mechanism.
+   Kelly is an agent's wealth-growth-optimal bet fraction; a mechanism is a
+   *market* rule (aggregate / price / allocate). It earns its place here only in
+   composition: it is the **agent-side dual of the log score**. A log-wealth
+   maximiser betting against prices $\pi$ optimally bets its beliefs $p$, with
+   growth rate $\sum_i p_i\log(p_i/\pi_i) = \mathrm{KL}(p\Vert\pi)$ — exactly the
+   regret of the log score (the Bregman divergence of negentropy), and exactly
+   the multiplicative wealth update $w_i \mathrel{*}= p_i(y)/\pi$ that already
+   makes the wealth-weighted pool in
+   [`sim_pipeline.py`](../examples/sim_pipeline.py) self-correcting. So the right
+   addition is a small `kelly.py` primitive the mechanisms *compose with*, not a
+   new market. (A protocol-level auto-sizer that allocates stakes from broadcast
+   beliefs *would* be a mechanism — stake allocation with a Kelly objective.)
    *Planned.*
 4. **Combinatorial / conditional markets** (Gap 4). LMSR over a combinatorial
    outcome space and conditional ("if A then B") markets — the cost-function
@@ -85,8 +97,9 @@ all while remaining free of the normalizing constant.
 Delivered so far: **local scoring rules**, **CA/EA peer prediction**,
 **combinatorial/conditional markets**, and a **hybrid CLOB+AMM matcher** — all
 mathematically clean, unit-tested, and extending modules already here. Still
-open: **Kelly sizing** and a dedicated **decision-market / futarchy** wrapper
-over the conditional machinery.
+open: a **Kelly sizing** primitive (the agent-side dual of the log score, not a
+mechanism) and a dedicated **decision-market / futarchy** wrapper over the
+conditional machinery.
 
 ## References
 
