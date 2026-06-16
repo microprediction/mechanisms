@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Papers</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">mechanisms</a>
+      <nav>
+        <a href="./catalog.html">Catalog</a>
+        <a href="./demos.html">Demos</a>
+        <a href="./map.html">Map</a>
+        <a href="./implementations.html">Implementations</a>
+        <a href="./papers.html">Papers</a>
+        <a href="./bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
+    <h1>Papers</h1>
+    <p class="subtitle">Original write-ups developed in this repository. The
+    literature surveys live under <a href="./bibliography.html">bibliography</a>;
+    these are new work.</p>
+
+    <h2 id="nearest-the-pin">The Nearest-the-Pin Parimutuel</h2>
+    <p class="muted">Peter Cotton · working draft v0.1 ·
+      <a href="https://github.com/microprediction/mechanisms/blob/main/papers/nearest-the-pin-parimutuel.md">full draft</a> ·
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py">implementation</a></p>
+    <p class="lead">
+      A parimutuel pool whose outcomes form a continuum. Each participant submits a
+      predictive density (a cloud of Monte-Carlo samples); when the point $z$ is
+      revealed, the pot is split in proportion to the density each placed at $z$,
+      relative to the crowd — a <em>nearest-the-pin</em> reward. It is the engine
+      behind <a href="https://monteprediction.com">monteprediction.com</a>.
+    </p>
+    <div class="equation-card">
+      $\Delta W_i = S\,\dfrac{s_i\,q_i(z)}{\sum_j s_j\,q_j(z)} - s_i,
+       \qquad s_i = b\,W_i$
+    </div>
+    <p>
+      Three claims, all implemented and unit-tested:
+    </p>
+    <ul>
+      <li><strong>Self-funding &amp; honest.</strong> The split is zero-sum (the
+        operator bears no risk), and for a log-wealth (Kelly) maximiser the unique
+        optimal report is one's <em>true</em> density — the continuous shadow of
+        "bet your beliefs", with growth governed by the logarithmic score against
+        the crowd.</li>
+      <li><strong>The projection version.</strong> In high dimensions the joint
+        density is hard to estimate, so score the cloud through random
+        one-dimensional projections. By the energy-distance projection identity
+        $$\mathrm{ES}(P,y)=c_d^{-1}\,\mathbb{E}_u\big[\mathrm{CRPS}(P_u,\langle u,y\rangle)\big],
+          \qquad c_d=\tfrac{\Gamma(d/2)}{\sqrt\pi\,\Gamma((d+1)/2)},$$
+        the average sliced CRPS <em>is</em> the multivariate energy score — a
+        strictly proper score built from cheap 1-D evaluations. This is the
+        projection version used for monteprediction's eleven-dimensional clouds,
+        and it places the mechanism inside the random-projections literature
+        (Johnson–Lindenstrauss, sliced Wasserstein, sliced score matching).</li>
+      <li><strong>Two routes to high-dimensional scoring.</strong> Turning a joint
+        forecast into a number at $z$ when $d$ is large can go via a structured
+        <em>density</em> (the <a href="https://github.com/microprediction/schur">Schur</a>
+        pseudo-likelihood / Vecchia factorisation, Cotton 2024–25) or via random
+        <em>projection</em> (the sliced energy score). The nearest-the-pin pool
+        runs with either; a conjectured <em>Schur-damped</em> projection score
+        interpolates between them with a single reliability dial $\gamma$.</li>
+    </ul>
+    <p>
+      Read the <a href="https://github.com/microprediction/mechanisms/blob/main/papers/nearest-the-pin-parimutuel.md">full
+      working draft</a> for the derivations, the honesty argument, the literature
+      links, and the open questions.
+    </p>
+
+    <h2>Source material</h2>
+    <p>Survey PDFs that motivate these write-ups:</p>
+    <ul>
+      <li><a href="./assets/pdf/prediction-aggregation-survey.pdf">Novel Statistical and Market-Inspired Mechanisms for the Elicitation, Aggregation, and Rewarding of Predictive Contributions</a> — the survey organising this repository.</li>
+      <li><a href="./assets/pdf/perpetual-demand-lending-pools.pdf">Perpetual Demand Lending Pools</a> (Chitra, Diamandis, Sheng, Sterle &amp; Yusubov, 2025; arXiv:2502.06028).</li>
+    </ul>
+
+    <div class="next-steps">
+      <p>Have a mechanism write-up to contribute? Open an issue or PR on
+      <a href="https://github.com/microprediction/mechanisms">microprediction/mechanisms</a>.</p>
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Mechanisms — Relationship map</title>
+    <meta name="description" content="An interactive map of market mechanisms, linked by how they relate: special cases, convex duals, sequential forms, generalizations, and the scoring rules that govern them.">
+    <link rel="stylesheet" href="./style.css">
+    <style>
+        #map-wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
+        #graph { width: 100%; height: 780px; border: 1px solid var(--border); background: #fdfdfc; border-radius: 6px; }
+        .legend { font-size: 0.85em; color: #444; display: flex; flex-wrap: wrap; gap: 10px 20px; margin: 10px 0; }
+        .legend span { display: inline-flex; align-items: center; gap: 6px; }
+        .dot { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+        .line { width: 26px; height: 0; border-top: 3px solid #999; display: inline-block; }
+        #tooltip { position: absolute; pointer-events: none; background: rgba(15,39,48,0.96); color: #eef;
+            padding: 8px 11px; border-radius: 5px; font-size: 13px; max-width: 340px; display: none; line-height: 1.4; }
+        text.nodelabel { font: 11px sans-serif; fill: #1a1a1a; pointer-events: none;
+            paint-order: stroke; stroke: #fdfdfc; stroke-width: 3px; stroke-linejoin: round; }
+        text.edgelabel { font: italic 9.5px sans-serif; pointer-events: none;
+            paint-order: stroke; stroke: #fdfdfc; stroke-width: 3.5px; stroke-linejoin: round; }
+        .hint { color:#666; font-size: 0.9em; }
+    </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">mechanisms</a>
+      <nav>
+        <a href="./catalog.html">Catalog</a>
+        <a href="./demos.html">Demos</a>
+        <a href="./map.html">Map</a>
+        <a href="./implementations.html">Implementations</a>
+        <a href="./papers.html">Papers</a>
+        <a href="./bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+<div id="map-wrap">
+    <h1>Relationship map</h1>
+    <p>Each node is a <b>mechanism</b> (coloured by family); each edge says how two
+    mechanisms relate. The thesis of this repository is visible as a backbone: a
+    <b style="color:#0d7d8c">proper scoring rule</b>, applied
+    <i>sequentially</i>, becomes a market maker (LMSR); its <b style="color:#2471a3">convex
+    dual</b> is a constant-function AMM; applied as a <i>pool</i> it is a
+    parimutuel. Click a node to open its catalog entry; drag to rearrange; hover
+    an edge for the relationship.</p>
+    <div class="legend" id="cluster-legend"></div>
+    <div class="legend">
+        <span><span class="line" style="border-color:#1e8449"></span> special case of</span>
+        <span><span class="line" style="border-color:#2471a3; border-top-width:3.5px"></span> convex dual (two readings)</span>
+        <span><span class="line" style="border-color:#0d7d8c; border-top-width:3px"></span> sequential / pooled form</span>
+        <span><span class="line" style="border-color:#7d3c98"></span> generalizes / extends</span>
+        <span><span class="line" style="border-top-style:dashed; border-color:#d68910"></span> governed by scoring rule</span>
+        <span><span class="line" style="border-color:#999"></span> builds on</span>
+        <span><span class="line" style="border-top-style:dotted; border-color:#7f8c8d"></span> contrast</span>
+    </div>
+    <div id="graph"></div>
+    <p class="hint">The <span style="color:#c0392b;font-weight:600">nearest-the-pin parimutuel</span>
+    node links to a working draft in the <a href="./papers.html">papers</a> section.</p>
+</div>
+<div id="tooltip"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+<script>
+const CLUSTERS = {
+  scoring:     {label: "Scoring rules",            color: "#5d6d7e"},
+  maker:       {label: "Market makers",            color: "#2980b9"},
+  parimutuel:  {label: "Parimutuel",               color: "#c0392b"},
+  auction:     {label: "Auctions / order books",   color: "#16a085"},
+  perp:        {label: "Perpetuals & lending",     color: "#8e44ad"},
+  peer:        {label: "Peer prediction",          color: "#d68910"},
+  agg:         {label: "Aggregation",              color: "#27ae60"},
+  micro:       {label: "Microprediction",          color: "#e74c8b"},
+};
+
+const NODES = [
+  // scoring rules
+  {id:"logscore",  label:"Log score",        c:"scoring", url:"./catalog.html#scoring-rules", note:"The unique local strictly proper rule, S=-log p_y. Run sequentially it becomes LMSR; it is the entropy generating the softmax cost function."},
+  {id:"brier",     label:"Brier score",      c:"scoring", url:"./catalog.html#scoring-rules", note:"Quadratic strictly proper rule. CRPS is its threshold integral."},
+  {id:"spherical", label:"Spherical score",  c:"scoring", url:"./catalog.html#scoring-rules", note:"Strictly proper rule p_y/||p||. The dynamic parimutuel's projection game is strategically equivalent to it."},
+  {id:"pinball",   label:"Pinball / quantile loss", c:"scoring", url:"./catalog.html#scoring-rules", note:"Consistent scoring function for the tau-quantile; the elementary building block of CRPS."},
+  {id:"crps",      label:"CRPS",             c:"scoring", url:"./catalog.html#scoring-rules", note:"Continuous Ranked Probability Score: integral of Brier over thresholds; the 1-D special case of the energy score."},
+  {id:"energy",    label:"Energy score",     c:"scoring", url:"./catalog.html#scoring-rules", note:"Multivariate, sample-friendly strictly proper score. Governs sample-based contests (monteprediction) and the nearest-the-pin parimutuel."},
+
+  // market makers
+  {id:"cmm",   label:"Cost-function maker", c:"maker", url:"./catalog.html#lmsr", note:"Any convex potential C(q): prices = grad C, convexity = no-arbitrage, bounded gradient = bounded loss (Abernethy-Chen-Wortman Vaughan)."},
+  {id:"lmsr",  label:"LMSR",                c:"maker", url:"./catalog.html#lmsr", note:"Hanson's logarithmic market scoring rule: C(q)=b log sum e^{q_i/b}. The entropic cost-function maker; bounded loss b log n."},
+  {id:"lslmsr",label:"LS-LMSR",             c:"maker", url:"./catalog.html#lmsr", note:"Liquidity-sensitive LMSR (Othman-Sandholm): b scales with volume, so the maker earns a spread instead of a guaranteed subsidy."},
+  {id:"cfmm",  label:"Constant-product AMM",c:"maker", url:"./catalog.html#amm", note:"Uniswap x*y=k. The convex dual (trading-function side) of a cost-function maker."},
+  {id:"cmean", label:"Constant-mean (Balancer)", c:"maker", url:"./catalog.html#amm", note:"Weighted geometric-mean invariant prod R_i^{w_i}=k; constant product is the 2-asset equal-weight case."},
+  {id:"pmamm", label:"pm-AMM",              c:"maker", url:"./catalog.html#pm-amm", note:"Paradigm's parimutuel AMM for binary tokens via Gaussian score dynamics: a CFMM whose invariant is the Black-Scholes binary price."},
+
+  // parimutuel
+  {id:"pari", label:"Parimutuel (pool)", c:"parimutuel", url:"./catalog.html#parimutuel", note:"Pool betting: winners split the pot pro rata; odds are endogenous and the house bears no risk."},
+  {id:"dpm",  label:"Dynamic parimutuel", c:"parimutuel", url:"./catalog.html#parimutuel", note:"Pennock's DPM: a cost-function priced parimutuel with continuous price discovery; hybridizes the pool with a CDA."},
+  {id:"ntp",  label:"Nearest-the-pin parimutuel", c:"parimutuel", r:13, url:"./papers.html#nearest-the-pin", note:"Continuous / Monte-Carlo parimutuel: payout proportional to the density a participant placed at the realized outcome, relative to the crowd. The microprediction reward rule. (Working draft.)"},
+
+  // auctions
+  {id:"cda",  label:"Continuous double auction", c:"auction", url:"./catalog.html#cda", note:"Price-time-priority limit order book; the engine of modern exchanges."},
+  {id:"fba",  label:"Frequent batch auction",    c:"auction", url:"./catalog.html#cda", note:"Discrete-time uniform-price clearing (Budish-Cramton-Shim); neutralizes latency and MEV."},
+  {id:"call", label:"Call auction",              c:"auction", url:"./catalog.html#cda", note:"Single uniform-price clearing of a batch of orders; the open/close auction."},
+
+  // perpetuals
+  {id:"perp",   label:"Perpetual future", c:"perp", url:"./catalog.html#perp", note:"No-expiry contract tethered to an index by periodic funding."},
+  {id:"funding",label:"Funding rate",     c:"perp", url:"./catalog.html#perp", note:"The periodic cash flow that pins a perp to spot; F=P+clamp(I-P)."},
+  {id:"pdlp",   label:"Demand lending pool (PDLP)", c:"perp", url:"./catalog.html#pdlp", note:"GMX/Jupiter/Hyperliquid pool that lends to perp traders; its price-impact arbitrage is CFMM loss-versus-rebalancing."},
+
+  // peer prediction
+  {id:"oa",  label:"Output agreement", c:"peer", url:"./catalog.html#peer-prediction", note:"Reward = agreement with a peer. Collapses to a degenerate everyone-agrees equilibrium."},
+  {id:"bts", label:"Bayesian Truth Serum", c:"peer", url:"./catalog.html#peer-prediction", note:"Prelec: rewards 'surprisingly common' answers; breaks the degenerate equilibrium without ground truth."},
+  {id:"ca",  label:"Correlated agreement", c:"peer", url:"./catalog.html#peer-prediction", note:"Multi-task peer prediction that needs no elicited peer distribution (Shnayder et al.)."},
+
+  // aggregation
+  {id:"linpool", label:"Linear opinion pool", c:"agg", url:"./catalog.html#aggregation", note:"Weighted arithmetic mean of forecasts; robust, tends to under-confidence."},
+  {id:"logpool", label:"Logarithmic opinion pool", c:"agg", url:"./catalog.html#aggregation", note:"Normalized weighted geometric mean; sharper, multiplies evidence, related to the log score."},
+
+  // microprediction
+  {id:"micro",   label:"Microprediction network", c:"micro", url:"https://microprediction.org", note:"Web-scale network of autonomous forecasters submitting distributional (225-sample) predictions, rewarded continuously."},
+  {id:"zstream", label:"Z-stream calibration", c:"micro", url:"./papers.html#nearest-the-pin", note:"z = Phi^{-1}(F(x)); a calibrated aggregate market yields standard-normal z, and any deviation is an exploitable anomaly."},
+];
+
+// type: special | dual | sequential | generalize | scored | lineage | contrast
+const EDGES = [
+  // the duality backbone
+  {s:"logscore", t:"lmsr",  type:"sequential", label:"sequential log score = LMSR"},
+  {s:"lmsr",     t:"cmm",   type:"special",    label:"entropic potential"},
+  {s:"cmm",      t:"cfmm",  type:"dual",       label:"cost fn ↔ trading fn"},
+  {s:"logscore", t:"cmm",   type:"scored",     label:"−entropy generates C"},
+
+  // market-maker family
+  {s:"lslmsr", t:"lmsr",  type:"generalize", label:"liquidity scales with volume"},
+  {s:"cfmm",   t:"cmean", type:"special",    label:"2-asset, equal weights"},
+  {s:"pmamm",  t:"cfmm",  type:"special",    label:"CFMM for binary tokens"},
+
+  // parimutuel family + bridges
+  {s:"dpm",   t:"pari",  type:"generalize", label:"adds continuous pricing"},
+  {s:"dpm",   t:"cda",   type:"lineage",    label:"hybridizes CDA pricing"},
+  {s:"dpm",   t:"spherical", type:"scored", label:"projection game ≡ spherical"},
+  {s:"pmamm", t:"pari",  type:"lineage",    label:"parimutuel × AMM"},
+  {s:"ntp",   t:"pari",  type:"generalize", label:"continuous, density pot-split"},
+  {s:"ntp",   t:"dpm",   type:"lineage",    label:"density-weighted DPM"},
+  {s:"ntp",   t:"energy",type:"scored",     label:"scored by the energy / MC-CRPS"},
+  {s:"ntp",   t:"logscore", type:"scored",  label:"log-wealth ⇒ honest density"},
+
+  // scoring-rule relationships
+  {s:"crps",  t:"energy", type:"special",   label:"1-D case"},
+  {s:"brier", t:"crps",   type:"lineage",   label:"∫ over thresholds"},
+  {s:"pinball",t:"crps",  type:"special",   label:"threshold component"},
+
+  // auctions
+  {s:"fba",  t:"cda",  type:"contrast",  label:"discrete time, uniform price"},
+  {s:"fba",  t:"call", type:"special",   label:"frequent call auctions"},
+
+  // perpetuals & lending
+  {s:"perp", t:"funding", type:"lineage", label:"funding tether"},
+  {s:"pdlp", t:"perp",    type:"lineage", label:"lends to perp traders"},
+  {s:"pdlp", t:"cfmm",    type:"dual",    label:"LP loss = CFMM LVR"},
+  {s:"pdlp", t:"funding", type:"lineage", label:"funding-rate arbitrage"},
+
+  // peer prediction
+  {s:"bts", t:"oa",  type:"generalize", label:"breaks degenerate equilibrium"},
+  {s:"ca",  t:"bts", type:"generalize", label:"multi-task, no peer distribution"},
+
+  // aggregation
+  {s:"logpool", t:"linpool", type:"contrast", label:"geometric vs arithmetic"},
+  {s:"logpool", t:"logscore",type:"scored",   label:"minimizes total KL"},
+
+  // microprediction synthesis
+  {s:"micro", t:"ntp",    type:"lineage", label:"reward rule"},
+  {s:"micro", t:"energy", type:"scored",  label:"distributional scoring"},
+  {s:"micro", t:"zstream",type:"lineage", label:"calibration via Z-streams"},
+  {s:"micro", t:"linpool",type:"lineage", label:"crowd aggregation"},
+];
+
+const STYLE = {
+  special:    {stroke:"#1e8449", width:2.2, dash:null},
+  dual:       {stroke:"#2471a3", width:3.2, dash:null},
+  sequential: {stroke:"#0d7d8c", width:3.0, dash:null},
+  generalize: {stroke:"#7d3c98", width:2.0, dash:null},
+  scored:     {stroke:"#d68910", width:1.8, dash:"2,4"},
+  lineage:    {stroke:"#999999", width:1.4, dash:null},
+  contrast:   {stroke:"#7f8c8d", width:1.8, dash:"1,4"},
+};
+const TYPE_NAMES = {
+  special:"special case of", dual:"convex dual — two readings",
+  sequential:"sequential / pooled form", generalize:"generalizes / extends",
+  scored:"governed by this scoring rule", lineage:"builds on", contrast:"contrast",
+};
+
+const W = document.getElementById("graph").clientWidth, H = 780;
+const svg = d3.select("#graph").append("svg").attr("width","100%").attr("height",H).attr("viewBox",[0,0,W,H]);
+const g = svg.append("g");
+svg.call(d3.zoom().scaleExtent([0.4,3]).on("zoom", ev => g.attr("transform", ev.transform)));
+
+const links = EDGES.map(e => ({source:e.s, target:e.t, ...e}));
+
+// cluster anchors around a circle so families group visually
+const cx = W/2, cy = H/2, R_CL = Math.min(W,H)*0.34;
+const clusterKeys = Object.keys(CLUSTERS);
+const anchor = {};
+clusterKeys.forEach((k,i) => {
+  const a = (i/clusterKeys.length)*2*Math.PI - Math.PI/2;
+  anchor[k] = [cx + R_CL*Math.cos(a), cy + R_CL*Math.sin(a)];
+});
+NODES.forEach((d,i) => { const [ax,ay]=anchor[d.c]; d.x=ax+(i%5-2)*14; d.y=ay+((i*7)%5-2)*14; });
+
+const sim = d3.forceSimulation(NODES)
+  .force("link", d3.forceLink(links).id(d=>d.id).distance(d => d.label?120:80).strength(0.18))
+  .force("charge", d3.forceManyBody().strength(-300))
+  .force("x", d3.forceX(d => anchor[d.c][0]).strength(0.18))
+  .force("y", d3.forceY(d => anchor[d.c][1]).strength(0.18))
+  .force("collide", d3.forceCollide().radius(d => (d.r||9)+18));
+
+const tooltip = d3.select("#tooltip");
+
+const link = g.append("g").selectAll("line").data(links).join("line")
+  .attr("stroke", d=>STYLE[d.type].stroke).attr("stroke-width", d=>STYLE[d.type].width)
+  .attr("stroke-dasharray", d=>STYLE[d.type].dash).attr("opacity",0.8);
+
+const linkHover = g.append("g").selectAll("line").data(links).join("line")
+  .attr("stroke","transparent").attr("stroke-width",12)
+  .on("mousemove",(ev,d)=>{ tooltip.style("display","block")
+      .style("left",(ev.pageX+14)+"px").style("top",(ev.pageY+8)+"px")
+      .html(`<b>${d.source.label} → ${d.target.label}</b><br><i>${TYPE_NAMES[d.type]}</i>${d.label?"<br>"+d.label:""}`); })
+  .on("mouseout",()=>tooltip.style("display","none"));
+
+const edgeLabel = g.append("g").selectAll("text").data(links.filter(d=>d.label)).join("text")
+  .attr("class","edgelabel").attr("text-anchor","middle")
+  .attr("fill", d=>STYLE[d.type].stroke).text(d=>d.label);
+
+const node = g.append("g").selectAll("circle").data(NODES).join("circle")
+  .attr("r", d=>d.r||9).attr("fill", d=>CLUSTERS[d.c].color)
+  .attr("stroke", d=>d.id==="ntp"?"#c0392b":"#fff").attr("stroke-width", d=>d.id==="ntp"?2.6:1.5)
+  .style("cursor","pointer")
+  .on("click", (ev,d)=>{ if(d.url) window.open(d.url, d.url.startsWith("http")?"_blank":"_self"); })
+  .on("mousemove", (ev,d)=>{ tooltip.style("display","block")
+      .style("left",(ev.pageX+14)+"px").style("top",(ev.pageY+8)+"px")
+      .html(`<b>${d.label}</b><br>${d.note||""}`); })
+  .on("mouseout", ()=>tooltip.style("display","none"))
+  .call(d3.drag()
+    .on("start",(ev,d)=>{ if(!ev.active) sim.alphaTarget(0.25).restart(); d.fx=d.x; d.fy=d.y; })
+    .on("drag",(ev,d)=>{ d.fx=ev.x; d.fy=ev.y; })
+    .on("end",(ev,d)=>{ if(!ev.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }));
+
+const label = g.append("g").selectAll("text").data(NODES).join("text")
+  .attr("class","nodelabel").attr("text-anchor","middle").attr("dy", d=>-((d.r||9)+5)).text(d=>d.label);
+
+sim.on("tick", ()=>{
+  link.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  linkHover.attr("x1",d=>d.source.x).attr("y1",d=>d.source.y).attr("x2",d=>d.target.x).attr("y2",d=>d.target.y);
+  edgeLabel.attr("x",d=>(d.source.x+d.target.x)/2).attr("y",d=>(d.source.y+d.target.y)/2 - 3);
+  node.attr("cx",d=>d.x=Math.max(20,Math.min(W-20,d.x))).attr("cy",d=>d.y=Math.max(20,Math.min(H-20,d.y)));
+  label.attr("x",d=>d.x).attr("y",d=>d.y);
+});
+
+d3.select("#cluster-legend").selectAll("span").data(Object.values(CLUSTERS)).join("span")
+  .html(d=>`<span class="dot" style="background:${d.color}"></span>${d.label}`);
+</script>
+</body>
+</html>

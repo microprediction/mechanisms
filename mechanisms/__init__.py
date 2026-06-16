@@ -11,6 +11,8 @@ Modules
 scoring_rules   Strictly proper scoring rules (log, Brier, spherical), pinball,
                 interval score, CRPS and the multivariate energy score.
 parimutuel      Pool betting and Pennock's dynamic parimutuel market.
+nearest_the_pin Continuous / Monte-Carlo parimutuel with density pot-split and
+                projection (sliced) scoring (the monteprediction reward rule).
 lmsr            Hanson's Logarithmic Market Scoring Rule (cost-function maker).
 cmm             Generic convex cost-function market maker.
 amm             Constant-function automated market makers (constant product/mean).
@@ -28,6 +30,7 @@ See https://mechanisms.microprediction.org for the accompanying literature.
 
 from . import scoring_rules
 from . import parimutuel
+from . import nearest_the_pin
 from . import lmsr
 from . import cmm
 from . import amm
@@ -45,6 +48,7 @@ __version__ = "0.1.0"
 __all__ = [
     "scoring_rules",
     "parimutuel",
+    "nearest_the_pin",
     "lmsr",
     "cmm",
     "amm",
