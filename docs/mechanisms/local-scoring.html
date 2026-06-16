@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Local (Hyvärinen) scoring rules</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Local (Hyvärinen) scoring rules</h1>
+
+    <p class="lead">
+      The log score and CRPS need a <em>normalized</em> density — you must know
+      the partition function $Z$. A <strong>local</strong> proper scoring rule
+      does not. It depends on the forecast only through the derivatives of
+      $\log p$ at the realised outcome, and since $\log p = \log\tilde p - \log Z$,
+      every derivative drops the constant. An energy-based or un-normalised model
+      can therefore be scored directly — no partition function in sight.
+    </p>
+
+    <h2>What "m-local" means</h2>
+    <p>
+      A scoring rule is <strong>$m$-local</strong> if it depends on the quoted
+      density only through its value and its first $m$ derivatives at the outcome
+      $y$. Ordinary proper rules are $0$-local (they use $p(y)$ alone). Parry,
+      Dawid &amp; Lauritzen (2012) proved that genuinely local proper rules on the
+      real line exist <em>iff $m$ is even</em> — there is no proper $1$-local
+      rule, but there are proper rules at every even order, trading more
+      derivative information for more modelling freedom while staying free of the
+      normalizing constant.
+    </p>
+
+    <h2>The Hyvärinen score ($m = 2$)</h2>
+    <p>
+      The canonical local rule is the Hyvärinen score, in loss form (lower is
+      better):
+    </p>
+    <div class="equation-card">
+      $S(y, p) = \Delta \log p(y) + \tfrac12\,\lVert \nabla \log p(y)\rVert^2.$
+    </div>
+    <p>
+      Its population minimiser is <strong>score matching</strong> (Hyvärinen,
+      2005), and the divergence it induces is the <strong>Fisher divergence</strong>
+    </p>
+    <div class="equation-card">
+      $D_F(p_{\text{data}}, p) = \tfrac12\!\int p_{\text{data}}\,\lVert \nabla\log p - \nabla\log p_{\text{data}}\rVert^2,$
+    </div>
+    <p>
+      non-negative and zero iff $p = p_{\text{data}}$ — so the score is strictly
+      proper relative to $D_F$. For a Gaussian $N(\mu,\sigma^2)$ it has the closed
+      form $S = (y-\mu)^2/(2\sigma^4) - 1/\sigma^2$.
+    </p>
+
+    <h2>Why dropping $Z$ matters</h2>
+    <p>
+      In high-frequency forecasting, forcing every agent to compute a normalizing
+      constant for its predictive density is a real tax — often the dominant cost
+      for flexible models. A local rule lets a lightweight agent submit a complex,
+      <em>unnormalised</em> density (a mixture or energy model written without its
+      $Z$) and be scored faithfully. The trade-off: local rules reward getting the
+      <em>shape</em> of $\log p$ right near the outcome and are correspondingly
+      less sensitive to far-tail mass than the log score.
+    </p>
+
+    <h2>In this repo</h2>
+    <p>
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/local_scoring.py">mechanisms/local_scoring.py</a>
+      provides <code>hyvarinen_score</code> (from analytic $\nabla\log p$ and
+      $\Delta\log p$), <code>hyvarinen_score_fd</code> (finite-difference, for any
+      un-normalised <code>log_pdf</code> callable), <code>gaussian_hyvarinen_score</code>
+      (closed form), and <code>fisher_divergence_gaussian</code>. The demo
+      <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_local_scoring.py">examples/sim_local_scoring.py</a>
+      ranks several un-normalised models against a true stream — recovering the
+      right order — and confirms the scores are invariant to an arbitrary additive
+      log-constant.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/local_scoring.py</code> &middot;
+      Demo: <code>examples/sim_local_scoring.py</code> &middot;
+      Related: <a href="./scoring-rules.html">scoring rules</a> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/gaps-and-roadmap.md">gaps-and-roadmap.md</a></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

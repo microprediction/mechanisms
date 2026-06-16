@@ -19,6 +19,7 @@ market maker is the convex conjugate of that cost-function market maker.
 | Module | Mechanism | Key references |
 |--------|-----------|----------------|
 | [`scoring_rules`](mechanisms/scoring_rules.py) | Proper scoring rules (log, Brier, spherical), pinball & interval scores, CRPS, energy score | Gneiting & Raftery (2007) |
+| [`local_scoring`](mechanisms/local_scoring.py) | Local / m-local proper scoring rules — the Hyvärinen score, scored without a normalizing constant | Hyvärinen (2005); Parry, Dawid & Lauritzen (2012) |
 | [`parimutuel`](mechanisms/parimutuel.py) | Pool betting; Pennock's dynamic parimutuel market | Pennock (2004) |
 | [`lmsr`](mechanisms/lmsr.py) | Logarithmic Market Scoring Rule (cost-function market maker) | Hanson (2003, 2007) |
 | [`cmm`](mechanisms/cmm.py) | Generic convex cost-function market maker | Abernethy, Chen & Wortman Vaughan (2013) |
@@ -90,6 +91,7 @@ plotting dependencies). They run anywhere:
 | [`sim_cmm.py`](examples/sim_cmm.py) | One convex potential subsumes LMSR (and a quadratic maker); the finite-difference price fallback matches the analytic gradient |
 | [`sim_calibration.py`](examples/sim_calibration.py) | Diagnose an overconfident forecaster (reliability diagram, ECE, Brier decomposition) and fix it by temperature recalibration |
 | [`sim_pipeline.py`](examples/sim_pipeline.py) | **Composing two mechanisms** — an elicitation market produces a forecast, a calibration critic PITs it for uniformity, and wealth flows to the calibrated reports until the critic's edge collapses |
+| [`sim_local_scoring.py`](examples/sim_local_scoring.py) | Rank *unnormalised* models with the Hyvärinen score — no partition function — and confirm invariance to the normalizing constant |
 
 ```bash
 python examples/sim_lmsr.py

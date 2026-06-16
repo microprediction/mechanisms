@@ -12,6 +12,7 @@ and back to the consolidated [`bibliography.bib`](bibliography.bib).
 | [perps-cda-monteprediction.md](perps-cda-monteprediction.md) | Perpetual futures & funding; continuous double auctions; sample-based distributional forecasting & the energy score | `perp`, `cda`, `scoring_rules` |
 | [perpetual-demand-lending-pools.md](perpetual-demand-lending-pools.md) | **Full model of Chitra et al. (2025)** — funding/price-impact arbitrage, the target-weight mechanism, GMX's discount function, delta hedging | `pdlp` |
 | [composition-and-the-algebra-of-mechanisms.md](composition-and-the-algebra-of-mechanisms.md) | **How the mechanisms compose** — a `skaters`-style operator algebra over distributional beliefs; Savage's characterisation and the convex-duality generator (with proof sketches); a worked elicitation→calibration pipeline | `scoring_rules`, `cmm`, `amm`, `aggregation`, `calibration` |
+| [gaps-and-roadmap.md](gaps-and-roadmap.md) | **Gap analysis & roadmap** — an external audit of the microprediction ecosystem mapped onto this repo: what is already implemented vs genuinely missing (local scoring, CA/EA peer prediction, Kelly, combinatorial markets) | `local_scoring`, `peer_prediction` |
 
 The PDF sources sit in [`../assets/pdf-literature/`](../assets/pdf-literature/):
 the prediction-aggregation survey and Chitra et al.'s *Perpetual Demand Lending
