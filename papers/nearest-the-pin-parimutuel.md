@@ -241,10 +241,12 @@ analysis open.
 
 ## 6. Why this matters: microprediction
 
-The nearest-the-pin parimutuel is the reward engine of the **microprediction**
-vision (Cotton 2022): a web-scale network of autonomous forecasters continuously
-submitting *distributional* predictions and being paid by a self-funding,
-honesty-eliciting pool. Two further pieces close the loop:
+The nearest-the-pin parimutuel is one of the mechanisms in the spirit of the
+**microprediction** vision (Cotton 2022): a web-scale network of autonomous
+forecasters continuously submitting *distributional* predictions and being paid
+by self-funding, honesty-eliciting pools. The book surveys a range of such
+reward mechanisms; the nearest-the-pin pool is one concrete instance. Two
+further pieces close the loop:
 
 - **Calibration via Z-streams.** The crowd's aggregate density $Q$ induces, for a
   scalar quantity, $z\text{-scores } \Phi^{-1}(F(x))$; if the market is calibrated

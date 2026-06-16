@@ -96,7 +96,7 @@ const NODES = [
   // parimutuel
   {id:"pari", label:"Parimutuel (pool)", c:"parimutuel", url:"./catalog.html#parimutuel", note:"Pool betting: winners split the pot pro rata; odds are endogenous and the house bears no risk."},
   {id:"dpm",  label:"Dynamic parimutuel", c:"parimutuel", url:"./catalog.html#parimutuel", note:"Pennock's DPM: a cost-function priced parimutuel with continuous price discovery; hybridizes the pool with a CDA."},
-  {id:"ntp",  label:"Nearest-the-pin parimutuel", c:"parimutuel", r:13, url:"./papers.html#nearest-the-pin", note:"Continuous / Monte-Carlo parimutuel: payout proportional to the density a participant placed at the realized outcome, relative to the crowd. The microprediction reward rule. (Working draft.)"},
+  {id:"ntp",  label:"Nearest-the-pin parimutuel", c:"parimutuel", r:13, url:"./papers.html#nearest-the-pin", note:"Continuous / Monte-Carlo parimutuel: payout proportional to the density a participant placed at the realized outcome, relative to the crowd. One of the reward mechanisms in the microprediction vision. (Working draft.)"},
 
   // auctions
   {id:"cda",  label:"Continuous double auction", c:"auction", url:"./catalog.html#cda", note:"Price-time-priority limit order book; the engine of modern exchanges."},
@@ -118,7 +118,6 @@ const NODES = [
   {id:"logpool", label:"Logarithmic opinion pool", c:"agg", url:"./catalog.html#aggregation", note:"Normalized weighted geometric mean; sharper, multiplies evidence, related to the log score."},
 
   // microprediction
-  {id:"micro",   label:"Microprediction network", c:"micro", url:"https://microprediction.org", note:"Web-scale network of autonomous forecasters submitting distributional (225-sample) predictions, rewarded continuously."},
   {id:"zstream", label:"Z-stream calibration", c:"micro", url:"./papers.html#nearest-the-pin", note:"z = Phi^{-1}(F(x)); a calibrated aggregate market yields standard-normal z, and any deviation is an exploitable anomaly."},
 ];
 
@@ -168,11 +167,8 @@ const EDGES = [
   {s:"logpool", t:"linpool", type:"contrast", label:"geometric vs arithmetic"},
   {s:"logpool", t:"logscore",type:"scored",   label:"minimizes total KL"},
 
-  // microprediction synthesis
-  {s:"micro", t:"ntp",    type:"lineage", label:"reward rule"},
-  {s:"micro", t:"energy", type:"scored",  label:"distributional scoring"},
-  {s:"micro", t:"zstream",type:"lineage", label:"calibration via Z-streams"},
-  {s:"micro", t:"linpool",type:"lineage", label:"crowd aggregation"},
+  // microprediction-specific calibration
+  {s:"zstream", t:"ntp",  type:"lineage", label:"calibrates the pool's aggregate"},
 ];
 
 const STYLE = {
