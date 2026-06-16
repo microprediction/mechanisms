@@ -29,20 +29,149 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Peer prediction</h1>
+
+    <p class="lead">
+      A <a href="./scoring-rules.html">scoring rule</a> needs an outcome to
+      settle against. <strong>Peer prediction</strong> is what you do when there
+      is no such outcome — when the thing being elicited is never verified.
+      Instead of comparing a report to ground truth, it scores a report by its
+      <em>statistical relationship to other agents' reports</em>, and is designed
+      so that honest reporting is an equilibrium. The technical work is entirely
+      in defeating the obvious bad equilibrium: paying for agreement invites
+      everyone to agree on nothing in particular.
+    </p>
+
+    <h2>Eliciting truth without ground truth</h2>
     <p>
-      When there is no verifiable ground truth, reward a report by its statistical
-      relationship to others'. Naive output-agreement collapses to a degenerate
-      equilibrium (everyone reports the same thing). Prelec's <strong>Bayesian
-      Truth Serum</strong> fixes this by asking for both an answer and a prediction
-      of the population distribution, rewarding answers that are
-      <em>surprisingly common</em>:
+      Many valuable judgements are never settled by an observable outcome:
+      subjective quality ratings, peer review, the accuracy of a field report, or
+      a forecast about a counterfactual that will not be run. A proper scoring
+      rule cannot be applied — there is no realised value to plug in. What
+      <em>is</em> available is the joint distribution of the agents' private
+      signals. If agents share a common prior and each draws a private signal,
+      then one agent's signal is informative about another's report; a mechanism
+      can exploit that correlation to make truth-telling pay, even though it never
+      learns the truth itself. Peer-prediction mechanisms are the family of
+      payment rules built on exactly this idea, and they sit alongside
+      <a href="./aggregation.html">aggregation</a> as the two halves of working
+      with crowd judgements: aggregation combines reports, peer prediction
+      incentivises them.
+    </p>
+
+    <h2>Output agreement and its degenerate equilibrium</h2>
+    <p>
+      The naive baseline simply pays two agents when their reports match. With
+      reports $a$ and $b$ the reward is
+    </p>
+    <div class="equation-card">$\mathrm{OA}(a,b) = \mathbf{1}[\,a = b\,].$</div>
+    <p>
+      Truth-telling is indeed <em>an</em> equilibrium of this game — if I expect
+      you to report honestly and our signals are correlated, matching your likely
+      answer means reporting my own. But it is not the only one, and not the
+      attractive one. The constant strategy "always report option 0," played by
+      everyone, scores a perfect $1$ on every pairing while revealing no private
+      information at all. This <strong>degenerate equilibrium</strong> dominates:
+      it is risk-free and requires no thought. Any mechanism that rewards raw
+      agreement is therefore exploitable by coordinated, uninformative reporting.
+    </p>
+    <p class="muted">
+      In code: <code>output_agreement(report_a, report_b)</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/peer_prediction.py">mechanisms/peer_prediction.py</a>
+      returns $1$ on a match and $0$ otherwise — included to show precisely the
+      failure that the Bayesian Truth Serum repairs.
+    </p>
+
+    <h2>Prelec's Bayesian Truth Serum</h2>
+    <p>
+      Prelec (2004) breaks the degenerate equilibrium by asking each respondent
+      for <em>two</em> things rather than one. Respondent $i$ supplies an
+      <strong>information report</strong> $x_i$ — their own answer, an index in
+      $0,\dots,n-1$ — and a <strong>prediction report</strong> $y_i$, a full
+      distribution over the answers estimating how the <em>rest of the
+      population</em> will answer. The mechanism then rewards answers that are
+      more common than the population collectively predicted them to be —
+      "surprisingly common" answers. Honest respondents are surprisingly common
+      because they have private knowledge that others, when predicting, cannot
+      fully anticipate.
+    </p>
+    <p>
+      Writing $\bar x_k$ for the empirical frequency of answer $k$ across all
+      information reports, and $\bar y_k$ for the geometric mean of the predicted
+      frequencies for $k$, the BTS score for respondent $i$ who chose answer
+      $k = x_i$ is
     </p>
     <div class="equation-card">
-      $\text{score}_i=\log\dfrac{\bar x_k}{\bar y_k}
-       +\alpha\textstyle\sum_m \bar x_m\log\dfrac{y_{i,m}}{\bar x_m}$
+      $\displaystyle \mathrm{score}_i =
+        \log\frac{\bar x_k}{\bar y_k}
+        \;+\; \alpha \sum_m \bar x_m \log\frac{y_{i,m}}{\bar x_m}.$
     </div>
+    <p>
+      The weight $\alpha \ge 0$ trades off the two halves; with $\alpha = 1$ the
+      score is Prelec's original. The key quantities are population-level: no
+      single respondent can move $\bar x$ or $\bar y$ much, so the incentive each
+      faces is, in the large-population limit, against a fixed empirical
+      distribution.
+    </p>
+
+    <h2>Information score and prediction score</h2>
+    <p>
+      The two terms reward different things. The first,
+      $\log(\bar x_k / \bar y_k)$, is the <strong>information score</strong>. It
+      is positive exactly when answer $k$ occurs more often than the crowd's
+      predictions implied it would — the "surprisingly common" criterion. An
+      agent maximises it by reporting the answer their own private signal makes
+      genuinely more likely than others realise, not by chasing the popular
+      answer.
+    </p>
+    <p>
+      The second term is the <strong>prediction score</strong>,
+    </p>
+    <div class="equation-card">
+      $\displaystyle \alpha \sum_m \bar x_m \log\frac{y_{i,m}}{\bar x_m}
+        = -\,\alpha\, D_{\mathrm{KL}}\!\big(\bar x \,\|\, y_i\big),$
+    </div>
+    <p>
+      the negative Kullback–Leibler divergence between the empirical answer
+      distribution $\bar x$ and the respondent's own prediction $y_i$. It is
+      maximised (at $0$) when the prediction report exactly matches the realised
+      population frequencies, and penalises miscalibrated forecasts. This is the
+      same logarithmic, strictly proper structure that drives the
+      <a href="./scoring-rules.html">scoring-rules</a> family — here applied not
+      to an outcome but to the crowd's own distribution. Together the two terms
+      make it best to report both an honest answer and an honest belief about
+      everyone else.
+    </p>
+
+    <h2>Equilibrium guarantee and limitations</h2>
+    <p>
+      Prelec's theorem is that, under a common-prior model where each agent's
+      signal shifts their posterior over the population distribution, truthful
+      reporting of both $x_i$ and $y_i$ is a <strong>Bayesian Nash
+      equilibrium</strong>, and honest, well-calibrated respondents earn the
+      highest expected score. Crucially the information score has positive
+      expected value precisely because honest answers are the surprisingly common
+      ones, which is what dismantles the constant-report equilibrium that defeats
+      output agreement.
+    </p>
+    <p>
+      The guarantees come with assumptions. BTS leans on a <strong>common
+      prior</strong> and, in its original single-question form, on a large
+      population so that empirical frequencies are stable; it is an equilibrium
+      result, not a dominant strategy, so other equilibria can still exist. The
+      multi-task line of work — Dasgupta–Ghosh and especially the
+      <strong>Correlated Agreement</strong> mechanism of Shnayder, Agarwal,
+      Frongillo and Parkes (2016) — relaxes these. By scoring agents across many
+      tasks and rewarding agreement only beyond what correlation alone would
+      predict, Correlated Agreement attains <em>informed truthfulness</em>: no
+      strategy beats honest reporting, and honest reporting strictly beats every
+      uninformative one, without the mechanism needing to know the prior in
+      advance.
+    </p>
+
     <p class="muted">Code: <code>mechanisms/peer_prediction.py</code> &middot;
-      Demo: <code>examples/sim_peer_prediction.py</code></p>
+      Demo: <code>examples/sim_peer_prediction.py</code> &middot;
+      Related: <a href="./scoring-rules.html">scoring rules</a>,
+      <a href="./aggregation.html">aggregation</a></p>
   </main>
 
   <footer>

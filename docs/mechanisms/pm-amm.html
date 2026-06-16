@@ -29,23 +29,139 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>pm-AMM — parimutuel AMM for binary markets</h1>
+
+    <p class="lead">
+      A <strong>binary outcome token</strong> pays \$1 if an event occurs and \$0
+      otherwise, so its price is just a probability that drifts toward $0$ or $1$
+      as the event resolves. Paradigm's <strong>pm-AMM</strong>
+      (Moallemi &amp; Robinson, 2024) is a constant-function maker built for
+      exactly that lifecycle. Rather than borrow a curve designed for assets that
+      wander indefinitely, it derives its invariant from <em>Gaussian score
+      dynamics</em> and reads the token price off the reserves as a
+      Black-Scholes binary-option probability — concentrating liquidity where the
+      outcome is most uncertain and thinning it where it is nearly settled.
+    </p>
+
+    <h2>Why a generic CFMM is the wrong shape</h2>
     <p>
-      Generic CFMMs are catastrophic for binary outcome tokens, whose price
-      resolves to 0 or 1. Paradigm's <strong>pm-AMM</strong> derives its invariant
-      from <em>Gaussian score dynamics</em> — the signal follows a Brownian motion
-      and the price is the Black-Scholes binary-option probability. The static
-      invariant over the two tokens' reserves, with liquidity scale $L$:
+      A <a href="./amm.html">constant-product pool</a> assumes its two assets
+      retain value across any price ratio — the curve $x \cdot y = k$ never lets a
+      reserve hit zero. A binary outcome token has the opposite destiny: by
+      resolution one side is worth $1$ and the other $0$. Liquidity providers in a
+      constant-product pool are short volatility, so as price marches to an
+      extreme the arbitrage flow rebalances them into the worthless token and the
+      impermanent loss is total — the LP is guaranteed to be holding the loser at
+      settlement. The constant-product shape spreads liquidity uniformly across
+      all price ratios, which is precisely backwards: most of it sits in regions
+      ($p$ near $0$ or $1$) where, near resolution, almost no genuine trading
+      happens and the LP simply bleeds to arbitrageurs.
+    </p>
+    <p>
+      What we want instead is a curve whose liquidity is densest near $p = 0.5$,
+      where uncertainty (and therefore real trading volume) is greatest, and which
+      gracefully concedes that the extremes are nearly settled. The pm-AMM gets
+      this shape by starting not from an asset-pricing analogy but from a model of
+      how a prediction resolves.
+    </p>
+
+    <h2>Gaussian score dynamics</h2>
+    <p>
+      Model the latent signal behind the market — a vote margin, a score
+      differential, a polling lead — as a Brownian motion $Z_t$ that the event
+      will eventually freeze at some horizon $T$. The YES token pays off if the
+      signal finishes above a threshold, so its fair price today is the
+      probability of that event:
     </p>
     <div class="equation-card">
-      $(y-x)\,\Phi\!\left(\tfrac{y-x}{L}\right)+L\,\phi\!\left(\tfrac{y-x}{L}\right)-y=0,
-       \qquad \text{price}=\Phi\!\left(\tfrac{y-x}{L}\right)$
+      $\text{price} = \Pr\!\left[\,Z_T \ge \text{threshold}\,\right]
+        = \Phi\!\left(\frac{m}{\sigma\sqrt{T - t}}\right),$
     </div>
     <p>
-      This concentrates liquidity near the 0.50 mark and thins it at the extremes,
-      normalising loss-versus-rebalancing across price levels.
+      where $\Phi$ is the standard-normal CDF, $m$ the current margin, and
+      $\sigma\sqrt{T-t}$ the remaining uncertainty. This is exactly the
+      Black-Scholes structure for a digital (binary) option: the price <em>is</em>
+      a Gaussian probability, and it diffuses toward $0$ or $1$ as the horizon
+      approaches and $\sigma\sqrt{T-t} \to 0$. The pm-AMM bakes this dynamic into
+      its trading function so the implied price moves like the binary option it
+      represents, rather than like a ratio of asset reserves.
     </p>
-    <p class="muted">Code: <code>mechanisms/pm_amm.py</code> &middot;
-      Demo: <code>examples/sim_pm_amm.py</code></p>
+
+    <h2>The static invariant and the price formula</h2>
+    <p>
+      Let $x$ and $y$ be the reserves of the two opposing outcome tokens and let
+      $L$ be a liquidity scale (the analogue of $\sqrt{k}$ in constant product).
+      The <em>static</em> pm-AMM holds the following trading function fixed at zero
+      along the curve:
+    </p>
+    <div class="equation-card">
+      $(y - x)\,\Phi\!\left(\dfrac{y - x}{L}\right)
+        + L\,\phi\!\left(\dfrac{y - x}{L}\right) - y = 0,$
+    </div>
+    <p>
+      where $\phi$ is the standard-normal PDF. Every trade is accepted that leaves
+      the left-hand side at zero. The marginal price of the YES token is read
+      directly off the reserve difference:
+    </p>
+    <div class="equation-card">
+      $\text{price} = \Phi\!\left(\dfrac{y - x}{L}\right).$
+    </div>
+    <p>
+      The two outcome prices sum to $1$, as they must for a complete binary
+      market. The mapping is transparent: when the reserves balance, $y - x = 0$
+      and $\Phi(0) = 0.5$; as the pool drains one token, $y - x$ grows large, the
+      argument runs off to $\pm\infty$, and the price saturates at $1$ or $0$. The
+      liquidity scale $L$ sets how much reserve imbalance it takes to move the
+      price a given amount — large $L$ means a deep, slow-moving market.
+    </p>
+    <p class="muted">
+      In code: <code>pm_amm_invariant(x, y, L)</code> returns the left-hand side
+      above (zero on the curve), and <code>pm_amm_price(x, y, L)</code> returns
+      $\Phi\big((y-x)/L\big)$, with <code>implied_price(y - x, L)</code> as a
+      convenience over the reserve difference. The normal $\Phi$ and $\phi$ are
+      <code>norm_cdf</code> and <code>norm_pdf</code>, built on
+      <code>math.erf</code> with no scipy dependency — all in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/pm_amm.py">mechanisms/pm_amm.py</a>.
+    </p>
+
+    <h2>Liquidity concentration and uniform LVR</h2>
+    <p>
+      Because the price is $\Phi\big((y-x)/L\big)$, the sensitivity of price to a
+      change in the reserve difference is the normal density
+      $\phi\big((y-x)/L\big)/L$ — peaked at $y = x$ (price $0.5$) and decaying
+      toward the tails. Inverting that: a fixed amount of capital buys the deepest,
+      lowest-slippage liquidity near $0.5$, and progressively thinner liquidity as
+      the price approaches $0$ or $1$. This is the shape the binary lifecycle
+      demands. Liquidity sits where the outcome is genuinely contested and steps
+      aside as it settles.
+    </p>
+    <p>
+      The deeper motivation is <strong>loss-versus-rebalancing</strong> (LVR), the
+      running cost an LP pays to arbitrageurs as the underlying price moves (see
+      the <a href="./amm.html#">CFMM page</a> for the general metric). In an
+      ordinary CFMM that cost is uneven across price levels; for a binary token it
+      explodes near the extremes. The pm-AMM's curve is chosen precisely so that,
+      under the Gaussian score dynamics above, the LP's expected LVR is
+      <em>uniform</em> over the life of the market — constant per unit time
+      regardless of where the price currently sits. The liquidity profile is the
+      direct consequence of demanding that uniformity. It is, in effect, a
+      <a href="./parimutuel.html">parimutuel</a> pool given a continuous,
+      arbitrage-consistent price path instead of a single settlement-time payout
+      split.
+    </p>
+
+    <h2>Static versus dynamic</h2>
+    <p>
+      The invariant above is the <em>static</em> pm-AMM: it fixes $L$ and yields a
+      single curve. Paradigm also derives a <em>dynamic</em> variant that shrinks
+      the effective liquidity as the resolution horizon $T$ approaches, tracking
+      $\sigma\sqrt{T - t} \to 0$ so that the price collapses onto the realised
+      outcome on schedule. The static form is the right starting point: it
+      captures the Gaussian price map and the concentrated-liquidity shape, and it
+      is what the reference implementation here exposes. The dynamic form layers a
+      time-dependent $L_t$ on top of the same trading function.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/pm_amm.py</code> &middot; Demo: <code>examples/sim_pm_amm.py</code> &middot; Related: <a href="./amm.html">CFMMs</a>, <a href="./parimutuel.html">parimutuel</a></p>
   </main>
 
   <footer>

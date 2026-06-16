@@ -29,22 +29,116 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Parimutuel markets</h1>
-    <p>
-      Pool betting: all stakes go into one pool, the operator removes a takeout
-      $\tau$, and winners split the rest pro rata. Odds are <em>endogenous</em> —
-      fixed only at close — and the operator bears no risk. The pool fractions are
-      the market's implied probabilities. A bettor staking $w$ on winning outcome
-      $j$ receives
+
+    <p class="lead">
+      A <strong>parimutuel</strong> (French <em>pari mutuel</em>, "mutual
+      betting") is pool betting. All wagers on a set of mutually exclusive,
+      exhaustive outcomes go into one pool; the operator removes a fixed
+      <em>takeout</em> $\tau$ and distributes the remainder pro rata to the
+      backers of the winning outcome. No price is quoted by anyone — the odds
+      are read off the pool, and they are not fixed until betting closes. The
+      operator carries no outcome risk: the bettors collectively fund every
+      payout. Invented by Pierre Oller in the 1860s and mechanised by the
+      <em>totalisator</em>, it remains the settlement system for horse and
+      greyhound racing worldwide.
     </p>
-    <div class="equation-card">$\text{payout}=w\cdot\dfrac{(1-\tau)\,W}{W_j}$</div>
+
+    <h2>The pool and the payout formula</h2>
     <p>
-      Pennock's <strong>dynamic parimutuel market</strong> adds continuous price
-      discovery: shares are priced by a cost function so early buyers profit when
-      later buying lifts the price, combining the pool's no-operator-risk property
-      with a live price.
+      Let there be $n$ outcomes. Write $W_i$ for the total staked on outcome $i$
+      and $W = \sum_{i} W_i$ for the whole pool. With takeout $\tau \in [0,1)$,
+      the net pool $(1-\tau)\,W$ is shared among the winners. A bettor who staked
+      $w$ on the winning outcome $j$ receives
     </p>
-    <p class="muted">Code: <code>mechanisms/parimutuel.py</code> &middot;
-      Demo: <code>examples/sim_parimutuel.py</code></p>
+    <div class="equation-card">$\text{payout} = w \cdot \dfrac{(1-\tau)\,W}{W_j}.$</div>
+    <p>
+      The factor $(1-\tau)\,W / W_i$ is the implied <strong>decimal odds</strong>
+      on outcome $i$ — the payout per unit staked. Because each winner's share is
+      proportional to their stake and the pool is closed, the house can never pay
+      out more than it took in: settlement is self-funding by construction. The
+      takeout is the operator's only revenue and the bettors' aggregate edge
+      against the pool.
+    </p>
+    <p class="muted">
+      In code: <code>ParimutuelPool</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/parimutuel.py">mechanisms/parimutuel.py</a>
+      exposes <code>bet()</code>, <code>pool_on()</code>,
+      <code>decimal_odds()</code>, <code>implied_probabilities()</code>, and
+      <code>settle()</code>, which returns the per-bettor payouts above. (When no
+      ticket backs the winner it refunds the net pool pro rata across all stakes.)
+    </p>
+
+    <h2>Endogenous odds and implied probabilities</h2>
+    <p>
+      The defining feature is that odds are <em>endogenous</em>. They are not
+      offered to a bettor at bet time and locked in; they are determined by the
+      <em>final</em> distribution of money across outcomes, and so move as later
+      money arrives. A bet placed early on what becomes a heavily backed outcome
+      ends up paying short odds. This is the opposite of fixed-odds bookmaking,
+      where the house quotes a price, takes the other side, and bears the risk.
+    </p>
+    <p>
+      The pool fractions are the market's implied probabilities:
+    </p>
+    <div class="equation-card">$p_i = \dfrac{W_i}{W}.$</div>
+    <p>
+      Read this way a parimutuel is a simple information-aggregation mechanism —
+      the crowd's money <em>is</em> the probability estimate. Racetrack favourites
+      turn out to be remarkably well calibrated, which is why these markets are
+      treated as a laboratory for the wisdom of crowds and a conceptual bridge
+      from gambling to <a href="./lmsr.html">prediction markets</a>. Because the
+      operator never quotes or holds a position, there is no inventory to hedge
+      and no analogue of the <a href="./pm-amm.html">pm-AMM</a>'s loss-versus-rebalancing;
+      the bettors price each other.
+    </p>
+
+    <h2>The favourite–longshot bias</h2>
+    <p>
+      The most robust empirical regularity in these markets is the
+      <strong>favourite–longshot bias</strong>: bettors systematically overbet
+      longshots (low-probability outcomes) and underbet favourites. The implied
+      probabilities on longshots run above their realised frequencies, so the
+      expected return on a longshot is more negative than on a favourite — the
+      opposite of what a risk-neutral, well-calibrated market would produce.
+    </p>
+    <p>
+      The anomaly is old and well documented. Thaler &amp; Ziemba (1988) synthesise
+      it in the JEP "Anomalies" series; Snowberg &amp; Wolfers (2010), on a large
+      dataset, build a test that distinguishes risk-loving preferences from
+      misperception of probabilities and find the evidence favours misperception
+      (probability weighting). The bias is a reminder that the pool fractions are a
+      <em>behavioural</em> aggregate, not a clean risk-neutral measure.
+    </p>
+
+    <h2>Pennock's dynamic parimutuel market</h2>
+    <p>
+      A static pool fixes nothing until close, so it gives no running price and no
+      way to take a profit before settlement. Pennock's
+      <strong>dynamic parimutuel market</strong> (DPM, ACM EC'04) keeps the
+      self-funding, no-operator-risk property of a pool but adds continuous price
+      discovery, hybridising the pool with order-book-style pricing. Traders buy
+      <em>shares</em> of outcomes; an outcome's instantaneous price is its share of
+      the money in the pool,
+    </p>
+    <div class="equation-card">$p_i = \dfrac{s_i}{\sum_k s_k},$</div>
+    <p>
+      and shares are priced by a cost function so the price rises as an outcome is
+      bought. An early buyer at a low price therefore profits when later buying
+      lifts the price — a live mark-to-market that a static pool cannot offer. On
+      resolution the whole money pool is divided among holders of winning shares
+      pro rata. The DPM powered the <em>Yahoo! Buzz</em> market and is a direct
+      precursor to Hanson's market scoring rules and the
+      <a href="./lmsr.html">LMSR</a>.
+    </p>
+    <p class="muted">
+      In code: <code>DynamicParimutuelMarket</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/parimutuel.py">mechanisms/parimutuel.py</a>
+      exposes <code>prices()</code>, <code>buy()</code>, and <code>settle()</code>;
+      the teaching variant uses the instantaneous share-ratio price above with a
+      linear cost approximation.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/parimutuel.py</code> &middot; Demo: <code>examples/sim_parimutuel.py</code> &middot; Related: <a href="./pm-amm.html">pm-AMM</a>, <a href="./lmsr.html">LMSR</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/parimutuel-and-scoring-rules.md">parimutuel-and-scoring-rules.md</a></p>
   </main>
 
   <footer>

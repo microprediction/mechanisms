@@ -29,24 +29,128 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Logarithmic Market Scoring Rule (LMSR)</h1>
-    <p>
-      Hanson's <strong>logarithmic market scoring rule</strong> turns the log
-      score into an automated market maker with a closed-form cost function over
-      outstanding shares $q$:
+
+    <p class="lead">
+      Robin Hanson's <strong>logarithmic market scoring rule</strong> is the most
+      widely used prediction-market maker. It takes the logarithmic
+      <a href="./scoring-rules.html">scoring rule</a> — the prototypical strictly
+      proper rule for eliciting a single forecaster's belief — and turns it into a
+      <em>sequential</em> market that any number of traders can update, always
+      quoting a live probability and standing ready to fill any trade at a
+      mechanically computed price. The result has a closed-form cost function, a
+      hard bound on what the operator can lose, and sits as the entropic special
+      case of the general <a href="./cmm.html">cost-function maker</a>.
     </p>
-    <div class="equation-card">
-      $C(q)=b\,\log\textstyle\sum_i e^{q_i/b}, \qquad
-       p_i(q)=\dfrac{e^{q_i/b}}{\sum_j e^{q_j/b}}$
-    </div>
+
+    <h2>From the log score to a sequential market maker</h2>
     <p>
-      Prices are non-negative and sum to one — the implied probabilities — and the
-      market maker's worst-case loss is bounded by $b\log n$. The liquidity
-      parameter $b$ trades depth against that subsidy. LMSR is the entropic special
-      case of the generic <a href="./cmm.html">cost-function market maker</a>.
+      A proper scoring rule pays a forecaster $S(\mathbf{p}, i)$ when they report
+      distribution $\mathbf{p}$ and outcome $i$ is realised; the logarithmic rule
+      $S(\mathbf{p}, i) = b\log p_i$ makes honest reporting uniquely optimal.
+      Hanson's <em>market scoring rule</em> idea (2003) chains these payments
+      together: the rule's current report is the market's standing estimate, and a
+      trader who wishes to move it from $\mathbf{p}$ to $\mathbf{p}'$ must pay off
+      the previous forecaster's score and is in turn paid off by the next. Each
+      trader is rewarded exactly for the information they add, and the institution
+      backstopping the chain acts as a forecaster of last resort — so the market
+      always has a price, even with one participant. This is what makes the
+      mechanism especially suited to <em>combinatorial</em> markets, where an
+      ordinary order book would be impossibly thin across exponentially many
+      states.
     </p>
-    <p class="muted">Code: <code>mechanisms/lmsr.py</code> &middot;
-      Demo: <code>examples/sim_lmsr.py</code> &middot;
-      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
+
+    <h2>The cost function and prices</h2>
+    <p>
+      Re-expressed over outstanding share quantities $q = (q_1,\dots,q_n)$ — where
+      each share of outcome $i$ pays \$1 if $i$ occurs — the chained scoring rule
+      collapses into a single convex potential, the <strong>cost function</strong>:
+    </p>
+    <div class="equation-card">$C(q)=b\log\sum_i e^{q_i/b}.$</div>
+    <p>
+      A trader who moves the share vector from $q$ to $q'$ simply pays the
+      difference $C(q') - C(q)$; there is no order matching at all. The
+      instantaneous (marginal) prices are the gradient $\nabla C$, which is exactly
+      the softmax of the scaled holdings:
+    </p>
+    <div class="equation-card">$p_i(q)=\dfrac{e^{q_i/b}}{\sum_j e^{q_j/b}}.$</div>
+    <p>
+      These prices are non-negative and sum to one, so they read directly as the
+      market's implied probabilities. In code, <code>LMSR.cost(q)</code> evaluates
+      $C$ with a numerically stable log-sum-exp, <code>LMSR.prices(q)</code> returns
+      the softmax, and <code>LMSR.buy(outcome, shares)</code> charges
+      <code>cost_to_trade</code> $= C(q') - C(q)$ before applying the trade.
+    </p>
+
+    <h2>Bounded worst-case loss</h2>
+    <p>
+      The defining virtue of LMSR is that the operator's exposure is capped no
+      matter how the market moves. Starting from a uniform book $q = 0$ and paying
+      out $q_w$ on the winning outcome $w$, the worst-case loss over every trading
+      path and every final state is
+    </p>
+    <div class="equation-card">$\mathrm{maxloss} = b\log n.$</div>
+    <p>
+      This is exposed as the <code>LMSR.max_loss</code> property, while
+      <code>realized_pnl(winner)</code> returns the operator's actual outcome —
+      revenue $C(q) - C(0)$ collected from traders minus the payout $q_w$, which is
+      bounded below by $-b\log n$. That bounded subsidy is not a flaw but the
+      <em>price of the information</em>: it is the fixed budget a sponsor pays to
+      stand up a liquid market and have traders aggregate their beliefs into a
+      probability. A market that can never lose more than $b\log n$ is one whose
+      cost of running is known in advance.
+    </p>
+
+    <h2>The liquidity parameter $b$</h2>
+    <p>
+      The single tuning knob $b \gt 0$ governs the depth-versus-subsidy trade-off.
+      It scales how many shares must be bought to move the price a given amount: a
+      <strong>large $b$</strong> yields a deep, low-impact market that absorbs big
+      trades with little price movement, at the cost of a larger potential subsidy
+      $b\log n$; a <strong>small $b$</strong> yields a thin, responsive market that
+      jumps on small trades but risks little. Because $b$ multiplies the worst-case
+      loss linearly while only entering the prices through the ratio $q_i/b$,
+      choosing it is precisely choosing how much the sponsor is willing to spend to
+      buy liquidity. The constructor defaults to <code>b = 100.0</code>.
+    </p>
+
+    <h2>Liquidity-sensitive LMSR (Othman–Sandholm)</h2>
+    <p>
+      Plain LMSR fixes $b$ up front and runs at a guaranteed expected loss — it is
+      a <em>subsidised</em> device. Othman, Pennock, Reeves &amp; Sandholm
+      (2010/2013) make liquidity respond to activity by replacing the constant with
+      a volume-dependent
+    </p>
+    <div class="equation-card">$b(q) = \alpha \sum_i q_i,$</div>
+    <p>
+      so the market deepens as more shares are outstanding. The maker then earns a
+      positive bid–ask <strong>spread</strong> and can run at a profit rather than a
+      fixed loss. The trade-off is that prices no longer normalise exactly to one —
+      they sum to a little over unity, a small <em>over-round</em> that is precisely
+      the spread the operator collects. Othman &amp; Sandholm (2011) ground this
+      construction in the theory of homogeneous (coherent) risk measures, and the
+      same family powered the large-scale Gates Hillman Prediction Market
+      deployment.
+    </p>
+
+    <h2>Relation to the general cost-function maker</h2>
+    <p>
+      LMSR is one point in a much larger design space. Abernethy, Chen &amp;
+      Wortman Vaughan (2013) showed that <em>any</em> convex potential $C$ defines a
+      valid <a href="./cmm.html">cost-function market maker</a>: prices are
+      $\nabla C$, convexity of $C$ is exactly no-arbitrage, and a bounded gradient
+      range is exactly bounded loss. LMSR is the special case where $C$ is the
+      scaled log-partition function and the implicit regulariser is negative
+      entropy — the entropic, maximally-symmetric choice. Viewed through convex
+      duality this is the same object as the
+      <a href="./amm.html">constant-function market makers</a> of DeFi: a
+      prediction-market maker is a convex potential $C(q)$ priced by its gradient,
+      a CFMM is a concave trading function priced by the ratio of its partials, and
+      up to a change of variables they are two faces of convex-potential market
+      making — one emphasising bounded-loss elicitation, the other fees and capital
+      efficiency.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/lmsr.py</code> &middot; Demo: <code>examples/sim_lmsr.py</code> &middot; Related: <a href="./cmm.html">cost-function makers</a>, <a href="./scoring-rules.html">scoring rules</a>, <a href="./amm.html">CFMMs</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
   </main>
 
   <footer>

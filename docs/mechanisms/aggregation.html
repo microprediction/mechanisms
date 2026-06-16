@@ -29,15 +29,140 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Forecast aggregation</h1>
-    <p>
-      Combining many forecasts into one. The <strong>linear opinion pool</strong> is
-      a weighted arithmetic mean (robust, tends to under-confidence); the
-      <strong>logarithmic opinion pool</strong> a normalised geometric mean
-      (sharper, multiplies evidence). A <strong>depth-trimmed</strong> pool drops the
-      most outlying forecasts before averaging for robustness against bad nodes.
+
+    <p class="lead">
+      Suppose $m$ forecasters each report a probability distribution over the same
+      outcomes. We want one consensus distribution. An <strong>opinion pool</strong>
+      is a rule that maps the panel of forecasts to that single distribution. The
+      two canonical pools — <em>linear</em> and <em>logarithmic</em> — differ in
+      whether they <em>average probabilities</em> or <em>average evidence</em>, and
+      that one choice fixes almost everything else about how the consensus behaves.
     </p>
-    <p class="muted">Code: <code>mechanisms/aggregation.py</code> &middot;
-      Demo: <code>examples/sim_aggregation.py</code></p>
+
+    <h2>The problem of combining forecasts</h2>
+    <p>
+      Take a categorical outcome with $K$ classes. Forecaster $i$ submits a
+      probability vector $p_i = (p_{i1}, \dots, p_{iK})$ with $p_{ik} \ge 0$ and
+      $\sum_k p_{ik} = 1$, and carries a weight $w_i \ge 0$ with $\sum_i w_i = 1$.
+      A pool is a map $(p_1, \dots, p_m) \mapsto \bar p$ returning another
+      probability vector. The defining survey is Genest &amp; Zidek (1986),
+      <em>Combining Probability Distributions: A Critique and an Annotated
+      Bibliography</em>, which frames the question axiomatically: which natural
+      properties — preservation of unanimity, the <em>external Bayesianity</em> of
+      commuting with a shared likelihood update, marginalisation — can a pool
+      satisfy, and which are mutually exclusive. No single pool satisfies all of
+      them, so the operator is a modelling decision, not a default.
+    </p>
+    <p>
+      A panel disagrees in two ways that a pool must handle differently: honest
+      <em>spread</em> of opinion, which we want to summarise, and a few badly wrong
+      or adversarial reports, which we want to discount. The first three pools below
+      treat all reports as honest; the fourth defends against the second case.
+    </p>
+
+    <h2>The linear opinion pool</h2>
+    <p>
+      The linear pool is the weighted arithmetic mean of the forecasts:
+    </p>
+    <div class="equation-card">$\bar p_{\,\mathrm{lin}} = \sum_{i=1}^{m} w_i \, p_i.$</div>
+    <p>
+      It is the most transparent pool: the consensus probability of an outcome is
+      just the weighted fraction of belief the panel placed there. It preserves the
+      support — if any single forecaster assigns positive probability to an outcome,
+      so does the pool — which makes it robust to confident dissent and the natural
+      pool when forecasters are exchangeable. The price of that robustness is
+      <strong>under-confidence</strong>: averaging probabilities pulls mass toward
+      the centre and inflates the variance of the consensus, so a linear pool of
+      sharp, agreeing forecasters is typically <em>less</em> sharp than its members.
+      It is also generically multimodal — it can reproduce a panel's clusters as
+      separate bumps rather than reconciling them. In code,
+      <code>linear_opinion_pool(forecasts, weights)</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/aggregation.py">mechanisms/aggregation.py</a>;
+      with $w_i = 1/m$ it is the plain average.
+    </p>
+
+    <h2>The logarithmic opinion pool</h2>
+    <p>
+      The logarithmic pool is the normalised weighted geometric mean — a weighted
+      average in log-space, renormalised to sum to one:
+    </p>
+    <div class="equation-card">
+      $\bar p_{\,\mathrm{log},k} = \dfrac{\prod_{i} p_{ik}^{\,w_i}}{\sum_{j} \prod_{i} p_{ij}^{\,w_i}}.$
+    </div>
+    <p>
+      Where the linear pool averages probabilities, the log pool
+      <strong>multiplies evidence</strong>: adding log-probabilities is combining
+      independent log-likelihoods, so the log pool is the consensus you reach by
+      treating each forecaster as carrying separate evidence about the outcome. It
+      is correspondingly <strong>sharper</strong> than its members — unanimous mass
+      reinforces multiplicatively — and it is unimodal under mild conditions. It is
+      also <em>externally Bayesian</em>: pooling and then applying a shared
+      likelihood update gives the same answer as updating first and then pooling.
+      The flip side is decisiveness: because any zero probability annihilates the
+      product, the log pool <strong>zeroes out any outcome that any forecaster rules
+      out</strong> (the implementation clips to a small floor before taking logs to
+      keep this numerically stable).
+    </p>
+    <p>
+      The log pool is intimately tied to scoring. Its log-domain form is exactly the
+      operator that, given the panel, minimises the weighted sum of
+      Kullback&ndash;Leibler divergences $\sum_i w_i \, D_{\mathrm{KL}}(\bar p \,\|\, p_i)$
+      — the consensus is the distribution closest to the whole panel in total
+      KL. That is the same relative-entropy geometry that makes the
+      <a href="./scoring-rules.html">logarithmic score</a> strictly proper, so the
+      log pool is the aggregation counterpart of log-score elicitation. In code,
+      <code>logarithmic_opinion_pool(forecasts, weights)</code>.
+    </p>
+
+    <h2>Robust pooling against adversarial nodes</h2>
+    <p>
+      Both pools above are linear or log-linear in the reports, so a single extreme
+      forecast can drag the consensus arbitrarily far — fine for an honest panel,
+      dangerous for an open network where some nodes may be broken, stale, or
+      adversarial. The <strong>depth-trimmed mean</strong> hardens the linear pool by
+      discarding outliers first. Each forecast is scored by its
+      <em>outlyingness</em> — here the $L_1$ distance from the coordinate-wise median
+      forecast, a simple proxy for low statistical depth — and the most outlying
+      $\mathrm{trim}$ fraction is dropped before averaging the rest:
+    </p>
+    <div class="equation-card">
+      $\bar p_{\,\mathrm{trim}} \;\propto\; \mathrm{mean}\big\{\, p_i : i \in \mathcal{D}_{1-\mathrm{trim}} \,\big\},$
+    </div>
+    <p>
+      where $\mathcal{D}_{1-\mathrm{trim}}$ is the deepest $1 - \mathrm{trim}$
+      fraction of the panel and the result is renormalised. With $\mathrm{trim} = 0$
+      this is exactly the linear pool; raising it trades a little efficiency for a
+      bounded influence per node, so a minority of bad forecasts cannot move the
+      consensus past the trimming threshold. The median anchor is itself a deep,
+      hard-to-manipulate summary, which is what makes the trim adversarially robust
+      rather than merely tidy. In code,
+      <code>depth_trimmed_mean(forecasts, trim)</code>.
+    </p>
+
+    <h2>Choosing the weights</h2>
+    <p>
+      Every pool above takes the weights $w_i$ as given, but choosing them is the
+      substantive question. Equal weights are the honest default when nothing
+      distinguishes the forecasters; performance weights — set from past scores, so
+      that consistently accurate forecasters count for more — are the usual
+      refinement, and tie the pool back to the
+      <a href="./scoring-rules.html">scoring rule</a> used to evaluate the panel.
+    </p>
+    <p>
+      The most interesting case makes the weights <strong>endogenous</strong>:
+      rather than assigning weights administratively, let forecasters stake on their
+      own reports and read the weights off the resulting allocation. This is the
+      <strong>wealth-weighted</strong> regime, where a forecaster's influence is the
+      capital they are willing to risk and the pool is realised as a settlement rule
+      rather than a formula imposed from outside. The
+      <a href="https://github.com/microprediction/mechanisms/blob/main/papers/nearest-the-pin-parimutuel.md">nearest-the-pin parimutuel</a>
+      pool develops exactly this idea: a density-based pot-splitting mechanism in
+      which stakes determine weights, the consensus emerges from the allocation, and
+      proper-scoring incentives keep honest reporting optimal — aggregation and
+      reward fused into a single mechanism.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/aggregation.py</code> &middot; Demo: <code>examples/sim_aggregation.py</code> &middot; Related: <a href="./scoring-rules.html">scoring rules</a></p>
   </main>
 
   <footer>

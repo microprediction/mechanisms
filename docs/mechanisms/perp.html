@@ -29,18 +29,127 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Perpetual futures</h1>
+
+    <p class="lead">
+      A <strong>perpetual future</strong> ("perp") is a derivative with no expiry
+      date. An ordinary future converges to spot because it settles at maturity; a
+      perp has no maturity to enforce that convergence, so it would be free to drift
+      arbitrarily far from the underlying. The fix is a periodic
+      <strong>funding</strong> payment exchanged directly between longs and shorts —
+      a synthetic, recurring "dividend" whose sign and size depend on how far the
+      perp trades from its index. That single cash flow is what tethers a contract
+      that never settles to the asset it is supposed to track.
+    </p>
+
+    <h2>A contract with no expiry, and why it needs funding</h2>
     <p>
-      A perpetual never expires; a periodic <strong>funding</strong> payment tethers
-      it to an index. With a positive rate longs pay shorts. The BitMEX-style rate
-      clamps the premium against an interest term:
+      In a dated future, the mechanism that pins price to value is settlement: as
+      expiry approaches, the basis (futures minus spot) is squeezed to zero because
+      the two converge to the same cash flow at maturity. Strip out the expiry and
+      that anchor disappears. A perpetual instead manufactures a continual incentive
+      to close the gap. If the perp trades above the index, holding a long is made
+      to cost something; if it trades below, holding a long is made to pay something.
+      Arbitrageurs respond to that carry, and their trades push the perp back toward
+      the index — the same equilibrating role that convergence-to-settlement plays
+      for a dated contract, but applied continuously rather than once at expiry.
+    </p>
+    <p>
+      The payment is keyed to a position's <em>notional</em>, not to the trader's
+      margin, so it scales with exposure: $\text{funding payment} = \text{notional}
+      \times F$ over each interval (classically every 8 hours). In code,
+      <code>funding_payment(position_notional, rate)</code> returns the amount the
+      <em>long</em> pays, and <code>PerpPosition.apply_funding(mark_price, rate)</code>
+      debits or credits a position's collateral by $-\,\text{side}\times
+      \text{notional}\times F$, so a long (side $+1$) pays and a short (side $-1$)
+      receives when $F\,\textgreater\,0$.
+    </p>
+
+    <h2>The BitMEX-style funding rate</h2>
+    <p>
+      The modern crypto perpetual swap launched on BitMEX in 2016 (the XBTUSD
+      contract), and its funding convention is now effectively the industry
+      standard. The rate combines a time-weighted <strong>premium index</strong> $P$
+      — how far the perp has been trading above or below the index — with a small
+      <strong>interest-rate</strong> term $I$, clamped so the premium can only move
+      funding within a band $\pm c$:
     </p>
     <div class="equation-card">$F=P+\operatorname{clamp}(I-P,\,-c,\,+c)$</div>
     <p>
-      Liquidation is judged against a manipulation-resistant <em>mark price</em>,
-      not the last trade. The concept traces to Shiller's (1993) perpetual claim.
+      Read it from the inside out. When the premium is small, $I-P$ stays inside the
+      band, the clamp is the identity, and the two $P$ terms cancel to leave
+      $F\approx I$: funding is essentially just the interest term. When the premium
+      is large, $I-P$ saturates against $\pm c$ and the surviving $P$ drives funding
+      in the direction that penalises whichever side is pushing the perp off the
+      index. The defaults in <code>funding_rate(premium_index, interest_rate=0.0001,
+      clamp=0.0005)</code> use $I=0.01\%$ and a clamp band $c=0.05\%$ per interval,
+      matching the BitMEX figures.
     </p>
-    <p class="muted">Code: <code>mechanisms/perp.py</code> &middot;
-      Demo: <code>examples/sim_perp.py</code></p>
+    <p>
+      <strong>Who pays whom.</strong> A positive rate means the perp is rich
+      relative to the index, so <em>longs pay shorts</em>; a negative rate means the
+      perp is cheap, so <em>shorts pay longs</em>. Persistent funding of one sign
+      invites a cash-and-carry trade — long the spot asset, short the perp in equal
+      notional for a roughly delta-neutral book that collects funding each interval —
+      and it is exactly that arbitrage pressure that keeps the perp tethered to spot.
+    </p>
+
+    <h2>Mark price and liquidation</h2>
+    <p>
+      Unrealised PnL and liquidation are judged not against the perp's <em>last
+      trade</em> — which is cheap to manipulate with a single wick in a thin book —
+      but against a manipulation-resistant <strong>mark price</strong> built from the
+      external index plus a decaying funding basis. Using the mark price for margin
+      checks is what prevents momentary, self-inflicted spikes from triggering
+      <em>unfair liquidations</em>.
+    </p>
+    <p>
+      <code>PerpPosition</code> models a leveraged position with fields
+      <code>side</code> ($\pm1$), <code>size</code>, <code>entry_price</code>,
+      <code>collateral</code>, and <code>maintenance_margin_ratio</code>. Its
+      <code>unrealized_pnl(mark)</code> is $\text{side}\times\text{size}\times
+      (\text{mark}-\text{entry})$, account <code>equity(mark)</code> adds that to
+      collateral, and <code>leverage(mark)</code> is notional over equity. A trader
+      posts <em>initial margin</em> (roughly $1/\text{leverage}$ of notional) to open
+      and must keep enough to satisfy the <em>maintenance margin</em>. The position
+      is liquidated when equity drops to that floor:
+    </p>
+    <div class="equation-card">$\text{equity}(\text{mark}) \le m \cdot \text{notional}(\text{mark}),$</div>
+    <p>
+      with $m$ the maintenance-margin ratio (default $0.5\%$), exactly the test in
+      <code>is_liquidated(mark)</code>. Solving that boundary for the mark price gives
+      the closed form in <code>liquidation_price()</code>: for a long,
+      $p^\* = (\text{size}\cdot\text{entry}-\text{collateral})/(\text{size}\,(1-m))$,
+      and for a short the symmetric $p^\* = (\text{size}\cdot\text{entry}+\text{collateral})/(\text{size}\,(1+m))$.
+      Higher leverage means thinner collateral, which pulls $p^\*$ closer to the entry
+      price and leaves less room before a liquidation.
+    </p>
+
+    <h2>Basis, premium dynamics, and Shiller's perpetual claim</h2>
+    <p>
+      The <strong>basis</strong> — perp minus index — is the state variable the whole
+      mechanism regulates. Funding turns a persistent basis into a recurring carry
+      cost for the rich side, so in equilibrium the premium index $P$ hovers near
+      zero and funding settles near the benign interest term $I$. The basis is not a
+      flaw to be eliminated but the very signal that drives the corrective payments:
+      it aggregates the market's collective view of the spot–perp relationship through
+      carry, just as a continuous double auction aggregates beliefs through trades.
+    </p>
+    <p>
+      The intellectual origin is <strong>Shiller (1993)</strong>, "Measuring Asset
+      Values for Cash Settlement in Derivative Markets," which introduced the
+      <em>perpetual claim</em>: a never-expiring derivative kept tethered to an index
+      by a stream of dividend- or rent-like cash settlements, so that hedgers of
+      long-lived, illiquid assets (home prices, national income) would never have to
+      roll an expiring contract. Crypto perps inherit that skeleton exactly — no
+      expiry plus a periodic anchoring cash flow — but swap Shiller's exogenous
+      income flow for a market-driven funding rate keyed to the perp's own
+      premium, because their underliers, unlike Shiller's, already have a continuous
+      traded price to anchor against. For the lending side of the same leverage story
+      — how funding-like flows price the cost of leveraged exposure in a pool — see
+      <a href="./pdlp.html">perpetual demand lending pools</a>.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/perp.py</code> &middot; Demo: <code>examples/sim_perp.py</code> &middot; Related: <a href="./pdlp.html">demand lending pools</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
   </main>
 
   <footer>

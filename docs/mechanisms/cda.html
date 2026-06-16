@@ -29,20 +29,121 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Continuous double auction</h1>
+
+    <p class="lead">
+      The <strong>continuous double auction</strong> (CDA) is the matching engine
+      underneath virtually every modern electronic exchange. Buyers and sellers
+      post orders at any moment into a shared <em>limit order book</em>; whenever an
+      incoming order is compatible with the best resting order on the other side,
+      a trade prints immediately. There is no auctioneer and no pricing formula —
+      price emerges from a continuous sequence of bilateral matches. It is fast and
+      gives immediacy, but the same continuous-time operation that makes it
+      responsive is what rewards latency and lets quick traders snipe stale quotes,
+      a weakness that motivates the discrete-time
+      <a href="./fba.html">frequent batch auction</a>.
+    </p>
+
+    <h2>The limit order book and price-then-time priority</h2>
     <p>
-      The <strong>continuous double auction</strong> matches incoming orders
-      against a limit order book by price-then-time priority — the engine of modern
-      exchanges, but one that rewards latency and lets fast traders snipe stale
-      quotes. Zero-intelligence traders submitting random budget-constrained orders
-      still drive a CDA to near the competitive equilibrium (Gode &amp; Sunder,
-      1993).
+      The book aggregates every resting order on two sides: <strong>bids</strong>
+      (offers to buy, the best being the <em>highest</em> price) and
+      <strong>asks</strong> (offers to sell, the best being the <em>lowest</em>).
+      A <strong>limit order</strong> that cannot execute on arrival rests in the
+      book, <em>providing</em> liquidity; a marketable order <em>consumes</em> it.
+      Matching follows <strong>price-then-time priority</strong>: better prices are
+      filled first, and ties at a given price are broken by earliest arrival (FIFO).
     </p>
     <p>
-      Its discrete-time counterpart, the <a href="./fba.html">frequent batch
-      auction</a>, removes the speed race by clearing at a uniform price.
+      In <code>mechanisms/cda.py</code> the book is a <code>LimitOrderBook</code>
+      holding two heaps — bids in a max-heap, asks in a min-heap — with a sequence
+      counter to enforce time priority within a price level. An <code>Order</code>
+      carries a <code>side</code> (<code>"buy"</code>/<code>"sell"</code>),
+      <code>price</code>, <code>qty</code> and <code>trader</code>. Calling
+      <code>submit(order)</code> matches it greedily against the opposite side while
+      the prices cross, returns the list of <code>Trade</code>s it generated, and
+      rests any residual quantity. The book exposes <code>best_bid()</code>,
+      <code>best_ask()</code>, <code>spread()</code>, <code>mid()</code>, and a
+      <code>depth()</code> ladder of <code>(price, qty)</code> levels on each side.
     </p>
+
+    <h2>The bid–ask spread and how marketable orders execute</h2>
+    <p>
+      The <strong>bid–ask spread</strong> is the gap between the best ask and the
+      best bid,
+    </p>
+    <div class="equation-card">$\text{spread} = a^\star - b^\star, \qquad \text{mid} = \tfrac12\,(a^\star + b^\star),$</div>
+    <p>
+      where $b^\star$ is the best bid and $a^\star$ the best ask. While
+      $b^\star \le a^\star$ the book is uncrossed and nothing trades; an order is
+      <strong>marketable</strong> only when it crosses the spread — a buy with
+      $\text{price} \ge a^\star$ or a sell with $\text{price} \le b^\star$.
+      In <code>_match</code>, the incoming order walks the opposite heap, filling
+      $\min(\text{incoming.qty},\ \text{resting.qty})$ at each level and stopping
+      the moment the prices no longer cross.
+    </p>
+    <p>
+      Each trade prints at the <strong>resting (maker) price</strong>, not the
+      aggressor's limit — the standard CDA rule, so any price improvement accrues
+      to the taker who crossed the spread. A large marketable order walks up (or
+      down) the book through successively worse levels, so its average execution
+      price degrades with size against the available <code>depth()</code> — the
+      order-book analogue of an AMM's slippage.
+    </p>
+
+    <h2>Zero-intelligence traders (Gode &amp; Sunder, 1993)</h2>
+    <p>
+      A striking result about the CDA is how little the <em>traders</em> need to
+      know for the <em>mechanism</em> to work. Smith (1962) had already shown that
+      human double-auction markets converge fast to competitive equilibrium even
+      with few participants and no one knowing the aggregate supply/demand curves.
+      Gode &amp; Sunder (1993) pushed this to the extreme with
+      <strong>zero-intelligence (ZI) traders</strong>: agents that submit
+      <em>random</em> bids and asks, subject only to a <strong>budget
+      constraint</strong> — buyers never bid above their private value, sellers
+      never ask below their cost, so no trade is ever unprofitable.
+    </p>
+    <p>
+      Even these random, budget-constrained traders drive the CDA to near the
+      competitive equilibrium price and capture almost all the available gains from
+      trade. Measuring this by <strong>allocative efficiency</strong> — realized
+      surplus as a fraction of the maximum feasible surplus,
+    </p>
+    <div class="equation-card">$\eta = \dfrac{\sum_{\text{trades}} (v_{\text{buyer}} - c_{\text{seller}})}{\max\text{ feasible surplus}} \approx 1,$</div>
+    <p>
+      ZI traders reach near-100%. The lesson — "<em>the market is a partial
+      substitute for individual rationality</em>" — is that the
+      price-then-time-priority matching and the budget constraint do most of the
+      allocative work, not the cleverness of the participants. (The trade-off:
+      ZI prices are far more volatile than human ones, since nothing damps the
+      randomness; later ZIP and GD agents add adaptive bidding to recover the
+      smoother price paths human markets exhibit.) The demo
+      <code>examples/sim_cda.py</code> runs budget-constrained random traders
+      against the <code>LimitOrderBook</code> and measures this efficiency.
+    </p>
+
+    <h2>Latency, quote-sniping, and the case for batching</h2>
+    <p>
+      Because the CDA processes orders in <em>continuous time</em> and serializes
+      them by arrival, it bakes in a speed race. When new information arrives, the
+      first trader to react can pick off ("snipe") the stale quotes still resting in
+      the book before the maker can cancel them — a structural arbitrage that
+      rewards being microseconds faster rather than better informed. Liquidity
+      providers, anticipating this adverse selection, widen their spreads to
+      compensate, so the latency race ends up taxing everyone through worse prices.
+    </p>
+    <p>
+      Budish, Cramton &amp; Shim (2015) framed this as the central design flaw of
+      the continuous market — "the high-frequency trading arms race" — and proposed
+      replacing continuous matching with frequent, discrete clearing. The
+      <a href="./fba.html">frequent batch auction</a> collects orders over a short
+      interval and clears them all at once at a single uniform price, so that being
+      first <em>within</em> an interval confers no advantage: the speed contest
+      collapses into competition on price, and the sniping incentive disappears.
+    </p>
+
     <p class="muted">Code: <code>mechanisms/cda.py</code> &middot;
       Demo: <code>examples/sim_cda.py</code> &middot;
+      Related: <a href="./fba.html">frequent batch auction</a> &middot;
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
   </main>
 

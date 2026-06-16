@@ -29,30 +29,172 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Proper scoring rules</h1>
+
+    <p class="lead">
+      A <strong>scoring rule</strong> assigns a number to a probabilistic forecast
+      once the outcome is observed. The right rule turns honesty into self-interest:
+      a forecaster who is paid (or penalised) by a <em>proper</em> rule cannot do
+      better than to report exactly what they believe. This single property — that
+      truth-telling is optimal — is what makes scoring rules the elicitation engine
+      beneath market scoring rules, the <a href="./lmsr.html">LMSR</a>, forecast
+      <a href="./aggregation.html">aggregation</a>, and
+      <a href="./peer-prediction.html">peer prediction</a>. Throughout this page
+      and the reference code, scores are written in <strong>loss form</strong>:
+      lower is better, and the minimum expected loss is achieved by the true belief.
+    </p>
+
+    <h2>What "strictly proper" means</h2>
     <p>
-      A scoring rule <code>S(p, y)</code> rewards a probabilistic forecast once the
-      outcome <code>y</code> is seen. It is <strong>strictly proper</strong> if the
-      forecaster's expected reward is uniquely optimised by reporting their true
-      belief — the property that makes honest reporting a dominant strategy. The
-      three classics, in loss form:
+      Write a categorical forecast as $p$ over $n$ outcomes, and let the
+      forecaster's true belief be $q$. A scoring rule $S(p, y)$ produces a loss
+      after outcome $y$ is seen. The quantity that matters for incentives is the
+      <em>expected</em> loss of reporting $p$ when the world is really distributed
+      as $q$:
+    </p>
+    <div class="equation-card">$S(p, q) = \sum_{i} q_i \, S(p, i).$</div>
+    <p>
+      The rule is <strong>proper</strong> if reporting the truth is never worse
+      than lying — $S(q, q) \le S(p, q)$ for every $p$ and $q$ — and
+      <strong>strictly proper</strong> if the truth is the <em>unique</em>
+      minimiser, so any deviation strictly hurts. This is the
+      <strong>elicitation property</strong>: an expert with private information has
+      a dominant strategy to reveal it, with no need to know the rule, the other
+      forecasters, or the true outcome distribution. Geometrically (Savage 1971;
+      Gneiting &amp; Raftery 2007) every strictly proper rule corresponds to a
+      strictly convex "expected-score" function $G(q) = S(q, q)$, with the rule
+      recovered from its subgradients — the same convex-duality skeleton that
+      reappears in <a href="./cmm.html">cost-function makers</a>.
+    </p>
+    <p class="muted">
+      In code: <code>expected_score(score_fn, belief, p)</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/scoring_rules.py">mechanisms/scoring_rules.py</a>
+      computes $S(p, q)$ directly, so you can watch the minimum land at $p = q$ for
+      a proper rule and drift away for an improper one.
+    </p>
+
+    <h2>The three classics</h2>
+    <p>
+      For a forecast $p$ over a finite outcome set with realised class $y$, the
+      three canonical strictly proper rules, in loss form (minimum $0$, lower is
+      better):
     </p>
     <div class="equation-card">
-      $S_{\log}=-\log p_y, \qquad
-       S_{\text{Brier}}=\textstyle\sum_i (p_i-\mathbf 1\{i=y\})^2, \qquad
-       S_{\text{sph}}=1-\dfrac{p_y}{\lVert p\rVert_2}$
+      $S_{\log}(p, y) = -\log p_y, \qquad
+       S_{\text{Brier}}(p, y) = \sum_i \big(p_i - \mathbf 1\{i=y\}\big)^2, \qquad
+       S_{\text{sph}}(p, y) = 1 - \dfrac{p_y}{\lVert p\rVert_2}.$
     </div>
     <p>
-      For point forecasts, the <strong>pinball loss</strong>
-      $L_\tau(z,y)=(y-z)(\tau-\mathbf 1\{y&lt;z\})$ elicits the $\tau$-quantile, and
-      the <strong>interval score</strong> rewards narrow, well-calibrated
-      prediction intervals. For full distributional forecasts the <strong>CRPS</strong>
-      and its multivariate generalisation the <strong>energy score</strong>
-      $\mathrm{ES}=\mathbb E\lVert X-y\rVert-\tfrac12\mathbb E\lVert X-X'\rVert$
-      are the gold standard — the energy score is what scores sample-based
-      forecasts in contests like monteprediction.com.
+      The <strong>logarithmic score</strong> (Good, 1952) is the unique smooth
+      strictly proper <em>local</em> rule — it depends on the forecast only through
+      the probability assigned to what actually happened. It is exactly
+      cross-entropy / negative log-likelihood, and it is the score that, when run as
+      a market, becomes Hanson's <a href="./lmsr.html">LMSR</a> (a sequentialised
+      log score). It is unbounded: assigning probability near zero to an outcome
+      that then occurs incurs an arbitrarily large loss. The <strong>Brier</strong>
+      (quadratic) score is bounded in $[0, 2]$ and is the workhorse of calibration
+      studies; the <strong>spherical</strong> score normalises by the Euclidean
+      length of $p$. The reward form of the spherical rule is $p_y / \lVert p
+      \rVert_2$; the module returns $1 - \text{reward}$ so that, like the others,
+      lower is better.
     </p>
+    <p class="muted">
+      In code: <code>log_score(p, y)</code>, <code>brier_score(p, y)</code>,
+      <code>spherical_score(p, y)</code> — each taking a 1-D probability vector and
+      an integer class index.
+    </p>
+
+    <h2>Point and interval forecasts</h2>
+    <p>
+      Not every forecast is a full distribution. To elicit a single
+      <strong>quantile</strong> rather than a probability, the right loss is the
+      <strong>pinball</strong> (tick) loss, whose unique minimiser is the true
+      $\tau$-quantile of the predictive distribution:
+    </p>
+    <div class="equation-card">
+      $L_\tau(z, y) = (y - z)\big(\tau - \mathbf 1\{y \lt z\}\big), \qquad \tau \in (0, 1).$
+    </div>
+    <p>
+      It penalises over- and under-prediction asymmetrically in proportion to
+      $\tau$; at $\tau = \tfrac12$ it reduces to (half) the absolute error and
+      elicits the median. For a whole prediction <em>interval</em>, the
+      <strong>interval score</strong> for a central $(1-\alpha)$ interval
+      $[\ell, u]$ rewards narrowness while charging a penalty, scaled by
+      $2/\alpha$, whenever the outcome escapes the interval:
+    </p>
+    <div class="equation-card">
+      $S^{\text{int}}_\alpha(\ell, u; y) = (u - \ell)
+        + \tfrac{2}{\alpha}(\ell - y)\,\mathbf 1\{y \lt \ell\}
+        + \tfrac{2}{\alpha}(y - u)\,\mathbf 1\{y \gt u\}.$
+    </div>
+    <p>
+      This is a proper rule for the pair of predictive quantiles at levels
+      $\alpha/2$ and $1 - \alpha/2$, so a forecaster cannot game it by quoting an
+      absurdly wide or narrow band — calibration and sharpness are traded off
+      automatically.
+    </p>
+    <p class="muted">
+      In code: <code>pinball_loss(z, y, tau)</code> and
+      <code>interval_score(lower, upper, y, alpha)</code>.
+    </p>
+
+    <h2>Distributional and sample forecasts</h2>
+    <p>
+      For a real-valued forecast given as a predictive distribution and a realised
+      value $y$, the <strong>Continuous Ranked Probability Score</strong> (CRPS) is
+      the strictly proper rule reported in the units of the observation, reducing to
+      absolute error for a point forecast. Given an ensemble of samples $x_1, \dots,
+      x_m$ it has the clean energy-form estimator
+    </p>
+    <div class="equation-card">
+      $\mathrm{CRPS} = \dfrac{1}{m}\sum_i |x_i - y| - \dfrac{1}{2m^2}\sum_{i,j} |x_i - x_j|.$
+    </div>
+    <p>
+      The first term rewards getting close to the truth; the second rewards
+      <em>sharpness</em> (a tight ensemble) — together they make honesty about the
+      whole distribution optimal. Its multivariate generalisation is the
+      <strong>energy score</strong>: for an ensemble of points $x_i \in \mathbb
+      R^d$ and an observation $y$,
+    </p>
+    <div class="equation-card">
+      $\mathrm{ES} = \dfrac{1}{m}\sum_i \lVert x_i - y\rVert^{\beta}
+        - \dfrac{1}{2m^2}\sum_{i,j} \lVert x_i - x_j\rVert^{\beta}, \qquad \beta \in (0, 2).$
+    </div>
+    <p>
+      It is strictly proper for $\beta \in (0, 2)$ (Gneiting &amp; Raftery 2007); at
+      $\beta = 1$ it is exactly the multivariate CRPS. Because it scores a raw
+      <em>cloud of Monte-Carlo points</em> rather than a parametric density, it is
+      the natural rule for sample-based distributional-forecasting contests such as
+      <a href="https://www.monteprediction.com">monteprediction.com</a>, where
+      participants submit an ensemble and are graded on how well that cloud surrounds
+      the realised multivariate outcome.
+    </p>
+    <p class="muted">
+      In code: <code>crps_ensemble(samples, y)</code> and
+      <code>energy_score(samples, y, beta=1.0)</code>.
+    </p>
+
+    <h2>Why properness makes honesty dominant</h2>
+    <p>
+      The thread running through all of these rules is the same. Because the
+      expected loss is uniquely minimised at the true belief, a forecaster
+      maximises their expected payoff by reporting it — no second-guessing, no
+      strategic shading, no dependence on what anyone else does. That is what
+      "incentive-compatible elicitation" means in one sentence. Strict propriety is
+      also what lets these rules be <em>composed</em> into mechanisms: differencing
+      a proper score across successive reports yields a <strong>market scoring
+      rule</strong> in which every trader is paid the improvement they make to a
+      public forecast, so each is incentivised to push the price toward their own
+      belief while the operator's worst-case loss stays bounded. Run on the
+      logarithmic score, that construction is the <a href="./lmsr.html">LMSR</a>;
+      averaged across many forecasters it underwrites
+      <a href="./aggregation.html">aggregation</a>; and stripped of a ground-truth
+      outcome it motivates the correlated-report scores of
+      <a href="./peer-prediction.html">peer prediction</a>.
+    </p>
+
     <p class="muted">Code: <code>mechanisms/scoring_rules.py</code> &middot;
       Demo: <code>examples/sim_scoring_rules.py</code> &middot;
+      Related: <a href="./lmsr.html">LMSR</a>, <a href="./aggregation.html">aggregation</a> &middot;
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/parimutuel-and-scoring-rules.md">parimutuel-and-scoring-rules.md</a></p>
   </main>
 

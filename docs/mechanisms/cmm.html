@@ -29,27 +29,139 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Cost-function market makers</h1>
+
+    <p class="lead">
+      A whole family of automated market makers collapses into a single object: a
+      convex <em>potential</em> $C(q)$ over the vector of outstanding shares.
+      Abernethy, Chen &amp; Wortman Vaughan (2013) showed that to build a market
+      maker you need only pick such a potential — prices are its gradient, the
+      no-arbitrage condition is exactly convexity, and the worst-case subsidy is
+      exactly the spread of the conjugate. <a href="./lmsr.html">LMSR</a> is one
+      instance (the entropic one); Uniswap-style <a href="./amm.html">CFMMs</a>
+      are the same object seen from the reserves side.
+    </p>
+
+    <h2>A convex potential <em>is</em> a market maker</h2>
     <p>
-      A whole family of automated market makers is described by a single convex
-      <em>potential</em> $C(q)$ over the outstanding share vector
-      (Abernethy–Chen–Wortman Vaughan): prices are the gradient $\nabla C(q)$,
-      convexity gives no-arbitrage, and a bounded gradient range gives bounded
-      worst-case loss.
+      Fix $n$ outcomes (or share types) and a convex function
+      $C:\mathbb{R}^n \to \mathbb{R}$, the <strong>cost function</strong>. The
+      maker tracks the vector $q$ of shares it has sold. A trader who moves the
+      book from $q$ to $q+\delta$ pays the increment in potential,
+      $C(q+\delta)-C(q)$, and the <em>instantaneous price</em> vector is the
+      gradient:
     </p>
     <div class="equation-card">
-      $p(q)=\nabla C(q), \qquad
-       \text{worst-case loss}=\sup_q C(q)-\inf_q C(q)$
+      $p(q) = \nabla C(q), \qquad \text{cost to trade } \delta = C(q+\delta)-C(q).$
     </div>
     <p>
-      <a href="./lmsr.html">LMSR</a> is the special case
-      $C(q)=b\log\sum_i e^{q_i/b}$; a quadratic potential gives a bounded-budget
-      maker that is not a probability market. A CFMM is the convex
-      <em>conjugate</em> of a cost-function maker — the same object seen from the
-      reserves side.
+      That single choice determines everything else. There is no order book and no
+      counterparty quoting a spread; the price of outcome $i$ is just
+      $\partial C/\partial q_i$, read off the current inventory. This is exactly
+      what <code>CostFunctionMarketMaker</code> does in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/cmm.py">mechanisms/cmm.py</a>:
+      it takes a callable <code>cost</code> (and optional analytic <code>grad</code>),
+      and exposes <code>prices()</code> $=\nabla C(q)$, <code>cost_to_trade(delta)</code>,
+      and <code>buy(outcome, shares)</code>. When no gradient is supplied it falls
+      back to a central finite difference, underscoring that the potential alone
+      defines the mechanism.
     </p>
-    <p class="muted">Code: <code>mechanisms/cmm.py</code> &middot;
-      Demo: <code>examples/sim_cmm.py</code> &middot;
-      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
+
+    <h2>Convexity is no-arbitrage</h2>
+    <p>
+      Why must $C$ be convex? Because convexity is precisely the condition that no
+      sequence of trades can be a sure-profit cycle. The cost of a round trip
+      $q \to q+\delta \to q$ is zero, and more generally the path cost of moving
+      between two inventories is path-independent — it depends only on the
+      endpoints, since it telescopes to $C(q') - C(q)$. Convexity makes the price
+      $\nabla C$ monotone in $q$: buying an outcome can only raise its price, never
+      lower it, so a trader can never buy back more cheaply than they sold. A
+      non-convex $C$ would create a dip the arbitrageur could ride for free. Thus:
+    </p>
+    <div class="equation-card">
+      $C \text{ convex} \iff \nabla C \text{ monotone} \iff \text{no arbitrage cycle.}$
+    </div>
+
+    <h2>Worst-case loss is the range of the conjugate</h2>
+    <p>
+      The maker is a subsidized device: it may pay out more than it took in. Its
+      worst-case loss over every trading path and final state is bounded, and the
+      bound is the spread of the potential's values over the price-feasible region.
+      Equivalently, it is the range of the <strong>convex conjugate</strong>
+      $C^\ast(p) = \sup_q \langle p, q\rangle - C(q)$, which plays the role of the
+      generating proper scoring rule: a larger conjugate domain means a deeper,
+      more responsive market and a larger guaranteed subsidy. Informally,
+    </p>
+    <div class="equation-card">
+      $\text{worst-case loss} \;=\; \sup_{q} C(q) - \inf_{q} C(q),$
+    </div>
+    <p>
+      taken over the reachable inventories. This is the budget a sponsoring
+      institution knowingly puts up in exchange for the information the market
+      aggregates — finite, and fixed by the choice of $C$ before any trade occurs.
+    </p>
+
+    <h2>LMSR: the entropic special case</h2>
+    <p>
+      Hanson's <a href="./lmsr.html">logarithmic market scoring rule</a> is the
+      instance where $C$ is the scaled log-partition function, with liquidity
+      parameter $b \gt 0$:
+    </p>
+    <div class="equation-card">
+      $C(q) = b \log \sum_{i=1}^{n} \exp\!\left(\frac{q_i}{b}\right),
+       \qquad p_i(q) = \frac{\exp(q_i/b)}{\sum_j \exp(q_j/b)}.$
+    </div>
+    <p>
+      The gradient is the softmax, so prices are automatically non-negative and
+      sum to one — a genuine probability estimate. Here the conjugate is negative
+      entropy (LMSR is the entropic regularizer of online learning's
+      Follow-the-Regularized-Leader, with $b$ the learning rate), and the
+      worst-case-loss bound evaluates to the clean $b \log n$. In code,
+      <code>lmsr_potential(b)</code> returns exactly this <code>(cost, grad)</code>
+      pair, computed with a max-subtraction for numerical stability.
+    </p>
+
+    <h2>A quadratic potential: a bounded-budget, non-probability maker</h2>
+    <p>
+      Softmax is one choice of potential among many. Take instead a simple
+      quadratic,
+    </p>
+    <div class="equation-card">
+      $C(q) = \frac{\alpha}{2}\,\lVert q \rVert^2, \qquad p(q) = \alpha\, q.$
+    </div>
+    <p>
+      This is convex (so still arbitrage-free), but its prices $\alpha q$ are not
+      normalized to the probability simplex — they can be negative and need not sum
+      to one. So it is a <strong>bounded-budget</strong> liquidity maker rather
+      than a probability market: a useful illustration that the cost-function
+      recipe is far more general than belief elicitation. It is provided as
+      <code>quadratic_potential(alpha)</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/cmm.py">mechanisms/cmm.py</a>,
+      sitting behind the same <code>CostFunctionMarketMaker</code> interface as
+      LMSR.
+    </p>
+
+    <h2>The dual: cost-function makers and CFMMs</h2>
+    <p>
+      The DeFi <a href="./amm.html">constant-function market makers</a> —
+      Uniswap, Balancer, Curve — are the <em>same theory through convex duality</em>.
+      A cost-function maker is a convex potential $C(q)$ priced by $\nabla C(q)$;
+      a CFMM is a concave trading function $\varphi(R)$ over reserves $R$, with spot
+      prices read off the ratio of its partials. Up to sign conventions and a
+      change of variables, the trading function is the convex
+      <em>conjugate</em> of the cost function:
+    </p>
+    <div class="equation-card">
+      $C^\ast(p) = \sup_{q}\, \langle p, q\rangle - C(q).$
+    </div>
+    <p>
+      Under this correspondence, convexity of $C$ maps to no-arbitrage of the pool,
+      and a bounded conjugate domain maps to bounded loss. So the prediction-market
+      side (bounded-loss information elicitation) and the DeFi side (fees,
+      impermanent loss, capital efficiency) are two readings of one convex object —
+      see <a href="./amm.html">CFMMs</a> for the reserves-side picture.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/cmm.py</code> &middot; Demo: <code>examples/sim_cmm.py</code> &middot; Related: <a href="./lmsr.html">LMSR</a>, <a href="./amm.html">CFMMs</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
   </main>
 
   <footer>

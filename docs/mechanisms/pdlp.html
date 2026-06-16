@@ -29,29 +29,167 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Perpetual demand lending pools</h1>
-    <p>
-      The liquidity pools behind decentralised perpetuals exchanges (GMX's GLP,
-      Jupiter's JLP, Hyperliquid's HLP). LPs deposit a basket; traders borrow
-      <em>under-collateralised, single-purpose</em> loans to open levered
-      positions and pay a fee; arbitrageurs keep the pool at a target composition.
-      A price move opens two arbitrages that bracket a sustainable fee
-      $f = \Theta(1/L_0)$: funding-rate arbitrage of size
-      $\ell = L_0(p/p_0-1)$ and a CFMM-style price-impact arbitrage solving
-      $G'(x^\star)=1/p$. The <strong>target-weight mechanism</strong> pays a
-      discount to LPs who rebalance the pool — GMX's discount function is an
-      explicit PID-like instance — and provably <em>bounds</em> an LP's delta,
-      which is why PDLP positions are so much easier to delta-hedge than CFMM
-      positions.
+
+    <p class="lead">
+      A <strong>perpetual demand lending pool</strong> (PDLP) is the liquidity
+      pool behind a decentralised perpetuals exchange — GMX's GLP, Jupiter's JLP,
+      Hyperliquid's HLP, dYdX's MegaVault. Liquidity providers deposit a basket
+      of assets; traders take <em>under-collateralised, single-purpose</em> loans
+      out of that basket to open levered positions on the exchange, and pay a
+      lending fee for the privilege; arbitrageurs keep the pool near a target
+      composition and keep the perpetual tethered to spot. The LPs — not the
+      protocol — bear the residual risk. The model below is
+      Chitra, Diamandis, Sheng, Sterle &amp; Yusubov (2025), which answers a
+      sharp empirical puzzle: why are these LP positions so much
+      <em>easier to delta-hedge</em> than ordinary
+      <a href="./amm.html">CFMM</a> positions?
     </p>
-    <div class="equation-card">
-      $\gamma_L=\kappa\!\left(\tfrac{L}{S}-\tfrac{p}{p_0}\right),\qquad
-       w(p,R)=\tfrac{p\odot R}{p^\top R},\qquad
-       \pi_{\text{new}}=\tfrac{f}{\gamma}\Sigma^{-1}\ell-\Delta$
-    </div>
-    <p class="muted">Code: <code>mechanisms/pdlp.py</code> &middot;
-      Demo: <code>examples/pdlp_demo.py</code> &middot;
-      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perpetual-demand-lending-pools.md">perpetual-demand-lending-pools.md</a></p>
-    <p class="muted">Paper: <a href="https://arxiv.org/abs/2502.06028">arXiv:2502.06028</a></p>
+
+    <h2>What the pool lends</h2>
+    <p>
+      A PDLP is a tuple $(R, w^\star, f, \{c_i\})$ — reserves, target weights,
+      lending fee, and outstanding loans. Unlike a CFMM, which only ever
+      <em>swaps</em>, a PDLP <em>lends</em>: a trader posting collateral $c$ can
+      open a notional that is $|\eta|$ times larger, subject to the
+      <strong>collateral condition</strong> $p_0\,\delta \le |\eta|\,c$, and is
+      liquidated once the price crosses
+      $\operatorname{sign}(\eta)\,\delta\,(p_0-p)\ge c$. A minimal-collateral
+      $4\times$ long entered at $p_0 = 2000$ liquidates at $1500$. The loan is
+      single-purpose: it can only be used to take a position on the paired
+      perpetual. The pool's value is $p^\top R$, of which $\sum_i c_i$ is lent
+      out, leaving <em>available</em> reserves $R^A = R - \sum_i c_i$ that LPs may
+      still withdraw. The price-weighted composition of the basket is
+    </p>
+    <div class="equation-card">$w(p, R) = \dfrac{p \odot R}{p^\top R},$</div>
+    <p>
+      a point on the simplex (each asset's share of total value). The pool earns
+      $f \cdot \sum_i c_i$ per period from borrowers — that fee is the LP's
+      entire compensation for warehousing the traders' directional risk.
+    </p>
+    <p class="muted">
+      In code: <code>PDLP</code>, <code>weights()</code>,
+      <code>collateral_ok()</code>, <code>liquidation_price()</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/pdlp.py">mechanisms/pdlp.py</a>.
+    </p>
+
+    <h2>The two arbitrages that bracket the fee</h2>
+    <p>
+      Suppose open interest starts balanced, $L = S = L_0$, so the funding rate
+      is zero, and the price then moves from $p_0$ to $p$. This opens two distinct
+      arbitrages whose profitability conditions squeeze the sustainable fee from
+      both sides.
+    </p>
+    <p>
+      The <strong>funding-rate arbitrage</strong> exploits the
+      <a href="./perp.html">perpetual</a>'s linear funding tether. The funding
+      rate is
+    </p>
+    <div class="equation-card">$\gamma_L = \kappa\!\left(\dfrac{L}{S} - \dfrac{p}{p_0}\right),$</div>
+    <p>
+      so a price rise makes funding favour longs; an arbitrageur opens the
+      largest funding-capturing long, of size
+    </p>
+    <div class="equation-card">$\ell = L_0\!\left(\dfrac{p}{p_0} - 1\right),$</div>
+    <p>
+      which drives $\gamma_L$ back to zero. This is profitable for the
+      arbitrageur — and therefore drains the LPs — only while the fee is small
+      enough, $f \le \tfrac{\kappa}{L_0}\,(1 - p_0/p)$, giving the worst-case
+      <strong>upper bound</strong> $f \le \kappa\,(1 - B^{-1})/L_0$ under a price
+      bound $p/p_0 \le B$.
+    </p>
+    <p>
+      The <strong>price-impact arbitrage</strong> is pure CFMM
+      loss-versus-rebalancing. With a concave forward exchange function $G$ — the
+      quantity of risky asset the pool gives up for $x$ units of numeraire — the
+      most profitable trade equates marginal price to the external price:
+    </p>
+    <div class="equation-card">$G'(x^\star) = \dfrac{1}{p}.$</div>
+    <p>
+      For the Uniswap-v2 instance $G(x) = R_2 x / (R_1 + x)$ this has the closed
+      form $x^\star = \sqrt{p\,R_1 R_2} - R_1$, and the LP's rebalancing loss is
+      $R_1 + p R_2 - 2\sqrt{p\,R_1 R_2} \ge 0$ — the absolute-value form of
+      impermanent loss. The pool only stays whole if the fee covers it, a
+      <strong>lower bound</strong> $f \ge x^\star/L_0$. Sandwiching the two:
+    </p>
+    <div class="equation-card">$\dfrac{x^\star}{L_0} \;\le\; f \;\le\; \dfrac{\kappa\,(1 - B^{-1})}{L_0} \qquad\Longrightarrow\qquad f = \Theta\!\left(\dfrac{1}{L_0}\right).$</div>
+    <p>
+      A sustainable fee must <em>fall</em> as open interest grows — which is why
+      live venues run dynamic fees that track open interest rather than a fixed
+      rate.
+    </p>
+    <p class="muted">
+      In code: <code>linear_funding_rate()</code>, <code>funding_arb_size()</code>,
+      <code>funding_fee_upper_bound()</code>, <code>UniswapV2Forward</code>,
+      <code>pdlp_arb_optimal_x()</code>, <code>fee_lower_bound()</code>.
+    </p>
+
+    <h2>The target-weight mechanism</h2>
+    <p>
+      Because a PDLP lends rather than swaps, LPs may deposit or withdraw
+      <em>any subset</em> of assets — which would let the basket drift away from
+      its intended composition. The <strong>target weight mechanism</strong>
+      (TWM) keeps the pool near $w^\star$ by paying a <em>discount</em> to LPs
+      whose trades push the weights toward target, approximately solving
+    </p>
+    <div class="equation-card">$\min_{\Delta}\; \lVert w(p, R+\Delta) - w^\star \rVert \quad\text{s.t.}\quad \Delta \ge -R^A.$</div>
+    <p>
+      GMX's GLP discount function is an explicit, <strong>PID-controller-like</strong>
+      instance: it scores each asset $i$ by how a trade changes its gap to target,
+      rewarding moves that shrink $|w_i - w^\star_i|$ with a positive term
+      $\gamma_t\,|(w^b_i - w^\star_i)/w^\star_i|$ and penalising moves that widen
+      it, then takes $F = \max\!\big(0,\, \gamma_b + \max_i G_i\big)$. A discount
+      $F \gt 0$ is a subsidy to the rebalancing LP and accordingly dilutes existing
+      LPs by $1/(1+F)$; after one update the share value is
+    </p>
+    <div class="equation-card">$V_{\text{new}} = \dfrac{p^\top R}{1+F} + f\,p^\top \ell.$</div>
+    <p class="muted">
+      In code: <code>gmx_glp_discount()</code>, <code>target_weight_trade()</code>,
+      <code>portfolio_dilution_value()</code>.
+    </p>
+
+    <h2>Why a PDLP bounds the LP's delta</h2>
+    <p>
+      Here is the payoff. An ordinary CFMM LP is short volatility with an
+      unbounded, path-dependent delta — the very thing that makes
+      <a href="./amm.html">impermanent loss and LVR</a> hard to hedge. The TWM
+      changes the picture: because the mechanism continually pulls the basket back
+      toward $w^\star$, the paper's Claim 3.4 shows the rebalanced portfolio's
+      delta is at most $(\tfrac12 - f)$ times the raw holding's, and the bound
+      <em>tightens</em> as the fee rises. A bounded, fee-shrinkable delta is far
+      cheaper to offset than a CFMM's, which is the structural reason
+      delta-hedged PDLP strategies proliferate (and why JLP-style shares make good
+      collateral elsewhere in DeFi). Under a mean-variance objective the optimal
+      hedge, ignoring transaction costs, is the clean closed form
+    </p>
+    <div class="equation-card">$\pi_{\text{new}} = \dfrac{f}{\gamma}\,\Sigma^{-1}\ell - \Delta,$</div>
+    <p>
+      and the hedged pool's Sharpe ratio beats the unhedged pool's whenever the
+      fee revenue dominates the delta,
+      $f\,\mathbb{E}[p^\top \ell] \ge \gamma\,\lambda_{\max}\,\mathbb{E}[p^\top \Delta]$,
+      and the hedge variance is at most $4\times$ the pool variance.
+    </p>
+    <p class="muted">
+      In code: <code>delta_hedge()</code>, <code>sharpe_improves()</code>.
+    </p>
+
+    <h2>Connection to perpetual futures and CFMMs</h2>
+    <p>
+      A PDLP sits at the intersection of three mechanisms in this repository. The
+      <em>funding tether</em> $\gamma_L = \kappa(L/S - p/p_0)$ that powers the
+      first arbitrage is exactly the linear funding rate of a
+      <a href="./perp.html">perpetual future</a>: the pool is the counterparty of
+      last resort on that exchange, and the funding payment is what an arbitrageur
+      harvests when the two sides of open interest diverge. The <em>price-impact
+      arbitrage</em> $G'(x^\star) = 1/p$ and its loss
+      $R_1 + p R_2 - 2\sqrt{p R_1 R_2}$ are identical to the
+      <a href="./amm.html">CFMM</a> loss-versus-rebalancing — the PDLP simply
+      inherits a CFMM's curve for the swap leg. What is genuinely new is the
+      target-weight controller bolted on top: it is the ingredient that turns an
+      otherwise CFMM-like, hard-to-hedge book into one with a provably bounded
+      delta.
+    </p>
+
+    <p class="muted">Code: <code>mechanisms/pdlp.py</code> &middot; Demo: <code>examples/pdlp_demo.py</code> &middot; Related: <a href="./perp.html">perpetual futures</a>, <a href="./amm.html">CFMMs</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perpetual-demand-lending-pools.md">perpetual-demand-lending-pools.md</a> &middot; Paper: <a href="https://arxiv.org/abs/2502.06028">arXiv:2502.06028</a></p>
   </main>
 
   <footer>

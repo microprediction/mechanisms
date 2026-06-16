@@ -29,16 +29,135 @@
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
     <h1>Frequent batch auction</h1>
-    <p>
-      The <strong>frequent batch auction</strong> (Budish–Cramton–Shim)
-      discretises time: orders arriving in a short interval clear together at a
-      single uniform price that maximises matched volume, neutralising the latency
-      arms race of the <a href="./cda.html">continuous double auction</a> and, on
-      chain, transaction-ordering (MEV) attacks. Within a batch time priority is
-      irrelevant — every matched order transacts at the same price.
+
+    <p class="lead">
+      The <strong>frequent batch auction</strong> (Budish, Cramton &amp; Shim,
+      2015) is a market design that <em>discretises time</em>. Rather than
+      matching orders the instant they arrive, it collects every order submitted
+      within a short interval — a fraction of a second, or one blockchain block —
+      and clears them <em>together</em> at a single uniform price. Its purpose is
+      surgical: to dismantle the high-frequency latency arms race that the
+      <a href="./cda.html">continuous double auction</a> structurally rewards,
+      while keeping the price-discovery and liquidity-aggregation properties that
+      make order-book trading work.
     </p>
+
+    <h2>The continuous market's arms race</h2>
+    <p>
+      The <a href="./cda.html">continuous double auction</a> processes events in
+      strict serial order: an order, a cancellation, or a trade is handled the
+      microsecond it reaches the matching engine, and ties are broken by
+      <strong>price–time priority</strong> (best price first, then earliest
+      arrival). Budish, Cramton &amp; Shim observe that this creates a structural
+      flaw. When new public information moves the fundamental value, every stale
+      resting quote becomes mispriced <em>at the same instant</em>. A race then
+      begins between two kinds of fast trader: the <strong>sniper</strong>, who
+      wants to pick off the stale quote, and the <strong>liquidity provider</strong>,
+      who wants to cancel it first.
+    </p>
+    <p>
+      Because the event is simultaneous and public, this is a race to react, not
+      a race to predict — and someone always loses it. Liquidity providers, who
+      know they will sometimes be sniped, widen their spreads to recover the cost.
+      The result is a socially wasteful investment in raw speed (microwave towers,
+      co-location, custom silicon) that buys no better price discovery, only a
+      better position in a queue. The arms race is, in the authors' framing, a
+      symptom of treating time as a continuous variable when the matching engine
+      is in fact serial.
+    </p>
+
+    <h2>Batching: discrete time, one uniform price</h2>
+    <p>
+      The fix is to stop processing orders one at a time. Time is divided into
+      discrete intervals of length $\tau$ (the batch interval). Orders that arrive
+      during an interval are <em>sealed</em> — accumulated without execution — and
+      at the end of the interval the whole batch is cleared at once. Demand and
+      supply curves are built from the limit prices, and the auction picks the
+      single price that maximises the matched volume.
+    </p>
+    <p>
+      Concretely, aggregate <strong>demand</strong> at a candidate price $p$ is
+      the total quantity of bids willing to pay at least $p$, and aggregate
+      <strong>supply</strong> is the total quantity of asks willing to sell at no
+      more than $p$. The volume that can transact at $p$ is whichever side is
+      shorter, and the auction maximises it:
+    </p>
+    <div class="equation-card">$\displaystyle p^\star \;=\; \arg\max_{p}\; \min\bigl(\text{demand}(p),\ \text{supply}(p)\bigr).$</div>
+    <p>
+      where $\text{demand}(p) = \sum_{i:\,b_i \ge p} q_i$ over bids $(b_i, q_i)$
+      and $\text{supply}(p) = \sum_{j:\,a_j \le p} q_j$ over asks $(a_j, q_j)$.
+      Maximising $\min(\text{demand},\text{supply})$ is exactly finding where the
+      two staircase curves cross. The clearing price can be reported as the
+      midpoint of the executable band — the gap between the highest matched bid
+      and the lowest matched ask — so that buyers and sellers split the surplus
+      at the crossing.
+    </p>
+    <p class="muted">
+      In code: <code>clear_uniform_price(bids, asks)</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/fba.py">mechanisms/fba.py</a>
+      takes lists of <code>(price, qty)</code> and returns
+      <code>(price, quantity)</code> by scanning every submitted limit price as a
+      candidate and keeping the one that maximises matched volume.
+    </p>
+
+    <h2>Why a uniform price ends the latency race</h2>
+    <p>
+      The decisive property is that <em>every matched order in a batch transacts
+      at the same price</em> $p^\star$, regardless of when it arrived inside the
+      interval. This removes <strong>time priority</strong> entirely: there is no
+      front of the queue to win, because there is no queue. A sniper who reacts to
+      news one microsecond faster than a rival no longer captures a stale quote —
+      both their orders land in the same batch and clear at one price determined by
+      the whole crowd. Speed within an interval confers no advantage; the only thing
+      that matters is the limit price you are willing to name.
+    </p>
+    <p>
+      This changes the equilibrium for liquidity providers. They are no longer
+      systematically sniped on public-information events, so the adverse-selection
+      premium baked into their spreads shrinks, and quoted spreads tighten. The
+      competition that remains is the kind a market wants: competition on price,
+      not on reaction time. On a blockchain the same argument neutralises
+      <strong>transaction-ordering manipulation</strong>: when a block's orders all
+      clear at one uniform price, the validator's power to reorder, insert, or
+      sandwich transactions within the block — the substrate of much
+      <strong>MEV</strong> — loses its value, because intra-batch position no
+      longer determines execution price.
+    </p>
+
+    <h2>Relation to the continuous and the single call auction</h2>
+    <p>
+      The frequent batch auction sits between two familiar mechanisms, and is best
+      understood as an interpolation. At one extreme, shrinking the batch interval
+      $\tau \to 0$ recovers the <a href="./cda.html">continuous double auction</a>:
+      each order is its own batch, matching is instantaneous, and price–time
+      priority (with its latency race) returns. At the other extreme, a single
+      batch spanning the whole trading day is the classical <strong>call auction</strong>
+      used at market opens and closes — maximal liquidity consolidation into one
+      uniform-price clearing, but no continuous immediacy at all.
+    </p>
+    <p>
+      The FBA's contribution is to run the call-auction clearing rule
+      <em>frequently</em>. It keeps the call auction's two virtues — a single fair
+      uniform price and pooled liquidity that resists gaming — while choosing $\tau$
+      small enough (well under a second) that the market still feels essentially
+      continuous to a human participant. The contrast is sharpest against the CDA:
+      the CDA offers immediacy and pays for it with fleeting quotes and a latency
+      race; the FBA offers near-immediacy and pays for it with a tiny, fixed delay,
+      in exchange for eliminating that race. Where a continuous market asks
+      <em>who got here first</em>, a batch auction asks only <em>at what price the
+      most volume can trade</em>.
+    </p>
+    <p class="muted">
+      In code: <code>BatchAuction</code> in
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/fba.py">mechanisms/fba.py</a>
+      accumulates orders with <code>submit(side, price, qty)</code> over an
+      interval and resolves them with <code>clear()</code>, which returns the
+      uniform clearing price and matched quantity for the batch.
+    </p>
+
     <p class="muted">Code: <code>mechanisms/fba.py</code> &middot;
       Demo: <code>examples/sim_fba.py</code> &middot;
+      Related: <a href="./cda.html">continuous double auction</a> &middot;
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
   </main>
 
