@@ -56,6 +56,7 @@
       forecasts in contests like monteprediction.com.
     </p>
     <p class="muted">Code: <code>mechanisms/scoring_rules.py</code> ·
+      Demo: <code>examples/sim_scoring_rules.py</code> ·
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/parimutuel-and-scoring-rules.md">parimutuel-and-scoring-rules.md</a></p>
 
     <h2 id="parimutuel">Parimutuel markets</h2>
@@ -73,7 +74,8 @@
       later buying lifts the price, combining the pool's no-operator-risk property
       with a live price.
     </p>
-    <p class="muted">Code: <code>mechanisms/parimutuel.py</code></p>
+    <p class="muted">Code: <code>mechanisms/parimutuel.py</code> ·
+      Demo: <code>examples/sim_parimutuel.py</code></p>
 
     <h2 id="lmsr">LMSR &amp; cost-function market makers</h2>
     <p>
@@ -93,6 +95,7 @@
       any convex potential $C$ gives a no-arbitrage maker with prices $\nabla C$.
     </p>
     <p class="muted">Code: <code>mechanisms/lmsr.py</code>, <code>mechanisms/cmm.py</code> ·
+      Demo: <code>examples/sim_lmsr.py</code> ·
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
 
     <h2 id="amm">Automated market makers (CFMMs)</h2>
@@ -108,7 +111,8 @@
       A CFMM is the <em>convex conjugate</em> of a cost-function market maker — the
       same object as LMSR seen from the reserves side.
     </p>
-    <p class="muted">Code: <code>mechanisms/amm.py</code></p>
+    <p class="muted">Code: <code>mechanisms/amm.py</code> ·
+      Demo: <code>examples/sim_amm.py</code></p>
 
     <h2 id="pm-amm">pm-AMM — parimutuel AMM for binary markets</h2>
     <p>
@@ -139,6 +143,7 @@
       chain, transaction-ordering (MEV) attacks.
     </p>
     <p class="muted">Code: <code>mechanisms/cda.py</code>, <code>mechanisms/fba.py</code> ·
+      Demo: <code>examples/sim_cda.py</code> ·
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
 
     <h2 id="perp">Perpetual futures</h2>
@@ -152,7 +157,8 @@
       Liquidation is judged against a manipulation-resistant <em>mark price</em>,
       not the last trade. The concept traces to Shiller's (1993) perpetual claim.
     </p>
-    <p class="muted">Code: <code>mechanisms/perp.py</code></p>
+    <p class="muted">Code: <code>mechanisms/perp.py</code> ·
+      Demo: <code>examples/sim_perp.py</code></p>
 
     <h2 id="pdlp">Perpetual demand lending pools</h2>
     <p>
