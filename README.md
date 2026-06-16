@@ -83,6 +83,10 @@ plotting dependencies). They run anywhere:
 | [`sim_cda.py`](examples/sim_cda.py) | Zero-intelligence traders drive a continuous double auction to competitive equilibrium (Gode & Sunder, 1993) |
 | [`sim_amm.py`](examples/sim_amm.py) | A constant-product LP's fees raced against impermanent loss under a random-walk price |
 | [`sim_perp.py`](examples/sim_perp.py) | The funding rate tethers a perpetual to its index; a 5× leveraged long gets liquidated |
+| [`sim_pm_amm.py`](examples/sim_pm_amm.py) | The pm-AMM prices a binary market as the Gaussian CDF `Φ((y−x)/L)` — always a probability, outcomes sum to 1 |
+| [`sim_fba.py`](examples/sim_fba.py) | A frequent batch auction clears everyone at one uniform price at the equilibrium volume (Budish, Cramton & Shim) |
+| [`sim_peer_prediction.py`](examples/sim_peer_prediction.py) | The Bayesian Truth Serum out-scores a strategist with no ground truth (Prelec) |
+| [`sim_aggregation.py`](examples/sim_aggregation.py) | Linear vs log vs depth-trimmed opinion pools under confidently-wrong nodes — trimming wins |
 
 ```bash
 python examples/sim_lmsr.py

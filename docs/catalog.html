@@ -130,7 +130,8 @@
       This concentrates liquidity near the 0.50 mark and thins it at the extremes,
       normalising loss-versus-rebalancing across price levels.
     </p>
-    <p class="muted">Code: <code>mechanisms/pm_amm.py</code></p>
+    <p class="muted">Code: <code>mechanisms/pm_amm.py</code> ·
+      Demo: <code>examples/sim_pm_amm.py</code></p>
 
     <h2 id="cda">Order books &amp; batch auctions</h2>
     <p>
@@ -143,7 +144,7 @@
       chain, transaction-ordering (MEV) attacks.
     </p>
     <p class="muted">Code: <code>mechanisms/cda.py</code>, <code>mechanisms/fba.py</code> ·
-      Demo: <code>examples/sim_cda.py</code> ·
+      Demo: <code>examples/sim_cda.py</code>, <code>examples/sim_fba.py</code> ·
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
 
     <h2 id="perp">Perpetual futures</h2>
@@ -198,7 +199,8 @@
       $\text{score}_i=\log\dfrac{\bar x_k}{\bar y_k}
        +\alpha\textstyle\sum_m \bar x_m\log\dfrac{y_{i,m}}{\bar x_m}$
     </div>
-    <p class="muted">Code: <code>mechanisms/peer_prediction.py</code></p>
+    <p class="muted">Code: <code>mechanisms/peer_prediction.py</code> ·
+      Demo: <code>examples/sim_peer_prediction.py</code></p>
 
     <h2 id="aggregation">Forecast aggregation</h2>
     <p>
@@ -208,7 +210,8 @@
       (sharper, multiplies evidence). A <strong>depth-trimmed</strong> pool drops the
       most outlying forecasts before averaging for robustness against bad nodes.
     </p>
-    <p class="muted">Code: <code>mechanisms/aggregation.py</code></p>
+    <p class="muted">Code: <code>mechanisms/aggregation.py</code> ·
+      Demo: <code>examples/sim_aggregation.py</code></p>
 
     <div class="next-steps">
       <p>Missing a mechanism? Open an issue on

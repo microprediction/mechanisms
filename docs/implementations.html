@@ -91,6 +91,10 @@ node tests/js_parity_runner.js lmsrPrices '[[10,-5,3],50]'</code></pre>
       <li><code>sim_cda.py</code> &mdash; zero-intelligence traders drive a continuous double auction to competitive equilibrium (Gode &amp; Sunder, 1993).</li>
       <li><code>sim_amm.py</code> &mdash; a constant-product LP's fees raced against impermanent loss under a random-walk price.</li>
       <li><code>sim_perp.py</code> &mdash; the funding rate tethers a perpetual to its index; a 5&times; leveraged long gets liquidated.</li>
+      <li><code>sim_pm_amm.py</code> &mdash; the pm-AMM prices a binary market as the Gaussian CDF <code>&Phi;((y&minus;x)/L)</code>: always a probability, outcomes summing to 1.</li>
+      <li><code>sim_fba.py</code> &mdash; a frequent batch auction clears everyone at one uniform price at the equilibrium volume (Budish, Cramton &amp; Shim, 2015).</li>
+      <li><code>sim_peer_prediction.py</code> &mdash; the Bayesian Truth Serum out-scores a strategist with no ground truth (Prelec, 2004).</li>
+      <li><code>sim_aggregation.py</code> &mdash; linear vs logarithmic vs depth-trimmed opinion pools under confidently-wrong nodes &mdash; trimming wins.</li>
     </ul>
     <pre><code>python examples/sim_lmsr.py</code></pre>
 
