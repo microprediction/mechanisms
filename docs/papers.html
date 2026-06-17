@@ -124,6 +124,35 @@
       where z-streams ran on a live platform.
     </p>
 
+    <h2 id="scoring-market-making">Proper scoring rules <em>are</em> market making</h2>
+    <p class="muted">Peter Cotton · research note ·
+      <a href="https://github.com/microprediction/mechanisms/blob/main/research/scoring-rules-as-market-making.md">full note</a></p>
+    <p class="lead">
+      A market maker is a forecaster being scored, and the scoring rule it is
+      scored by is read straight off <strong>Savage's characterisation</strong>.
+      Pick a convex "generalised entropy" $G$ on the simplex; its supporting
+      hyperplanes are a proper scoring rule, and its
+      <strong>Legendre conjugate</strong> $C=G^{\ast}$ is a market maker's cost
+      function with prices $\pi=\nabla C=(\nabla G)^{-1}$ — so market prices
+      <em>are</em> implied probabilities.
+    </p>
+    <p>
+      A trader who moves the price from $p$ to her true belief $q$ is paid, in
+      expectation, exactly the Bregman divergence of $G$ — the elicitation
+      regret of §1, now denominated in money:
+    </p>
+    <div class="equation-card">
+      $\mathbb{E}_{q}\big[S(q,i)-S(p,i)\big]=G(q)-G(p)-\langle\,G'(p),\,q-p\,\rangle=D_G(q,p)\ \ge\ 0.$
+    </div>
+    <p>
+      So Hanson's LMSR ("the next trader pays off the previous trader's score"),
+      the cost-function market maker, the no-regret / FTRL view, and — by
+      Frongillo–Papireddygari–Waggoner — the constant-function AMM are one convex
+      function in four coordinate systems. The note then follows the same spine
+      out to property elicitation, peer prediction, local (score-matching) rules,
+      and the parimutuel limit.
+    </p>
+
     <h2>Source material</h2>
     <p>Survey PDFs that motivate these write-ups:</p>
     <ul>
