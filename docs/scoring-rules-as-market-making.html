@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Proper scoring rules are market making</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">mechanisms</a>
+      <nav>
+        <a href="./catalog.html">Catalog</a>
+        <a href="./demos.html">Demos</a>
+        <a href="./map.html">Map</a>
+        <a href="./implementations.html">Implementations</a>
+        <a href="./papers.html">Papers</a>
+        <a href="./bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="./papers.html">&larr; Papers</a></p>
+    <h1>Proper scoring rules <em>are</em> market making</h1>
+    <p class="muted">Peter Cotton · research note ·
+      <a href="https://github.com/microprediction/mechanisms/blob/main/research/scoring-rules-as-market-making.md">markdown source</a></p>
+
+    <p class="lead">
+      There is a small, cute observation that ties together half of this
+      catalogue: <strong>a market maker is a forecaster being scored, and the
+      scoring rule it is being scored by is read straight off Savage's
+      characterisation of proper scoring rules.</strong> Once you see it,
+      Hanson's LMSR, cost-function market makers, constant-function AMMs, and the
+      no-regret view of prediction markets stop being four topics and become one
+      convex function looked at from four sides.
+    </p>
+    <p>
+      This is the longer version of the keystone paragraph in
+      <a href="./papers.html#composition">composition and the algebra of
+      mechanisms</a>; references link to the
+      <a href="./bibliography.html">bibliography</a>.
+    </p>
+
+    <h2>1. Savage's characterisation</h2>
+    <p>
+      Fix a finite outcome space $\{1,\dots,n\}$. A forecaster reports a
+      probability vector $p\in\Delta$ and is paid $S(p,i)$ when outcome $i$
+      occurs. Writing the expected score of report $p$ under belief $q$ as
+      $S(p;q)=\sum_i q_i\,S(p,i)$, the rule is <strong>proper</strong> if honesty
+      is optimal, $S(q;q)\ge S(p;q)$ for all $p$, and <strong>strictly
+      proper</strong> if $p=q$ is the unique maximiser.
+    </p>
+    <p>
+      <a href="./bibliography.html">Savage (1971)</a>, anticipated by
+      <a href="./bibliography.html">McCarthy (1956)</a> and sharpened by
+      <a href="./bibliography.html">Gneiting &amp; Raftery (2007)</a>,
+      characterised <em>every</em> such rule. Define the <strong>expected score
+      of an honest forecaster</strong>
+    </p>
+    <div class="equation-card">
+      $$G(q)\;=\;S(q;q)\;=\;\sup_{p}\,S(p;q).$$
+    </div>
+    <p>
+      As a supremum of functions linear in $q$, $G$ is convex — it is the
+      &ldquo;generalised entropy&rdquo; or <em>Bayes risk</em> of the prediction
+      problem. The characterisation is that a (regular) rule is proper
+      <strong>iff</strong> it is the supporting hyperplane of some convex $G$:
+    </p>
+    <div class="equation-card">
+      $$S(p,i)\;=\;G(p)\;+\;\big\langle\,G'(p),\;e_i-p\,\big\rangle,\qquad G'(p)\in\partial G(p).$$
+    </div>
+    <p>
+      Every convex $G$ generates a proper rule this way, and the choice of
+      subgradient $G'$ is the only freedom. The honesty gap is then forced to be
+      a <strong>Bregman divergence</strong>, non-negative exactly because $G$ is
+      convex:
+    </p>
+    <div class="equation-card">
+      $$S(q;q)-S(p;q)\;=\;G(q)-G(p)-\big\langle\,G'(p),\,q-p\,\big\rangle\;=\;D_G(q,p)\;\ge\;0.$$
+    </div>
+    <p>
+      The log score $S(p,i)=\log p_i$ has $G(q)=\sum_i q_i\log q_i$ (negative
+      Shannon entropy) and $D_G=\mathrm{KL}(q\Vert p)$; the Brier/quadratic score
+      has $G(q)=\lVert q\rVert^2-1$ and $D_G$ the squared Euclidean distance.
+      Calibration and refinement are the same picture
+      (<a href="./bibliography.html">Dawid 2007</a>), and which <em>functionals</em>
+      of $q$ a single subgradient can elicit is exactly the theory of property
+      elicitation and elicitability
+      (<a href="./bibliography.html">Lambert, Pennock &amp; Shoham 2008</a>;
+      <a href="./bibliography.html">Gneiting 2011</a>;
+      <a href="./bibliography.html">Fissler &amp; Ziegel 2016</a>).
+    </p>
+
+    <h2>2. The market-making reading</h2>
+    <p>
+      Now run the construction backwards. Put an automated market maker in the
+      room holding an inventory $\theta\in\mathbb{R}^n$ of Arrow–Debreu
+      securities (security $i$ pays 1 unit if outcome $i$ occurs). Give it a convex
+      <strong>cost function</strong> $C$, so a trader who buys the bundle
+      $\delta$ pays $C(\theta+\delta)-C(\theta)$, and define the
+      <strong>instantaneous prices</strong> as the gradient
+    </p>
+    <div class="equation-card">
+      $$\pi(\theta)\;=\;\nabla C(\theta)\in\Delta.$$
+    </div>
+    <p>
+      This is exactly the cost-function market maker of Chen &amp; Pennock and
+      Abernethy–Chen–Vaughan
+      (<a href="./bibliography.html">Chen &amp; Pennock 2007</a>;
+      <a href="./bibliography.html">Abernethy, Chen &amp; Vaughan 2013</a>).
+    </p>
+    <p>
+      The claim is that <strong>quoting the price vector $\pi$ is identical to a
+      forecaster reporting the belief $\pi$ and being scored by the proper rule
+      of §1.</strong> Concretely:
+    </p>
+    <ul>
+      <li>The market maker's cost $C$ is the <strong>convex conjugate</strong> of
+        a generalised entropy $R$ on the simplex,
+        $C(\theta)=\sup_{p\in\Delta}\{\langle p,\theta\rangle-R(p)\}$, and that
+        $R$ is the Savage generator $G$ of a proper scoring rule.</li>
+      <li>A trader who believes the truth is $q$ moves the market from its current
+        price $p=\pi(\theta)$ to $q$ by buying the bundle that makes $\nabla C$
+        equal $q$. At settlement under outcome $i$ the trader's net payoff is
+        precisely the <strong>change in score</strong>, $S(q,i)-S(p,i)$.</li>
+      <li>Therefore the trader's <em>expected</em> profit under her own belief is
+        the Bregman divergence between her belief and the price she found:</li>
+    </ul>
+    <div class="equation-card">
+      $$\mathbb{E}_{q}\big[S(q,i)-S(p,i)\big]\;=\;S(q;q)-S(p;q)\;=\;D_G(q,p).$$
+    </div>
+    <p>
+      So the trader is paid the elicitation regret of §1, now denominated in
+      money. Hanson's market scoring rule
+      (<a href="./bibliography.html">Hanson 2007</a>) is literally this: <em>the
+      next trader pays off the previous trader's score.</em> The market maker is a
+      forecaster of last resort, and each trade is one move in a relay of
+      proper-scoring reports.
+    </p>
+
+    <h2>3. One convex function, two coordinate systems</h2>
+    <p>The content of §2 is a single Legendre/Fenchel duality. The same potential lives</p>
+    <ul>
+      <li>on the <strong>simplex</strong>, as the generalised entropy $R=G$ — the
+        <em>report space</em> of a scoring rule; and</li>
+      <li>on <strong>share space</strong> $\mathbb{R}^n$, as the cost $C=R^{\ast}$
+        — the <em>inventory space</em> of a market maker.</li>
+    </ul>
+    <p>
+      The two gradients are inverse maps, $\nabla R:\Delta\to\mathbb{R}^n$ and
+      $\nabla C:\mathbb{R}^n\to\Delta$, which is why <strong>market prices are
+      implied probabilities</strong>: $\pi=\nabla C=(\nabla R)^{-1}$. For LMSR
+      the entropy is $R(p)=b\sum_i p_i\log p_i$ and the cost is the log-sum-exp
+      $C(\theta)=b\log\sum_i e^{\theta_i/b}$, with prices the softmax
+      $\pi(\theta)=\mathrm{softmax}(\theta/b)$. The liquidity parameter $b$ scales
+      the entropy and hence the curvature of $C$.
+    </p>
+
+    <h2>4. Three properties you get for free</h2>
+    <p>
+      Reading the market maker as &ldquo;scoring rule in dual coordinates&rdquo;
+      hands you the standard prediction-market facts as one-line corollaries.
+    </p>
+    <ul>
+      <li><strong>Truthful trading.</strong> Expected profit is $D_G(q,p)\ge 0$
+        with equality only at $q=p$ (strict convexity). A trader maximises
+        expected profit by moving the price to her true belief.
+        <em>Properness is incentive compatibility</em> — no separate
+        game-theoretic argument needed.</li>
+      <li><strong>Bounded subsidy.</strong> Payments telescope: across any
+        sequence of trades the market maker's total payout is
+        $S(\theta_{\text{final}},i)-S(\theta_{0},i)$, bounded by the
+        <strong>range of $G$</strong> — $b\log n$ for LMSR. The subsidy that buys
+        liquidity equals the entropy you injected.</li>
+      <li><strong>No regret.</strong> Operating the market is
+        Follow-the-Regularised-Leader with regulariser $R$; the price path is the
+        mirror-descent play and the worst-case market loss is the
+        online-convex-optimisation regret bound
+        (<a href="./bibliography.html">Chen &amp; Vaughan 2010</a>;
+        <a href="./bibliography.html">Frongillo, Della Penna &amp; Reid 2012</a>;
+        <a href="./bibliography.html">Hazan 2016</a>). The same $R$ is
+        simultaneously the entropy, the scoring generator, the regulariser, and
+        (conjugate) the cost.</li>
+    </ul>
+
+    <h2>5. Constant-function AMMs are the same animal</h2>
+    <p>
+      The DeFi constant-function market maker (Uniswap, Balancer, Curve) holds
+      reserves on a level set of a trading function $\varphi$. Frongillo,
+      Papireddygari &amp; Waggoner
+      (<a href="./bibliography.html">2024</a>) prove that, under natural axioms,
+      <strong>every CFMM is equivalent to a cost-function prediction
+      market</strong>, hence to a proper scoring rule; the trading function is the
+      same convex potential read in reserve coordinates (see also the axiomatic
+      and geometric accounts,
+      <a href="./bibliography.html">Schlegel et al. 2023</a>;
+      <a href="./bibliography.html">Angeris et al. 2024</a>). So Uniswap and LMSR
+      are one mechanism in two coordinate systems — the concrete reason the AMM
+      and scoring-rule pages here share machinery. The risk-measure and
+      exponential-family framing
+      (<a href="./bibliography.html">Abernethy, Frongillo &amp; Kutty 2015</a>)
+      says the same thing in the language of convex risk.
+    </p>
+
+    <h2>6. The rest of the web</h2>
+    <p>
+      The convex spine reaches the other mechanisms by changing <em>what plays
+      the role of the outcome</em> $i$.
+    </p>
+    <ul>
+      <li><strong>Property elicitation.</strong> The subgradient $G'(p)$ is
+        precisely what the market &ldquo;reads off&rdquo;. Only properties
+        expressible as such a gradient are directly elicitable; means are
+        gradients of $G$, while quantiles, variance and expected shortfall need
+        auxiliary structure
+        (<a href="./bibliography.html">Abernethy &amp; Frongillo 2012</a>;
+        <a href="./bibliography.html">Fissler &amp; Ziegel 2016</a>).</li>
+      <li><strong>Peer prediction.</strong> Replace the (unavailable) outcome with
+        a peer's report and score against it; truthfulness now requires the
+        score's Bregman geometry to line up with the information structure — the
+        correlated-agreement and mutual-information mechanisms
+        (<a href="./bibliography.html">Shnayder et al. 2016</a>;
+        <a href="./bibliography.html">Kong &amp; Schoenebeck 2019</a>).</li>
+      <li><strong>Local scoring.</strong> On a continuous outcome space where
+        normalisation is intractable, restrict the generator to depend on the
+        density only through its log-derivatives: Hyvärinen score matching
+        (<a href="./bibliography.html">2005</a>;
+        <a href="./bibliography.html">Parry, Dawid &amp; Lauritzen 2012</a>) is
+        the <em>local</em> form of the same proper-scoring generator.</li>
+      <li><strong>Parimutuel.</strong> A self-financing limit in which the
+        &ldquo;cost&rdquo; is the pooled stake and prices are stake shares;
+        bounded loss is automatic because the operator never subsidises
+        (<a href="./bibliography.html">Pennock 2004</a>).</li>
+    </ul>
+
+    <h2>One-line summary</h2>
+    <p>
+      Pick a convex function on the simplex. Its supporting hyperplanes are a
+      proper scoring rule (Savage); its conjugate is a market maker's cost
+      function (Hanson); its gradient is the price map; its Bregman divergence is
+      the trader's profit and the elicitation regret at once. Everything else in
+      this catalogue is that function wearing different clothes.
+    </p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

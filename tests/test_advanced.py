@@ -1,6 +1,5 @@
-"""Tests for the advanced mechanisms from the prediction-aggregation survey:
-quantile/interval scores, pm-AMM, frequent batch auctions, peer prediction,
-and opinion-pool aggregation.
+"""Tests for the advanced mechanisms: quantile/interval scores, pm-AMM,
+frequent batch auctions, peer prediction, and opinion-pool aggregation.
 """
 
 import numpy as np

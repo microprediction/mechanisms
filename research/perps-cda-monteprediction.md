@@ -1,6 +1,6 @@
 # Perpetual Futures, Continuous Double Auctions, and Distributional Forecasting
 
-Three mechanisms that round out the survey: the **perpetual futures** funding
+Three mechanisms that round out the catalogue: the **perpetual futures** funding
 tether, the **continuous double auction** that underlies modern exchanges, and
 the **sample-based distributional forecasting** of monteprediction.com.
 
