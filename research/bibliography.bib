@@ -1,299 +1,458 @@
-% Consolidated bibliography for the `mechanisms` repository.
-% Grouped by mechanism family. Bibliographic details were compiled from
-% established knowledge of these works; spot-check page numbers / DOIs / venues
-% against primary sources before citing in formal work.
+% Consolidated bibliography for the mechanisms project.
+% Organized by topic. Entries verified against DOIs / canonical sources;
+% accuracy over volume — uncertain references were omitted rather than guessed.
+% A human-readable rendering lives at docs/bibliography.html.
 
-% ===================== Parimutuel markets =====================
-
-@article{ali1977probability,
-  author  = {Ali, Mukhtar M.},
-  title   = {Probability and Utility Estimates for Racetrack Bettors},
-  journal = {Journal of Political Economy},
-  year    = {1977}, volume = {85}, number = {4}, pages = {803--815}
-}
-
-@article{thaler1988anomalies,
-  author  = {Thaler, Richard H. and Ziemba, William T.},
-  title   = {Anomalies: Parimutuel Betting Markets---Racetracks and Lotteries},
-  journal = {Journal of Economic Perspectives},
-  year    = {1988}, volume = {2}, number = {2}, pages = {161--174}
-}
-
-@article{snowberg2010explaining,
-  author  = {Snowberg, Erik and Wolfers, Justin},
-  title   = {Explaining the Favorite--Long Shot Bias: Is It Risk-Love or Misperceptions?},
-  journal = {Journal of Political Economy},
-  year    = {2010}, volume = {118}, number = {4}, pages = {723--746}
-}
-
-@article{lange2005parimutuel,
-  author  = {Lange, Jeffrey and Economides, Nicholas},
-  title   = {A Parimutuel Market Microstructure for Contingent Claims},
-  journal = {European Financial Management},
-  year    = {2005}, volume = {11}, number = {1}, pages = {25--49}
-}
-
-@book{baron2007parimutuel,
-  author    = {Baron, Ken and Lange, Jeffrey},
-  title     = {Parimutuel Applications in Finance: New Markets for New Risks},
-  year      = {2007}, publisher = {Palgrave Macmillan},
-  series    = {Finance and Capital Markets}
-}
-
-@inproceedings{pennock2004dynamic,
-  author    = {Pennock, David M.},
-  title     = {A Dynamic Pari-Mutuel Market for Hedging, Wagering, and Information Aggregation},
-  booktitle = {Proceedings of the 5th ACM Conference on Electronic Commerce (EC '04)},
-  year      = {2004}, pages = {170--179}, publisher = {ACM}
-}
-
-% ===================== Proper scoring rules =====================
-
+% ===================== Proper scoring rules & distributional forecasting =====================
 @article{brier1950verification,
-  author  = {Brier, Glenn W.},
-  title   = {Verification of Forecasts Expressed in Terms of Probability},
-  journal = {Monthly Weather Review},
-  year    = {1950}, volume = {78}, number = {1}, pages = {1--3}
-}
-
+  author = {Brier, Glenn W.}, title = {Verification of Forecasts Expressed in Terms of Probability},
+  journal = {Monthly Weather Review}, year = {1950}, volume = {78}, number = {1}, pages = {1--3},
+  doi = {10.1175/1520-0493(1950)078<0001:VOFEIT>2.0.CO;2}}
 @article{good1952rational,
-  author  = {Good, Irving John},
-  title   = {Rational Decisions},
-  journal = {Journal of the Royal Statistical Society, Series B},
-  year    = {1952}, volume = {14}, number = {1}, pages = {107--114}
-}
-
+  author = {Good, I. J.}, title = {Rational Decisions},
+  journal = {Journal of the Royal Statistical Society. Series B (Methodological)}, year = {1952},
+  volume = {14}, number = {1}, pages = {107--114}, doi = {10.1111/j.2517-6161.1952.tb00104.x}}
 @article{mccarthy1956measures,
-  author  = {McCarthy, John},
-  title   = {Measures of the Value of Information},
-  journal = {Proceedings of the National Academy of Sciences},
-  year    = {1956}, volume = {42}, number = {9}, pages = {654--655}
-}
-
-@article{matheson1976scoring,
-  author  = {Matheson, James E. and Winkler, Robert L.},
-  title   = {Scoring Rules for Continuous Probability Distributions},
-  journal = {Management Science},
-  year    = {1976}, volume = {22}, number = {10}, pages = {1087--1096}
-}
-
+  author = {McCarthy, John}, title = {Measures of the Value of Information},
+  journal = {Proceedings of the National Academy of Sciences}, year = {1956}, volume = {42},
+  number = {9}, pages = {654--655}, doi = {10.1073/pnas.42.9.654}}
+@article{rosenblatt1952remarks,
+  author = {Rosenblatt, Murray}, title = {Remarks on a Multivariate Transformation},
+  journal = {The Annals of Mathematical Statistics}, year = {1952}, volume = {23}, number = {3},
+  pages = {470--472}, doi = {10.1214/aoms/1177729394}}
+@article{bregman1967relaxation,
+  author = {Bregman, L. M.}, title = {The Relaxation Method of Finding the Common Point of Convex Sets and Its Application to the Solution of Problems in Convex Programming},
+  journal = {USSR Computational Mathematics and Mathematical Physics}, year = {1967}, volume = {7},
+  number = {3}, pages = {200--217}, doi = {10.1016/0041-5553(67)90040-7}}
 @article{savage1971elicitation,
-  author  = {Savage, Leonard J.},
-  title   = {Elicitation of Personal Probabilities and Expectations},
-  journal = {Journal of the American Statistical Association},
-  year    = {1971}, volume = {66}, number = {336}, pages = {783--801}
-}
-
+  author = {Savage, Leonard J.}, title = {Elicitation of Personal Probabilities and Expectations},
+  journal = {Journal of the American Statistical Association}, year = {1971}, volume = {66},
+  number = {336}, pages = {783--801}, doi = {10.1080/01621459.1971.10482346}}
+@article{murphy1973vector,
+  author = {Murphy, Allan H.}, title = {A New Vector Partition of the Probability Score},
+  journal = {Journal of Applied Meteorology}, year = {1973}, volume = {12}, number = {4},
+  pages = {595--600}, doi = {10.1175/1520-0450(1973)012<0595:ANVPOT>2.0.CO;2}}
+@article{matheson1976scoring,
+  author = {Matheson, James E. and Winkler, Robert L.}, title = {Scoring Rules for Continuous Probability Distributions},
+  journal = {Management Science}, year = {1976}, volume = {22}, number = {10}, pages = {1087--1096},
+  doi = {10.1287/mnsc.22.10.1087}}
+@article{degroot1983comparison,
+  author = {DeGroot, Morris H. and Fienberg, Stephen E.}, title = {The Comparison and Evaluation of Forecasters},
+  journal = {Journal of the Royal Statistical Society. Series D (The Statistician)}, year = {1983},
+  volume = {32}, number = {1--2}, pages = {12--22}, doi = {10.2307/2987588}}
+@article{dawid1984prequential,
+  author = {Dawid, A. P.}, title = {Present Position and Potential Developments: Some Personal Views. Statistical Theory: The Prequential Approach},
+  journal = {Journal of the Royal Statistical Society. Series A (General)}, year = {1984}, volume = {147},
+  number = {2}, pages = {278--292}, doi = {10.2307/2981683}}
 @article{schervish1989general,
-  author  = {Schervish, Mark J.},
-  title   = {A General Method for Comparing Probability Assessors},
-  journal = {The Annals of Statistics},
-  year    = {1989}, volume = {17}, number = {4}, pages = {1856--1879}
-}
-
+  author = {Schervish, Mark J.}, title = {A General Method for Comparing Probability Assessors},
+  journal = {The Annals of Statistics}, year = {1989}, volume = {17}, number = {4}, pages = {1856--1879},
+  doi = {10.1214/aos/1176347398}}
+@article{diebold1998evaluating,
+  author = {Diebold, Francis X. and Gunther, Todd A. and Tay, Anthony S.}, title = {Evaluating Density Forecasts with Applications to Financial Risk Management},
+  journal = {International Economic Review}, year = {1998}, volume = {39}, number = {4}, pages = {863--883},
+  doi = {10.2307/2527342}}
+@article{hersbach2000decomposition,
+  author = {Hersbach, Hans}, title = {Decomposition of the Continuous Ranked Probability Score for Ensemble Prediction Systems},
+  journal = {Weather and Forecasting}, year = {2000}, volume = {15}, number = {5}, pages = {559--570},
+  doi = {10.1175/1520-0434(2000)015<0559:DOTCRP>2.0.CO;2}}
+@article{banerjee2005optimality,
+  author = {Banerjee, Arindam and Guo, Xin and Wang, Hui}, title = {On the Optimality of Conditional Expectation as a Bregman Predictor},
+  journal = {IEEE Transactions on Information Theory}, year = {2005}, volume = {51}, number = {7},
+  pages = {2664--2669}, doi = {10.1109/TIT.2005.850145}}
+@article{banerjee2005clustering,
+  author = {Banerjee, Arindam and Merugu, Srujana and Dhillon, Inderjit S. and Ghosh, Joydeep},
+  title = {Clustering with Bregman Divergences}, journal = {Journal of Machine Learning Research},
+  year = {2005}, volume = {6}, pages = {1705--1749}}
 @article{gneiting2007strictly,
-  author  = {Gneiting, Tilmann and Raftery, Adrian E.},
-  title   = {Strictly Proper Scoring Rules, Prediction, and Estimation},
-  journal = {Journal of the American Statistical Association},
-  year    = {2007}, volume = {102}, number = {477}, pages = {359--378}
-}
-
+  author = {Gneiting, Tilmann and Raftery, Adrian E.}, title = {Strictly Proper Scoring Rules, Prediction, and Estimation},
+  journal = {Journal of the American Statistical Association}, year = {2007}, volume = {102}, number = {477},
+  pages = {359--378}, doi = {10.1198/016214506000001437}}
+@article{gneiting2007probabilistic,
+  author = {Gneiting, Tilmann and Balabdaoui, Fadoua and Raftery, Adrian E.}, title = {Probabilistic Forecasts, Calibration and Sharpness},
+  journal = {Journal of the Royal Statistical Society. Series B (Statistical Methodology)}, year = {2007},
+  volume = {69}, number = {2}, pages = {243--268}, doi = {10.1111/j.1467-9868.2007.00587.x}}
+@article{brocker2007increasing,
+  author = {Br{\"o}cker, Jochen and Smith, Leonard A.}, title = {Increasing the Reliability of Reliability Diagrams},
+  journal = {Weather and Forecasting}, year = {2007}, volume = {22}, number = {3}, pages = {651--661},
+  doi = {10.1175/WAF993.1}}
 @article{szekely2013energy,
-  author  = {Sz{\'e}kely, G{\'a}bor J. and Rizzo, Maria L.},
-  title   = {Energy Statistics: A Class of Statistics Based on Distances},
-  journal = {Journal of Statistical Planning and Inference},
-  year    = {2013}, volume = {143}, number = {8}, pages = {1249--1272}
-}
+  author = {Sz{\'e}kely, G{\'a}bor J. and Rizzo, Maria L.}, title = {Energy Statistics: A Class of Statistics Based on Distances},
+  journal = {Journal of Statistical Planning and Inference}, year = {2013}, volume = {143}, number = {8},
+  pages = {1249--1272}, doi = {10.1016/j.jspi.2013.03.018}}
+@article{dawid2014theory,
+  author = {Dawid, A. Philip and Musio, Monica}, title = {Theory and Applications of Proper Scoring Rules},
+  journal = {METRON}, year = {2014}, volume = {72}, number = {2}, pages = {169--183}, doi = {10.1007/s40300-014-0039-y}}
+@article{gneiting2014probabilistic,
+  author = {Gneiting, Tilmann and Katzfuss, Matthias}, title = {Probabilistic Forecasting},
+  journal = {Annual Review of Statistics and Its Application}, year = {2014}, volume = {1}, pages = {125--151},
+  doi = {10.1146/annurev-statistics-062713-085831}}
+@article{gneiting2023regression,
+  author = {Gneiting, Tilmann and Resin, Johannes}, title = {Regression Diagnostics Meets Forecast Evaluation: Conditional Calibration, Reliability Diagrams, and Coefficient of Determination},
+  journal = {Electronic Journal of Statistics}, year = {2023}, volume = {17}, number = {2}, pages = {3226--3286},
+  doi = {10.1214/23-EJS2180}}
 
-% ===================== Market scoring rules / cost-function makers =====================
+% ===================== Local scoring rules & score matching =====================
+@article{hyvarinen2005score,
+  author = {Hyv{\"a}rinen, Aapo}, title = {Estimation of Non-Normalized Statistical Models by Score Matching},
+  journal = {Journal of Machine Learning Research}, year = {2005}, volume = {6}, pages = {695--709}}
+@article{hyvarinen2007extensions,
+  author = {Hyv{\"a}rinen, Aapo}, title = {Some Extensions of Score Matching},
+  journal = {Computational Statistics \& Data Analysis}, year = {2007}, volume = {51}, number = {5},
+  pages = {2499--2512}, doi = {10.1016/j.csda.2006.09.003}}
+@article{hyvarinen2008signal,
+  author = {Hyv{\"a}rinen, Aapo}, title = {Optimal Approximation of Signal Priors},
+  journal = {Neural Computation}, year = {2008}, volume = {20}, number = {12}, pages = {3087--3110},
+  doi = {10.1162/neco.2008.10-06-384}}
+@article{parry2012proper,
+  author = {Parry, Matthew and Dawid, A. Philip and Lauritzen, Steffen}, title = {Proper Local Scoring Rules},
+  journal = {The Annals of Statistics}, year = {2012}, volume = {40}, number = {1}, pages = {561--592},
+  doi = {10.1214/12-AOS971}}
+@article{dawid2012discrete,
+  author = {Dawid, A. Philip and Lauritzen, Steffen and Parry, Matthew}, title = {Proper Local Scoring Rules on Discrete Sample Spaces},
+  journal = {The Annals of Statistics}, year = {2012}, volume = {40}, number = {1}, pages = {593--608},
+  doi = {10.1214/12-AOS972}}
+@article{ehm2012order,
+  author = {Ehm, Werner and Gneiting, Tilmann}, title = {Local Proper Scoring Rules of Order Two},
+  journal = {The Annals of Statistics}, year = {2012}, volume = {40}, number = {1}, pages = {609--637},
+  doi = {10.1214/12-AOS973}}
+@article{vincent2011connection,
+  author = {Vincent, Pascal}, title = {A Connection Between Score Matching and Denoising Autoencoders},
+  journal = {Neural Computation}, year = {2011}, volume = {23}, number = {7}, pages = {1661--1674},
+  doi = {10.1162/NECO_a_00142}}
+@inproceedings{lyu2009interpretation,
+  author = {Lyu, Siwei}, title = {Interpretation and Generalization of Score Matching},
+  booktitle = {Proceedings of the 25th Conference on Uncertainty in Artificial Intelligence (UAI)}, year = {2009},
+  pages = {359--366}}
+@inproceedings{song2020sliced,
+  author = {Song, Yang and Garg, Sahaj and Shi, Jiaxin and Ermon, Stefano}, title = {Sliced Score Matching: A Scalable Approach to Density and Score Estimation},
+  booktitle = {Proceedings of the 35th Uncertainty in Artificial Intelligence Conference (UAI)},
+  series = {PMLR}, volume = {115}, pages = {574--584}, year = {2020}}
+@inproceedings{song2019generative,
+  author = {Song, Yang and Ermon, Stefano}, title = {Generative Modeling by Estimating Gradients of the Data Distribution},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, volume = {32}, year = {2019}}
+@article{lin2016regularized,
+  author = {Lin, Lina and Drton, Mathias and Shojaie, Ali}, title = {Estimation of High-Dimensional Graphical Models Using Regularized Score Matching},
+  journal = {Electronic Journal of Statistics}, year = {2016}, volume = {10}, number = {1}, pages = {806--854},
+  doi = {10.1214/16-EJS1126}}
 
+% ===================== Market scoring rules & cost-function makers =====================
 @article{hanson2003combinatorial,
-  author  = {Hanson, Robin},
-  title   = {Combinatorial Information Market Design},
-  journal = {Information Systems Frontiers},
-  year    = {2003}, volume = {5}, number = {1}, pages = {107--119}
-}
-
-@article{hanson2007lmsr,
-  author  = {Hanson, Robin},
-  title   = {Logarithmic Market Scoring Rules for Modular Combinatorial Information Aggregation},
-  journal = {The Journal of Prediction Markets},
-  year    = {2007}, volume = {1}, number = {1}, pages = {3--15}
-}
-
+  author = {Hanson, Robin}, title = {Combinatorial Information Market Design},
+  journal = {Information Systems Frontiers}, year = {2003}, volume = {5}, number = {1}, pages = {107--119},
+  doi = {10.1023/A:1022058209073}}
+@article{hanson2007logarithmic,
+  author = {Hanson, Robin}, title = {Logarithmic Market Scoring Rules for Modular Combinatorial Information Aggregation},
+  journal = {The Journal of Prediction Markets}, year = {2007}, volume = {1}, number = {1}, pages = {3--15},
+  doi = {10.5750/jpm.v1i1.417}}
+@inproceedings{chen2007utility,
+  author = {Chen, Yiling and Pennock, David M.}, title = {A Utility Framework for Bounded-Loss Market Makers},
+  booktitle = {Proceedings of the 23rd Conference on Uncertainty in Artificial Intelligence (UAI)}, year = {2007},
+  pages = {49--56}}
 @article{abernethy2013efficient,
-  author    = {Abernethy, Jacob and Chen, Yiling and Wortman Vaughan, Jennifer},
-  title     = {Efficient Market Making via Convex Optimization, and a Connection to Online Learning},
-  journal   = {ACM Transactions on Economics and Computation},
-  year      = {2013}, volume = {1}, number = {2}, articleno = {12}
-}
-
+  author = {Abernethy, Jacob and Chen, Yiling and Vaughan, Jennifer Wortman}, title = {Efficient Market Making via Convex Optimization, and a Connection to Online Learning},
+  journal = {ACM Transactions on Economics and Computation}, year = {2013}, volume = {1}, number = {2},
+  pages = {12:1--12:39}, doi = {10.1145/2465769.2465777}}
+@inproceedings{abernethy2011optimization,
+  author = {Abernethy, Jacob and Chen, Yiling and Vaughan, Jennifer Wortman}, title = {An Optimization-Based Framework for Automated Market-Making},
+  booktitle = {Proceedings of the 12th ACM Conference on Electronic Commerce (EC)}, year = {2011}, pages = {297--306},
+  doi = {10.1145/1993574.1993621}}
+@inproceedings{chen2010newunderstanding,
+  author = {Chen, Yiling and Vaughan, Jennifer Wortman}, title = {A New Understanding of Prediction Markets via No-Regret Learning},
+  booktitle = {Proceedings of the 11th ACM Conference on Electronic Commerce (EC)}, year = {2010},
+  doi = {10.1145/1807342.1807372}}
 @article{othman2013practical,
-  author  = {Othman, Abraham and Pennock, David M. and Reeves, Daniel M. and Sandholm, Tuomas},
-  title   = {A Practical Liquidity-Sensitive Automated Market Maker},
-  journal = {ACM Transactions on Economics and Computation},
-  year    = {2013}, volume = {1}, number = {3}, articleno = {14},
-  note    = {Conference version in EC 2010}
-}
+  author = {Othman, Abraham and Pennock, David M. and Reeves, Daniel M. and Sandholm, Tuomas}, title = {A Practical Liquidity-Sensitive Automated Market Maker},
+  journal = {ACM Transactions on Economics and Computation}, year = {2013}, volume = {1}, number = {3},
+  doi = {10.1145/2509413.2509414}}
+@inproceedings{othman2011liquidity,
+  author = {Othman, Abraham and Sandholm, Tuomas}, title = {Liquidity-Sensitive Automated Market Makers via Homogeneous Risk Measures},
+  booktitle = {Internet and Network Economics (WINE 2011)}, series = {Lecture Notes in Computer Science},
+  volume = {7090}, year = {2011}, doi = {10.1007/978-3-642-25510-6_27}}
+@inproceedings{othman2012profitcharging,
+  author = {Othman, Abraham and Sandholm, Tuomas}, title = {Profit-Charging Market Makers with Bounded Loss, Vanishing Bid/Ask Spreads, and Unlimited Market Depth},
+  booktitle = {Proceedings of the 13th ACM Conference on Electronic Commerce (EC)}, year = {2012}, pages = {790--807},
+  doi = {10.1145/2229012.2229074}}
+@incollection{pennock2007computational,
+  author = {Pennock, David M. and Sami, Rahul}, title = {Computational Aspects of Prediction Markets},
+  booktitle = {Algorithmic Game Theory}, editor = {Nisan, Noam and Roughgarden, Tim and Tardos, {\'E}va and Vazirani, Vijay V.},
+  publisher = {Cambridge University Press}, year = {2007}, pages = {651--676}}
+@inproceedings{chen2008complexity,
+  author = {Chen, Yiling and Fortnow, Lance and Lambert, Nicolas and Pennock, David M. and Wortman, Jennifer}, title = {Complexity of Combinatorial Market Makers},
+  booktitle = {Proceedings of the 9th ACM Conference on Electronic Commerce (EC)}, year = {2008}, pages = {190--199},
+  doi = {10.1145/1386790.1386822}}
+@inproceedings{dudik2012tractable,
+  author = {Dud{\'\i}k, Miroslav and Lahaie, S{\'e}bastien and Pennock, David M.}, title = {A Tractable Combinatorial Market Maker Using Constraint Generation},
+  booktitle = {Proceedings of the 13th ACM Conference on Electronic Commerce (EC)}, year = {2012}, pages = {459--476},
+  doi = {10.1145/2229012.2229047}}
+@inproceedings{chen2013costfunction,
+  author = {Chen, Yiling and Ruberry, Mike and Vaughan, Jennifer Wortman}, title = {Cost Function Market Makers for Measurable Spaces},
+  booktitle = {Proceedings of the 14th ACM Conference on Electronic Commerce (EC)}, year = {2013}, pages = {785--802},
+  doi = {10.1145/2492002.2482608}}
+@article{chen2010designing,
+  author = {Chen, Yiling and Pennock, David M.}, title = {Designing Markets for Prediction},
+  journal = {AI Magazine}, year = {2010}, volume = {31}, number = {4}, pages = {42--52}, doi = {10.1609/aimag.v31i4.2313}}
 
-@inproceedings{othman2011homogeneous,
-  author    = {Othman, Abraham and Sandholm, Tuomas},
-  title     = {Liquidity-Sensitive Automated Market Makers via Homogeneous Risk Measures},
-  booktitle = {Proc. 7th Workshop on Internet and Network Economics (WINE)},
-  series    = {LNCS}, volume = {7090}, pages = {314--325}, year = {2011}
-}
+% ===================== Parimutuel, dynamic & combinatorial prediction markets =====================
+@inproceedings{pennock2004dynamic,
+  author = {Pennock, David M.}, title = {A Dynamic Pari-Mutuel Market for Hedging, Wagering, and Information Aggregation},
+  booktitle = {Proceedings of the 5th ACM Conference on Electronic Commerce (EC)}, year = {2004}, pages = {170--179},
+  doi = {10.1145/988772.988799}}
+@article{ali1977probability,
+  author = {Ali, Mukhtar M.}, title = {Probability and Utility Estimates for Racetrack Bettors},
+  journal = {Journal of Political Economy}, year = {1977}, volume = {85}, number = {4}, pages = {803--815},
+  doi = {10.1086/260600}}
+@article{thaler1988anomalies,
+  author = {Thaler, Richard H. and Ziemba, William T.}, title = {Anomalies: Parimutuel Betting Markets: Racetracks and Lotteries},
+  journal = {Journal of Economic Perspectives}, year = {1988}, volume = {2}, number = {2}, pages = {161--174},
+  doi = {10.1257/jep.2.2.161}}
+@book{baron2007parimutuel,
+  author = {Baron, Ken and Lange, Jeffrey}, title = {Parimutuel Applications in Finance: New Markets for New Risks},
+  year = {2007}, publisher = {Palgrave Macmillan}, address = {London}, doi = {10.1057/9780230595606}}
+@article{snowberg2010explaining,
+  author = {Snowberg, Erik and Wolfers, Justin}, title = {Explaining the Favorite-Long Shot Bias: Is It Risk-Love or Misperceptions?},
+  journal = {Journal of Political Economy}, year = {2010}, volume = {118}, number = {4}, pages = {723--746},
+  doi = {10.1086/655844}}
+@incollection{ottaviani2008favorite,
+  author = {Ottaviani, Marco and S{\o}rensen, Peter Norman}, title = {The Favorite-Longshot Bias: An Overview of the Main Explanations},
+  booktitle = {Handbook of Sports and Lottery Markets}, editor = {Hausch, Donald B. and Ziemba, William T.},
+  publisher = {North-Holland}, year = {2008}, pages = {83--101}}
+@article{ottaviani2009surprised,
+  author = {Ottaviani, Marco and S{\o}rensen, Peter Norman}, title = {Surprised by the Parimutuel Odds?},
+  journal = {American Economic Review}, year = {2009}, volume = {99}, number = {5}, pages = {2129--2134},
+  doi = {10.1257/aer.99.5.2129}}
+@inproceedings{chen2007betting,
+  author = {Chen, Yiling and Fortnow, Lance and Nikolova, Evdokia and Pennock, David M.}, title = {Betting on Permutations},
+  booktitle = {Proceedings of the 8th ACM Conference on Electronic Commerce (EC)}, year = {2007}, pages = {326--335},
+  doi = {10.1145/1250910.1250957}}
+@article{lange2005parimutuel,
+  author = {Lange, Jeffrey and Economides, Nicholas}, title = {A Parimutuel Market Microstructure for Contingent Claims},
+  journal = {European Financial Management}, year = {2005}, volume = {11}, number = {1}, pages = {25--49},
+  doi = {10.1111/j.1354-7798.2005.00274.x}}
+@inproceedings{peters2007parimutuel,
+  author = {Peters, Mark and So, Anthony Man-Cho and Ye, Yinyu}, title = {Pari-Mutuel Markets: Mechanisms and Performance},
+  booktitle = {Internet and Network Economics (WINE 2007)}, series = {Lecture Notes in Computer Science}, volume = {4858},
+  year = {2007}, pages = {82--95}, doi = {10.1007/978-3-540-77105-0_11}}
+@article{agrawal2011unified,
+  author = {Agrawal, Shipra and Delage, Erick and Peters, Mark and Wang, Zizhuo and Ye, Yinyu}, title = {A Unified Framework for Dynamic Prediction Market Design},
+  journal = {Operations Research}, year = {2011}, volume = {59}, number = {3}, pages = {550--568}, doi = {10.1287/opre.1110.0922}}
+@article{laskey2018graphical,
+  author = {Laskey, Kathryn B. and Sun, Wei and Hanson, Robin and Twardy, Charles and Matsumoto, Shou and Goldfedder, Brandon}, title = {Graphical Model Market Maker for Combinatorial Prediction Markets},
+  journal = {Journal of Artificial Intelligence Research}, year = {2018}, volume = {63}, pages = {421--460}, doi = {10.1613/jair.1.11249}}
+@article{plott2003parimutuel,
+  author = {Plott, Charles R. and Wit, J{\o}rgen and Yang, Winston C.}, title = {Parimutuel Betting Markets as Information Aggregation Devices: Experimental Results},
+  journal = {Economic Theory}, year = {2003}, volume = {22}, number = {2}, pages = {311--351}, doi = {10.1007/s00199-002-0306-7}}
 
-% ===================== Constant function market makers (DeFi) =====================
-
+% ===================== Automated market makers & DeFi =====================
 @article{angeris2021uniswap,
-  author  = {Angeris, Guillermo and Kao, Hsien-Tang and Chiang, Rei and Noyes, Charlie and Chitra, Tarun},
-  title   = {An Analysis of Uniswap Markets},
-  journal = {Cryptoeconomic Systems},
-  year    = {2021}, volume = {1}, number = {1}, note = {arXiv:1911.03380}
-}
-
+  author = {Angeris, Guillermo and Kao, Hsien-Tang and Chiang, Rei and Noyes, Charlie and Chitra, Tarun}, title = {An Analysis of Uniswap Markets},
+  journal = {Cryptoeconomic Systems}, volume = {1}, number = {1}, year = {2021}, url = {https://arxiv.org/abs/1911.03380}}
 @inproceedings{angeris2020oracles,
-  author    = {Angeris, Guillermo and Chitra, Tarun},
-  title     = {Improved Price Oracles: Constant Function Market Makers},
-  booktitle = {Proc. 2nd ACM Conference on Advances in Financial Technologies (AFT)},
-  year      = {2020}, pages = {80--91}, note = {arXiv:2003.10001}
-}
-
-@misc{martinelli2019balancer,
-  author = {Martinelli, Fernando and Mushegian, Nikolai},
-  title  = {Balancer: A Non-Custodial Portfolio Manager, Liquidity Provider, and Price Sensor},
-  howpublished = {Balancer Whitepaper}, year = {2019}
-}
-
-@misc{egorov2019stableswap,
-  author = {Egorov, Michael},
-  title  = {StableSwap -- Efficient Mechanism for Stablecoin Liquidity},
-  howpublished = {Curve Finance Whitepaper}, year = {2019}
-}
-
+  author = {Angeris, Guillermo and Chitra, Tarun}, title = {Improved Price Oracles: Constant Function Market Makers},
+  booktitle = {Proceedings of the 2nd ACM Conference on Advances in Financial Technologies (AFT)}, pages = {80--91}, year = {2020},
+  doi = {10.1145/3419614.3423251}}
+@incollection{angeris2022cfmm,
+  author = {Angeris, Guillermo and Agrawal, Akshay and Evans, Alex and Chitra, Tarun and Boyd, Stephen}, title = {Constant Function Market Makers: Multi-Asset Trades via Convex Optimization},
+  booktitle = {Handbook on Blockchain}, series = {Springer Optimization and Its Applications}, volume = {194}, year = {2022},
+  doi = {10.1007/978-3-031-07535-3_13}}
+@misc{angeris2021replicating,
+  author = {Angeris, Guillermo and Evans, Alex and Chitra, Tarun}, title = {Replicating Market Makers},
+  year = {2021}, howpublished = {arXiv:2103.14769}, url = {https://arxiv.org/abs/2103.14769}}
 @misc{adams2021uniswapv3,
-  author = {Adams, Hayden and Zinsmeister, Noah and Salem, Moody and Keefer, River and Robinson, Dan},
-  title  = {Uniswap v3 Core}, howpublished = {Uniswap Whitepaper}, year = {2021}
-}
-
+  author = {Adams, Hayden and Zinsmeister, Noah and Salem, Moody and Keefer, River and Robinson, Dan}, title = {Uniswap v3 Core},
+  year = {2021}, howpublished = {Whitepaper, Uniswap}, url = {https://uniswap.org/whitepaper-v3.pdf}}
+@misc{martinelli2019balancer,
+  author = {Martinelli, Fernando and Mushegian, Nikolai}, title = {Balancer: A Non-Custodial Portfolio Manager, Liquidity Provider, and Price Sensor},
+  year = {2019}, howpublished = {Whitepaper, Balancer Labs}, url = {https://docs.balancer.fi/whitepaper.pdf}}
+@misc{egorov2019stableswap,
+  author = {Egorov, Michael}, title = {StableSwap -- Efficient Mechanism for Stablecoin Liquidity},
+  year = {2019}, howpublished = {Whitepaper, Curve Finance}}
 @misc{milionis2022lvr,
-  author = {Milionis, Jason and Moallemi, Ciamac C. and Roughgarden, Tim and Zhang, Anthony Lee},
-  title  = {Automated Market Making and Loss-Versus-Rebalancing},
-  howpublished = {arXiv:2208.06046}, year = {2022}
-}
-
-@misc{angeris2021multiasset,
-  author = {Angeris, Guillermo and Chitra, Tarun and Evans, Alex and Boyd, Stephen},
-  title  = {Constant Function Market Makers: Multi-Asset Trades via Convex Optimization},
-  howpublished = {arXiv:2107.12484}, year = {2021}
-}
-
+  author = {Milionis, Jason and Moallemi, Ciamac C. and Roughgarden, Tim and Zhang, Anthony Lee}, title = {Automated Market Making and Loss-Versus-Rebalancing},
+  year = {2022}, howpublished = {arXiv:2208.06046}, url = {https://arxiv.org/abs/2208.06046}}
 @misc{moallemi2024pmamm,
-  author = {Moallemi, Ciamac C. and Robinson, Dan},
-  title  = {pm-AMM: A Uniform AMM for Prediction Markets},
-  howpublished = {Paradigm}, year = {2024}, month = {11},
-  url    = {https://www.paradigm.xyz/2024/11/pm-amm}
-}
+  author = {Moallemi, Ciamac C. and Robinson, Dan}, title = {pm-AMM: A Uniform AMM for Prediction Markets},
+  year = {2024}, howpublished = {Paradigm research report}, url = {https://www.paradigm.xyz/2024/11/pm-amm}}
+@misc{capponi2021adoption,
+  author = {Capponi, Agostino and Jia, Ruizhe}, title = {The Adoption of Blockchain-based Decentralized Exchanges},
+  year = {2021}, howpublished = {arXiv:2103.08842}, url = {https://arxiv.org/abs/2103.08842}}
+@article{lehar2025dex,
+  author = {Lehar, Alfred and Parlour, Christine A.}, title = {Decentralized Exchange: The Uniswap Automated Market Maker},
+  journal = {The Journal of Finance}, volume = {80}, number = {1}, pages = {321--374}, year = {2025}, doi = {10.1111/jofi.13405}}
+@article{cartea2024predictable,
+  author = {Cartea, {\'A}lvaro and Drissi, Fay{\c{c}}al and Monga, Marcello}, title = {Decentralized Finance and Automated Market Making: Predictable Loss and Optimal Liquidity Provision},
+  journal = {SIAM Journal on Financial Mathematics}, volume = {15}, number = {3}, pages = {931--959}, year = {2024},
+  url = {https://arxiv.org/abs/2309.08431}}
 
-@misc{chitra2025pdlp,
-  author = {Chitra, Tarun and Diamandis, Theo and Sheng, Nathan and Sterle, Luke and Yusubov, Kamil},
-  title  = {Perpetual Demand Lending Pools},
-  howpublished = {arXiv:2502.06028}, year = {2025}
-}
+% ===================== Order books, double auctions & batch auctions =====================
+@article{smith1962experimental,
+  author = {Smith, Vernon L.}, title = {An Experimental Study of Competitive Market Behavior},
+  journal = {Journal of Political Economy}, year = {1962}, volume = {70}, number = {2}, pages = {111--137}, doi = {10.1086/258609}}
+@article{gode1993allocative,
+  author = {Gode, Dhananjay K. and Sunder, Shyam}, title = {Allocative Efficiency of Markets with Zero-Intelligence Traders: Market as a Partial Substitute for Individual Rationality},
+  journal = {Journal of Political Economy}, year = {1993}, volume = {101}, number = {1}, pages = {119--137}, doi = {10.1086/261868}}
+@article{gjerstad1998price,
+  author = {Gjerstad, Steven and Dickhaut, John}, title = {Price Formation in Double Auctions},
+  journal = {Games and Economic Behavior}, year = {1998}, volume = {22}, number = {1}, pages = {1--29}}
+@article{budish2015hft,
+  author = {Budish, Eric and Cramton, Peter and Shim, John}, title = {The High-Frequency Trading Arms Race: Frequent Batch Auctions as a Market Design Response},
+  journal = {The Quarterly Journal of Economics}, year = {2015}, volume = {130}, number = {4}, pages = {1547--1621}}
+@article{vickrey1961counterspeculation,
+  author = {Vickrey, William}, title = {Counterspeculation, Auctions, and Competitive Sealed Tenders},
+  journal = {The Journal of Finance}, year = {1961}, volume = {16}, number = {1}, pages = {8--37}, doi = {10.1111/j.1540-6261.1961.tb02789.x}}
+@article{kyle1985continuousauctions,
+  author = {Kyle, Albert S.}, title = {Continuous Auctions and Insider Trading},
+  journal = {Econometrica}, year = {1985}, volume = {53}, number = {6}, pages = {1315--1335}}
+@article{glosten1985bidask,
+  author = {Glosten, Lawrence R. and Milgrom, Paul R.}, title = {Bid, Ask and Transaction Prices in a Specialist Market with Heterogeneously Informed Traders},
+  journal = {Journal of Financial Economics}, year = {1985}, volume = {14}, number = {1}, pages = {71--100}}
+@inproceedings{daian2020flashboys,
+  author = {Daian, Philip and Goldfeder, Steven and Kell, Tyler and Li, Yunqi and Zhao, Xueyuan and Bentov, Iddo and Breidenbach, Lorenz and Juels, Ari}, title = {Flash Boys 2.0: Frontrunning in Decentralized Exchanges, Miner Extractable Value, and Consensus Instability},
+  booktitle = {2020 IEEE Symposium on Security and Privacy (SP)}, year = {2020}, pages = {910--927}}
+@inproceedings{roughgarden2021tfm,
+  author = {Roughgarden, Tim}, title = {Transaction Fee Mechanism Design},
+  booktitle = {Proceedings of the 22nd ACM Conference on Economics and Computation (EC)}, year = {2021}}
+@book{friedman1993doubleauction,
+  editor = {Friedman, Daniel and Rust, John}, title = {The Double Auction Market: Institutions, Theories, and Evidence},
+  publisher = {Addison-Wesley}, year = {1993}}
+@article{satterthwaite1989kdoubleauction,
+  author = {Satterthwaite, Mark A. and Williams, Steven R.}, title = {Bilateral Trade with the Sealed Bid k-Double Auction: Existence and Efficiency},
+  journal = {Journal of Economic Theory}, year = {1989}, volume = {48}, number = {1}, pages = {107--133}}
+@article{smith1982competitive,
+  author = {Smith, Vernon L. and Williams, Arlington W. and Bratton, W. Kenneth and Vannoni, Michael G.}, title = {Competitive Market Institutions: Double Auctions vs. Sealed Bid-Offer Auctions},
+  journal = {The American Economic Review}, year = {1982}, volume = {72}, number = {1}, pages = {58--77}}
 
-% ===================== Perpetual futures =====================
-
+% ===================== Perpetual futures & demand lending pools =====================
 @article{shiller1993measuring,
-  author  = {Shiller, Robert J.},
-  title   = {Measuring Asset Values for Cash Settlement in Derivative Markets:
-             Hedonic Repeated Measures Indices and Perpetual Futures},
-  journal = {The Journal of Finance},
-  year    = {1993}, volume = {48}, number = {3}, pages = {911--931}
-}
-
+  author = {Shiller, Robert J.}, title = {Measuring Asset Values for Cash Settlement in Derivative Markets: Hedonic Repeated Measures Indices and Perpetual Futures},
+  journal = {The Journal of Finance}, volume = {48}, number = {3}, pages = {911--931}, year = {1993}, doi = {10.1111/j.1540-6261.1993.tb04024.x}}
+@article{makarov2020arbitrage,
+  author = {Makarov, Igor and Schoar, Antoinette}, title = {Trading and Arbitrage in Cryptocurrency Markets},
+  journal = {Journal of Financial Economics}, volume = {135}, number = {2}, pages = {293--319}, year = {2020}, doi = {10.1016/j.jfineco.2019.07.001}}
+@article{angeris2023primer,
+  author = {Angeris, Guillermo and Chitra, Tarun and Evans, Alex and Lorig, Matthew}, title = {Short Communication: A Primer on Perpetuals},
+  journal = {SIAM Journal on Financial Mathematics}, volume = {14}, number = {1}, pages = {SC17--SC30}, year = {2023}, doi = {10.1137/22M1520931}}
+@misc{ackerer2024pricing,
+  author = {Ackerer, Damien and Hugonnier, Julien and Jermann, Urban}, title = {Perpetual Futures Pricing},
+  howpublished = {NBER Working Paper No. 32936}, year = {2024}, url = {https://www.nber.org/papers/w32936}}
+@misc{he2022fundamentals,
+  author = {He, Songrun and Manela, Asaf and Ross, Omri and von Wachter, Victor}, title = {Fundamentals of Perpetual Futures},
+  howpublished = {arXiv:2212.06888}, year = {2022}, url = {https://arxiv.org/abs/2212.06888}}
+@misc{chitra2025pdlp,
+  author = {Chitra, Tarun and Diamandis, Theo and Sheng, Nathan and Sterle, Luke and Yusubov, Kamil}, title = {Perpetual Demand Lending Pools},
+  howpublished = {arXiv:2502.06028}, year = {2025}, url = {https://arxiv.org/abs/2502.06028}}
 @misc{bitmex_perpetual_guide,
   author = {{BitMEX}}, title = {Perpetual Contracts Guide},
-  howpublished = {BitMEX documentation},
-  url = {https://www.bitmex.com/app/perpetualContractsGuide}
-}
+  howpublished = {BitMEX documentation}, url = {https://www.bitmex.com/app/perpetualContractsGuide}}
+@misc{gmx2024docs,
+  author = {{GMX}}, title = {GMX Documentation: Decentralized Perpetual Exchange},
+  howpublished = {Online documentation}, url = {https://docs.gmx.io/docs/intro/}}
+@misc{hyperliquid2024vaults,
+  author = {{Hyperliquid}}, title = {Protocol Vaults (HLP)},
+  howpublished = {Hyperliquid documentation}, url = {https://hyperliquid.gitbook.io/hyperliquid-docs/hypercore/vaults/protocol-vaults}}
 
-% ===================== Continuous double auction =====================
+% ===================== Peer prediction (no ground truth) =====================
+@article{miller2005eliciting,
+  author = {Miller, Nolan and Resnick, Paul and Zeckhauser, Richard}, title = {Eliciting Informative Feedback: The Peer-Prediction Method},
+  journal = {Management Science}, volume = {51}, number = {9}, pages = {1359--1373}, year = {2005}, doi = {10.1287/mnsc.1050.0379}}
+@article{prelec2004bayesian,
+  author = {Prelec, Dra{\v{z}}en}, title = {A Bayesian Truth Serum for Subjective Data},
+  journal = {Science}, volume = {306}, number = {5695}, pages = {462--466}, year = {2004}, doi = {10.1126/science.1102081}}
+@article{jurca2009mechanisms,
+  author = {Jurca, Radu and Faltings, Boi}, title = {Mechanisms for Making Crowds Truthful},
+  journal = {Journal of Artificial Intelligence Research}, volume = {34}, pages = {209--253}, year = {2009}, doi = {10.1613/jair.2622}}
+@inproceedings{witkowski2012robust,
+  author = {Witkowski, Jens and Parkes, David C.}, title = {A Robust Bayesian Truth Serum for Small Populations},
+  booktitle = {Proceedings of the 26th AAAI Conference on Artificial Intelligence (AAAI)}, pages = {1492--1498}, year = {2012}}
+@inproceedings{witkowski2012peer,
+  author = {Witkowski, Jens and Parkes, David C.}, title = {Peer Prediction without a Common Prior},
+  booktitle = {Proceedings of the 13th ACM Conference on Electronic Commerce (EC)}, pages = {964--981}, year = {2012}, doi = {10.1145/2229012.2229085}}
+@inproceedings{dasgupta2013crowdsourced,
+  author = {Dasgupta, Anirban and Ghosh, Arpita}, title = {Crowdsourced Judgement Elicitation with Endogenous Proficiency},
+  booktitle = {Proceedings of the 22nd International Conference on World Wide Web (WWW)}, pages = {319--330}, year = {2013}, doi = {10.1145/2488388.2488417}}
+@article{radanovic2016incentives,
+  author = {Radanovic, Goran and Faltings, Boi and Jurca, Radu}, title = {Incentives for Effort in Crowdsourcing Using the Peer Truth Serum},
+  journal = {ACM Transactions on Intelligent Systems and Technology}, volume = {7}, number = {4}, pages = {48:1--48:28}, year = {2016}, doi = {10.1145/2856102}}
+@inproceedings{shnayder2016informed,
+  author = {Shnayder, Victor and Agarwal, Arpit and Frongillo, Rafael and Parkes, David C.}, title = {Informed Truthfulness in Multi-Task Peer Prediction},
+  booktitle = {Proceedings of the 2016 ACM Conference on Economics and Computation (EC)}, pages = {179--196}, year = {2016}, doi = {10.1145/2940716.2940790}}
+@article{frongillo2017geometric,
+  author = {Frongillo, Rafael M. and Witkowski, Jens}, title = {A Geometric Perspective on Minimal Peer Prediction},
+  journal = {ACM Transactions on Economics and Computation}, volume = {5}, number = {3}, pages = {17:1--17:27}, year = {2017}, doi = {10.1145/3070903}}
+@book{faltings2017game,
+  author = {Faltings, Boi and Radanovic, Goran}, title = {Game Theory for Data Science: Eliciting Truthful Information},
+  series = {Synthesis Lectures on Artificial Intelligence and Machine Learning}, publisher = {Morgan \& Claypool}, year = {2017}}
+@inproceedings{kong2018water,
+  author = {Kong, Yuqing and Schoenebeck, Grant}, title = {Water from Two Rocks: Maximizing the Mutual Information},
+  booktitle = {Proceedings of the 2018 ACM Conference on Economics and Computation (EC)}, pages = {177--194}, year = {2018}, doi = {10.1145/3219166.3219194}}
+@article{kong2019information,
+  author = {Kong, Yuqing and Schoenebeck, Grant}, title = {An Information Theoretic Framework for Designing Information Elicitation Mechanisms That Reward Truth-Telling},
+  journal = {ACM Transactions on Economics and Computation}, volume = {7}, number = {1}, pages = {2:1--2:33}, year = {2019}, doi = {10.1145/3296670}}
+@article{kong2024dominantly,
+  author = {Kong, Yuqing}, title = {Dominantly Truthful Peer Prediction Mechanisms with a Finite Number of Tasks},
+  journal = {Journal of the ACM}, volume = {71}, number = {2}, pages = {9:1--9:49}, year = {2024}, doi = {10.1145/3638239}}
+@inproceedings{feng2022peer,
+  author = {Feng, Shi and Yu, Fang-Yi and Chen, Yiling}, title = {Peer Prediction for Learning Agents},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {2022}, url = {https://arxiv.org/abs/2208.04433}}
+@misc{zhang2025stochastically,
+  author = {Zhang, Yichi and Xu, Shengwei and Pennock, David and Schoenebeck, Grant}, title = {Stochastically Dominant Peer Prediction},
+  year = {2025}, howpublished = {arXiv:2506.02259}, url = {https://arxiv.org/abs/2506.02259}}
 
-@article{smith1962experimental,
-  author  = {Smith, Vernon L.},
-  title   = {An Experimental Study of Competitive Market Behavior},
-  journal = {Journal of Political Economy},
-  year    = {1962}, volume = {70}, number = {2}, pages = {111--137}
-}
+% ===================== Forecast aggregation, prediction-market economics & info finance =====================
+@article{stone1961opinionpool,
+  author = {Stone, M.}, title = {The Opinion Pool}, journal = {The Annals of Mathematical Statistics},
+  year = {1961}, volume = {32}, number = {4}, pages = {1339--1342}, doi = {10.1214/aoms/1177704873}}
+@article{genest1986combining,
+  author = {Genest, Christian and Zidek, James V.}, title = {Combining Probability Distributions: A Critique and an Annotated Bibliography},
+  journal = {Statistical Science}, year = {1986}, volume = {1}, number = {1}, pages = {114--135}, doi = {10.1214/ss/1177013825}}
+@article{ranjan2010combining,
+  author = {Ranjan, Roopesh and Gneiting, Tilmann}, title = {Combining Probability Forecasts},
+  journal = {Journal of the Royal Statistical Society. Series B (Statistical Methodology)}, year = {2010}, volume = {72}, number = {1}, pages = {71--91}, doi = {10.1111/j.1467-9868.2009.00726.x}}
+@article{satopaa2014combining,
+  author = {Satop{\"a}{\"a}, Ville A. and Baron, Jonathan and Foster, Dean P. and Mellers, Barbara A. and Tetlock, Philip E. and Ungar, Lyle H.}, title = {Combining Multiple Probability Predictions Using a Simple Logit Model},
+  journal = {International Journal of Forecasting}, year = {2014}, volume = {30}, number = {2}, pages = {344--356}, doi = {10.1016/j.ijforecast.2013.09.009}}
+@article{baron2014extreme,
+  author = {Baron, Jonathan and Mellers, Barbara A. and Tetlock, Philip E. and Stone, Eric and Ungar, Lyle H.}, title = {Two Reasons to Make Aggregated Probability Forecasts More Extreme},
+  journal = {Decision Analysis}, year = {2014}, volume = {11}, number = {2}, pages = {133--145}, doi = {10.1287/deca.2014.0293}}
+@book{surowiecki2004wisdom,
+  author = {Surowiecki, James}, title = {The Wisdom of Crowds}, publisher = {Doubleday}, year = {2004}}
+@book{tetlock2015superforecasting,
+  author = {Tetlock, Philip E. and Gardner, Dan}, title = {Superforecasting: The Art and Science of Prediction}, publisher = {Crown}, year = {2015}}
+@article{wolfers2004prediction,
+  author = {Wolfers, Justin and Zitzewitz, Eric}, title = {Prediction Markets},
+  journal = {Journal of Economic Perspectives}, year = {2004}, volume = {18}, number = {2}, pages = {107--126}, doi = {10.1257/0895330041371321}}
+@article{arrow2008promise,
+  author = {Arrow, Kenneth J. and Forsythe, Robert and Gorham, Michael and Hahn, Robert and Hanson, Robin and Ledyard, John O. and Levmore, Saul and Litan, Robert and Milgrom, Paul and Nelson, Forrest D. and Neumann, George R. and Ottaviani, Marco and Schelling, Thomas C. and Shiller, Robert J. and Smith, Vernon L. and Snowberg, Erik and Sunstein, Cass R. and Tetlock, Paul C. and Tetlock, Philip E. and Varian, Hal R. and Wolfers, Justin and Zitzewitz, Eric}, title = {The Promise of Prediction Markets},
+  journal = {Science}, year = {2008}, volume = {320}, number = {5878}, pages = {877--878}, doi = {10.1126/science.1157679}}
+@article{berg2008longrun,
+  author = {Berg, Joyce E. and Nelson, Forrest D. and Rietz, Thomas A.}, title = {Prediction Market Accuracy in the Long Run},
+  journal = {International Journal of Forecasting}, year = {2008}, volume = {24}, number = {2}, pages = {285--300}, doi = {10.1016/j.ijforecast.2008.03.007}}
+@article{hanson2013vote,
+  author = {Hanson, Robin}, title = {Shall We Vote on Values, But Bet on Beliefs?},
+  journal = {Journal of Political Philosophy}, year = {2013}, volume = {21}, number = {2}, pages = {151--178}, doi = {10.1111/jopp.12008}}
+@article{kelly1956newinterpretation,
+  author = {Kelly, J. L., Jr.}, title = {A New Interpretation of Information Rate},
+  journal = {The Bell System Technical Journal}, year = {1956}, volume = {35}, number = {4}, pages = {917--926}, doi = {10.1002/j.1538-7305.1956.tb03809.x}}
+@incollection{thorp2006kelly,
+  author = {Thorp, Edward O.}, title = {The Kelly Criterion in Blackjack, Sports Betting, and the Stock Market},
+  booktitle = {Handbook of Asset and Liability Management}, publisher = {North-Holland}, year = {2006}, volume = {1}, pages = {385--428}}
+@book{maclean2011kelly,
+  editor = {MacLean, Leonard C. and Thorp, Edward O. and Ziemba, William T.}, title = {The Kelly Capital Growth Investment Criterion: Theory and Practice},
+  publisher = {World Scientific}, year = {2011}}
+@misc{buterin2024infofinance,
+  author = {Buterin, Vitalik}, title = {From Prediction Markets to Info Finance},
+  howpublished = {\url{https://vitalik.eth.limo/general/2024/11/09/infofinance.html}}, year = {2024}}
 
-@article{gode1993allocative,
-  author  = {Gode, Dhananjay K. and Sunder, Shyam},
-  title   = {Allocative Efficiency of Markets with Zero-Intelligence Traders:
-             Market as a Partial Substitute for Individual Rationality},
-  journal = {Journal of Political Economy},
-  year    = {1993}, volume = {101}, number = {1}, pages = {119--137}
-}
-
-@article{gjerstad1998price,
-  author  = {Gjerstad, Steven and Dickhaut, John},
-  title   = {Price Formation in Double Auctions},
-  journal = {Games and Economic Behavior},
-  year    = {1998}, volume = {22}, number = {1}, pages = {1--29}
-}
-
-@article{budish2015hft,
-  author  = {Budish, Eric and Cramton, Peter and Shim, John},
-  title   = {The High-Frequency Trading Arms Race: Frequent Batch Auctions as a Market Design Response},
-  journal = {The Quarterly Journal of Economics},
-  year    = {2015}, volume = {130}, number = {4}, pages = {1547--1621}
-}
-
-% ===================== Distributional forecasting =====================
-
+% ===================== Microprediction & composition =====================
 @book{cotton2022microprediction,
-  author    = {Cotton, Peter},
-  title     = {Microprediction: Building an Open AI Network},
-  publisher = {MIT Press}, year = {2022}, address = {Cambridge, MA}
-}
-
+  author = {Cotton, Peter}, title = {Microprediction: Building an Open AI Network},
+  publisher = {MIT Press}, year = {2022}, address = {Cambridge, MA}, isbn = {978-0-262-04732-6}}
 @misc{monteprediction,
-  author = {Cotton, Peter},
-  title  = {Monteprediction: A Monte Carlo Distributional Forecasting Contest},
-  howpublished = {\url{https://monteprediction.com}}
-}
-
-% ===================== Composition / pipelines =====================
-
+  author = {Cotton, Peter}, title = {Monteprediction: A Monte Carlo Distributional Forecasting Contest},
+  howpublished = {\url{https://monteprediction.com}}}
 @misc{cotton_skaters,
-  author = {Cotton, Peter},
-  title  = {skaters: Fast online time-series models with composable transforms},
-  howpublished = {\url{https://github.com/microprediction/skaters}},
-  note   = {A dependency-free successor to the timemachines skater interface}
-}
-
+  author = {Cotton, Peter}, title = {skaters: Fast online time-series models with composable transforms},
+  howpublished = {\url{https://github.com/microprediction/skaters}}}
 @misc{cotton_timemachines,
-  author = {Cotton, Peter},
-  title  = {timemachines: Time-series prediction with a uniform "skater" interface},
-  howpublished = {\url{https://github.com/microprediction/timemachines}}
-}
-
-@article{dawid1984present,
-  author  = {Dawid, A. Philip},
-  title   = {Present Position and Potential Developments: Some Personal Views. Statistical Theory: The Prequential Approach},
-  journal = {Journal of the Royal Statistical Society A},
-  year    = {1984}, volume = {147}, number = {2}, pages = {278--292}
-}
-
-@article{banerjee2005clustering,
-  author  = {Banerjee, Arindam and Merugu, Srujana and Dhillon, Inderjit S. and Ghosh, Joydeep},
-  title   = {Clustering with Bregman Divergences},
-  journal = {Journal of Machine Learning Research},
-  year    = {2005}, volume = {6}, pages = {1705--1749}
-}
-
-@article{rosenblatt1952remarks,
-  author  = {Rosenblatt, Murray},
-  title   = {Remarks on a Multivariate Transformation},
-  journal = {The Annals of Mathematical Statistics},
-  year    = {1952}, volume = {23}, number = {3}, pages = {470--472}
-}
+  author = {Cotton, Peter}, title = {timemachines: Time-series prediction with a uniform skater interface},
+  howpublished = {\url{https://github.com/microprediction/timemachines}}}
