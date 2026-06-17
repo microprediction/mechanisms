@@ -10,6 +10,10 @@
   --ink: #0f2730;
 }
 * { box-sizing: border-box; }
+/* Always reserve the scrollbar gutter so the centred header/main do not shift
+   horizontally between short (no scrollbar) and tall (scrollbar) pages. */
+html { scrollbar-gutter: stable; }
+@supports not (scrollbar-gutter: stable) { html { overflow-y: scroll; } }
 html, body {
   margin: 0; padding: 0;
   background: var(--bg); color: var(--text);
