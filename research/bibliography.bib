@@ -136,6 +136,54 @@
   journal = {Electronic Journal of Statistics}, year = {2016}, volume = {10}, number = {1}, pages = {806--854},
   doi = {10.1214/16-EJS1126}}
 
+% ===================== Property elicitation, elicitability & the geometry of scoring rules =====================
+@article{hendrickson1971proper,
+  author = {Hendrickson, Arlo D. and Buehler, Robert J.}, title = {Proper Scores for Probability Forecasters},
+  journal = {The Annals of Mathematical Statistics}, year = {1971}, volume = {42}, number = {6}, pages = {1916--1921},
+  doi = {10.1214/aoms/1177693057}}
+@article{dawid2007geometry,
+  author = {Dawid, A. Philip}, title = {The Geometry of Proper Scoring Rules},
+  journal = {Annals of the Institute of Statistical Mathematics}, year = {2007}, volume = {59}, number = {1}, pages = {77--93},
+  doi = {10.1007/s10463-006-0099-8}}
+@inproceedings{lambert2008eliciting,
+  author = {Lambert, Nicolas S. and Pennock, David M. and Shoham, Yoav}, title = {Eliciting Properties of Probability Distributions},
+  booktitle = {Proceedings of the 9th ACM Conference on Electronic Commerce (EC)}, year = {2008}, pages = {129--138},
+  doi = {10.1145/1386790.1386813}}
+@article{schervish2009proper,
+  author = {Schervish, Mark J. and Seidenfeld, Teddy and Kadane, Joseph B.}, title = {Proper Scoring Rules, Dominated Forecasts, and Coherence},
+  journal = {Decision Analysis}, year = {2009}, volume = {6}, number = {4}, pages = {202--221}, doi = {10.1287/deca.1090.0153}}
+@article{reid2010composite,
+  author = {Reid, Mark D. and Williamson, Robert C.}, title = {Composite Binary Losses},
+  journal = {Journal of Machine Learning Research}, year = {2010}, volume = {11}, pages = {2387--2422},
+  url = {https://www.jmlr.org/papers/v11/reid10a.html}}
+@article{reid2011information,
+  author = {Reid, Mark D. and Williamson, Robert C.}, title = {Information, Divergence and Risk for Binary Experiments},
+  journal = {Journal of Machine Learning Research}, year = {2011}, volume = {12}, pages = {731--817},
+  url = {https://jmlr.org/papers/v12/reid11a.html}}
+@article{gneiting2011making,
+  author = {Gneiting, Tilmann}, title = {Making and Evaluating Point Forecasts},
+  journal = {Journal of the American Statistical Association}, year = {2011}, volume = {106}, number = {494}, pages = {746--762},
+  doi = {10.1198/jasa.2011.r10138}}
+@inproceedings{abernethy2012characterization,
+  author = {Abernethy, Jacob D. and Frongillo, Rafael M.}, title = {A Characterization of Scoring Rules for Linear Properties},
+  booktitle = {Proceedings of the 25th Annual Conference on Learning Theory (COLT)}, series = {PMLR}, volume = {23},
+  pages = {27.1--27.13}, year = {2012}, url = {https://proceedings.mlr.press/v23/abernethy12.html}}
+@inproceedings{steinwart2014elicitation,
+  author = {Steinwart, Ingo and Pasin, Chlo{\'e} and Williamson, Robert C. and Zhang, Siyu}, title = {Elicitation and Identification of Properties},
+  booktitle = {Proceedings of the 27th Conference on Learning Theory (COLT)}, series = {PMLR}, volume = {35},
+  pages = {482--526}, year = {2014}, url = {https://proceedings.mlr.press/v35/steinwart14.html}}
+@inproceedings{frongillo2015vector,
+  author = {Frongillo, Rafael M. and Kash, Ian A.}, title = {Vector-Valued Property Elicitation},
+  booktitle = {Proceedings of the 28th Conference on Learning Theory (COLT)}, series = {PMLR}, volume = {40},
+  pages = {710--727}, year = {2015}, url = {https://proceedings.mlr.press/v40/Frongillo15.html}}
+@inproceedings{frongillo2015elicitation,
+  author = {Frongillo, Rafael M. and Kash, Ian A.}, title = {On Elicitation Complexity},
+  booktitle = {Advances in Neural Information Processing Systems 28 (NeurIPS)}, year = {2015},
+  url = {https://papers.nips.cc/paper/5832-on-elicitation-complexity}}
+@article{fissler2016higher,
+  author = {Fissler, Tobias and Ziegel, Johanna F.}, title = {Higher Order Elicitability and Osband's Principle},
+  journal = {The Annals of Statistics}, year = {2016}, volume = {44}, number = {4}, pages = {1680--1707}, doi = {10.1214/16-AOS1439}}
+
 % ===================== Market scoring rules & cost-function makers =====================
 @article{hanson2003combinatorial,
   author = {Hanson, Robin}, title = {Combinatorial Information Market Design},
@@ -192,6 +240,73 @@
 @article{chen2010designing,
   author = {Chen, Yiling and Pennock, David M.}, title = {Designing Markets for Prediction},
   journal = {AI Magazine}, year = {2010}, volume = {31}, number = {4}, pages = {42--52}, doi = {10.1609/aimag.v31i4.2313}}
+
+% ===================== Scoring rules <-> market makers: duality & online learning =====================
+@inproceedings{abernethy2011blackwell,
+  author = {Abernethy, Jacob and Bartlett, Peter L. and Hazan, Elad}, title = {Blackwell Approachability and No-Regret Learning are Equivalent},
+  booktitle = {Proceedings of the 24th Annual Conference on Learning Theory (COLT)}, series = {PMLR}, volume = {19},
+  pages = {27--46}, year = {2011}, url = {https://proceedings.mlr.press/v19/abernethy11b.html}}
+@inproceedings{frongillo2012interpreting,
+  author = {Frongillo, Rafael M. and Della Penna, Nicol{\'a}s and Reid, Mark D.}, title = {Interpreting Prediction Markets: A Stochastic Approach},
+  booktitle = {Advances in Neural Information Processing Systems 25 (NeurIPS)}, year = {2012},
+  url = {https://papers.nips.cc/paper/4529-interpreting-prediction-markets-a-stochastic-approach}}
+@inproceedings{hu2014multiperiod,
+  author = {Hu, Jinli and Storkey, Amos}, title = {Multi-period Trading Prediction Markets with Connections to Machine Learning},
+  booktitle = {Proceedings of the 31st International Conference on Machine Learning (ICML)}, series = {PMLR}, volume = {32},
+  pages = {1773--1781}, year = {2014}, url = {https://proceedings.mlr.press/v32/hu14.html}}
+@inproceedings{frongillo2015convergence,
+  author = {Frongillo, Rafael M. and Reid, Mark D.}, title = {Convergence Analysis of Prediction Markets via Randomized Subspace Descent},
+  booktitle = {Advances in Neural Information Processing Systems 28 (NeurIPS)}, year = {2015},
+  url = {https://proceedings.neurips.cc/paper_files/paper/2015/hash/66be31e4c40d676991f2405aaecc6934-Abstract.html}}
+@article{abernethy2015risk,
+  author = {Abernethy, Jacob D. and Frongillo, Rafael M. and Kutty, Sindhu}, title = {On Risk Measures, Market Making, and Exponential Families},
+  journal = {ACM SIGecom Exchanges}, year = {2015}, volume = {13}, number = {2}, pages = {21--25}, doi = {10.1145/2728732.2728734}}
+@book{hazan2016introduction,
+  author = {Hazan, Elad}, title = {Introduction to Online Convex Optimization},
+  series = {Foundations and Trends in Optimization}, volume = {2}, number = {3--4}, pages = {157--325},
+  year = {2016}, publisher = {Now Publishers}, doi = {10.1561/2400000013}}
+@inproceedings{frongillo2018axiomatic,
+  author = {Frongillo, Rafael and Waggoner, Bo}, title = {An Axiomatic Study of Scoring Rule Markets},
+  booktitle = {9th Innovations in Theoretical Computer Science Conference (ITCS)}, series = {LIPIcs}, volume = {94},
+  pages = {15:1--15:19}, year = {2018}, doi = {10.4230/LIPIcs.ITCS.2018.15}}
+@inproceedings{frongillo2024axiomatic,
+  author = {Frongillo, Rafael and Papireddygari, Maneesha and Waggoner, Bo}, title = {An Axiomatic Characterization of CFMMs and Equivalence to Prediction Markets},
+  booktitle = {15th Innovations in Theoretical Computer Science Conference (ITCS)}, series = {LIPIcs}, volume = {287},
+  pages = {51:1--51:21}, year = {2024}, doi = {10.4230/LIPIcs.ITCS.2024.51}}
+
+% ===================== Wagering mechanisms, decision markets & aggregation dynamics =====================
+@inproceedings{feigenbaum2005computation,
+  author = {Feigenbaum, Joan and Fortnow, Lance and Pennock, David M. and Sami, Rahul}, title = {Computation in a Distributed Information Market},
+  booktitle = {Theoretical Computer Science}, year = {2005}, volume = {343}, number = {1--2}, pages = {114--132},
+  doi = {10.1016/j.tcs.2005.05.010}}
+@inproceedings{lambert2008selffinanced,
+  author = {Lambert, Nicolas S. and Langford, John and Wortman, Jennifer and Chen, Yiling and Reeves, Daniel M. and Shoham, Yoav and Pennock, David M.}, title = {Self-Financed Wagering Mechanisms for Forecasting},
+  booktitle = {Proceedings of the 9th ACM Conference on Electronic Commerce (EC)}, year = {2008}, pages = {170--179},
+  doi = {10.1145/1386790.1386820}}
+@article{hanson2009manipulator,
+  author = {Hanson, Robin and Oprea, Ryan}, title = {A Manipulator Can Aid Prediction Market Accuracy},
+  journal = {Economica}, year = {2009}, volume = {76}, number = {302}, pages = {304--314}, doi = {10.1111/j.1468-0335.2008.00734.x}}
+@inproceedings{othman2010decision,
+  author = {Othman, Abraham and Sandholm, Tuomas}, title = {Decision Rules and Decision Markets},
+  booktitle = {Proceedings of the 9th International Conference on Autonomous Agents and Multiagent Systems (AAMAS)}, year = {2010}, pages = {625--632},
+  url = {https://www.cs.cmu.edu/~sandholm/decision\%20rules\%20and\%20decision\%20markets.AAMAS10.pdf}}
+@inproceedings{chen2011decision,
+  author = {Chen, Yiling and Kash, Ian and Ruberry, Mike and Shnayder, Victor}, title = {Decision Markets with Good Incentives},
+  booktitle = {Internet and Network Economics (WINE 2011)}, series = {Lecture Notes in Computer Science}, volume = {7090},
+  pages = {72--83}, year = {2011}, doi = {10.1007/978-3-642-25510-6_7}}
+@article{ostrovsky2012information,
+  author = {Ostrovsky, Michael}, title = {Information Aggregation in Dynamic Markets with Strategic Traders},
+  journal = {Econometrica}, year = {2012}, volume = {80}, number = {6}, pages = {2595--2647}, doi = {10.3982/ECTA8479}}
+@article{lambert2015axiomatic,
+  author = {Lambert, Nicolas S. and Langford, John and Wortman Vaughan, Jennifer and Chen, Yiling and Reeves, Daniel M. and Shoham, Yoav and Pennock, David M.}, title = {An Axiomatic Characterization of Wagering Mechanisms},
+  journal = {Journal of Economic Theory}, year = {2015}, volume = {156}, pages = {389--416}, doi = {10.1016/j.jet.2014.03.012}}
+@article{witkowski2023incentive,
+  author = {Witkowski, Jens and Freeman, Rupert and Wortman Vaughan, Jennifer and Pennock, David M. and Krause, Andreas}, title = {Incentive-Compatible Forecasting Competitions},
+  journal = {Management Science}, year = {2023}, volume = {69}, number = {3}, pages = {1354--1374}, doi = {10.1287/mnsc.2022.4410}}
+@techreport{wolfers2006interpreting,
+  author = {Wolfers, Justin and Zitzewitz, Eric}, title = {Interpreting Prediction Market Prices as Probabilities},
+  institution = {National Bureau of Economic Research}, type = {NBER Working Paper}, number = {12200}, year = {2006},
+  doi = {10.3386/w12200}}
 
 % ===================== Parimutuel, dynamic & combinatorial prediction markets =====================
 @inproceedings{pennock2004dynamic,
@@ -284,6 +399,14 @@
   author = {Cartea, {\'A}lvaro and Drissi, Fay{\c{c}}al and Monga, Marcello}, title = {Decentralized Finance and Automated Market Making: Predictable Loss and Optimal Liquidity Provision},
   journal = {SIAM Journal on Financial Mathematics}, volume = {15}, number = {3}, pages = {931--959}, year = {2024},
   url = {https://arxiv.org/abs/2309.08431}}
+@inproceedings{schlegel2023axioms,
+  author = {Schlegel, Jan Christoph and Kwa{\'s}nicki, Mateusz and Mamageishvili, Akaki}, title = {Axioms for Constant Function Market Makers},
+  booktitle = {Proceedings of the 24th ACM Conference on Economics and Computation (EC)}, year = {2023}, pages = {1079},
+  doi = {10.1145/3580507.3597720}}
+@inproceedings{angeris2024geometry,
+  author = {Angeris, Guillermo and Chitra, Tarun and Diamandis, Theo and Evans, Alex and Kulkarni, Kshitij}, title = {The Geometry of Constant Function Market Makers},
+  booktitle = {Proceedings of the 25th ACM Conference on Economics and Computation (EC)}, year = {2024}, pages = {732},
+  doi = {10.1145/3670865.3673500}}
 
 % ===================== Order books, double auctions & batch auctions =====================
 @article{smith1962experimental,
@@ -398,11 +521,32 @@
 @misc{zhang2025stochastically,
   author = {Zhang, Yichi and Xu, Shengwei and Pennock, David and Schoenebeck, Grant}, title = {Stochastically Dominant Peer Prediction},
   year = {2025}, howpublished = {arXiv:2506.02259}, url = {https://arxiv.org/abs/2506.02259}}
+@inproceedings{kong2020information,
+  author = {Kong, Yuqing and Schoenebeck, Grant and Tao, Biaoshuai and Yu, Fang-Yi}, title = {Information Elicitation Mechanisms for Statistical Estimation},
+  booktitle = {Proceedings of the AAAI Conference on Artificial Intelligence}, year = {2020}, volume = {34}, number = {2}, pages = {2095--2102},
+  doi = {10.1609/aaai.v34i02.5583}}
+@inproceedings{schoenebeck2020two,
+  author = {Schoenebeck, Grant and Yu, Fang-Yi}, title = {Two Strongly Truthful Mechanisms for Three Heterogeneous Agents Answering One Question},
+  booktitle = {Web and Internet Economics (WINE 2020)}, series = {Lecture Notes in Computer Science}, volume = {12495},
+  pages = {119--132}, year = {2020}, doi = {10.1007/978-3-030-64946-3_9}}
+@article{liu2022surrogate,
+  author = {Liu, Yang and Wang, Juntao and Chen, Yiling}, title = {Surrogate Scoring Rules},
+  journal = {ACM Transactions on Economics and Computation}, year = {2022}, volume = {10}, number = {3}, pages = {1--36},
+  doi = {10.1145/3565559}}
 
 % ===================== Forecast aggregation, prediction-market economics & info finance =====================
+@article{galton1907vox,
+  author = {Galton, Francis}, title = {Vox Populi}, journal = {Nature},
+  year = {1907}, volume = {75}, number = {1949}, pages = {450--451}, doi = {10.1038/075450a0}}
 @article{stone1961opinionpool,
   author = {Stone, M.}, title = {The Opinion Pool}, journal = {The Annals of Mathematical Statistics},
   year = {1961}, volume = {32}, number = {4}, pages = {1339--1342}, doi = {10.1214/aoms/1177704873}}
+@article{prelec2017solution,
+  author = {Prelec, Dra{\v{z}}en and Seung, H. Sebastian and McCoy, John}, title = {A Solution to the Single-Question Crowd Wisdom Problem},
+  journal = {Nature}, year = {2017}, volume = {541}, number = {7638}, pages = {532--535}, doi = {10.1038/nature21054}}
+@article{palley2019extracting,
+  author = {Palley, Asa B. and Soll, Jack B.}, title = {Extracting the Wisdom of Crowds When Information Is Shared},
+  journal = {Management Science}, year = {2019}, volume = {65}, number = {5}, pages = {2291--2309}, doi = {10.1287/mnsc.2018.3047}}
 @article{genest1986combining,
   author = {Genest, Christian and Zidek, James V.}, title = {Combining Probability Distributions: A Critique and an Annotated Bibliography},
   journal = {Statistical Science}, year = {1986}, volume = {1}, number = {1}, pages = {114--135}, doi = {10.1214/ss/1177013825}}
