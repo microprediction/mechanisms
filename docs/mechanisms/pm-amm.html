@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -160,6 +161,35 @@
       is what the reference implementation here exposes. The dynamic form layers a
       time-dependent $L_t$ on top of the same trading function.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>The pm-AMM price as a function of the reserve difference $y-x$, for liquidity
+    scale $L$. Note the S-curve concentrating sensitivity around the 0.50 mark.</p>
+    <div class="demo" id="pmamm-demo">
+      <div class="row"><label>reserve diff y−x</label>
+        <input type="range" id="pm-d" min="-150" max="150" value="0" step="5">
+        <span class="readout" id="pm-d-val"></span></div>
+      <div class="row"><label>liquidity L</label>
+        <input type="range" id="pm-L" min="20" max="200" value="60" step="10">
+        <span class="readout" id="pm-L-val"></span></div>
+      <div class="row"><label>price YES</label><span class="bar" id="pm-bar"></span></div>
+      <div class="readout" id="pm-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const pct = (x) => (100 * x).toFixed(1) + "%";
+        function update() {
+          const d = +$("pm-d").value, L = +$("pm-L").value;
+          const price = M.pmAmmPrice(0, d, L);
+          $("pm-d-val").textContent = d; $("pm-L-val").textContent = L;
+          $("pm-bar").style.width = (220 * price) + "px";
+          $("pm-out").textContent = `price YES = ${pct(price)} · price NO = ${pct(1 - price)}`;
+        }
+        ["pm-d", "pm-L"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/pm_amm.py</code> &middot; Demo: <code>examples/sim_pm_amm.py</code> &middot; Related: <a href="./amm.html">CFMMs</a>, <a href="./parimutuel.html">parimutuel</a></p>
   </main>

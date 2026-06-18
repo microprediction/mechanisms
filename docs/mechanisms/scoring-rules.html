@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -191,6 +192,37 @@
       outcome it motivates the correlated-report scores of
       <a href="./peer-prediction.html">peer prediction</a>.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>A two-outcome forecast $p=[p_A,\,1-p_A]$ scored (loss form, lower is better)
+    against the outcome that actually occurs. All three rules are strictly proper —
+    each is minimised in expectation by reporting your true belief.</p>
+    <div class="demo" id="sr-demo">
+      <div class="row"><label>forecast p(A)</label>
+        <input type="range" id="sr-p" min="1" max="99" value="70" step="1">
+        <span class="readout" id="sr-p-val"></span></div>
+      <div class="row"><label>outcome</label>
+        <label style="min-width:auto"><input type="radio" name="sr-y" value="0" checked> A occurs</label>
+        <label style="min-width:auto">&nbsp;&nbsp;<input type="radio" name="sr-y" value="1"> B occurs</label></div>
+      <div class="readout" id="sr-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        function update() {
+          const pA = +$("sr-p").value / 100, p = [pA, 1 - pA];
+          const y = +document.querySelector('input[name="sr-y"]:checked').value;
+          $("sr-p-val").textContent = pA.toFixed(2);
+          $("sr-out").innerHTML =
+            `log score = ${M.logScore(p, y).toFixed(4)} &nbsp;·&nbsp; ` +
+            `Brier score = ${M.brierScore(p, y).toFixed(4)} &nbsp;·&nbsp; ` +
+            `spherical score = ${M.sphericalScore(p, y).toFixed(4)}`;
+        }
+        $("sr-p").addEventListener("input", update);
+        document.querySelectorAll('input[name="sr-y"]').forEach((r) => r.addEventListener("change", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/scoring_rules.py</code> &middot;
       Demo: <code>examples/sim_scoring_rules.py</code> &middot;

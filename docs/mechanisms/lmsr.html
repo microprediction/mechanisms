@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -149,6 +150,41 @@
       making — one emphasising bounded-loss elicitation, the other fees and capital
       efficiency.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>A two-outcome LMSR. Drag to buy shares of outcome A; watch the prices
+    (implied probabilities) move and the cost accrue. The market maker's loss is
+    bounded by $b\log n$.</p>
+    <div class="demo" id="lmsr-demo">
+      <div class="row"><label>liquidity b</label>
+        <input type="range" id="lmsr-b" min="20" max="300" value="100" step="10">
+        <span class="readout" id="lmsr-b-val"></span></div>
+      <div class="row"><label>buy A (shares)</label>
+        <input type="range" id="lmsr-q" min="0" max="300" value="0" step="5">
+        <span class="readout" id="lmsr-q-val"></span></div>
+      <div class="row"><label>price A</label><span class="bar" id="lmsr-bar-a"></span></div>
+      <div class="row"><label>price B</label><span class="bar alt" id="lmsr-bar-b"></span></div>
+      <div class="readout" id="lmsr-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const pct = (x) => (100 * x).toFixed(1) + "%";
+        function update() {
+          const b = +$("lmsr-b").value, qa = +$("lmsr-q").value;
+          const p = M.lmsrPrices([qa, 0], b);
+          const cost = M.lmsrCostToTrade([0, 0], [qa, 0], b);
+          $("lmsr-b-val").textContent = b;
+          $("lmsr-q-val").textContent = qa;
+          $("lmsr-bar-a").style.width = (220 * p[0]) + "px";
+          $("lmsr-bar-b").style.width = (220 * p[1]) + "px";
+          $("lmsr-out").textContent =
+            `price A = ${pct(p[0])}, price B = ${pct(p[1])}  ·  cost so far = ${cost.toFixed(2)}  ·  max MM loss = ${M.lmsrMaxLoss(2, b).toFixed(2)}`;
+        }
+        ["lmsr-b", "lmsr-q"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/lmsr.py</code> &middot; Demo: <code>examples/sim_lmsr.py</code> &middot; Related: <a href="./cmm.html">cost-function makers</a>, <a href="./scoring-rules.html">scoring rules</a>, <a href="./amm.html">CFMMs</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
   </main>

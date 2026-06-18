@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -145,6 +146,34 @@
       emphasising bounded-loss information elicitation, the DeFi side emphasising
       fees, impermanent loss, and capital efficiency.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>Sell asset X into an $x\cdot y=k$ pool: see the output, the new spot price,
+    and the impermanent loss an LP suffers for the resulting price move.</p>
+    <div class="demo" id="amm-demo">
+      <div class="row"><label>sell X</label>
+        <input type="range" id="amm-dx" min="0" max="500" value="100" step="10">
+        <span class="readout" id="amm-dx-val"></span></div>
+      <div class="readout" id="amm-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const pct = (x) => (100 * x).toFixed(1) + "%";
+        function update() {
+          const x = 1000, y = 1000, fee = 0.003, dx = +$("amm-dx").value;
+          $("amm-dx-val").textContent = dx;
+          if (dx === 0) { $("amm-out").textContent = "spot price 1.0000 · no trade"; return; }
+          const out = M.cpammAmountOut(x, y, dx, fee);
+          const spot = (y - out) / (x + dx);
+          const il = M.impermanentLoss(spot / (y / x));
+          $("amm-out").innerHTML =
+            `received ${out.toFixed(2)} Y · new spot price ${spot.toFixed(4)} · impermanent loss ${pct(il)}`;
+        }
+        $("amm-dx").addEventListener("input", update);
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/amm.py</code> &middot;
       Demo: <code>examples/sim_amm.py</code> &middot;

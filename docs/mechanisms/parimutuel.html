@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -137,6 +138,44 @@
       the teaching variant uses the instantaneous share-ratio price above with a
       linear cost approximation.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>Stakes on three outcomes set the pool fractions (implied probabilities) and
+    the decimal odds, net of a takeout.</p>
+    <div class="demo" id="pari-demo">
+      <div class="row"><label>stake on A</label>
+        <input type="range" id="pa" min="0" max="500" value="150" step="10">
+        <span class="readout" id="pa-val"></span></div>
+      <div class="row"><label>stake on B</label>
+        <input type="range" id="pb" min="0" max="500" value="100" step="10">
+        <span class="readout" id="pb-val"></span></div>
+      <div class="row"><label>stake on C</label>
+        <input type="range" id="pc" min="0" max="500" value="50" step="10">
+        <span class="readout" id="pc-val"></span></div>
+      <div class="row"><label>takeout</label>
+        <input type="range" id="ptk" min="0" max="30" value="10" step="1">
+        <span class="readout" id="ptk-val"></span></div>
+      <div class="readout" id="pari-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const pct = (x) => (100 * x).toFixed(1) + "%";
+        function update() {
+          const a = +$("pa").value, b = +$("pb").value, c = +$("pc").value, tk = +$("ptk").value / 100;
+          const stakes = [a, b, c];
+          const probs = M.parimutuelProbabilities(stakes);
+          $("pa-val").textContent = a; $("pb-val").textContent = b;
+          $("pc-val").textContent = c; $("ptk-val").textContent = (tk * 100).toFixed(0) + "%";
+          const odds = stakes.map((_, i) => M.parimutuelPayoutPerUnit(stakes, i, tk));
+          $("pari-out").innerHTML =
+            `implied&nbsp;P = [${probs.map(pct).join(", ")}]<br>` +
+            `decimal odds = [${odds.map((o) => isFinite(o) ? o.toFixed(2) : "∞").join(", ")}]`;
+        }
+        ["pa", "pb", "pc", "ptk"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/parimutuel.py</code> &middot; Demo: <code>examples/sim_parimutuel.py</code> &middot; Related: <a href="./pm-amm.html">pm-AMM</a>, <a href="./lmsr.html">LMSR</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/parimutuel-and-scoring-rules.md">parimutuel-and-scoring-rules.md</a></p>
   </main>
