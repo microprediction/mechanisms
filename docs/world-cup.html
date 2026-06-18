@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — A World Cup of Prediction Markets</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">mechanisms</a>
+      <nav>
+        <a href="./catalog.html">Catalog</a>
+        <a href="./demos.html">Demos</a>
+        <a href="./map.html">Map</a>
+        <a href="./implementations.html">Implementations</a>
+        <a href="./papers.html">Papers</a>
+        <a href="./bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
+    <h1>A World Cup of Prediction Markets</h1>
+    <p class="subtitle">Who actually built this stuff? An unscientific league table
+    of national contributions to market mechanisms — whimsical in its rankings,
+    sober in its facts. Every claim links to a real source; the medal count does
+    not.</p>
+
+    <h2>The final: 🇦🇺 Australia vs 🇺🇸 USA</h2>
+    <p>
+      The two heavyweights split the sport cleanly between <em>hardware</em> and
+      <em>theory</em>.
+    </p>
+    <p>
+      <strong>Australia built the machine.</strong> The engineer
+      <strong>George Julius</strong> patented an automatic
+      <a href="./mechanisms/parimutuel.html">totalisator</a> in 1909 and installed
+      the first at Ellerslie in 1913; his Automatic Totalisators Ltd then exported
+      room-sized mechanical computers of shafts and adders that aggregated bets from
+      hundreds of windows and recomputed the live odds in real time — a working
+      analog computer that, as Brian Conlon argues, was plausibly the world's first
+      large-scale, multi-user, real-time computing system, decades before the
+      electronic kind. They turned a betting pool into a computer.
+    </p>
+    <p>
+      <strong>America wrote the rules and never stopped trading.</strong> The theory:
+      <strong>Brier</strong>'s proper score out of the Weather Bureau (1950),
+      <strong>Kelly</strong>'s growth-optimal betting at Bell Labs (1956),
+      <strong>Vickrey</strong>'s second-price auction (1961), and
+      <strong>Hanson</strong>'s logarithmic market scoring rule and futarchy. The
+      markets: organised <a href="./mechanisms/aggregation.html">election betting</a>
+      on the Curb and in Broadway hotels from the 1860s to the 1940s (so accurate the
+      mid-October favourite won 11 of 15 elections, 1884–1940), the
+      <strong>Iowa Electronic Markets</strong> (1988), the short-lived DARPA
+      <strong>Policy Analysis Market</strong> (2003), and the on-chain era of
+      <a href="./mechanisms/amm.html">Uniswap</a> and the
+      <a href="./mechanisms/perp.html">perpetual swap</a>.
+    </p>
+    <p class="muted">
+      <strong>Verdict.</strong> Australia has the single greatest artefact; America
+      has the deepest bench, from Bell Labs to the blockchain. Call it a draw and
+      send it to penalties — or note that the first tote was actually plugged in
+      across the Tasman, and award the assist to New Zealand.
+    </p>
+
+    <h2>The full table</h2>
+    <p>Ranked by a rigorous blend of priority, ingenuity, and how good the story is.</p>
+    <div class="table-wrap">
+      <table class="impl">
+        <thead><tr><th>#</th><th>Nation</th><th>Signature contribution</th><th>Era</th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td>🇦🇺 Australia</td><td>Julius's automatic <a href="./mechanisms/parimutuel.html">totalisator</a> — the parimutuel as a real-time computer; Automatic Totalisators Ltd exported it worldwide</td><td>1909–</td></tr>
+          <tr><td>2</td><td>🇺🇸 USA</td><td>Brier &amp; Kelly; <a href="./mechanisms/cda.html">Vickrey</a>'s second-price auction; Hanson's <a href="./mechanisms/lmsr.html">LMSR</a> &amp; <a href="./mechanisms/decision-market.html">futarchy</a>; Iowa Electronic Markets; the Policy Analysis Market; <a href="./mechanisms/amm.html">Uniswap</a> &amp; the <a href="./mechanisms/perp.html">perpetual swap</a></td><td>1860s–</td></tr>
+          <tr><td>3</td><td>🇫🇷 France</td><td>Joseph Oller invents the <a href="./mechanisms/parimutuel.html">pari-mutuel</a> (1867) — then founds the Moulin Rouge; Léon Walras's <em>tâtonnement</em> and the imaginary auctioneer behind &ldquo;the market clears&rdquo;</td><td>1867–1874</td></tr>
+          <tr><td>4</td><td>🇳🇿 New Zealand</td><td>Hosted the very first automatic tote, Ellerslie Racecourse, Auckland — the assist of the century</td><td>1913</td></tr>
+          <tr><td>5</td><td>🇬🇧 UK</td><td>Auctions &ldquo;by inch of candle&rdquo; (Pepys watched one in 1660); I. J. Good's Bletchley-forged Bayesianism and <em>Rational Decisions</em> (1952), an origin of <a href="./mechanisms/scoring-rules.html">proper scoring</a></td><td>1660–1952</td></tr>
+          <tr><td>6</td><td>🇳🇱 Netherlands</td><td>The Dutch (descending) auction and the Aalsmeer flower <em>clock</em> — a dial that measures money, not time</td><td>1911–</td></tr>
+          <tr><td>7</td><td>🇮🇪 Ireland</td><td>Intrade / Tradesports — the great real-money election exchange, and a cautionary tale (1999–2013)</td><td>1999–2013</td></tr>
+          <tr><td>8</td><td>🇨🇦 Canada</td><td>Vitalik Buterin's path-independent market makers (2017), the writing that seeded the constant-function <a href="./mechanisms/amm.html">AMM</a></td><td>2017</td></tr>
+          <tr><td>9</td><td>🇮🇱 Israel</td><td>Bancor's smart-token automated liquidity (2017), an early <a href="./mechanisms/amm.html">AMM</a> ancestor</td><td>2017</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2>Contested citizenships (VAR is reviewing)</h2>
+    <ul>
+      <li><strong>Joseph Oller</strong> was Catalan, born in Terrassa — so 🇪🇸 Spain lodges a protest over France's pari-mutuel goal.</li>
+      <li><strong>Vitalik Buterin</strong> is Russian-born and Canadian-raised; the AMM assist has dual nationality.</li>
+      <li>The <strong>perpetual swap</strong> launched at BitMEX, incorporated in the Seychelles and run from Hong Kong 🇭🇰 — the most offshore goal in the tournament.</li>
+      <li>The <strong>Policy Analysis Market</strong> is often miscalled a market to bet on assassinations; it wasn't — it was a market on Middle-East macro indicators, killed within a day of a 2003 press conference. We score the design, not the headline.</li>
+    </ul>
+
+    <p class="muted" style="margin-top:18px;">
+      Sources and the real mathematics are one click away: the
+      <a href="./catalog.html">catalog</a>, the
+      <a href="./bibliography.html">bibliography</a> (incl. Rhode &amp; Strumpf on the
+      old election markets, and Conlon on the totalisator), and the
+      <a href="./mechanisms/parimutuel.html#demo">parimutuel page</a>'s homage to
+      Julius. Disagree with the ranking? That is the entire point of a league table.
+    </p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>
