@@ -156,3 +156,33 @@ def test_pdlp_parity():
     assert_parity("minCollateral", [1.0, 4.0, 2000.0], pdlp.min_collateral(1.0, 4.0, 2000.0))
     assert_parity("liquidationPrice", [1.0, 4.0, 2000.0, None],
                   pdlp.liquidation_price(1.0, 4.0, 2000.0))
+
+
+def test_cda_parity():
+    from mechanisms import cda
+    book = cda.LimitOrderBook()
+    for price, qty in [(100.0, 3.0), (98.0, 4.0), (102.0, 5.0)]:
+        book.submit(cda.Order("sell", price, qty, "mm"))
+    trades = book.submit(cda.Order("buy", 101.0, 6.0, "taker"))
+    filled = sum(t.qty for t in trades)
+    cost = sum(t.qty * t.price for t in trades)
+    asks = [[100.0, 3.0], [98.0, 4.0], [102.0, 5.0]]
+    np.testing.assert_allclose(run_js("cdaSweepBuy", [asks, 101.0, 6.0]), [filled, cost], atol=1e-9)
+
+
+def test_peer_prediction_parity():
+    from mechanisms import peer_prediction as pp
+    assert_parity("outputAgreement", [1, 1], pp.output_agreement(1, 1))
+    assert_parity("outputAgreement", [1, 0], pp.output_agreement(1, 0))
+
+
+def test_hybrid_market_parity():
+    from mechanisms import hybrid_market as hm
+    m = hm.HybridBinaryMarket(b=100.0)
+    m.rest(hm.NO, 0.4, 2.0)
+    m.rest(hm.NO, 0.3, 3.0)
+    rep = m.market_buy(hm.YES, 6.0)
+    opp_book = [[0.4, 2.0], [0.3, 3.0]]
+    js = run_js("hybridMarketBuy", [0, 6.0, 100.0, opp_book])
+    np.testing.assert_allclose(
+        js, [rep["p2p_filled"], rep["amm_filled"], rep["total_cost"]], atol=1e-9)

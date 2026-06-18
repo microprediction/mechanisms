@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -140,6 +141,37 @@
       first <em>within</em> an interval confers no advantage: the speed contest
       collapses into competition on price, and the sniping incentive disappears.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>A market buy sweeps the resting asks cheapest-first, each fill at the
+    resting (maker) price — so a larger order walks up the book and pays a higher
+    average. Book: 4@98, 3@100, 5@102. Set your order's size and limit price.</p>
+    <div class="demo" id="cda-demo">
+      <div class="row"><label>buy size</label>
+        <input type="range" id="cda-q" min="0" max="12" value="6" step="1">
+        <span class="readout" id="cda-q-val"></span></div>
+      <div class="row"><label>limit price</label>
+        <input type="range" id="cda-lp" min="97" max="103" value="103" step="1">
+        <span class="readout" id="cda-lp-val"></span></div>
+      <div class="readout" id="cda-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const asks = [[98, 4], [100, 3], [102, 5]];
+        function update() {
+          const q = +$("cda-q").value, lp = +$("cda-lp").value;
+          $("cda-q-val").textContent = q;
+          $("cda-lp-val").textContent = lp;
+          const r = M.cdaSweepBuy(asks, lp, q), filled = r[0], cost = r[1];
+          $("cda-out").textContent = filled > 0
+            ? `filled ${filled} @ avg ${(cost / filled).toFixed(3)} · total cost ${cost.toFixed(1)}`
+            : "no fill (limit below best ask, or size 0)";
+        }
+        ["cda-q", "cda-lp"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/cda.py</code> &middot;
       Demo: <code>examples/sim_cda.py</code> &middot;

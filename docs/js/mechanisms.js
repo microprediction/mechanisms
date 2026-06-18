@@ -265,6 +265,41 @@
     return eta > 0 ? p0 - c / Math.abs(delta) : p0 + c / Math.abs(delta);
   }
 
+  // --- continuous double auction: sweep a resting ask book ----------------
+  function cdaSweepBuy(asks, takerPrice, qty) {
+    const book = asks.map((a) => [a[0], a[1]]).sort((x, y) => x[0] - y[0]);
+    let remaining = qty, filled = 0, cost = 0;
+    for (const lvl of book) {
+      if (remaining <= 1e-12 || takerPrice < lvl[0]) break;
+      const fill = Math.min(remaining, lvl[1]);
+      filled += fill; cost += fill * lvl[0]; remaining -= fill;
+    }
+    return [filled, cost];
+  }
+
+  // --- peer prediction: output agreement ----------------------------------
+  function outputAgreement(reportA, reportB) {
+    return reportA === reportB ? 1.0 : 0.0;
+  }
+
+  // --- hybrid CLOB+AMM binary market: one buy from a fresh LMSR -----------
+  function hybridMarketBuy(side, qty, b, oppBook) {
+    let remaining = qty, p2pCost = 0, p2pFilled = 0;
+    const book = oppBook.map((o) => o.slice()).sort((a, c) => c[0] - a[0]);
+    for (const lvl of book) {
+      if (remaining <= 1e-12) break;
+      const take = Math.min(remaining, lvl[1]);
+      p2pCost += take * (1 - lvl[0]); p2pFilled += take; remaining -= take;
+    }
+    let ammCost = 0, ammFilled = 0;
+    if (remaining > 1e-12) {
+      const delta = side === 0 ? [remaining, 0] : [0, remaining];
+      ammCost = lmsrCostToTrade([0, 0], delta, b);
+      ammFilled = remaining;
+    }
+    return [p2pFilled, ammFilled, p2pCost + ammCost];
+  }
+
   const Mechanisms = {
     logScore,
     brierScore,
@@ -298,6 +333,9 @@
     linearFundingRate,
     minCollateral,
     liquidationPrice,
+    cdaSweepBuy,
+    outputAgreement,
+    hybridMarketBuy,
   };
 
   if (typeof module !== "undefined" && module.exports) {

@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -77,6 +78,34 @@
       <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_hybrid_market.py">examples/sim_hybrid_market.py</a>
       contrasts an AMM-only fill with the hybrid.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>Buy YES shares: the matcher first pairs you with resting NO bids
+    (complementary, zero slippage — a NO bid at $b$ funds a YES fill at $1-b$),
+    then routes the remainder to the LMSR backstop. Book: NO bids 2@0.40, 3@0.30.
+    Small orders fill peer-to-peer; large ones spill into the AMM.</p>
+    <div class="demo" id="hy-demo">
+      <div class="row"><label>buy YES (shares)</label>
+        <input type="range" id="hy-q" min="0" max="20" value="6" step="1">
+        <span class="readout" id="hy-q-val"></span></div>
+      <div class="readout" id="hy-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const oppBook = [[0.40, 2], [0.30, 3]], b = 100;
+        function update() {
+          const q = +$("hy-q").value;
+          $("hy-q-val").textContent = q;
+          if (q === 0) { $("hy-out").textContent = "—"; return; }
+          const r = M.hybridMarketBuy(0, q, b, oppBook), p2p = r[0], amm = r[1], total = r[2];
+          $("hy-out").innerHTML =
+            `P2P fill ${p2p.toFixed(1)} · AMM fill ${amm.toFixed(1)} · total cost ${total.toFixed(3)} · avg price ${(total / q).toFixed(3)}`;
+        }
+        $("hy-q").addEventListener("input", update);
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/hybrid_market.py</code> &middot;
       Demo: <code>examples/sim_hybrid_market.py</code> &middot;

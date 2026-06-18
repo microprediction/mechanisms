@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -190,6 +191,36 @@
       expectation. The demo shows the truthful 10th percentile beating 100% of a
       constant deviator's outcomes.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>The simplest peer mechanism: <em>output agreement</em> pays 1 when two
+    agents' reports match, else 0. It rewards truth-telling when private signals
+    are positively correlated — but note the failure mode it motivates the richer
+    mechanisms above: agents can also collude on a constant report and always
+    score 1 without revealing anything.</p>
+    <div class="demo" id="pp-demo">
+      <div class="row"><label>agent A reports</label>
+        <label style="min-width:auto"><input type="radio" name="pp-a" value="1" checked> 1</label>
+        <label style="min-width:auto">&nbsp;&nbsp;<input type="radio" name="pp-a" value="0"> 0</label></div>
+      <div class="row"><label>agent B reports</label>
+        <label style="min-width:auto"><input type="radio" name="pp-b" value="1" checked> 1</label>
+        <label style="min-width:auto">&nbsp;&nbsp;<input type="radio" name="pp-b" value="0"> 0</label></div>
+      <div class="readout" id="pp-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        function val(name) { return +document.querySelector('input[name="' + name + '"]:checked').value; }
+        function update() {
+          const r = M.outputAgreement(val("pp-a"), val("pp-b"));
+          $("pp-out").textContent = `output-agreement reward = ${r.toFixed(0)}` +
+            (r === 1 ? "  (reports match)" : "  (reports differ)");
+        }
+        document.querySelectorAll('input[name="pp-a"], input[name="pp-b"]').forEach(
+          (el) => el.addEventListener("change", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/peer_prediction.py</code>
       (<code>bayesian_truth_serum</code>, <code>correlated_agreement</code>) &middot;
