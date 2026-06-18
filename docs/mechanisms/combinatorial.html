@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -86,6 +87,42 @@
       starts from independence, buys $A \wedge B$, and watches $P(A \mid B)$ rise
       above $P(A)$ while Bayes consistency holds.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>A combinatorial LMSR over two binary variables (four joint states). Buy
+    shares of the event &ldquo;A=1&rdquo; and of &ldquo;B=1&rdquo;; the maker keeps
+    every marginal and conditional coherent. Betting only on A still moves
+    $P(A\wedge B)$, but leaves $P(B\mid A)=P(B)$ — A and B stay independent.</p>
+    <div class="demo" id="comb-demo">
+      <div class="row"><label>buy shares of A</label>
+        <input type="range" id="comb-a" min="0" max="200" value="50" step="10">
+        <span class="readout" id="comb-a-val"></span></div>
+      <div class="row"><label>buy shares of B</label>
+        <input type="range" id="comb-b" min="0" max="200" value="0" step="10">
+        <span class="readout" id="comb-b-val"></span></div>
+      <div class="readout" id="comb-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const pct = (x) => isFinite(x) ? (100 * x).toFixed(1) + "%" : "—";
+        const b = 100;
+        function update() {
+          const sa = +$("comb-a").value, sb = +$("comb-b").value;
+          $("comb-a-val").textContent = sa;
+          $("comb-b-val").textContent = sb;
+          // states (bit0=A, bit1=B): 0=··, 1=A·, 2=·B, 3=AB
+          const q = [0, sa, sb, sa + sb];
+          const pr = M.combinatorialPrices(q, b);
+          const pA = M.combinatorialMarginal(q, b, 2, 0), pB = M.combinatorialMarginal(q, b, 2, 1);
+          const pAB = pr[3], condBA = pA > 0 ? pAB / pA : NaN;
+          $("comb-out").innerHTML =
+            `P(A) = ${pct(pA)} · P(B) = ${pct(pB)} · P(A∧B) = ${pct(pAB)} · P(B|A) = ${pct(condBA)}`;
+        }
+        ["comb-a", "comb-b"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/combinatorial.py</code> &middot;
       Demo: <code>examples/sim_combinatorial.py</code> &middot;

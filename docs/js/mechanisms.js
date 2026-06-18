@@ -161,6 +161,110 @@
     return ((1 - takeout) * tot) / stakes[winner];
   }
 
+  // --- aggregation (opinion pools) ----------------------------------------
+  function _normWeights(m, weights) {
+    let w = weights ? weights.slice() : new Array(m).fill(1 / m);
+    const s = w.reduce((a, v) => a + v, 0);
+    return w.map((v) => v / s);
+  }
+  function linearOpinionPool(forecasts, weights) {
+    const m = forecasts.length, n = forecasts[0].length;
+    const w = _normWeights(m, weights);
+    const out = new Array(n).fill(0);
+    for (let i = 0; i < m; i++)
+      for (let j = 0; j < n; j++) out[j] += w[i] * forecasts[i][j];
+    return out;
+  }
+  function logarithmicOpinionPool(forecasts, weights) {
+    const m = forecasts.length, n = forecasts[0].length;
+    const w = _normWeights(m, weights);
+    const lp = new Array(n).fill(0);
+    for (let i = 0; i < m; i++)
+      for (let j = 0; j < n; j++)
+        lp[j] += w[i] * Math.log(Math.min(Math.max(forecasts[i][j], 1e-15), 1.0));
+    const mx = Math.max.apply(null, lp);
+    const pool = lp.map((v) => Math.exp(v - mx));
+    const s = pool.reduce((a, v) => a + v, 0);
+    return pool.map((v) => v / s);
+  }
+
+  // --- perpetual futures funding ------------------------------------------
+  function clampVal(x, lo, hi) { return Math.max(lo, Math.min(hi, x)); }
+  function fundingRate(premiumIndex, interestRate, clamp) {
+    if (interestRate === undefined) interestRate = 0.0001;
+    if (clamp === undefined) clamp = 0.0005;
+    return premiumIndex + clampVal(interestRate - premiumIndex, -clamp, clamp);
+  }
+  function fundingPayment(positionNotional, rate) {
+    return positionNotional * rate;
+  }
+
+  // --- frequent batch auction (uniform-price clearing) --------------------
+  function clearUniformPrice(bids, asks) {
+    if (!bids.length || !asks.length) return [null, 0.0];
+    const cand = Array.from(
+      new Set(bids.map((b) => b[0]).concat(asks.map((a) => a[0]))),
+    ).sort((x, y) => x - y);
+    let bestP = null, bestVol = 0.0;
+    for (const p of cand) {
+      let demand = 0, supply = 0;
+      for (const [bp, q] of bids) if (bp >= p) demand += q;
+      for (const [ap, q] of asks) if (ap <= p) supply += q;
+      const vol = Math.min(demand, supply);
+      if (vol > bestVol + 1e-12) { bestP = p; bestVol = vol; }
+    }
+    if (bestVol <= 0) return [null, 0.0];
+    const hi = Math.max.apply(null, bids.filter((b) => b[0] >= bestP).map((b) => b[0]));
+    const lo = Math.min.apply(null, asks.filter((a) => a[0] <= bestP).map((a) => a[0]));
+    return [0.5 * (lo + hi), bestVol];
+  }
+
+  // --- local (Hyvärinen) scoring ------------------------------------------
+  function gaussianHyvarinenScore(y, mu, sigma) {
+    const s2 = sigma * sigma;
+    const d1 = -(y - mu) / s2;
+    const d2 = -1.0 / s2;
+    return d2 + 0.5 * d1 * d1;
+  }
+  function fisherDivergenceGaussian(muP, sigmaP, muQ, sigmaQ) {
+    const sp2 = sigmaP * sigmaP, sq2 = sigmaQ * sigmaQ;
+    const a = 1.0 / sq2 - 1.0 / sp2;
+    const b = muP / sp2 - muQ / sq2;
+    return 0.5 * (a * a * sp2 + Math.pow(a * muP + b, 2));
+  }
+
+  // --- cost-function maker: quadratic potential ---------------------------
+  function quadraticCost(q, alpha) {
+    if (alpha === undefined) alpha = 1.0;
+    let s = 0; for (const x of q) s += x * x;
+    return 0.5 * alpha * s;
+  }
+  function quadraticPrices(q, alpha) {
+    if (alpha === undefined) alpha = 1.0;
+    return q.map((x) => alpha * x);
+  }
+
+  // --- combinatorial market (LMSR over joint binary states) ---------------
+  function combinatorialPrices(q, b) { return lmsrPrices(q, b); }
+  function combinatorialMarginal(q, b, nVars, i) {
+    const p = lmsrPrices(q, b);
+    let s = 0;
+    for (let st = 0; st < p.length; st++) if ((st >> i) & 1) s += p[st];
+    return s;
+  }
+
+  // --- perpetual demand lending pools -------------------------------------
+  function linearFundingRate(L, S, p, p0, kappa) {
+    return kappa * (L / S - p / p0);
+  }
+  function minCollateral(delta, eta, p0) {
+    return (p0 * Math.abs(delta)) / Math.abs(eta);
+  }
+  function liquidationPrice(delta, eta, p0, c) {
+    if (c === undefined || c === null) c = minCollateral(delta, eta, p0);
+    return eta > 0 ? p0 - c / Math.abs(delta) : p0 + c / Math.abs(delta);
+  }
+
   const Mechanisms = {
     logScore,
     brierScore,
@@ -180,6 +284,20 @@
     pmAmmPrice,
     parimutuelProbabilities,
     parimutuelPayoutPerUnit,
+    linearOpinionPool,
+    logarithmicOpinionPool,
+    fundingRate,
+    fundingPayment,
+    clearUniformPrice,
+    gaussianHyvarinenScore,
+    fisherDivergenceGaussian,
+    quadraticCost,
+    quadraticPrices,
+    combinatorialPrices,
+    combinatorialMarginal,
+    linearFundingRate,
+    minCollateral,
+    liquidationPrice,
   };
 
   if (typeof module !== "undefined" && module.exports) {

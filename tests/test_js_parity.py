@@ -96,3 +96,63 @@ def test_parimutuel_parity():
     js_probs = run_js("parimutuelProbabilities", [stakes])
     np.testing.assert_allclose(js_probs, pool.implied_probabilities(), atol=1e-12)
     assert_parity("parimutuelPayoutPerUnit", [stakes, 0, 0.1], pool.decimal_odds(0))
+
+
+def test_aggregation_parity():
+    from mechanisms import aggregation as agg
+    fc = [[0.8, 0.2], [0.4, 0.6], [0.5, 0.5]]
+    np.testing.assert_allclose(
+        run_js("linearOpinionPool", [fc, None]), agg.linear_opinion_pool(fc), atol=1e-12)
+    np.testing.assert_allclose(
+        run_js("logarithmicOpinionPool", [fc, [0.5, 0.3, 0.2]]),
+        agg.logarithmic_opinion_pool(fc, [0.5, 0.3, 0.2]), atol=1e-9)
+
+
+def test_perp_parity():
+    from mechanisms import perp
+    assert_parity("fundingRate", [0.002, 0.0001, 0.0005],
+                  perp.funding_rate(0.002, 0.0001, 0.0005))
+    assert_parity("fundingPayment", [10000.0, 0.0003], perp.funding_payment(10000.0, 0.0003))
+
+
+def test_fba_parity():
+    from mechanisms import fba
+    bids = [[101.0, 5.0], [100.0, 3.0], [99.0, 2.0]]
+    asks = [[98.0, 4.0], [100.0, 3.0], [102.0, 5.0]]
+    py = fba.clear_uniform_price([tuple(b) for b in bids], [tuple(a) for a in asks])
+    np.testing.assert_allclose(run_js("clearUniformPrice", [bids, asks]), list(py), atol=1e-9)
+
+
+def test_local_scoring_parity():
+    from mechanisms import local_scoring as ls
+    assert_parity("gaussianHyvarinenScore", [1.3, 0.5, 1.2],
+                  ls.gaussian_hyvarinen_score(1.3, 0.5, 1.2))
+    assert_parity("fisherDivergenceGaussian", [0.2, 1.0, -0.1, 1.3],
+                  ls.fisher_divergence_gaussian(0.2, 1.0, -0.1, 1.3))
+
+
+def test_cmm_quadratic_parity():
+    from mechanisms import cmm
+    cost, grad = cmm.quadratic_potential(0.7)
+    q = [3.0, -2.0, 1.0]
+    assert_parity("quadraticCost", [q, 0.7], float(cost(q)))
+    np.testing.assert_allclose(run_js("quadraticPrices", [q, 0.7]), grad(q), atol=1e-12)
+
+
+def test_combinatorial_parity():
+    from mechanisms import combinatorial as comb
+    m = comb.CombinatorialMarket(2, b=100.0)
+    m.buy_event(m.var(0, 1), 50.0)
+    q = m.q.tolist()
+    np.testing.assert_allclose(run_js("combinatorialPrices", [q, 100.0]), m.prices(), atol=1e-9)
+    assert_parity("combinatorialMarginal", [q, 100.0, 2, 0], m.marginal(0))
+    assert_parity("combinatorialMarginal", [q, 100.0, 2, 1], m.marginal(1))
+
+
+def test_pdlp_parity():
+    from mechanisms import pdlp
+    assert_parity("linearFundingRate", [120.0, 100.0, 2050.0, 2000.0, 0.01],
+                  pdlp.linear_funding_rate(120.0, 100.0, 2050.0, 2000.0, 0.01))
+    assert_parity("minCollateral", [1.0, 4.0, 2000.0], pdlp.min_collateral(1.0, 4.0, 2000.0))
+    assert_parity("liquidationPrice", [1.0, 4.0, 2000.0, None],
+                  pdlp.liquidation_price(1.0, 4.0, 2000.0))

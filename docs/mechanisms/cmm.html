@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -160,6 +161,35 @@
       impermanent loss, capital efficiency) are two readings of one convex object —
       see <a href="./amm.html">CFMMs</a> for the reserves-side picture.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>Any convex potential $C$ defines a maker, with prices $\nabla C$. Here a
+    quadratic potential $C(q)=\tfrac{\alpha}{2}\lVert q\rVert^2$ gives the linear
+    price $\alpha q$ — a bounded-budget maker whose price is <em>not</em> a
+    probability, showing LMSR's softmax is just one choice of potential.</p>
+    <div class="demo" id="cmm-demo">
+      <div class="row"><label>inventory q(A)</label>
+        <input type="range" id="cmm-q" min="-100" max="100" value="20" step="5">
+        <span class="readout" id="cmm-q-val"></span></div>
+      <div class="row"><label>α</label>
+        <input type="range" id="cmm-a" min="1" max="50" value="10" step="1">
+        <span class="readout" id="cmm-a-val"></span></div>
+      <div class="readout" id="cmm-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        function update() {
+          const q = +$("cmm-q").value, alpha = +$("cmm-a").value / 100;
+          $("cmm-q-val").textContent = q;
+          $("cmm-a-val").textContent = alpha.toFixed(2);
+          const price = M.quadraticPrices([q], alpha)[0], cost = M.quadraticCost([q], alpha);
+          $("cmm-out").textContent = `price ∇C = ${price.toFixed(3)} · cost C(q) = ${cost.toFixed(3)}`;
+        }
+        ["cmm-q", "cmm-a"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/cmm.py</code> &middot; Demo: <code>examples/sim_cmm.py</code> &middot; Related: <a href="./lmsr.html">LMSR</a>, <a href="./amm.html">CFMMs</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/market-scoring-rules-and-amms.md">market-scoring-rules-and-amms.md</a></p>
   </main>

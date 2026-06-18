@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -161,6 +162,40 @@
       proper-scoring incentives keep honest reporting optimal — aggregation and
       reward fused into a single mechanism.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>Two categorical forecasts over outcomes A/B, equally weighted. The
+    <em>linear</em> pool is the arithmetic mean; the <em>logarithmic</em> pool is
+    the normalised geometric mean — sharper, and it pulls toward agreement.</p>
+    <div class="demo" id="agg-demo">
+      <div class="row"><label>forecast 1 p(A)</label>
+        <input type="range" id="agg-p1" min="1" max="99" value="70" step="1">
+        <span class="readout" id="agg-p1-val"></span></div>
+      <div class="row"><label>forecast 2 p(A)</label>
+        <input type="range" id="agg-p2" min="1" max="99" value="40" step="1">
+        <span class="readout" id="agg-p2-val"></span></div>
+      <div class="row"><label>linear pool</label><span class="bar" id="agg-bar-lin"></span></div>
+      <div class="row"><label>log pool</label><span class="bar alt" id="agg-bar-log"></span></div>
+      <div class="readout" id="agg-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const pct = (x) => (100 * x).toFixed(1) + "%";
+        function update() {
+          const p1 = +$("agg-p1").value / 100, p2 = +$("agg-p2").value / 100;
+          const fc = [[p1, 1 - p1], [p2, 1 - p2]];
+          const lin = M.linearOpinionPool(fc, null), log = M.logarithmicOpinionPool(fc, null);
+          $("agg-p1-val").textContent = p1.toFixed(2);
+          $("agg-p2-val").textContent = p2.toFixed(2);
+          $("agg-bar-lin").style.width = (220 * lin[0]) + "px";
+          $("agg-bar-log").style.width = (220 * log[0]) + "px";
+          $("agg-out").textContent = `linear p(A) = ${pct(lin[0])} · log p(A) = ${pct(log[0])}`;
+        }
+        ["agg-p1", "agg-p2"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/aggregation.py</code> &middot; Demo: <code>examples/sim_aggregation.py</code> &middot; Related: <a href="./scoring-rules.html">scoring rules</a></p>
   </main>

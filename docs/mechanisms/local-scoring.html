@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -95,6 +96,39 @@
       right order — and confirms the scores are invariant to an arbitrary additive
       log-constant.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>The Hyvärinen (local) score of a Gaussian quote $N(\mu,\sigma^2)$ at an
+    outcome $y$: $S=(y-\mu)^2/2\sigma^4 - 1/\sigma^2$. It uses only derivatives of
+    $\log p$, so it never needs the normalising constant (loss form, lower is
+    better).</p>
+    <div class="demo" id="ls-demo">
+      <div class="row"><label>outcome y</label>
+        <input type="range" id="ls-y" min="-20" max="20" value="5" step="1">
+        <span class="readout" id="ls-y-val"></span></div>
+      <div class="row"><label>quote μ</label>
+        <input type="range" id="ls-mu" min="-20" max="20" value="0" step="1">
+        <span class="readout" id="ls-mu-val"></span></div>
+      <div class="row"><label>quote σ</label>
+        <input type="range" id="ls-sig" min="5" max="50" value="20" step="5">
+        <span class="readout" id="ls-sig-val"></span></div>
+      <div class="readout" id="ls-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        function update() {
+          const y = +$("ls-y").value, mu = +$("ls-mu").value, sig = +$("ls-sig").value / 10;
+          $("ls-y-val").textContent = y;
+          $("ls-mu-val").textContent = mu;
+          $("ls-sig-val").textContent = sig.toFixed(1);
+          const s = M.gaussianHyvarinenScore(y, mu, sig);
+          $("ls-out").textContent = `Hyvärinen score = ${s.toFixed(4)}`;
+        }
+        ["ls-y", "ls-mu", "ls-sig"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/local_scoring.py</code> &middot;
       Demo: <code>examples/sim_local_scoring.py</code> &middot;

@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -188,6 +189,36 @@
       otherwise CFMM-like, hard-to-hedge book into one with a provably bounded
       delta.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>The linear funding rate $\gamma_L=\kappa\,(L/S - p/p_0)$ pushes the long and
+    short sides toward balance and the perp price toward the index. Vary the
+    long/short ratio $L/S$ and the price ratio $p/p_0$ ($\kappa = 0.01$).</p>
+    <div class="demo" id="pdlp-demo">
+      <div class="row"><label>L/S ratio</label>
+        <input type="range" id="pdlp-ls" min="50" max="200" value="120" step="5">
+        <span class="readout" id="pdlp-ls-val"></span></div>
+      <div class="row"><label>p/p₀ ratio</label>
+        <input type="range" id="pdlp-pp" min="80" max="120" value="100" step="1">
+        <span class="readout" id="pdlp-pp-val"></span></div>
+      <div class="readout" id="pdlp-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const kappa = 0.01;
+        function update() {
+          const ls = +$("pdlp-ls").value / 100, pp = +$("pdlp-pp").value / 100;
+          $("pdlp-ls-val").textContent = ls.toFixed(2);
+          $("pdlp-pp-val").textContent = pp.toFixed(2);
+          const g = M.linearFundingRate(ls, 1, pp, 1, kappa);
+          const dir = g > 1e-9 ? "shorts pay longs" : (g < -1e-9 ? "longs pay shorts" : "balanced");
+          $("pdlp-out").textContent = `funding rate γ = ${g.toFixed(4)} · ${dir}`;
+        }
+        ["pdlp-ls", "pdlp-pp"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/pdlp.py</code> &middot; Demo: <code>examples/pdlp_demo.py</code> &middot; Related: <a href="./perp.html">perpetual futures</a>, <a href="./amm.html">CFMMs</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perpetual-demand-lending-pools.md">perpetual-demand-lending-pools.md</a> &middot; Paper: <a href="https://arxiv.org/abs/2502.06028">arXiv:2502.06028</a></p>
   </main>

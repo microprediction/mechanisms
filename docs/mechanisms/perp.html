@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -148,6 +149,37 @@
       — how funding-like flows price the cost of leveraged exposure in a pool — see
       <a href="./pdlp.html">perpetual demand lending pools</a>.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>The funding rate $F = P + \mathrm{clamp}(I - P)$ tethers the perp to its
+    index. Set the premium $P$ (perp over index) and a position notional; see the
+    rate, who pays, and the long's cash flow over one interval.</p>
+    <div class="demo" id="perp-demo">
+      <div class="row"><label>premium P</label>
+        <input type="range" id="perp-prem" min="-100" max="100" value="20" step="1">
+        <span class="readout" id="perp-prem-val"></span></div>
+      <div class="row"><label>notional</label>
+        <input type="range" id="perp-not" min="0" max="100000" value="10000" step="1000">
+        <span class="readout" id="perp-not-val"></span></div>
+      <div class="readout" id="perp-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        function update() {
+          const prem = +$("perp-prem").value / 10000, notional = +$("perp-not").value;
+          const rate = M.fundingRate(prem, 0.0001, 0.0005);
+          const pay = M.fundingPayment(notional, rate);
+          $("perp-prem-val").textContent = (prem * 100).toFixed(2) + "%";
+          $("perp-not-val").textContent = notional.toLocaleString();
+          const dir = rate >= 0 ? "longs pay shorts" : "shorts pay longs";
+          $("perp-out").innerHTML =
+            `funding rate = ${(rate * 100).toFixed(4)}% · ${dir} · long's cash flow ${(-pay).toFixed(2)}/interval`;
+        }
+        ["perp-prem", "perp-not"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/perp.py</code> &middot; Demo: <code>examples/sim_perp.py</code> &middot; Related: <a href="./pdlp.html">demand lending pools</a> &middot; Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/perps-cda-monteprediction.md">perps-cda-monteprediction.md</a></p>
   </main>

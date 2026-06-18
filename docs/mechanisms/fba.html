@@ -9,6 +9,7 @@
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
   <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
     onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -154,6 +155,37 @@
       interval and resolves them with <code>clear()</code>, which returns the
       uniform clearing price and matched quantity for the batch.
     </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>A batch clears at one <em>uniform price</em> that maximises matched volume.
+    Against a fixed book (asks 4@98, 3@100, 5@102; bids 3@100, 2@99), vary your buy
+    order and watch the clearing price and volume move in discrete steps.</p>
+    <div class="demo" id="fba-demo">
+      <div class="row"><label>your bid price</label>
+        <input type="range" id="fba-bp" min="95" max="105" value="101" step="1">
+        <span class="readout" id="fba-bp-val"></span></div>
+      <div class="row"><label>your bid size</label>
+        <input type="range" id="fba-bq" min="0" max="10" value="5" step="1">
+        <span class="readout" id="fba-bq-val"></span></div>
+      <div class="readout" id="fba-out"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const baseBids = [[100, 3], [99, 2]], asks = [[98, 4], [100, 3], [102, 5]];
+        function update() {
+          const bp = +$("fba-bp").value, bq = +$("fba-bq").value;
+          $("fba-bp-val").textContent = bp;
+          $("fba-bq-val").textContent = bq;
+          const r = M.clearUniformPrice(baseBids.concat([[bp, bq]]), asks);
+          $("fba-out").textContent = (r[0] === null)
+            ? "no trade (book does not cross)"
+            : `clearing price ${r[0].toFixed(2)} · matched volume ${r[1].toFixed(0)}`;
+        }
+        ["fba-bp", "fba-bq"].forEach((id) => $(id).addEventListener("input", update));
+        update();
+      })();
+    </script>
 
     <p class="muted">Code: <code>mechanisms/fba.py</code> &middot;
       Demo: <code>examples/sim_fba.py</code> &middot;
