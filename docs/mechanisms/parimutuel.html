@@ -141,7 +141,52 @@
       linear cost approximation.
     </p>
 
-    <h2 id="demo">Try it</h2>
+    <h2 id="demo">Watch the pool find the odds</h2>
+    <p>Bets stream onto three runners, drawn from a hidden true distribution. The
+    pool fractions are the implied probabilities and the decimal odds re-flow with
+    every bet — early noise settles as the money piles up.</p>
+    <div class="demo" id="pari-anim">
+      <div class="row"><label>runner A</label>
+        <span class="bar" id="pr-a" style="transition:width 0.15s"></span>
+        <span class="readout" id="pr-a-t"></span></div>
+      <div class="row"><label>runner B</label>
+        <span class="bar alt" id="pr-b" style="transition:width 0.15s"></span>
+        <span class="readout" id="pr-b-t"></span></div>
+      <div class="row"><label>runner C</label>
+        <span class="bar" id="pr-c" style="background:#7a5b9c;transition:width 0.15s"></span>
+        <span class="readout" id="pr-c-t"></span></div>
+      <div class="row" style="gap:8px;margin-top:6px">
+        <button id="pr-play" type="button" style="padding:4px 14px">Pause</button>
+        <button id="pr-reset" type="button" style="padding:4px 14px">Reset</button>
+        <span class="readout" id="pr-out"></span></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const tk = 0.1, trueDist = [0.5, 0.3, 0.2], ids = ["a", "b", "c"];
+        let stakes = [10, 10, 10], timer = null;
+        function step() {
+          const r = Math.random();
+          const o = r < trueDist[0] ? 0 : (r < trueDist[0] + trueDist[1] ? 1 : 2);
+          stakes[o] += 5 + Math.floor(Math.random() * 15);
+          const probs = M.parimutuelProbabilities(stakes);
+          ids.forEach((id, i) => {
+            $("pr-" + id).style.width = (220 * probs[i]) + "px";
+            const odds = M.parimutuelPayoutPerUnit(stakes, i, tk);
+            $("pr-" + id + "-t").textContent = (100 * probs[i]).toFixed(1) + "%  (" + odds.toFixed(2) + "×)";
+          });
+          $("pr-out").textContent = "pool " + (stakes.reduce((a, v) => a + v, 0) - 30).toFixed(0) + " · takeout 10%";
+        }
+        function play() { if (timer) return; timer = setInterval(step, 130); $("pr-play").textContent = "Pause"; }
+        function pause() { clearInterval(timer); timer = null; $("pr-play").textContent = "Play"; }
+        function reset() { stakes = [10, 10, 10]; step(); }
+        $("pr-play").addEventListener("click", () => (timer ? pause() : play()));
+        $("pr-reset").addEventListener("click", reset);
+        step(); play();
+      })();
+    </script>
+
+    <h2>Try it: set the stakes</h2>
     <p>Stakes on three outcomes set the pool fractions (implied probabilities) and
     the decimal odds, net of a takeout.</p>
     <div class="demo" id="pari-demo">

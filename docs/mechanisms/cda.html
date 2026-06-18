@@ -142,7 +142,96 @@
       collapses into competition on price, and the sniping incentive disappears.
     </p>
 
-    <h2 id="demo">Try it</h2>
+    <h2 id="demo">Watch a live order book</h2>
+    <p>Limit orders rest in the book; marketable orders cross and print trades at
+    the resting (maker) price. The shaded band is the bid&ndash;ask spread and the
+    dark line is the last trade — price discovery, one order at a time.</p>
+    <div class="demo" id="cda-anim">
+      <canvas id="cda-canvas" height="170"
+        style="width:100%;display:block;background:#fff;border:1px solid var(--border);border-radius:6px;"></canvas>
+      <div style="display:flex;gap:18px;align-items:flex-start;margin-top:6px">
+        <div class="readout" id="cda-out" style="flex:1"></div>
+        <div id="cda-tape" class="readout" style="font-family:'SFMono-Regular',Menlo,monospace;min-width:110px;font-size:0.85rem"></div>
+      </div>
+      <div class="row" style="gap:8px">
+        <button id="cda-play" type="button" style="padding:4px 14px">Pause</button>
+        <button id="cda-reset" type="button" style="padding:4px 14px">Reset</button></div>
+    </div>
+    <script>
+      (function () {
+        const $ = (id) => document.getElementById(id);
+        const cv = $("cda-canvas"), ctx = cv.getContext("2d"), MAX = 200;
+        let bids, asks, fair, last, hist, tape, timer;
+        function gauss() { return (Math.random() + Math.random() + Math.random() - 1.5) / 0.5 * 0.4082; }
+        function resize() { cv.width = cv.clientWidth || 600; }
+        const bestBid = () => (bids.length ? bids[0].price : null);
+        const bestAsk = () => (asks.length ? asks[0].price : null);
+        function sortBook() { bids.sort((a, b) => b.price - a.price); asks.sort((a, b) => a.price - b.price); }
+        function rec(side, price, qty) { last = price; tape.unshift({ side, price, qty }); if (tape.length > 5) tape.pop(); }
+        function fillBuy(price, qty) {
+          while (qty > 1e-9 && asks.length && asks[0].price <= price) {
+            const l = asks[0], f = Math.min(qty, l.qty); rec("buy", l.price, f); qty -= f; l.qty -= f; if (l.qty <= 1e-9) asks.shift();
+          } return qty;
+        }
+        function fillSell(price, qty) {
+          while (qty > 1e-9 && bids.length && bids[0].price >= price) {
+            const l = bids[0], f = Math.min(qty, l.qty); rec("sell", l.price, f); qty -= f; l.qty -= f; if (l.qty <= 1e-9) bids.shift();
+          } return qty;
+        }
+        function trim() {
+          bids = bids.slice(0, 10); asks = asks.slice(0, 10);
+          if (!bids.length) bids.push({ price: Math.round((fair - 0.5) * 10) / 10, qty: 5 });
+          if (!asks.length) asks.push({ price: Math.round((fair + 0.5) * 10) / 10, qty: 5 });
+        }
+        function step() {
+          fair *= Math.exp(0.0025 * gauss());
+          const u = Math.random(), qty = 1 + Math.floor(Math.random() * 4), side = Math.random() < 0.5 ? "buy" : "sell";
+          if (u < 0.30) { side === "buy" ? fillBuy(Infinity, qty) : fillSell(0, qty); }
+          else {
+            let price = side === "buy" ? fair - (0.1 + Math.random() * 1.3) : fair + (0.1 + Math.random() * 1.3);
+            price = Math.round(price * 10) / 10;
+            if (side === "buy") { const r = fillBuy(price, qty); if (r > 1e-9) bids.push({ price, qty: r }); }
+            else { const r = fillSell(price, qty); if (r > 1e-9) asks.push({ price, qty: r }); }
+            sortBook();
+          }
+          trim();
+          hist.push({ last, bid: bestBid(), ask: bestAsk() }); if (hist.length > MAX) hist.shift();
+          draw(); drawTape();
+        }
+        function draw() {
+          const W = cv.width, H = cv.height; ctx.clearRect(0, 0, W, H);
+          if (!hist.length) return;
+          let lo = Infinity, hi = -Infinity;
+          for (const h of hist) for (const v of [h.last, h.bid, h.ask]) if (v != null) { lo = Math.min(lo, v); hi = Math.max(hi, v); }
+          const pad = (hi - lo) * 0.1 + 0.3; lo -= pad; hi += pad;
+          const y = (v) => H - 6 - (v - lo) / (hi - lo) * (H - 12), n = hist.length, dx = n > 1 ? W / (n - 1) : 0;
+          ctx.fillStyle = "rgba(13,125,140,0.10)"; ctx.beginPath(); let started = false;
+          for (let i = 0; i < n; i++) { if (hist[i].ask == null) continue; const px = i * dx; started ? ctx.lineTo(px, y(hist[i].ask)) : (ctx.moveTo(px, y(hist[i].ask)), started = true); }
+          for (let i = n - 1; i >= 0; i--) { if (hist[i].bid == null) continue; ctx.lineTo(i * dx, y(hist[i].bid)); }
+          ctx.closePath(); ctx.fill();
+          ctx.strokeStyle = "#0f2730"; ctx.lineWidth = 2; ctx.beginPath();
+          for (let i = 0; i < n; i++) { const px = i * dx, py = y(hist[i].last); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); } ctx.stroke();
+        }
+        function drawTape() {
+          $("cda-tape").innerHTML = tape.map((t) => `<div>${t.side === "buy" ? "&#9650;" : "&#9660;"} ${t.qty} @ ${t.price.toFixed(1)}</div>`).join("");
+          const bb = bestBid(), ba = bestAsk();
+          $("cda-out").textContent = `bid ${bb == null ? "—" : bb.toFixed(1)} · ask ${ba == null ? "—" : ba.toFixed(1)} · last ${last.toFixed(1)}`;
+        }
+        function reset() {
+          bids = [{ price: 99.5, qty: 5 }, { price: 99.0, qty: 5 }];
+          asks = [{ price: 100.5, qty: 5 }, { price: 101.0, qty: 5 }];
+          fair = 100; last = 100; hist = []; tape = []; draw(); drawTape();
+        }
+        function play() { if (timer) return; timer = setInterval(step, 130); $("cda-play").textContent = "Pause"; }
+        function pause() { clearInterval(timer); timer = null; $("cda-play").textContent = "Play"; }
+        $("cda-play").addEventListener("click", () => (timer ? pause() : play()));
+        $("cda-reset").addEventListener("click", reset);
+        window.addEventListener("resize", () => { resize(); draw(); });
+        resize(); reset(); play();
+      })();
+    </script>
+
+    <h2>Try it: sweep the book</h2>
     <p>A market buy sweeps the resting asks cheapest-first, each fill at the
     resting (maker) price — so a larger order walks up the book and pays a higher
     average. Book: 4@98, 3@100, 5@102. Set your order's size and limit price.</p>
