@@ -26,6 +26,8 @@ aggregation     Opinion pools (linear, logarithmic, depth-trimmed).
 calibration     Reliability, sharpness, and calibration diagnostics.
 kelly           Kelly (log-optimal) sizing: the agent-side dual of the log score,
                 and the wealth-weighted ensemble update.
+decision_market Conditional markets on a decision variable: ensembling
+                action-conditional forecasts and selecting (the futarchy core).
 
 See https://mechanisms.microprediction.org for the accompanying literature.
 """
@@ -48,6 +50,7 @@ from . import peer_prediction
 from . import aggregation
 from . import calibration
 from . import kelly
+from . import decision_market
 
 __version__ = "0.1.0"
 
@@ -70,5 +73,6 @@ __all__ = [
     "aggregation",
     "calibration",
     "kelly",
+    "decision_market",
     "__version__",
 ]

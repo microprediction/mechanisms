@@ -60,11 +60,15 @@ primitive* the mechanisms compose with:
    outcome space and conditional ("if A then B") markets — the cost-function
    machinery already in [`cmm.py`](../mechanisms/cmm.py) extends to this.
    *Implemented:* [`combinatorial.py`](../mechanisms/combinatorial.py).
-5. **Decision markets / futarchy as a mechanism** (Gap 6). The *mechanism* layer
-   (conditional markets on a decision variable) is in scope even though the
-   execution/governance plumbing is not. The conditional machinery is now in
-   [`combinatorial.py`](../mechanisms/combinatorial.py); a dedicated
-   decision-market wrapper is *planned.*
+5. **Decision markets as a mechanism** (Gap 6). The *mechanism* layer —
+   conditional markets on a decision variable, read as ensembling
+   action-conditional forecasts and selecting among them — is in scope; the
+   governance/futarchy framing is social theory and is not.
+   *Implemented:* [`decision_market.py`](../mechanisms/decision_market.py) — one
+   conditional market per action, the per-action value map, and argmax / softmax /
+   epsilon-greedy decision rules, with the incentive result that a full-support
+   stochastic rule keeps every conditional market truthful where deterministic
+   argmax does not (Othman & Sandholm 2010; Chen, Kash, Ruberry & Shnayder 2011).
 6. **Hybrid CLOB + AMM matching** (Gap 4). The repo has the
    [continuous double auction](../mechanisms/cda.py), the
    [frequent batch auction](../mechanisms/fba.py), and
@@ -96,15 +100,14 @@ all while remaining free of the normalizing constant.
 
 ## Priority
 
-Delivered so far: **local scoring rules**, **CA/EA peer prediction**,
-**combinatorial/conditional markets**, a **hybrid CLOB+AMM matcher**, and a
-**Kelly sizing** primitive (the agent-side dual of the log score, with the
-wealth-weighted ensemble update) — all mathematically clean, unit-tested, and
-extending modules already here. Still open: a dedicated **decision-market**
-wrapper over the conditional machinery. The interest there is as a
-*meta-mechanism* — one that ensembles action-conditional forecasts and selects
-among them — rather than the governance/futarchy framing, which is social theory
-and out of scope for this library.
+Every gap above is now closed: **local scoring rules**, **CA/EA peer
+prediction**, **combinatorial/conditional markets**, a **hybrid CLOB+AMM
+matcher**, a **Kelly sizing** primitive (the agent-side dual of the log score,
+with the wealth-weighted ensemble update), and a **decision market** (conditional
+markets on a decision variable as an ensembling-and-selection meta-mechanism) —
+all mathematically clean, unit-tested, and extending modules already here. The
+governance/futarchy reading of decision markets is deliberately left out as
+social theory rather than a market primitive.
 
 ## References
 
