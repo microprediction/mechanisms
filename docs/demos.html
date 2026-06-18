@@ -5,11 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mechanisms — Interactive demos</title>
   <link rel="stylesheet" href="./style.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
-    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
-  <script src="./js/mechanisms.js"></script>
 </head>
 <body>
   <header class="site-header">
@@ -30,132 +25,59 @@
   <main>
     <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
     <h1>Interactive demos</h1>
-    <p class="subtitle">Running the JavaScript ports in
-      <code>docs/js/mechanisms.js</code> — the same code checked for numerical
-      parity against the Python library in <code>tests/test_js_parity.py</code>.</p>
+    <p class="subtitle">Every mechanism page now carries its own <strong>Try it</strong>
+    widget, in context with the maths. Each runs the JavaScript port in
+    <code>docs/js/mechanisms.js</code> — the same code checked for numerical parity
+    against the Python library in <code>tests/test_js_parity.py</code>, so the demos
+    never drift from the reference implementation.</p>
 
-    <h2>LMSR prices &amp; cost</h2>
-    <p>A two-outcome logarithmic market scoring rule. Drag to buy shares of
-    outcome A; watch the prices (implied probabilities) move and the cost accrue.
-    The market maker's loss is bounded by $b\log n$.</p>
-    <div class="demo" id="lmsr-demo">
-      <div class="row"><label>liquidity b</label>
-        <input type="range" id="lmsr-b" min="20" max="300" value="100" step="10">
-        <span class="readout" id="lmsr-b-val"></span></div>
-      <div class="row"><label>buy A (shares)</label>
-        <input type="range" id="lmsr-q" min="0" max="300" value="0" step="5">
-        <span class="readout" id="lmsr-q-val"></span></div>
-      <div class="row"><label>price A</label><span class="bar" id="lmsr-bar-a"></span></div>
-      <div class="row"><label>price B</label><span class="bar alt" id="lmsr-bar-b"></span></div>
-      <div class="readout" id="lmsr-out"></div>
+    <div class="cards">
+      <a class="card" href="./mechanisms/scoring-rules.html#demo">
+        <h3>Proper scoring rules</h3>
+        <p>Score a two-outcome forecast (log / Brier / spherical) against the realised outcome.</p></a>
+      <a class="card" href="./mechanisms/local-scoring.html#demo">
+        <h3>Local (Hyvärinen) scoring</h3>
+        <p>The score of a Gaussian quote — using only derivatives of log&nbsp;p, no normaliser.</p></a>
+      <a class="card" href="./mechanisms/lmsr.html#demo">
+        <h3>LMSR</h3>
+        <p>Buy shares; watch prices move, cost accrue, and the bounded maker loss.</p></a>
+      <a class="card" href="./mechanisms/cmm.html#demo">
+        <h3>Cost-function maker</h3>
+        <p>A quadratic potential: prices are the gradient — LMSR's softmax is one choice among many.</p></a>
+      <a class="card" href="./mechanisms/combinatorial.html#demo">
+        <h3>Combinatorial market</h3>
+        <p>An LMSR over two binary variables, keeping marginals and conditionals coherent.</p></a>
+      <a class="card" href="./mechanisms/amm.html#demo">
+        <h3>Constant-product AMM</h3>
+        <p>Sell into an x·y=k pool: output, new spot price, and impermanent loss.</p></a>
+      <a class="card" href="./mechanisms/pm-amm.html#demo">
+        <h3>pm-AMM</h3>
+        <p>The prediction-market AMM price curve as a function of the reserve difference.</p></a>
+      <a class="card" href="./mechanisms/parimutuel.html#demo">
+        <h3>Parimutuel</h3>
+        <p>Stakes set pool fractions (implied probabilities) and decimal odds, net of takeout.</p></a>
+      <a class="card" href="./mechanisms/cda.html#demo">
+        <h3>Continuous double auction</h3>
+        <p>A market buy sweeps the resting asks cheapest-first and walks up the book.</p></a>
+      <a class="card" href="./mechanisms/fba.html#demo">
+        <h3>Frequent batch auction</h3>
+        <p>One uniform clearing price per batch, maximising matched volume.</p></a>
+      <a class="card" href="./mechanisms/hybrid-market.html#demo">
+        <h3>Hybrid CLOB + AMM</h3>
+        <p>A YES buy fills complementary bids first, then spills into the LMSR backstop.</p></a>
+      <a class="card" href="./mechanisms/perp.html#demo">
+        <h3>Perpetual futures</h3>
+        <p>The funding rate that tethers a perp to its index, and who pays whom.</p></a>
+      <a class="card" href="./mechanisms/pdlp.html#demo">
+        <h3>Demand lending pools</h3>
+        <p>The linear funding rate that pushes long/short balance and price toward the index.</p></a>
+      <a class="card" href="./mechanisms/peer-prediction.html#demo">
+        <h3>Peer prediction</h3>
+        <p>Output agreement: reward matching reports — and its collusion failure mode.</p></a>
+      <a class="card" href="./mechanisms/aggregation.html#demo">
+        <h3>Forecast aggregation</h3>
+        <p>Linear vs logarithmic opinion pools of two categorical forecasts.</p></a>
     </div>
-
-    <h2>Parimutuel implied odds</h2>
-    <p>Stakes on three outcomes set the pool fractions (implied probabilities) and
-    the decimal odds, net of a takeout.</p>
-    <div class="demo" id="pari-demo">
-      <div class="row"><label>stake on A</label>
-        <input type="range" id="pa" min="0" max="500" value="150" step="10">
-        <span class="readout" id="pa-val"></span></div>
-      <div class="row"><label>stake on B</label>
-        <input type="range" id="pb" min="0" max="500" value="100" step="10">
-        <span class="readout" id="pb-val"></span></div>
-      <div class="row"><label>stake on C</label>
-        <input type="range" id="pc" min="0" max="500" value="50" step="10">
-        <span class="readout" id="pc-val"></span></div>
-      <div class="row"><label>takeout</label>
-        <input type="range" id="ptk" min="0" max="30" value="10" step="1">
-        <span class="readout" id="ptk-val"></span></div>
-      <div class="readout" id="pari-out"></div>
-    </div>
-
-    <h2>Constant-product AMM &amp; impermanent loss</h2>
-    <p>Sell asset X into an $x\cdot y=k$ pool: see the output, the new spot price,
-    and the impermanent loss an LP suffers for the resulting price move.</p>
-    <div class="demo" id="amm-demo">
-      <div class="row"><label>sell X</label>
-        <input type="range" id="amm-dx" min="0" max="500" value="100" step="10">
-        <span class="readout" id="amm-dx-val"></span></div>
-      <div class="readout" id="amm-out"></div>
-    </div>
-
-    <h2>pm-AMM price curve</h2>
-    <p>The pm-AMM price as a function of the reserve difference $y-x$, for liquidity
-    scale $L$. Note the S-curve concentrating sensitivity around the 0.50 mark.</p>
-    <div class="demo" id="pmamm-demo">
-      <div class="row"><label>reserve diff y−x</label>
-        <input type="range" id="pm-d" min="-150" max="150" value="0" step="5">
-        <span class="readout" id="pm-d-val"></span></div>
-      <div class="row"><label>liquidity L</label>
-        <input type="range" id="pm-L" min="20" max="200" value="60" step="10">
-        <span class="readout" id="pm-L-val"></span></div>
-      <div class="row"><label>price YES</label><span class="bar" id="pm-bar"></span></div>
-      <div class="readout" id="pm-out"></div>
-    </div>
-
-    <script>
-      const M = window.Mechanisms;
-      const $ = (id) => document.getElementById(id);
-      const pct = (x) => (100 * x).toFixed(1) + "%";
-
-      // ---- LMSR ----
-      function lmsr() {
-        const b = +$("lmsr-b").value, qa = +$("lmsr-q").value;
-        const q = [qa, 0];
-        const p = M.lmsrPrices(q, b);
-        const cost = M.lmsrCostToTrade([0, 0], [qa, 0], b);
-        $("lmsr-b-val").textContent = b;
-        $("lmsr-q-val").textContent = qa;
-        $("lmsr-bar-a").style.width = (220 * p[0]) + "px";
-        $("lmsr-bar-b").style.width = (220 * p[1]) + "px";
-        $("lmsr-out").textContent =
-          `price A = ${pct(p[0])}, price B = ${pct(p[1])}  ·  cost so far = ${cost.toFixed(2)}  ·  max MM loss = ${M.lmsrMaxLoss(2, b).toFixed(2)}`;
-      }
-      ["lmsr-b", "lmsr-q"].forEach((id) => $(id).addEventListener("input", lmsr));
-      lmsr();
-
-      // ---- parimutuel ----
-      function pari() {
-        const a = +$("pa").value, b = +$("pb").value, c = +$("pc").value, tk = +$("ptk").value / 100;
-        const stakes = [a, b, c];
-        const probs = M.parimutuelProbabilities(stakes);
-        $("pa-val").textContent = a; $("pb-val").textContent = b;
-        $("pc-val").textContent = c; $("ptk-val").textContent = (tk * 100).toFixed(0) + "%";
-        const odds = stakes.map((_, i) => M.parimutuelPayoutPerUnit(stakes, i, tk));
-        $("pari-out").innerHTML =
-          `implied&nbsp;P = [${probs.map(pct).join(", ")}]<br>` +
-          `decimal odds = [${odds.map((o) => isFinite(o) ? o.toFixed(2) : "∞").join(", ")}]`;
-      }
-      ["pa", "pb", "pc", "ptk"].forEach((id) => $(id).addEventListener("input", pari));
-      pari();
-
-      // ---- AMM ----
-      function ammDemo() {
-        const x = 1000, y = 1000, fee = 0.003, dx = +$("amm-dx").value;
-        $("amm-dx-val").textContent = dx;
-        if (dx === 0) { $("amm-out").textContent = "spot price 1.0000 · no trade"; return; }
-        const out = M.cpammAmountOut(x, y, dx, fee);
-        const newX = x + dx, newY = y - out;
-        const spot = newY / newX;
-        const il = M.impermanentLoss(spot / (y / x));
-        $("amm-out").innerHTML =
-          `received ${out.toFixed(2)} Y · new spot price ${spot.toFixed(4)} · ` +
-          `impermanent loss ${pct(il)}`;
-      }
-      $("amm-dx").addEventListener("input", ammDemo);
-      ammDemo();
-
-      // ---- pm-AMM ----
-      function pmamm() {
-        const d = +$("pm-d").value, L = +$("pm-L").value;
-        const price = M.pmAmmPrice(0, d, L); // price = Phi((y-x)/L), y-x = d
-        $("pm-d-val").textContent = d; $("pm-L-val").textContent = L;
-        $("pm-bar").style.width = (220 * price) + "px";
-        $("pm-out").textContent = `price YES = ${pct(price)} · price NO = ${pct(1 - price)}`;
-      }
-      ["pm-d", "pm-L"].forEach((id) => $(id).addEventListener("input", pmamm));
-      pmamm();
-    </script>
   </main>
 
   <footer>
