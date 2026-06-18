@@ -5,6 +5,18 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mechanisms — A World Cup of Prediction Markets</title>
   <link rel="stylesheet" href="./style.css" />
+  <style>
+    .bracket { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin:18px 0; }
+    .bracket .pair { display:flex; flex-direction:column; gap:8px; }
+    .bracket .team { border:1px solid var(--border); border-radius:8px; padding:10px 16px;
+      background:var(--panel); font-weight:600; min-width:170px; }
+    .bracket .join { color:var(--faint); font-size:1.4rem; }
+    .bracket .champ { border:2px dashed var(--accent); border-radius:8px; padding:10px 18px;
+      color:var(--accent); font-weight:600; background:var(--accent-soft); }
+    .recap { margin:10px 0; }
+    .recap .score { font-weight:600; color:var(--ink); }
+    .squad td:first-child { white-space:nowrap; font-weight:600; }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -25,82 +37,151 @@
   <main>
     <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
     <h1>A World Cup of Prediction Markets</h1>
-    <p class="subtitle">Who actually built this stuff? An unscientific league table
-    of national contributions to market mechanisms — whimsical in its rankings,
-    sober in its facts. Every claim links to a real source; the medal count does
-    not.</p>
+    <p class="subtitle">Which nations actually built the machinery of betting, pricing,
+    and forecasting? An unscientific tournament. We run the line;
+    <strong>we do not call the final</strong>.</p>
 
-    <h2>The final: 🇦🇺 Australia vs 🇺🇸 USA</h2>
+    <h2>The final</h2>
+    <div class="bracket">
+      <div class="pair">
+        <div class="team">🇦🇺 Australia</div>
+        <div class="team">🇺🇸 USA</div>
+      </div>
+      <div class="join">&rarr;</div>
+      <div class="champ">🏆 &nbsp;your call</div>
+    </div>
     <p>
-      The two heavyweights split the sport cleanly between <em>hardware</em> and
-      <em>theory</em>.
-    </p>
-    <p>
-      <strong>Australia built the machine.</strong> The engineer
-      <strong>George Julius</strong> patented an automatic
-      <a href="./mechanisms/parimutuel.html">totalisator</a> in 1909 and installed
-      the first at Ellerslie in 1913; his Automatic Totalisators Ltd then exported
-      room-sized mechanical computers of shafts and adders that aggregated bets from
-      hundreds of windows and recomputed the live odds in real time — a working
-      analog computer that, as Brian Conlon argues, was plausibly the world's first
-      large-scale, multi-user, real-time computing system, decades before the
-      electronic kind. They turned a betting pool into a computer.
-    </p>
-    <p>
-      <strong>America wrote the rules and never stopped trading.</strong> The theory:
-      <strong>Brier</strong>'s proper score out of the Weather Bureau (1950),
-      <strong>Kelly</strong>'s growth-optimal betting at Bell Labs (1956),
-      <strong>Vickrey</strong>'s second-price auction (1961), and
-      <strong>Hanson</strong>'s logarithmic market scoring rule and futarchy. The
-      markets: organised <a href="./mechanisms/aggregation.html">election betting</a>
-      on the Curb and in Broadway hotels from the 1860s to the 1940s (so accurate the
-      mid-October favourite won 11 of 15 elections, 1884–1940), the
-      <strong>Iowa Electronic Markets</strong> (1988), the short-lived DARPA
-      <strong>Policy Analysis Market</strong> (2003), and the on-chain era of
-      <a href="./mechanisms/amm.html">Uniswap</a> and the
-      <a href="./mechanisms/perp.html">perpetual swap</a>.
-    </p>
-    <p class="muted">
-      <strong>Verdict.</strong> Australia has the single greatest artefact; America
-      has the deepest bench, from Bell Labs to the blockchain. Call it a draw and
-      send it to penalties — or note that the first tote was actually plugged in
-      across the Tasman, and award the assist to New Zealand.
+      Two ways of owning the sport. <strong>Australia built the machine</strong> —
+      George Julius turned the <a href="./mechanisms/parimutuel.html">parimutuel</a>
+      into a room-sized real-time computer (1913). <strong>America brought the
+      deepest squad</strong> — from Bell Labs to the blockchain — though it dawdled
+      in the tunnel: a couple of centuries of puritanical disapproval of betting kept
+      it on the bench, after which it came on and never stopped scoring. We have set
+      the fixture and left the trophy blank: argue it out yourself.
     </p>
 
-    <h2>The full table</h2>
-    <p>Ranked by a rigorous blend of priority, ingenuity, and how good the story is.</p>
+    <h2>The road there (knockout recaps)</h2>
+    <p class="muted">Goalscorers in parentheses are the actual contributions. Earlier
+    rounds are seeded for fun; only the final is left open.</p>
+
+    <h3>Quarter-finals</h3>
+    <p class="recap"><span class="score">🇦🇺 Australia 3–1 🇯🇵 Japan.</span> Julius
+    opens with the totalisator, Hyndman adds a forecasting goal, and the Sydney
+    Futures Exchange converts the first financial-futures contract launched outside
+    the US (1979). Japan replies through the <a href="https://en.wikipedia.org/wiki/D%C5%8Djima_Rice_Exchange">Dōjima
+    Rice Exchange</a> (Osaka, sanctioned 1730 — the first organised futures market),
+    with Amari's information geometry rattling the bar.</p>
+    <p class="recap"><span class="score">🇳🇱 Netherlands 2–1 🇩🇪 Germany.</span> The
+    Dutch press with the VOC and the Amsterdam bourse (1602, the first <em>modern</em>
+    stock exchange) and the descending-price flower clock; Germany answers through
+    Gneiting's strictly proper scoring rules and Selten's game theory, but the
+    founders of the share market hold on.</p>
+    <p class="recap"><span class="score">🇺🇸 USA 5–0 🇮🇹 Italy.</span> The American
+    front line runs riot — Kelly's growth-optimal betting, Vickrey's second-price
+    auction, the Iowa Electronic Markets, Hanson's LMSR, Vernon Smith's experimental
+    double auction. Italy keep it dignified in possession through Cardano (the first
+    treatise on games of chance), de Finetti (probability from coherent betting odds),
+    and the Genoese <em>lotto</em> itself.</p>
+    <p class="recap"><span class="score">🇫🇷 France 2–1 🇬🇧 UK.</span> Oller's
+    pari-mutuel (he also founded the Moulin Rouge) and Bachelier's 1900 random walk
+    edge a stacked British midfield of Bayes, Ramsey, Keynes's beauty contest,
+    Galton's <em>vox populi</em>, and Good &amp; Turing at Bletchley. The result
+    flatters nobody; the UK out-pass everyone and still go out.</p>
+
+    <h3>Semi-finals</h3>
+    <p class="recap"><span class="score">🇦🇺 Australia 1–0 🇳🇱 Netherlands.</span> A
+    Quiggin screamer — <em>rank-dependent (anticipated) expected utility</em>, the
+    theory of how people overweight long-shot probabilities — settles it. Australia's
+    theoretical goal of the tournament, and a direct hit on the favourite–longshot
+    bias the Dutch never closed down.</p>
+    <p class="recap"><span class="score">🇺🇸 USA 3–2 🇫🇷 France.</span> A classic.
+    Savage, Arrow, and Fama's efficient markets for the US; Walras's imaginary
+    auctioneer and Bachelier for France. The American bench — Pennock, Chen, Wortman
+    Vaughan — proves decisive late on.</p>
+
+    <h3>Final · 🇦🇺 Australia vs 🇺🇸 USA</h3>
+    <p>Not played. You are the referee.</p>
+
+    <h2>The finalists' line-ups</h2>
+
+    <h3>🇺🇸 USA — and the bench goes on forever</h3>
     <div class="table-wrap">
-      <table class="impl">
-        <thead><tr><th>#</th><th>Nation</th><th>Signature contribution</th><th>Era</th></tr></thead>
+      <table class="impl squad">
+        <thead><tr><th>Line</th><th>Players (contribution)</th></tr></thead>
         <tbody>
-          <tr><td>1</td><td>🇦🇺 Australia</td><td>Julius's automatic <a href="./mechanisms/parimutuel.html">totalisator</a> — the parimutuel as a real-time computer; Automatic Totalisators Ltd exported it worldwide</td><td>1909–</td></tr>
-          <tr><td>2</td><td>🇺🇸 USA</td><td>Brier &amp; Kelly; <a href="./mechanisms/cda.html">Vickrey</a>'s second-price auction; Hanson's <a href="./mechanisms/lmsr.html">LMSR</a> &amp; <a href="./mechanisms/decision-market.html">futarchy</a>; Iowa Electronic Markets; the Policy Analysis Market; <a href="./mechanisms/amm.html">Uniswap</a> &amp; the <a href="./mechanisms/perp.html">perpetual swap</a></td><td>1860s–</td></tr>
-          <tr><td>3</td><td>🇫🇷 France</td><td>Joseph Oller invents the <a href="./mechanisms/parimutuel.html">pari-mutuel</a> (1867) — then founds the Moulin Rouge; Léon Walras's <em>tâtonnement</em> and the imaginary auctioneer behind &ldquo;the market clears&rdquo;</td><td>1867–1874</td></tr>
-          <tr><td>4</td><td>🇳🇿 New Zealand</td><td>Hosted the very first automatic tote, Ellerslie Racecourse, Auckland — the assist of the century</td><td>1913</td></tr>
-          <tr><td>5</td><td>🇬🇧 UK</td><td>Auctions &ldquo;by inch of candle&rdquo; (Pepys watched one in 1660); I. J. Good's Bletchley-forged Bayesianism and <em>Rational Decisions</em> (1952), an origin of <a href="./mechanisms/scoring-rules.html">proper scoring</a></td><td>1660–1952</td></tr>
-          <tr><td>6</td><td>🇳🇱 Netherlands</td><td>The Dutch (descending) auction and the Aalsmeer flower <em>clock</em> — a dial that measures money, not time</td><td>1911–</td></tr>
-          <tr><td>7</td><td>🇮🇪 Ireland</td><td>Intrade / Tradesports — the great real-money election exchange, and a cautionary tale (1999–2013)</td><td>1999–2013</td></tr>
-          <tr><td>8</td><td>🇨🇦 Canada</td><td>Vitalik Buterin's path-independent market makers (2017), the writing that seeded the constant-function <a href="./mechanisms/amm.html">AMM</a></td><td>2017</td></tr>
-          <tr><td>9</td><td>🇮🇱 Israel</td><td>Bancor's smart-token automated liquidity (2017), an early <a href="./mechanisms/amm.html">AMM</a> ancestor</td><td>2017</td></tr>
+          <tr><td>Foundations</td><td>Leonard Savage (subjective probability &amp; scoring) · Kenneth Arrow (aggregation / impossibility) · Eugene Fama (efficient-markets hypothesis) · Glenn Brier (the Brier score, out of the Weather Bureau)</td></tr>
+          <tr><td>Midfield (theory)</td><td>William Vickrey* (second-price auction) · Vernon Smith (experimental double auctions) · Robin Hanson (LMSR &amp; futarchy) · Charles Manski (eliciting probabilistic expectations)</td></tr>
+          <tr><td>Forwards (markets)</td><td>J. L. Kelly Jr. (growth-optimal betting, Bell Labs) · the Iowa Electronic Markets (Forsythe–Nelson–Neumann, 1988) · Hayden Adams (Uniswap)</td></tr>
+          <tr><td>Bench</td><td>John McCarthy · Harry Markowitz · Charles Plott · Daniel Friedman · David Pennock · Yiling Chen* · Jennifer Wortman Vaughan · Philip Tetlock* · Paul Sztorc (Truthcoin) · Krug &amp; Peterson (Augur) · Arthur Hayes (BitMEX perpetual swap) · Shayne Coplan (Polymarket)</td></tr>
         </tbody>
       </table>
     </div>
+    <p class="muted">* called up despite being born abroad — see VAR.</p>
 
-    <h2>Contested citizenships (VAR is reviewing)</h2>
+    <h3>🇦🇺 Australia — and yes, a theory line</h3>
+    <div class="table-wrap">
+      <table class="impl squad">
+        <thead><tr><th>Line</th><th>Players (contribution)</th></tr></thead>
+        <tbody>
+          <tr><td>Foundations</td><td>Trevor Breusch &amp; Adrian Pagan (the Breusch–Pagan diagnostics for validating forecast models) · Maxwell King (specification testing)</td></tr>
+          <tr><td>Midfield (theory)</td><td>John Quiggin (rank-dependent / anticipated expected utility) · Justin Wolfers* (the economics of prediction markets) · Rob Hyndman (forecasting &amp; forecast evaluation)</td></tr>
+          <tr><td>Forwards (markets)</td><td>George Julius © (the automatic totalisator) · the TAB (off-course government tote, 1961) · the Sydney Futures Exchange (first financial futures outside the US, 1979) · the Australian Options Market (exchange-traded options, 1976)</td></tr>
+          <tr><td>Bench</td><td>Synthetix / Kain Warwick (Sydney on-chain derivatives) · the Betfair High Court case (2008, betting exchanges) · Peter Bossaerts* (experimental information aggregation) · Flavio Menezes* (auction theory)</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="muted">* born abroad or naturalised. So much for "Australia has no theory."</p>
+    <p>
+      And where America was held back by puritanical predilections, Australia was
+      propelled by the opposite one. Off the bench it brings <strong>two-up</strong> —
+      the people's parimutuel, a bet on the spin of two coins with no inventor on
+      record (you cannot patent a coin toss). It descends from the British
+      "cross and pile" / "pitch and toss"; the convicts' fondness for it was already
+      logged by New South Wales's first judge advocate in 1798, and it spread across
+      the goldfields by the 1850s. It is the purest binary market in the
+      tournament — and, fittingly, legal nationwide roughly one day a year.
+    </p>
+
+    <h2>Group stage (the nations who shaped the game and went home early)</h2>
     <ul>
-      <li><strong>Joseph Oller</strong> was Catalan, born in Terrassa — so 🇪🇸 Spain lodges a protest over France's pari-mutuel goal.</li>
-      <li><strong>Vitalik Buterin</strong> is Russian-born and Canadian-raised; the AMM assist has dual nationality.</li>
-      <li>The <strong>perpetual swap</strong> launched at BitMEX, incorporated in the Seychelles and run from Hong Kong 🇭🇰 — the most offshore goal in the tournament.</li>
-      <li>The <strong>Policy Analysis Market</strong> is often miscalled a market to bet on assassinations; it wasn't — it was a market on Middle-East macro indicators, killed within a day of a 2003 press conference. We score the design, not the headline.</li>
+      <li><strong>🇮🇱 Israel</strong> — Kahneman &amp; Tversky (prospect theory: how people <em>really</em> weight probabilities), Aumann (correlated equilibrium), and Bancor (the first deployed on-chain AMM, 2017). Out on goal difference; widely held to have been robbed.</li>
+      <li><strong>🇭🇺 Hungary</strong> — von Neumann (the minimax theorem, game theory), Harsanyi (games of incomplete information), Wald (sequential analysis). A golden generation that mostly suited up for other nations.</li>
+      <li><strong>🇷🇺 Russia</strong> — Kolmogorov (the 1933 axioms of probability — literally the rulebook), Markov (Markov chains), Kantorovich (linear programming / optimal allocation). Wrote the laws of the game, then declined to play the markets.</li>
+      <li><strong>🇨🇭 Switzerland</strong> — the Bernoullis of Basel (the law of large numbers; expected utility and the St Petersburg paradox), the Lausanne School stadium (where Walras and Pareto played), and the Ethereum Foundation in Zug. Neutral hosts who happen to own the ground.</li>
+      <li><strong>🇮🇪 Ireland</strong> — Adrian Raftery (Bayesian model averaging; co-author of the canonical proper-scoring-rules paper) and Intrade, the great election exchange (to 2013).</li>
+      <li><strong>🇪🇸 Spain</strong> — <em>El Gordo</em>, the <a href="https://en.wikipedia.org/wiki/Spanish_Christmas_Lottery">Lotería de Navidad</a> (first drawn 1812; the largest lottery in the world by total prize payout) — and a formal protest lodged over France's Catalan-born striker.</li>
+      <li><strong>🇳🇿 New Zealand</strong> — host of the very first automatic tote (Ellerslie, Auckland, 1913). The assist of the century.</li>
+      <li><strong>🇨🇦 Canada</strong> — keeps having its players poached: Vickrey (born in Victoria, BC) and Tetlock (born in Toronto) both turned out for the USA.</li>
+      <li><strong>🇨🇳 China</strong> — keno and the "white-pigeon ticket"; the tale that a lottery helped fund the Great Wall is folklore, not fact, and the goal is disallowed.</li>
+    </ul>
+
+    <h2>The lottery sideshow</h2>
+    <p>
+      Pooled-stakes gambling is the parimutuel's ancestor, and it has its own bracket:
+      Augustus drew prizes by lot at Roman feasts; Genoa abstracted betting on the
+      names of elected officials into the 5-of-90 <em>lotto</em> (early 17th century);
+      Elizabeth I held England's first state lottery (drawn 1569); the Dutch
+      <em>Staatsloterij</em> (1726) is often called the oldest still running; Spain's
+      <em>El Gordo</em> (1812) is the biggest by total payout; and a 1612 lottery
+      helped bail out the Jamestown colony. Different mechanism, same idea this whole
+      site is about — put the stakes in a pool and let a rule do the rest.
+    </p>
+
+    <h2>VAR is reviewing (contested citizenships &amp; disallowed goals)</h2>
+    <ul>
+      <li><strong>William Vickrey</strong> — born in Victoria, British Columbia 🇨🇦; naturalised American; the only economics Nobel laureate born in BC. Played his whole career for 🇺🇸.</li>
+      <li><strong>Philip Tetlock</strong> (Toronto 🇨🇦) and <strong>Yiling Chen</strong> (China 🇨🇳) also line up for the USA; <strong>Justin Wolfers</strong> was born in Papua New Guinea and raised in Sydney, playing for Australia.</li>
+      <li><strong>Joseph Oller</strong> was Catalan (born in Terrassa 🇪🇸); de Finetti was born in Innsbruck; Daniel Bernoulli in Groningen; Wald in Cluj. Birthplace and shirt rarely agree.</li>
+      <li><strong>Vitalik Buterin's AMM goal is disallowed.</strong> He suggested and popularised running on-chain exchanges like prediction markets, but invented no market mechanism and did not originate <em>x·y=k</em>. The credit reads Hanson (LMSR) → Gnosis (Köppelmann, constant-product origination) → Uniswap (Adams), with Bancor first to deploy.</li>
+      <li>The <strong>perpetual swap</strong> was scored from offshore (BitMEX). The <strong>Policy Analysis Market</strong> was a market on Middle-East macro indicators, not — as widely misreported — a market on assassinations; we score the design, not the headline.</li>
     </ul>
 
     <p class="muted" style="margin-top:18px;">
-      Sources and the real mathematics are one click away: the
-      <a href="./catalog.html">catalog</a>, the
-      <a href="./bibliography.html">bibliography</a> (incl. Rhode &amp; Strumpf on the
-      old election markets, and Conlon on the totalisator), and the
-      <a href="./mechanisms/parimutuel.html#demo">parimutuel page</a>'s homage to
-      Julius. Disagree with the ranking? That is the entire point of a league table.
+      The line-ups are ours; the final whistle is yours. The real mathematics and the
+      sources are on the <a href="./catalog.html">catalog</a> and in the
+      <a href="./bibliography.html">bibliography</a> (Rhode &amp; Strumpf on the old
+      election markets; Conlon on the totalisator). Disagree with the seeding? That is
+      the entire point of a bracket.
     </p>
   </main>
 
