@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mechanisms — A World Cup of Prediction Markets</title>
   <link rel="stylesheet" href="./style.css" />
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
-  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
-    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
   <style>
     .bracket { display:flex; flex-wrap:wrap; align-items:center; gap:14px; margin:18px 0; }
     .bracket .pair { display:flex; flex-direction:column; gap:8px; }
@@ -150,7 +146,7 @@
       <li><strong>🇦🇹 Austria</strong> — Friedrich Hayek, whose 1945 "The Use of Knowledge in Society" argues that a market is an information-processing machine, its prices aggregating dispersed knowledge no central planner could ever gather: the intellectual charter behind every prediction market on this site. Harsh on the federation that wrote the constitution to exit in the group stage — and Hayek saw out his career playing for Britain at the LSE.</li>
       <li><strong>🇮🇱 Israel</strong> — Kahneman &amp; Tversky (prospect theory: how people <em>really</em> weight probabilities), Aumann (correlated equilibrium), and Bancor (the first deployed on-chain AMM, 2017). Out on goal difference; widely held to have been robbed.</li>
       <li><strong>🇭🇺 Hungary</strong> — von Neumann (the minimax theorem, game theory), Harsanyi (games of incomplete information), Wald (sequential analysis). A golden generation that mostly suited up for other nations.</li>
-      <li><strong>🇷🇺 Russia</strong> — Kolmogorov (the 1933 axioms of probability — literally the rulebook), Markov (Markov chains), Kantorovich (linear programming / optimal allocation). Wrote the laws of the game, then declined to play the markets.</li>
+      <li><strong>🇷🇺 Russia</strong> — Kolmogorov (the 1933 axioms of probability), Markov (Markov chains), Kantorovich (linear programming / optimal allocation): they wrote the rulebook of chance and never turned up to bet.</li>
       <li><strong>🇨🇭 Switzerland</strong> — the Bernoullis of Basel (the law of large numbers; expected utility and the St Petersburg paradox), the Lausanne School stadium (where Walras and Pareto played), and the Ethereum Foundation in Zug. Neutral hosts who happen to own the ground.</li>
       <li><strong>🇮🇪 Ireland</strong> — Adrian Raftery (Bayesian model averaging; co-author of the canonical proper-scoring-rules paper) and Intrade, the great election exchange (to 2013).</li>
       <li><strong>🇪🇸 Spain</strong> — <em>El Gordo</em>, the <a href="https://en.wikipedia.org/wiki/Spanish_Christmas_Lottery">Lotería de Navidad</a> (first drawn 1812; the largest lottery in the world by total prize payout) — and a formal protest lodged over France's Catalan-born striker.</li>
@@ -160,8 +156,8 @@
     </ul>
 
     <p>
-      Several of these squads also carry a lottery, which is worth pausing on because
-      pooled-stakes gambling is the parimutuel's own ancestor: Augustus drew prizes by
+      Several of these squads also carry a lottery, and pooled-stakes gambling is the
+      parimutuel's own ancestor: Augustus drew prizes by
       lot at Roman feasts; Genoa abstracted betting on the names of elected officials
       into the 5-of-90 <em>lotto</em> (early 17th century); Elizabeth I held England's
       first state lottery (drawn 1569); the Dutch <em>Staatsloterij</em> (1726) is
@@ -169,64 +165,6 @@
       biggest by total payout; and a 1612 lottery helped bail out the Jamestown
       colony. Different mechanism, same idea as this whole site — put the stakes in a
       pool and let a rule do the rest.
-    </p>
-
-    <h2>The laws of the game</h2>
-    <p>
-      The squads are the theorists and market-builders; these are the laws of motion
-      they all play under, and the mathematicians who wrote them.
-    </p>
-
-    <h3>Martingale theory — the fair game</h3>
-    <p>
-      In an efficient market today's price already reflects the public information, so
-      the best forecast of tomorrow's price is today's — a <strong>martingale</strong>,
-      named for an 18th-century French betting strategy and given rigorous form by the
-      American Joseph Doob in the 1950s:
-    </p>
-    <div class="equation-card">$$\mathbb{E}[X_{n+1}\mid X_1,\dots,X_n]=X_n.$$</div>
-    <p>It is the bedrock under Bachelier's random walk and Fama's efficient markets.</p>
-
-    <h3>Stochastic calculus — pricing the bet as the clock ticks</h3>
-    <p>
-      Bachelier theorised the random walk in 1900; Norbert Wiener (USA) proved such a
-      continuous path exists in the 1920s — pure mathematics still calls it the
-      <em>Wiener process</em> — and Kiyosi Itô (Japan) built a calculus on those jagged
-      paths (Itô's lemma). Black, Scholes &amp; Merton then used it in 1973 to price a
-      contract that settles at 1 or 0 — a binary option, which is exactly a
-      prediction-market contract — showing how volatility and the shrinking time to
-      expiry move its value. These are the dynamics behind the
-      <a href="./mechanisms/pm-amm.html">pm-AMM</a>.
-    </p>
-
-    <h3>Convex duality — why a market maker can't be bankrupted</h3>
-    <p>
-      An <a href="./mechanisms/cmm.html">automated market maker</a> is a convex cost
-      function $C(\mathbf{q})$ over the outstanding shares, with prices read off as its
-      gradient:
-    </p>
-    <div class="equation-card">$$p_i=\frac{\partial C}{\partial q_i}.$$</div>
-    <p>
-      Strict convexity does the work: every purchase lifts the price, the prices stay a
-      valid probability vector, and the operator's worst-case loss is bounded by the
-      range of $C$ ($b\log n$ for <a href="./mechanisms/lmsr.html">LMSR</a>) — the same
-      convex object whether you read it as a cost function or as a proper scoring rule.
-    </p>
-
-    <h3>Information theory &amp; maximum entropy — paying for what you tell the market</h3>
-    <p>
-      LMSR uses logarithms because a market is an information-processing machine and the
-      language of information is Shannon entropy; Edwin Jaynes's maximum-entropy
-      principle even hands the maker its prior when it knows only part of the picture.
-      <a href="./mechanisms/scoring-rules.html">Proper scoring rules</a> are the dual: a
-      trader who moves the market from a distribution $Q$ to $P$ is paid, in
-      expectation, the information injected — the Kullback–Leibler divergence
-    </p>
-    <div class="equation-card">$$D_{\mathrm{KL}}(P\parallel Q)=\sum_{x}P(x)\log\frac{P(x)}{Q(x)},$$</div>
-    <p>
-      which is exactly a log-wealth bettor's growth rate against the old price (the
-      <code>kelly</code> primitive) and the regret of the log score. Truth-telling and
-      growth-optimal betting are one convex geometry.
     </p>
 
     <h2>VAR is reviewing (contested citizenships &amp; disallowed goals)</h2>
@@ -248,8 +186,7 @@
       The line-ups are ours; the final whistle is yours. The real mathematics and the
       sources are on the <a href="./catalog.html">catalog</a> and in the
       <a href="./bibliography.html">bibliography</a> (Rhode &amp; Strumpf on the old
-      election markets; Conlon on the totalisator). Disagree with the seeding? That is
-      the entire point of a bracket.
+      election markets; Conlon on the totalisator).
     </p>
   </main>
 
