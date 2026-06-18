@@ -53,7 +53,9 @@ primitive* the mechanisms compose with:
    addition is a small `kelly.py` primitive the mechanisms *compose with*, not a
    new market. (A protocol-level auto-sizer that allocates stakes from broadcast
    beliefs *would* be a mechanism — stake allocation with a Kelly objective.)
-   *Planned.*
+   *Implemented:* [`kelly.py`](../mechanisms/kelly.py) — binary and
+   complete-market sizing, the `KL(p‖π)` growth rate, and the wealth-weighted
+   ensemble update (the multiplicative-weights engine of a self-correcting pool).
 4. **Combinatorial / conditional markets** (Gap 4). LMSR over a combinatorial
    outcome space and conditional ("if A then B") markets — the cost-function
    machinery already in [`cmm.py`](../mechanisms/cmm.py) extends to this.
@@ -95,11 +97,14 @@ all while remaining free of the normalizing constant.
 ## Priority
 
 Delivered so far: **local scoring rules**, **CA/EA peer prediction**,
-**combinatorial/conditional markets**, and a **hybrid CLOB+AMM matcher** — all
-mathematically clean, unit-tested, and extending modules already here. Still
-open: a **Kelly sizing** primitive (the agent-side dual of the log score, not a
-mechanism) and a dedicated **decision-market / futarchy** wrapper over the
-conditional machinery.
+**combinatorial/conditional markets**, a **hybrid CLOB+AMM matcher**, and a
+**Kelly sizing** primitive (the agent-side dual of the log score, with the
+wealth-weighted ensemble update) — all mathematically clean, unit-tested, and
+extending modules already here. Still open: a dedicated **decision-market**
+wrapper over the conditional machinery. The interest there is as a
+*meta-mechanism* — one that ensembles action-conditional forecasts and selects
+among them — rather than the governance/futarchy framing, which is social theory
+and out of scope for this library.
 
 ## References
 

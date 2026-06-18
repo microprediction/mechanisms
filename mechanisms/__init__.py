@@ -24,6 +24,8 @@ pdlp            Perpetual demand lending pools (GMX/Jupiter/Hyperliquid model).
 peer_prediction Truth elicitation without ground truth (Bayesian Truth Serum).
 aggregation     Opinion pools (linear, logarithmic, depth-trimmed).
 calibration     Reliability, sharpness, and calibration diagnostics.
+kelly           Kelly (log-optimal) sizing: the agent-side dual of the log score,
+                and the wealth-weighted ensemble update.
 
 See https://mechanisms.microprediction.org for the accompanying literature.
 """
@@ -45,6 +47,7 @@ from . import pdlp
 from . import peer_prediction
 from . import aggregation
 from . import calibration
+from . import kelly
 
 __version__ = "0.1.0"
 
@@ -66,5 +69,6 @@ __all__ = [
     "peer_prediction",
     "aggregation",
     "calibration",
+    "kelly",
     "__version__",
 ]
