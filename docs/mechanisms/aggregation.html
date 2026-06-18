@@ -150,6 +150,23 @@
       <a href="./scoring-rules.html">scoring rule</a> used to evaluate the panel.
     </p>
     <p>
+      A different lens applies when the reports are point forecasts of the same
+      quantity: the weights that <strong>minimise the variance</strong> of the
+      combined forecast are the classic result of Bates &amp; Granger (1969). With
+      forecast-error covariance $\Sigma$, the optimal weights are
+      $w \propto \Sigma^{-1}\mathbf{1}$, normalised by
+      $\mathbf{1}^{\top}\Sigma^{-1}\mathbf{1}$ — exactly the minimum-variance
+      portfolio, with forecasts in place of assets and forecast errors in place of
+      returns. The whole difficulty then collapses to estimating the precision
+      matrix $\Sigma^{-1}$ from short, noisy histories: estimate it badly and the
+      &ldquo;optimal&rdquo; weights underperform a flat average — the
+      <em>forecast-combination puzzle</em> (Timmermann 2006; Smith &amp; Wallis 2009).
+      The microprediction
+      <a href="https://precise.microprediction.org"><code>precise</code></a> package
+      is a battery of exactly these covariance / precision estimators and the
+      portfolio and aggregation rules built on them.
+    </p>
+    <p>
       The most interesting case makes the weights <strong>endogenous</strong>:
       rather than assigning weights administratively, let forecasters stake on their
       own reports and read the weights off the resulting allocation. This is the
