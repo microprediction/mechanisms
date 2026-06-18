@@ -43,17 +43,24 @@
         <thead><tr><th>Module</th><th>Mechanism</th></tr></thead>
         <tbody>
           <tr><td>scoring_rules</td><td>Log, Brier, spherical; pinball &amp; interval; CRPS; energy score</td></tr>
+          <tr><td>local_scoring</td><td>Hyvärinen / m-local scoring; score matching, Fisher divergence</td></tr>
           <tr><td>parimutuel</td><td>Pool betting; dynamic parimutuel market</td></tr>
+          <tr><td>nearest_the_pin</td><td>Continuous / Monte-Carlo parimutuel; density pot-split, sliced scoring</td></tr>
           <tr><td>lmsr</td><td>Logarithmic market scoring rule</td></tr>
           <tr><td>cmm</td><td>Generic convex cost-function market maker</td></tr>
           <tr><td>amm</td><td>Constant-product / constant-mean CFMMs; impermanent loss</td></tr>
           <tr><td>pm_amm</td><td>Paradigm's pm-AMM (Gaussian score dynamics)</td></tr>
+          <tr><td>combinatorial</td><td>LMSR over joint states; coherent marginals &amp; conditionals</td></tr>
           <tr><td>cda</td><td>Continuous double auction / limit order book</td></tr>
           <tr><td>fba</td><td>Frequent batch auction (uniform-price clearing)</td></tr>
+          <tr><td>hybrid_market</td><td>Hybrid CLOB + AMM matcher (complementary fills, AMM backstop)</td></tr>
           <tr><td>perp</td><td>Perpetual futures funding &amp; liquidation</td></tr>
-          <tr><td>peer_prediction</td><td>Bayesian Truth Serum; output agreement</td></tr>
+          <tr><td>pdlp</td><td>Perpetual demand lending pools; collateral, funding, liquidation</td></tr>
+          <tr><td>peer_prediction</td><td>Bayesian Truth Serum; output &amp; correlated agreement</td></tr>
           <tr><td>aggregation</td><td>Linear / logarithmic / depth-trimmed opinion pools</td></tr>
           <tr><td>calibration</td><td>Reliability diagram, ECE, Brier decomposition</td></tr>
+          <tr><td>kelly</td><td>Kelly (log-optimal) sizing; wealth-weighted ensemble update</td></tr>
+          <tr><td>decision_market</td><td>Conditional markets per action; ensembling-and-selection rules</td></tr>
         </tbody>
       </table>
     </div>

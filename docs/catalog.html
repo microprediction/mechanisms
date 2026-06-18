@@ -32,6 +32,14 @@
     <p class="subtitle">One page per mechanism — its defining formula, reference
     implementation, runnable demo, and the literature. Pick a mechanism:</p>
 
+    <p class="muted">A <em>mechanism</em> here pairs an <strong>aggregation</strong>
+    rule with a <strong>reward</strong>: it turns scattered private beliefs into a
+    price, probability, or decision <em>and</em> settles the payments that make
+    honest participation worthwhile. The library also ships the pieces mechanisms
+    compose with — agent-side sizing (<code>kelly</code>), opinion pools and
+    calibration diagnostics (estimators with no reward), and margining (the
+    reward-enforcement leg, a partial mechanism with no aggregation of its own).</p>
+
     <h2>Scoring &amp; elicitation</h2>
     <ul class="mechanism-index">
       <li><a href="./mechanisms/scoring-rules.html">Proper scoring rules</a> — Log, Brier, spherical, pinball, CRPS, energy — honesty as a dominant strategy.</li>
@@ -48,6 +56,7 @@
       <li><a href="./mechanisms/amm.html">Automated market makers (CFMMs)</a> — Constant-product / constant-mean CFMMs and impermanent loss.</li>
       <li><a href="./mechanisms/pm-amm.html">pm-AMM — parimutuel AMM for binary markets</a> — Gaussian-score AMM for binary markets; price is a probability.</li>
       <li><a href="./mechanisms/combinatorial.html">Combinatorial &amp; conditional markets</a> — One LMSR over joint states; coherent marginals and "if B then A" conditionals.</li>
+      <li><a href="./mechanisms/decision-market.html">Decision markets</a> — Conditional markets per action; ensemble the action-conditional forecasts and select (stochastic rules keep it truthful).</li>
     </ul>
 
     <h2>Auctions</h2>

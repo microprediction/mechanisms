@@ -186,3 +186,18 @@ def test_hybrid_market_parity():
     js = run_js("hybridMarketBuy", [0, 6.0, 100.0, opp_book])
     np.testing.assert_allclose(
         js, [rep["p2p_filled"], rep["amm_filled"], rep["total_cost"]], atol=1e-9)
+
+
+def test_decision_market_parity():
+    from mechanisms import decision_market as dm
+    P = [[0.8, 0.2], [0.3, 0.7], [0.5, 0.5]]
+    vals = [0.0, 1.0]
+    np.testing.assert_allclose(
+        run_js("conditionalExpectedValues", [P, vals]),
+        dm.conditional_expected_values(P, vals), atol=1e-12)
+    v = [0.2, 0.7, 0.1]
+    np.testing.assert_allclose(run_js("argmaxDecision", [v]), dm.argmax_decision(v), atol=1e-12)
+    np.testing.assert_allclose(
+        run_js("softmaxDecision", [v, 0.5]), dm.softmax_decision(v, 0.5), atol=1e-9)
+    np.testing.assert_allclose(
+        run_js("epsilonGreedyDecision", [v, 0.2]), dm.epsilon_greedy_decision(v, 0.2), atol=1e-12)

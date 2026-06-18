@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Decision markets</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+  <script src="../js/mechanisms.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
+    <h1>Decision markets</h1>
+
+    <p class="lead">
+      A decision market turns <em>action-conditional</em> forecasts into a choice.
+      For each candidate action $a$ it runs a conditional market that predicts an
+      outcome <em>given that $a$ is taken</em>; a decision rule maps the resulting
+      per-action value estimates $v_a = \mathbb{E}[\text{value}\mid a]$ to a choice;
+      and only the chosen action's market settles against what actually happens. It
+      is best read as an <strong>ensembling-and-selection</strong> mechanism: each
+      conditional market is an aggregate of its traders' beliefs, and the decision
+      market ensembles across those action-conditional aggregates and picks one.
+    </p>
+
+    <h2>Conditional markets, one per action</h2>
+    <p>
+      Stand up one <a href="./lmsr.html">LMSR</a> per action over the shared outcome
+      space (<a href="./combinatorial.html">combinatorial markets</a> supply the same
+      conditional machinery when actions and outcomes share variables). Reading off
+      each market's prices gives a matrix of conditional distributions, and dotting
+      each row against a value vector over outcomes gives the per-action value:
+    </p>
+    <div class="equation-card">$v_a \;=\; \sum_{o} P(o \mid a)\,\text{value}(o).$</div>
+    <p>
+      In code, <code>DecisionMarket(n_actions, n_outcomes)</code> holds the markets;
+      <code>trade(action, outcome, shares)</code> moves one conditional;
+      <code>values(outcome_values)</code> returns the vector $v$; and
+      <code>conditional_matrix()</code> returns the full $(A \times K)$ table.
+    </p>
+
+    <h2>From conditional prices to a choice</h2>
+    <p>
+      A decision rule maps the value vector $v$ to a distribution over actions. The
+      obvious one is deterministic <strong>argmax</strong> — put all weight on the
+      best action. The softer alternatives keep some weight everywhere: the
+      <strong>Boltzmann</strong> (softmax) rule $P(a) \propto e^{v_a/T}$, which
+      sharpens toward argmax as the temperature $T \to 0$, and
+      <strong>$\varepsilon$-greedy</strong>, which plays the argmax with probability
+      $1-\varepsilon$ and spreads $\varepsilon$ uniformly over all actions.
+    </p>
+
+    <h2>Why the rule must be stochastic</h2>
+    <p>
+      Here is the subtlety that makes a decision market more than a pair of markets
+      side by side. Under a <strong>deterministic argmax</strong> rule the
+      conditional markets are <em>not</em> incentive compatible: a trader can move
+      <em>which</em> action is selected, and the markets for the actions not taken
+      never settle — so reports there are never scored and can be pushed around for
+      free. The fix is a decision rule with <strong>full support</strong>: if every
+      action keeps a positive probability of being chosen, every conditional market
+      settles with positive probability, and a risk-neutral trader maximises expected
+      payoff by reporting its true conditional belief in each one. Softmax and
+      $\varepsilon$-greedy have full support; argmax does not (Othman &amp; Sandholm
+      2010; Chen, Kash, Ruberry &amp; Shnayder 2011). The governance reading —
+      "vote on values, bet on beliefs" (Hanson 2013) — sits on top of this market
+      core and is left out as social theory.
+    </p>
+
+    <h2 id="demo">Try it</h2>
+    <p>Three actions, each with a conditional market predicting the probability of a
+    good outcome (value 1). Set those conditionals, pick a decision rule, and watch
+    the choice distribution. Switch to <em>argmax</em> and an action's bar collapses
+    to zero — its market goes unsettled, the manipulable case the stochastic rules
+    repair.</p>
+    <div class="demo" id="dm-demo">
+      <div class="row"><label>action A: P(good)</label>
+        <input type="range" id="dm-a" min="1" max="99" value="55" step="1">
+        <span class="readout" id="dm-a-val"></span></div>
+      <div class="row"><label>action B: P(good)</label>
+        <input type="range" id="dm-b" min="1" max="99" value="70" step="1">
+        <span class="readout" id="dm-b-val"></span></div>
+      <div class="row"><label>action C: P(good)</label>
+        <input type="range" id="dm-c" min="1" max="99" value="40" step="1">
+        <span class="readout" id="dm-c-val"></span></div>
+      <div class="row"><label>decision rule</label>
+        <label style="min-width:auto"><input type="radio" name="dm-rule" value="softmax" checked> softmax</label>
+        <label style="min-width:auto">&nbsp;&nbsp;<input type="radio" name="dm-rule" value="epsilon"> &epsilon;-greedy</label>
+        <label style="min-width:auto">&nbsp;&nbsp;<input type="radio" name="dm-rule" value="argmax"> argmax</label></div>
+      <div class="row"><label>randomness</label>
+        <input type="range" id="dm-rand" min="5" max="95" value="40" step="1">
+        <span class="readout" id="dm-rand-val"></span></div>
+      <div class="row"><label>choose A</label><span class="bar" id="dm-bar-a"></span><span class="readout" id="dm-bar-a-t"></span></div>
+      <div class="row"><label>choose B</label><span class="bar alt" id="dm-bar-b"></span><span class="readout" id="dm-bar-b-t"></span></div>
+      <div class="row"><label>choose C</label><span class="bar" id="dm-bar-c" style="background:#7a5b9c"></span><span class="readout" id="dm-bar-c-t"></span></div>
+      <div class="readout" id="dm-status"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const pct = (x) => (100 * x).toFixed(1) + "%";
+        const ids = ["a", "b", "c"];
+        const rule = () => document.querySelector('input[name="dm-rule"]:checked').value;
+        function update() {
+          const values = ids.map((id) => +$("dm-" + id).value / 100);  // E[value|a] = P(good|a)
+          ids.forEach((id, i) => { $("dm-" + id + "-val").textContent = values[i].toFixed(2); });
+          const r = +$("dm-rand").value / 100;
+          $("dm-rand-val").textContent = (100 * r).toFixed(0) + "%";
+          const rl = rule();
+          let d;
+          if (rl === "softmax") d = M.softmaxDecision(values, 0.05 + r * 0.6);
+          else if (rl === "epsilon") d = M.epsilonGreedyDecision(values, r);
+          else d = M.argmaxDecision(values);
+          ids.forEach((id, i) => {
+            $("dm-bar-" + id).style.width = (220 * d[i]) + "px";
+            $("dm-bar-" + id + "-t").textContent = pct(d[i]);
+          });
+          const live = d.every((x) => x > 1e-9);
+          $("dm-status").innerHTML = live
+            ? "&#10003; every conditional market settles with positive probability — truthful reporting stays optimal"
+            : "&#10007; an action gets zero probability — its market never settles, so reports there go unscored and manipulable";
+        }
+        ids.forEach((id) => $("dm-" + id).addEventListener("input", update));
+        $("dm-rand").addEventListener("input", update);
+        document.querySelectorAll('input[name="dm-rule"]').forEach((el) => el.addEventListener("change", update));
+        update();
+      })();
+    </script>
+
+    <p class="muted">Code: <code>mechanisms/decision_market.py</code> &middot;
+      Related: <a href="./combinatorial.html">combinatorial &amp; conditional markets</a>,
+      <a href="./lmsr.html">LMSR</a>, <a href="./aggregation.html">aggregation</a> &middot;
+      Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/gaps-and-roadmap.md">gaps-and-roadmap.md</a></p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

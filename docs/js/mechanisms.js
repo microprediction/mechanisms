@@ -300,6 +300,32 @@
     return [p2pFilled, ammFilled, p2pCost + ammCost];
   }
 
+  // --- decision market: action-conditional values and decision rules ------
+  function conditionalExpectedValues(conditionalProbs, values) {
+    return conditionalProbs.map((row) => row.reduce((s, p, o) => s + p * values[o], 0));
+  }
+  function argmaxDecision(values) {
+    const mx = Math.max.apply(null, values);
+    const best = values.map((v) => (v === mx ? 1 : 0));
+    const k = best.reduce((a, b) => a + b, 0);
+    return best.map((x) => x / k);
+  }
+  function softmaxDecision(values, temperature) {
+    if (temperature === undefined) temperature = 1.0;
+    const z = values.map((v) => v / temperature);
+    const m = Math.max.apply(null, z);
+    const e = z.map((v) => Math.exp(v - m));
+    const s = e.reduce((a, b) => a + b, 0);
+    return e.map((v) => v / s);
+  }
+  function epsilonGreedyDecision(values, epsilon) {
+    if (epsilon === undefined) epsilon = 0.1;
+    const n = values.length, mx = Math.max.apply(null, values);
+    const isBest = values.map((v) => v === mx);
+    const k = isBest.filter(Boolean).length;
+    return values.map((v, i) => epsilon / n + (isBest[i] ? (1 - epsilon) / k : 0));
+  }
+
   const Mechanisms = {
     logScore,
     brierScore,
@@ -336,6 +362,10 @@
     cdaSweepBuy,
     outputAgreement,
     hybridMarketBuy,
+    conditionalExpectedValues,
+    argmaxDecision,
+    softmaxDecision,
+    epsilonGreedyDecision,
   };
 
   if (typeof module !== "undefined" && module.exports) {
