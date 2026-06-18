@@ -125,6 +125,32 @@
       price and leaves less room before a liquidation.
     </p>
 
+    <h2>Margining as a partial mechanism</h2>
+    <p>
+      Funding is a <em>transfer</em>, and a transfer is only incentive-compatible if
+      it can actually be collected. Margining is the layer that makes the promise
+      credible: it has no aggregation step — it turns no beliefs into a price — but
+      it supplies the enforcement leg that every mechanism paying out over time
+      relies on. In mechanism-design terms it restores <em>limited liability</em> and
+      ex-post individual rationality — the constraints pure designs assume away — by
+      demanding skin in the game. Call it a <strong>partial mechanism</strong>: one
+      half of the aggregation-plus-reward pair, the half that guarantees the reward
+      is real.
+    </p>
+    <p>
+      Its moving parts are themselves small mechanisms. Initial and maintenance
+      margin set how much capital backs a position; the liquidation rule is a
+      trigger; and the liquidation itself is a forced sale — disposing of inventory
+      into a market that may be thin. That unwind is precisely the illiquid-goods
+      control problem of <strong>Cotton &amp; Papanicolaou (2022)</strong>, where
+      market making is modelled as a sequence of sealed-bid auctions and the optimal
+      quote skew is driven by a super-linear inventory cost. The same collateral and
+      liquidation arithmetic, priced through a pool rather than per position, is the
+      subject of <a href="./pdlp.html">perpetual demand lending pools</a>
+      (<code>collateral_ok</code>, <code>min_collateral</code>,
+      <code>liquidation_price</code>).
+    </p>
+
     <h2>Basis, premium dynamics, and Shiller's perpetual claim</h2>
     <p>
       The <strong>basis</strong> — perp minus index — is the state variable the whole
