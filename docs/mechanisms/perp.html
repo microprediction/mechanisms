@@ -150,7 +150,71 @@
       <a href="./pdlp.html">perpetual demand lending pools</a>.
     </p>
 
-    <h2 id="demo">Try it</h2>
+    <h2 id="demo">Watch funding tether the perp</h2>
+    <p>The mark price wanders, but each interval the funding rate
+    $F = P + \mathrm{clamp}(I - P)$ pulls it back toward the index: longs pay shorts
+    when the perp trades rich, shorts pay longs when it trades cheap. Watch mark
+    oscillate around the index, with the cumulative funding on a 10k long.</p>
+    <div class="demo" id="perp-anim">
+      <canvas id="perp-canvas" height="170"
+        style="width:100%;display:block;background:#fff;border:1px solid var(--border);border-radius:6px;"></canvas>
+      <div class="readout" style="margin-top:6px">
+        <span style="color:#0d7d8c">&#9632;</span> mark &nbsp;&nbsp;
+        <span style="color:#b0791f">&#9632;</span> index</div>
+      <div class="row"><label>volatility</label>
+        <input type="range" id="pa-vol" min="2" max="40" value="14" step="1">
+        <span class="readout" id="pa-vol-val"></span></div>
+      <div class="row" style="gap:8px">
+        <button id="pa-play" type="button" style="padding:4px 14px">Pause</button>
+        <button id="pa-reset" type="button" style="padding:4px 14px">Reset</button>
+        <span class="readout" id="pa-out"></span></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const cv = $("perp-canvas"), ctx = cv.getContext("2d");
+        const index = 100, MAX = 240;
+        let mark = 100, cum = 0, hist = [], timer = null;
+        function gauss() { return (Math.random() + Math.random() + Math.random() - 1.5) / 0.5 * 0.4082; }
+        const vol = () => +$("pa-vol").value / 1000;
+        function resize() { cv.width = cv.clientWidth || 600; }
+        function step() {
+          const prem = (mark - index) / index;
+          const F = M.fundingRate(prem, 0.0001, 0.01);
+          mark += -0.4 * F * index + vol() * index * gauss();
+          mark = Math.min(120, Math.max(80, mark));
+          cum += M.fundingPayment(10000, F);
+          hist.push(mark); if (hist.length > MAX) hist.shift();
+          draw();
+          $("pa-out").textContent = `mark ${mark.toFixed(2)} · funding ${(F * 100).toFixed(4)}% · cumulative ${cum.toFixed(0)}`;
+        }
+        function draw() {
+          const W = cv.width, H = cv.height; ctx.clearRect(0, 0, W, H);
+          let lo = index, hi = index;
+          for (const m of hist) { lo = Math.min(lo, m); hi = Math.max(hi, m); }
+          const pad = (hi - lo) * 0.12 + 0.5; lo -= pad; hi += pad;
+          const y = (v) => H - 6 - (v - lo) / (hi - lo) * (H - 12);
+          ctx.strokeStyle = "#b0791f"; ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5;
+          ctx.beginPath(); ctx.moveTo(0, y(index)); ctx.lineTo(W, y(index)); ctx.stroke();
+          ctx.setLineDash([]);
+          ctx.strokeStyle = "#0d7d8c"; ctx.lineWidth = 2; ctx.beginPath();
+          const n = hist.length, dx = n > 1 ? W / (n - 1) : 0;
+          for (let i = 0; i < n; i++) { const px = i * dx, py = y(hist[i]); i ? ctx.lineTo(px, py) : ctx.moveTo(px, py); }
+          ctx.stroke();
+        }
+        function play() { if (timer) return; timer = setInterval(step, 110); $("pa-play").textContent = "Pause"; }
+        function pause() { clearInterval(timer); timer = null; $("pa-play").textContent = "Play"; }
+        function reset() { mark = 100; cum = 0; hist = []; draw(); $("pa-out").textContent = ""; }
+        $("pa-vol").addEventListener("input", () => { $("pa-vol-val").textContent = (vol() * 100).toFixed(1) + "% / step"; });
+        $("pa-play").addEventListener("click", () => (timer ? pause() : play()));
+        $("pa-reset").addEventListener("click", reset);
+        window.addEventListener("resize", () => { resize(); draw(); });
+        $("pa-vol-val").textContent = (vol() * 100).toFixed(1) + "% / step";
+        resize(); play();
+      })();
+    </script>
+
+    <h2>Try it: the funding formula</h2>
     <p>The funding rate $F = P + \mathrm{clamp}(I - P)$ tethers the perp to its
     index. Set the premium $P$ (perp over index) and a position notional; see the
     rate, who pays, and the long's cash flow over one interval.</p>
