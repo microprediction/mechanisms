@@ -36,7 +36,7 @@
       The <strong>frequent batch auction</strong> (Budish, Cramton &amp; Shim,
       2015) is a market design that <em>discretises time</em>. Rather than
       matching orders the instant they arrive, it collects every order submitted
-      within a short interval — a fraction of a second, or one blockchain block —
+      within a short interval, a fraction of a second, or one blockchain block,
       and clears them <em>together</em> at a single uniform price. Its purpose is
       surgical: to dismantle the high-frequency latency arms race that the
       <a href="./cda.html">continuous double auction</a> structurally rewards,
@@ -59,7 +59,7 @@
     </p>
     <p>
       Because the event is simultaneous and public, this is a race to react, not
-      a race to predict — and someone always loses it. Liquidity providers, who
+      a race to predict, and someone always loses it. Liquidity providers, who
       know they will sometimes be sniped, widen their spreads to recover the cost.
       The result is a socially wasteful investment in raw speed (microwave towers,
       co-location, custom silicon) that buys no better price discovery, only a
@@ -72,7 +72,7 @@
     <p>
       The fix is to stop processing orders one at a time. Time is divided into
       discrete intervals of length $\tau$ (the batch interval). Orders that arrive
-      during an interval are <em>sealed</em> — accumulated without execution — and
+      during an interval are <em>sealed</em>, accumulated without execution, and
       at the end of the interval the whole batch is cleared at once. Demand and
       supply curves are built from the limit prices, and the auction picks the
       single price that maximises the matched volume.
@@ -90,8 +90,8 @@
       and $\text{supply}(p) = \sum_{j:\,a_j \le p} q_j$ over asks $(a_j, q_j)$.
       Maximising $\min(\text{demand},\text{supply})$ is exactly finding where the
       two staircase curves cross. The clearing price can be reported as the
-      midpoint of the executable band — the gap between the highest matched bid
-      and the lowest matched ask — so that buyers and sellers split the surplus
+      midpoint of the executable band, the gap between the highest matched bid
+      and the lowest matched ask, so that buyers and sellers split the surplus
       at the crossing.
     </p>
     <p class="muted">
@@ -108,7 +108,7 @@
       at the same price</em> $p^\star$, regardless of when it arrived inside the
       interval. This removes <strong>time priority</strong> entirely: there is no
       front of the queue to win, because there is no queue. A sniper who reacts to
-      news one microsecond faster than a rival no longer captures a stale quote —
+      news one microsecond faster than a rival no longer captures a stale quote,
       both their orders land in the same batch and clear at one price determined by
       the whole crowd. Speed within an interval confers no advantage; the only thing
       that matters is the limit price you are willing to name.
@@ -121,8 +121,8 @@
       not on reaction time. On a blockchain the same argument neutralises
       <strong>transaction-ordering manipulation</strong>: when a block's orders all
       clear at one uniform price, the validator's power to reorder, insert, or
-      sandwich transactions within the block — the substrate of much
-      <strong>MEV</strong> — loses its value, because intra-batch position no
+      sandwich transactions within the block, the substrate of much
+      <strong>MEV</strong>, loses its value, because intra-batch position no
       longer determines execution price.
     </p>
 
@@ -134,13 +134,13 @@
       each order is its own batch, matching is instantaneous, and price–time
       priority (with its latency race) returns. At the other extreme, a single
       batch spanning the whole trading day is the classical <strong>call auction</strong>
-      used at market opens and closes — maximal liquidity consolidation into one
+      used at market opens and closes, maximal liquidity consolidation into one
       uniform-price clearing, but no continuous immediacy at all.
     </p>
     <p>
       The FBA's contribution is to run the call-auction clearing rule
-      <em>frequently</em>. It keeps the call auction's two virtues — a single fair
-      uniform price and pooled liquidity that resists gaming — while choosing $\tau$
+      <em>frequently</em>. It keeps the call auction's two virtues, a single fair
+      uniform price and pooled liquidity that resists gaming, while choosing $\tau$
       small enough (well under a second) that the market still feels essentially
       continuous to a human participant. The contrast is sharpest against the CDA:
       the CDA offers immediacy and pays for it with fleeting quotes and a latency

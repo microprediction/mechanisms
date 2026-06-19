@@ -35,8 +35,8 @@
     <p class="lead">
       Robin Hanson's <strong>logarithmic market scoring rule</strong> is the most
       widely used prediction-market maker. It takes the logarithmic
-      <a href="./scoring-rules.html">scoring rule</a> — the prototypical strictly
-      proper rule for eliciting a single forecaster's belief — and turns it into a
+      <a href="./scoring-rules.html">scoring rule</a>, the prototypical strictly
+      proper rule for eliciting a single forecaster's belief, and turns it into a
       <em>sequential</em> market that any number of traders can update, always
       quoting a live probability and standing ready to fill any trade at a
       mechanically computed price. The result has a closed-form cost function, a
@@ -54,7 +54,7 @@
       trader who wishes to move it from $\mathbf{p}$ to $\mathbf{p}'$ must pay off
       the previous forecaster's score and is in turn paid off by the next. Each
       trader is rewarded exactly for the information they add, and the institution
-      backstopping the chain acts as a forecaster of last resort — so the market
+      backstopping the chain acts as a forecaster of last resort, so the market
       always has a price, even with one participant. This is what makes the
       mechanism especially suited to <em>combinatorial</em> markets, where an
       ordinary order book would be impossibly thin across exponentially many
@@ -63,8 +63,8 @@
 
     <h2>The cost function and prices</h2>
     <p>
-      Re-expressed over outstanding share quantities $q = (q_1,\dots,q_n)$ — where
-      each share of outcome $i$ pays \$1 if $i$ occurs — the chained scoring rule
+      Re-expressed over outstanding share quantities $q = (q_1,\dots,q_n)$, where
+      each share of outcome $i$ pays \$1 if $i$ occurs, the chained scoring rule
       collapses into a single convex potential, the <strong>cost function</strong>:
     </p>
     <div class="equation-card">$C(q)=b\log\sum_i e^{q_i/b}.$</div>
@@ -93,7 +93,7 @@
     <div class="equation-card">$\mathrm{maxloss} = b\log n.$</div>
     <p>
       This is exposed as the <code>LMSR.max_loss</code> property, while
-      <code>realized_pnl(winner)</code> returns the operator's actual outcome —
+      <code>realized_pnl(winner)</code> returns the operator's actual outcome,
       revenue $C(q) - C(0)$ collected from traders minus the payout $q_w$, which is
       bounded below by $-b\log n$. That bounded subsidy is not a flaw but the
       <em>price of the information</em>: it is the fixed budget a sponsor pays to
@@ -117,7 +117,7 @@
 
     <h2>Liquidity-sensitive LMSR (Othman–Sandholm)</h2>
     <p>
-      Plain LMSR fixes $b$ up front and runs at a guaranteed expected loss — it is
+      Plain LMSR fixes $b$ up front and runs at a guaranteed expected loss, it is
       a <em>subsidised</em> device. Othman, Pennock, Reeves &amp; Sandholm
       (2010/2013) make liquidity respond to activity by replacing the constant with
       a volume-dependent
@@ -126,7 +126,7 @@
     <p>
       so the market deepens as more shares are outstanding. The maker then earns a
       positive bid–ask <strong>spread</strong> and can run at a profit rather than a
-      fixed loss. The trade-off is that prices no longer normalise exactly to one —
+      fixed loss. The trade-off is that prices no longer normalise exactly to one,
       they sum to a little over unity, a small <em>over-round</em> that is precisely
       the spread the operator collects. Othman &amp; Sandholm (2011) ground this
       construction in the theory of homogeneous (coherent) risk measures, and the
@@ -142,13 +142,13 @@
       $\nabla C$, convexity of $C$ is exactly no-arbitrage, and a bounded gradient
       range is exactly bounded loss. LMSR is the special case where $C$ is the
       scaled log-partition function and the implicit regulariser is negative
-      entropy — the entropic, maximally-symmetric choice. Viewed through convex
+      entropy, the entropic, maximally-symmetric choice. Viewed through convex
       duality this is the same object as the
       <a href="./amm.html">constant-function market makers</a> of DeFi: a
       prediction-market maker is a convex potential $C(q)$ priced by its gradient,
       a CFMM is a concave trading function priced by the ratio of its partials, and
       up to a change of variables they are two faces of convex-potential market
-      making — one emphasising bounded-loss elicitation, the other fees and capital
+      making, one emphasising bounded-loss elicitation, the other fees and capital
       efficiency.
     </p>
 
@@ -156,7 +156,7 @@
     <p>A hidden true probability $p^\star$ sits behind the question. Traders arrive
     one at a time, each with a noisy private signal, and move the LMSR price toward
     their belief. Watch the price <em>discover</em> $p^\star$ as scattered private
-    information is pooled into one number — the price-discovery story behind market
+    information is pooled into one number, the price-discovery story behind market
     scoring rules. Drag $p^\star$ or the signal noise and watch it re-converge.</p>
     <div class="demo" id="lmsr-anim">
       <canvas id="lmsr-canvas" height="170"

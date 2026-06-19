@@ -35,7 +35,7 @@
     <p class="lead">
       A <a href="./scoring-rules.html">scoring rule</a> needs an outcome to
       settle against. <strong>Peer prediction</strong> is what you do when there
-      is no such outcome — when the thing being elicited is never verified.
+      is no such outcome, when the thing being elicited is never verified.
       Instead of comparing a report to ground truth, it scores a report by its
       <em>statistical relationship to other agents' reports</em>, and is designed
       so that honest reporting is an equilibrium. The technical work is entirely
@@ -48,7 +48,7 @@
       Many valuable judgements are never settled by an observable outcome:
       subjective quality ratings, peer review, the accuracy of a field report, or
       a forecast about a counterfactual that will not be run. A proper scoring
-      rule cannot be applied — there is no realised value to plug in. What
+      rule cannot be applied, there is no realised value to plug in. What
       <em>is</em> available is the joint distribution of the agents' private
       signals. If agents share a common prior and each draws a private signal,
       then one agent's signal is informative about another's report; a mechanism
@@ -67,7 +67,7 @@
     </p>
     <div class="equation-card">$\mathrm{OA}(a,b) = \mathbf{1}[\,a = b\,].$</div>
     <p>
-      Truth-telling is indeed <em>an</em> equilibrium of this game — if I expect
+      Truth-telling is indeed <em>an</em> equilibrium of this game, if I expect
       you to report honestly and our signals are correlated, matching your likely
       answer means reporting my own. But it is not the only one, and not the
       attractive one. The constant strategy "always report option 0," played by
@@ -79,7 +79,7 @@
     <p class="muted">
       In code: <code>output_agreement(report_a, report_b)</code> in
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/peer_prediction.py">mechanisms/peer_prediction.py</a>
-      returns $1$ on a match and $0$ otherwise — included to show precisely the
+      returns $1$ on a match and $0$ otherwise, included to show precisely the
       failure that the Bayesian Truth Serum repairs.
     </p>
 
@@ -87,11 +87,11 @@
     <p>
       Prelec (2004) breaks the degenerate equilibrium by asking each respondent
       for <em>two</em> things rather than one. Respondent $i$ supplies an
-      <strong>information report</strong> $x_i$ — their own answer, an index in
-      $0,\dots,n-1$ — and a <strong>prediction report</strong> $y_i$, a full
+      <strong>information report</strong> $x_i$, their own answer, an index in
+      $0,\dots,n-1$, and a <strong>prediction report</strong> $y_i$, a full
       distribution over the answers estimating how the <em>rest of the
       population</em> will answer. The mechanism then rewards answers that are
-      more common than the population collectively predicted them to be —
+      more common than the population collectively predicted them to be,
       "surprisingly common" answers. Honest respondents are surprisingly common
       because they have private knowledge that others, when predicting, cannot
       fully anticipate.
@@ -120,7 +120,7 @@
       The two terms reward different things. The first,
       $\log(\bar x_k / \bar y_k)$, is the <strong>information score</strong>. It
       is positive exactly when answer $k$ occurs more often than the crowd's
-      predictions implied it would — the "surprisingly common" criterion. An
+      predictions implied it would, the "surprisingly common" criterion. An
       agent maximises it by reporting the answer their own private signal makes
       genuinely more likely than others realise, not by chasing the popular
       answer.
@@ -138,7 +138,7 @@
       maximised (at $0$) when the prediction report exactly matches the realised
       population frequencies, and penalises miscalibrated forecasts. This is the
       same logarithmic, strictly proper structure that drives the
-      <a href="./scoring-rules.html">scoring-rules</a> family — here applied not
+      <a href="./scoring-rules.html">scoring-rules</a> family, here applied not
       to an outcome but to the crowd's own distribution. Together the two terms
       make it best to report both an honest answer and an honest belief about
       everyone else.
@@ -160,9 +160,9 @@
       prior</strong> and, in its original single-question form, on a large
       population so that empirical frequencies are stable; it is an equilibrium
       result, not a dominant strategy, so other equilibria can still exist. The
-      multi-task line of work — Dasgupta–Ghosh and especially the
+      multi-task line of work, Dasgupta–Ghosh and especially the
       <strong>Correlated Agreement</strong> mechanism of Shnayder, Agarwal,
-      Frongillo and Parkes (2016) — relaxes these. By scoring agents across many
+      Frongillo and Parkes (2016), relaxes these. By scoring agents across many
       tasks and rewarding agreement only beyond what correlation alone would
       predict, Correlated Agreement attains <em>informed truthfulness</em>: no
       strategy beats honest reporting, and honest reporting strictly beats every
@@ -172,7 +172,7 @@
 
     <h2>Correlated Agreement, and enforced (stochastic-dominance) truthfulness</h2>
     <p>
-      Correlated Agreement needs no prediction report at all — only each agent's
+      Correlated Agreement needs no prediction report at all, only each agent's
       signal on a shared pool of tasks. It scores agent $i$ by agreement with
       peers on the <em>same</em> task, beyond the chance agreement expected from
       <em>unrelated</em> tasks, read through a sign matrix $S = \operatorname{sign}(\Delta)$,
@@ -188,7 +188,7 @@
       nets zero. In the binary case truthful reporting is moreover
       <strong>stochastically-dominant</strong> truthful (the "Enforced Agreement"
       property): its entire score distribution lies to the right of any deviation's,
-      so honesty wins for every risk-averse, monotone utility — not just in
+      so honesty wins for every risk-averse, monotone utility, not just in
       expectation. The demo shows the truthful 10th percentile beating 100% of a
       constant deviator's outcomes.
     </p>
@@ -196,7 +196,7 @@
     <h2 id="demo">Try it</h2>
     <p>The simplest peer mechanism: <em>output agreement</em> pays 1 when two
     agents' reports match, else 0. It rewards truth-telling when private signals
-    are positively correlated — but note the failure mode it motivates the richer
+    are positively correlated, but note the failure mode it motivates the richer
     mechanisms above: agents can also collude on a constant report and always
     score 1 without revealing anything.</p>
     <div class="demo" id="pp-demo">

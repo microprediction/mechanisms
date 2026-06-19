@@ -37,7 +37,7 @@
       date. An ordinary future converges to spot because it settles at maturity; a
       perp has no maturity to enforce that convergence, so it would be free to drift
       arbitrarily far from the underlying. The fix is a periodic
-      <strong>funding</strong> payment exchanged directly between longs and shorts —
+      <strong>funding</strong> payment exchanged directly between longs and shorts,
       a synthetic, recurring "dividend" whose sign and size depend on how far the
       perp trades from its index. That single cash flow is what tethers a contract
       that never settles to the asset it is supposed to track.
@@ -52,7 +52,7 @@
       to close the gap. If the perp trades above the index, holding a long is made
       to cost something; if it trades below, holding a long is made to pay something.
       Arbitrageurs respond to that carry, and their trades push the perp back toward
-      the index — the same equilibrating role that convergence-to-settlement plays
+      the index, the same equilibrating role that convergence-to-settlement plays
       for a dated contract, but applied continuously rather than once at expiry.
     </p>
     <p>
@@ -70,8 +70,8 @@
     <p>
       The modern crypto perpetual swap launched on BitMEX in 2016 (the XBTUSD
       contract), and its funding convention is now effectively the industry
-      standard. The rate combines a time-weighted <strong>premium index</strong> $P$
-      — how far the perp has been trading above or below the index — with a small
+      standard. The rate combines a time-weighted <strong>premium index</strong> $P$,
+      how far the perp has been trading above or below the index, with a small
       <strong>interest-rate</strong> term $I$, clamped so the premium can only move
       funding within a band $\pm c$:
     </p>
@@ -90,15 +90,15 @@
       <strong>Who pays whom.</strong> A positive rate means the perp is rich
       relative to the index, so <em>longs pay shorts</em>; a negative rate means the
       perp is cheap, so <em>shorts pay longs</em>. Persistent funding of one sign
-      invites a cash-and-carry trade — long the spot asset, short the perp in equal
-      notional for a roughly delta-neutral book that collects funding each interval —
+      invites a cash-and-carry trade, long the spot asset, short the perp in equal
+      notional for a roughly delta-neutral book that collects funding each interval,
       and it is exactly that arbitrage pressure that keeps the perp tethered to spot.
     </p>
 
     <h2>Mark price and liquidation</h2>
     <p>
       Unrealised PnL and liquidation are judged not against the perp's <em>last
-      trade</em> — which is cheap to manipulate with a single wick in a thin book —
+      trade</em>, which is cheap to manipulate with a single wick in a thin book,
       but against a manipulation-resistant <strong>mark price</strong> built from the
       external index plus a decaying funding basis. Using the mark price for margin
       checks is what prevents momentary, self-inflicted spikes from triggering
@@ -130,10 +130,10 @@
     <p>
       Funding is a <em>transfer</em>, and a transfer is only incentive-compatible if
       it can actually be collected. Margining is the layer that makes the promise
-      credible: it has no aggregation step — it turns no beliefs into a price — but
+      credible: it has no aggregation step, it turns no beliefs into a price, but
       it supplies the enforcement leg that every mechanism paying out over time
       relies on. In mechanism-design terms it restores <em>limited liability</em> and
-      ex-post individual rationality — the constraints pure designs assume away — by
+      ex-post individual rationality, the constraints pure designs assume away, by
       demanding skin in the game. Call it a <strong>partial mechanism</strong>: one
       half of the aggregation-plus-reward pair, the half that guarantees the reward
       is real.
@@ -141,7 +141,7 @@
     <p>
       Its moving parts are themselves small mechanisms. Initial and maintenance
       margin set how much capital backs a position; the liquidation rule is a
-      trigger; and the liquidation itself is a forced sale — disposing of inventory
+      trigger; and the liquidation itself is a forced sale, disposing of inventory
       into a market that may be thin. That unwind is precisely the illiquid-goods
       control problem of <strong>Cotton &amp; Papanicolaou (2022)</strong>, where
       market making is modelled as a sequence of sealed-bid auctions and the optimal
@@ -154,7 +154,7 @@
 
     <h2>Basis, premium dynamics, and Shiller's perpetual claim</h2>
     <p>
-      The <strong>basis</strong> — perp minus index — is the state variable the whole
+      The <strong>basis</strong>, perp minus index, is the state variable the whole
       mechanism regulates. Funding turns a persistent basis into a recurring carry
       cost for the rich side, so in equilibrium the premium index $P$ hovers near
       zero and funding settles near the benign interest term $I$. The basis is not a
@@ -168,12 +168,12 @@
       <em>perpetual claim</em>: a never-expiring derivative kept tethered to an index
       by a stream of dividend- or rent-like cash settlements, so that hedgers of
       long-lived, illiquid assets (home prices, national income) would never have to
-      roll an expiring contract. Crypto perps inherit that skeleton exactly — no
-      expiry plus a periodic anchoring cash flow — but swap Shiller's exogenous
+      roll an expiring contract. Crypto perps inherit that skeleton exactly, no
+      expiry plus a periodic anchoring cash flow, but swap Shiller's exogenous
       income flow for a market-driven funding rate keyed to the perp's own
       premium, because their underliers, unlike Shiller's, already have a continuous
-      traded price to anchor against. For the lending side of the same leverage story
-      — how funding-like flows price the cost of leveraged exposure in a pool — see
+      traded price to anchor against. For the lending side of the same leverage story,
+      how funding-like flows price the cost of leveraged exposure in a pool, see
       <a href="./pdlp.html">perpetual demand lending pools</a>.
     </p>
 

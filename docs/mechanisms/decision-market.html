@@ -62,7 +62,7 @@
     <h2>From conditional prices to a choice</h2>
     <p>
       A decision rule maps the value vector $v$ to a distribution over actions. The
-      obvious one is deterministic <strong>argmax</strong> — put all weight on the
+      obvious one is deterministic <strong>argmax</strong>, put all weight on the
       best action. The softer alternatives keep some weight everywhere: the
       <strong>Boltzmann</strong> (softmax) rule $P(a) \propto e^{v_a/T}$, which
       sharpens toward argmax as the temperature $T \to 0$, and
@@ -76,14 +76,14 @@
       side by side. Under a <strong>deterministic argmax</strong> rule the
       conditional markets are <em>not</em> incentive compatible: a trader can move
       <em>which</em> action is selected, and the markets for the actions not taken
-      never settle — so reports there are never scored and can be pushed around for
+      never settle, so reports there are never scored and can be pushed around for
       free. The fix is a decision rule with <strong>full support</strong>: if every
       action keeps a positive probability of being chosen, every conditional market
       settles with positive probability, and a risk-neutral trader maximises expected
       payoff by reporting its true conditional belief in each one. Softmax and
       $\varepsilon$-greedy have full support; argmax does not (Othman &amp; Sandholm
-      2010; Chen, Kash, Ruberry &amp; Shnayder 2011). The governance reading —
-      "vote on values, bet on beliefs" (Hanson 2013) — sits on top of this market
+      2010; Chen, Kash, Ruberry &amp; Shnayder 2011). The governance reading,
+      "vote on values, bet on beliefs" (Hanson 2013), sits on top of this market
       core and is left out as social theory.
     </p>
 
@@ -91,7 +91,7 @@
     <p>Three actions, each with a conditional market predicting the probability of a
     good outcome (value 1). Set those conditionals, pick a decision rule, and watch
     the choice distribution. Switch to <em>argmax</em> and an action's bar collapses
-    to zero — its market goes unsettled, the manipulable case the stochastic rules
+    to zero, its market goes unsettled, the manipulable case the stochastic rules
     repair.</p>
     <div class="demo" id="dm-demo">
       <div class="row"><label>action A: P(good)</label>
@@ -137,8 +137,8 @@
           });
           const live = d.every((x) => x > 1e-9);
           $("dm-status").innerHTML = live
-            ? "&#10003; every conditional market settles with positive probability — truthful reporting stays optimal"
-            : "&#10007; an action gets zero probability — its market never settles, so reports there go unscored and manipulable";
+            ? "&#10003; every conditional market settles with positive probability, truthful reporting stays optimal"
+            : "&#10007; an action gets zero probability, its market never settles, so reports there go unscored and manipulable";
         }
         ids.forEach((id) => $("dm-" + id).addEventListener("input", update));
         $("dm-rand").addEventListener("input", update);

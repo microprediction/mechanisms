@@ -6,7 +6,7 @@ the **sample-based distributional forecasting** of monteprediction.com.
 
 ---
 
-## Section 1 — Perpetual Futures (Perps)
+## Section 1, Perpetual Futures (Perps)
 
 ### 1.1 Origin: Shiller's perpetual futures vs. crypto perps
 
@@ -15,10 +15,10 @@ Settlement in Derivative Markets: Hedonic Repeated Measures Indices and Perpetua
 Futures"** (J. Finance). Shiller wanted liquid, cash-settled derivatives on
 illiquid real-economy risks (home prices, national income). Two contributions:
 
-- **Hedonic repeated-measures indices** — a manipulation-resistant index from
+- **Hedonic repeated-measures indices**, a manipulation-resistant index from
   sparse, heterogeneous transactions, so an underlier without a continuous traded
   price can still be measured for settlement.
-- **Perpetual futures / perpetual claims** — a derivative that never expires, kept
+- **Perpetual futures / perpetual claims**, a derivative that never expires, kept
   tethered to the index by a stream of periodic cash settlements tied to a
   dividend/rent-like income measure, so hedgers of long-lived assets need not roll
   expiring contracts.
@@ -59,9 +59,9 @@ drives funding to push the perp back to the index.
 
 ### 1.4 Mark price, index price, margin, liquidation
 
-- **Index Price** — external reference, typically a composite of spot prices.
-- **Last Price** — most recent perp trade; manipulable in thin books.
-- **Mark Price** — used for unrealized PnL and liquidation; computed from the
+- **Index Price**, external reference, typically a composite of spot prices.
+- **Last Price**, most recent perp trade; manipulable in thin books.
+- **Mark Price**, used for unrealized PnL and liquidation; computed from the
   index plus a decaying funding basis rather than the perp's own last trade. This
   prevents *unfair liquidations* from momentary wicks.
 - **Initial Margin** (~$1/\text{leverage}$) to open; **Maintenance Margin** to
@@ -81,7 +81,7 @@ anchoring it to the index).
 
 ---
 
-## Section 2 — Continuous Double Auction (CDA) & Order Books
+## Section 2, Continuous Double Auction (CDA) & Order Books
 
 ### 2.1 The CDA mechanism
 
@@ -111,13 +111,13 @@ participant knowing the aggregate curves. Central to Smith's 2002 Nobel.
 **Gjerstad & Dickhaut (1998), "Price Formation in Double Auctions"** (GEB).
 Introduces the **GD agent**, which estimates the probability any candidate
 bid/ask is accepted from recent history and submits the price maximizing expected
-surplus — a standard benchmark adaptive strategy.
+surplus, a standard benchmark adaptive strategy.
 
 ### 2.4 Gode & Sunder (1993): zero-intelligence traders
 
 **Gode & Sunder (1993), "Allocative Efficiency of Markets with Zero-Intelligence
 Traders"** (JPE). **Budget-constrained ZI traders** that submit *random*
-bids/asks achieve near-100% allocative efficiency in a CDA — "the market is a
+bids/asks achieve near-100% allocative efficiency in a CDA, "the market is a
 partial substitute for individual rationality." (ZI prices are far more volatile
 than human traders', a point later addressed by ZIP agents.)
 
@@ -137,14 +137,14 @@ arms race.
 
 ---
 
-## Section 3 — Monteprediction & Distributional Forecasting
+## Section 3, Monteprediction & Distributional Forecasting
 
 ### 3.1 monteprediction.com
 
 **monteprediction.com** is a forecasting contest associated with **Peter Cotton**
 (microprediction). Its distinguishing feature: participants forecast by submitting
-a **set of Monte Carlo sample points** — an empirical, sample-based representation
-of a multivariate distribution — rather than a point estimate or parametric
+a **set of Monte Carlo sample points**, an empirical, sample-based representation
+of a multivariate distribution, rather than a point estimate or parametric
 distribution. The "cloud" of samples is scored against the realized outcome by a
 proper scoring rule in the **energy score / Monte Carlo CRPS** family, rewarding
 forecasts well-centered on and appropriately dispersed around the truth. An
@@ -157,7 +157,7 @@ score is essential: a forecaster is rewarded for capturing the *joint*
 distribution, not just each margin.
 
 > Operational details (sample count, target variables, cadence, prizes) change
-> over time — verify on the live site.
+> over time, verify on the live site.
 
 ### 3.2 The energy score and sample-based scoring
 
@@ -170,7 +170,7 @@ $$\mathrm{ES}(P, y) = \mathbb{E}\lVert X - y\rVert - \tfrac12\,\mathbb{E}\lVert 
 proper**, negatively oriented, reduces to the CRPS in one dimension, and is
 related to the **energy distance** of Székely & Rizzo. Crucially it is easy to
 estimate from samples: the first term is the average distance from samples to $y$,
-the second the average pairwise distance among samples — a Monte-Carlo estimator
+the second the average pairwise distance among samples, a Monte-Carlo estimator
 needing only the sample cloud, never a density. This is what makes "submit a bag
 of samples" a well-founded forecasting interface. (Gneiting & Raftery 2007.)
 
@@ -191,7 +191,7 @@ There is a deep equivalence between **proper scoring rules** and **market/bettin
 mechanisms** for eliciting beliefs:
 
 - A **proper scoring rule** pays a forecaster so that truthful reporting maximizes
-  expected payoff — the single-agent analog of a market price.
+  expected payoff, the single-agent analog of a market price.
 - **Parimutuel betting** divides a pool among winners pro rata, so implied odds
   reflect the aggregate distribution of bets; settlement is batch, like a call
   auction over outcomes.

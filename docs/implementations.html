@@ -31,7 +31,7 @@
 
     <p class="lead">
       Every mechanism has a Python reference implementation in the
-      <code>mechanisms</code> package — dependency-light (<code>numpy</code> only)
+      <code>mechanisms</code> package, dependency-light (<code>numpy</code> only)
       and written to be read. The core deterministic mechanisms additionally have
       JavaScript ports that power the <a href="./demos.html">browser demos</a> and
       are checked for numerical parity against Python in the test suite.
@@ -93,23 +93,23 @@ node tests/js_parity_runner.js lmsrPrices '[[10,-5,3],50]'</code></pre>
       (<code>numpy</code>-only, no plotting dependencies), so they run anywhere.
     </p>
     <ul>
-      <li><code>sim_scoring_rules.py</code> &mdash; honest reporting beats a confident misreport under the log, Brier &amp; spherical rules: what <em>strictly proper</em> means.</li>
-      <li><code>sim_lmsr.py</code> &mdash; informed traders move an LMSR market to the true probability while the maker's loss stays under <code>b&middot;log n</code>.</li>
-      <li><code>sim_parimutuel.py</code> &mdash; a pool aggregates noisy private beliefs, then reproduces the favourite&ndash;longshot bias.</li>
-      <li><code>sim_cda.py</code> &mdash; zero-intelligence traders drive a continuous double auction to competitive equilibrium (Gode &amp; Sunder, 1993).</li>
-      <li><code>sim_amm.py</code> &mdash; a constant-product LP's fees raced against impermanent loss under a random-walk price.</li>
-      <li><code>sim_perp.py</code> &mdash; the funding rate tethers a perpetual to its index; a 5&times; leveraged long gets liquidated.</li>
-      <li><code>sim_pm_amm.py</code> &mdash; the pm-AMM prices a binary market as the Gaussian CDF <code>&Phi;((y&minus;x)/L)</code>: always a probability, outcomes summing to 1.</li>
-      <li><code>sim_fba.py</code> &mdash; a frequent batch auction clears everyone at one uniform price at the equilibrium volume (Budish, Cramton &amp; Shim, 2015).</li>
-      <li><code>sim_peer_prediction.py</code> &mdash; the Bayesian Truth Serum out-scores a strategist with no ground truth (Prelec, 2004).</li>
-      <li><code>sim_aggregation.py</code> &mdash; linear vs logarithmic vs depth-trimmed opinion pools under confidently-wrong nodes &mdash; trimming wins.</li>
-      <li><code>sim_cmm.py</code> &mdash; one convex potential subsumes LMSR (and a quadratic maker); the finite-difference price fallback matches the analytic gradient.</li>
-      <li><code>sim_calibration.py</code> &mdash; diagnose an overconfident forecaster (reliability diagram, ECE, Brier decomposition) and fix it with temperature recalibration.</li>
-      <li><code>sim_pipeline.py</code> &mdash; <em>composing two mechanisms</em>: an elicitation market produces a forecast, a calibration critic PITs it for uniformity, and wealth flows to the calibrated reports until the critic's edge collapses.</li>
-      <li><code>sim_local_scoring.py</code> &mdash; rank <em>unnormalised</em> models with the Hyvärinen score (no partition function) and confirm invariance to the normalizing constant.</li>
-      <li><code>sim_correlated_agreement.py</code> &mdash; Correlated Agreement elicits truth with no ground truth, defeats the constant-report exploit, and is stochastic-dominance (enforced) truthful.</li>
-      <li><code>sim_combinatorial.py</code> &mdash; a combinatorial LMSR learns a dependence: buying <code>A&amp;B</code> lifts <code>P(A|B)</code> above <code>P(A)</code> while Bayes consistency holds.</li>
-      <li><code>sim_hybrid_market.py</code> &mdash; hybrid CLOB+AMM: complementary resting orders fill a large buy at near-zero slippage where the AMM alone would move the price hard.</li>
+      <li><code>sim_scoring_rules.py</code>, honest reporting beats a confident misreport under the log, Brier &amp; spherical rules: what <em>strictly proper</em> means.</li>
+      <li><code>sim_lmsr.py</code>, informed traders move an LMSR market to the true probability while the maker's loss stays under <code>b&middot;log n</code>.</li>
+      <li><code>sim_parimutuel.py</code>, a pool aggregates noisy private beliefs, then reproduces the favourite&ndash;longshot bias.</li>
+      <li><code>sim_cda.py</code>, zero-intelligence traders drive a continuous double auction to competitive equilibrium (Gode &amp; Sunder, 1993).</li>
+      <li><code>sim_amm.py</code>, a constant-product LP's fees raced against impermanent loss under a random-walk price.</li>
+      <li><code>sim_perp.py</code>, the funding rate tethers a perpetual to its index; a 5&times; leveraged long gets liquidated.</li>
+      <li><code>sim_pm_amm.py</code>, the pm-AMM prices a binary market as the Gaussian CDF <code>&Phi;((y&minus;x)/L)</code>: always a probability, outcomes summing to 1.</li>
+      <li><code>sim_fba.py</code>, a frequent batch auction clears everyone at one uniform price at the equilibrium volume (Budish, Cramton &amp; Shim, 2015).</li>
+      <li><code>sim_peer_prediction.py</code>, the Bayesian Truth Serum out-scores a strategist with no ground truth (Prelec, 2004).</li>
+      <li><code>sim_aggregation.py</code>, linear vs logarithmic vs depth-trimmed opinion pools under confidently-wrong nodes, trimming wins.</li>
+      <li><code>sim_cmm.py</code>, one convex potential subsumes LMSR (and a quadratic maker); the finite-difference price fallback matches the analytic gradient.</li>
+      <li><code>sim_calibration.py</code>, diagnose an overconfident forecaster (reliability diagram, ECE, Brier decomposition) and fix it with temperature recalibration.</li>
+      <li><code>sim_pipeline.py</code>, <em>composing two mechanisms</em>: an elicitation market produces a forecast, a calibration critic PITs it for uniformity, and wealth flows to the calibrated reports until the critic's edge collapses.</li>
+      <li><code>sim_local_scoring.py</code>, rank <em>unnormalised</em> models with the Hyvärinen score (no partition function) and confirm invariance to the normalizing constant.</li>
+      <li><code>sim_correlated_agreement.py</code>, Correlated Agreement elicits truth with no ground truth, defeats the constant-report exploit, and is stochastic-dominance (enforced) truthful.</li>
+      <li><code>sim_combinatorial.py</code>, a combinatorial LMSR learns a dependence: buying <code>A&amp;B</code> lifts <code>P(A|B)</code> above <code>P(A)</code> while Bayes consistency holds.</li>
+      <li><code>sim_hybrid_market.py</code>, hybrid CLOB+AMM: complementary resting orders fill a large buy at near-zero slippage where the AMM alone would move the price hard.</li>
     </ul>
     <pre><code>python examples/sim_lmsr.py</code></pre>
 

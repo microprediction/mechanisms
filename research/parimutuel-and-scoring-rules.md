@@ -39,7 +39,7 @@ The implied **parimutuel odds** (payout per unit staked) on outcome $i$ are
 $(1-\tau)\,W / W_i$, and the implied probability of outcome $i$ is $p_i = W_i / W$.
 A defining feature is that the *odds are not fixed at bet time*: they are
 determined endogenously by the final distribution of the pool, so the operator
-bears no risk on the outcome — the bettors collectively fund all payouts. This
+bears no risk on the outcome, the bettors collectively fund all payouts. This
 self-funding, risk-free-to-the-house property distinguishes parimutuel betting
 from fixed-odds bookmaking.
 
@@ -69,7 +69,7 @@ Because the final pool fractions $W_i/W$ encode the market's *collective
 subjective probability*, parimutuel markets function as information aggregation
 mechanisms. Empirically, racetrack favorites are remarkably well-calibrated,
 which is part of why these markets are treated as a laboratory for the *wisdom of
-crowds* and the efficient-markets hypothesis — the conceptual bridge from
+crowds* and the efficient-markets hypothesis, the conceptual bridge from
 gambling markets to **prediction markets**.
 
 ### 4. Combinatorial and Call-Auction Parimutuel Markets
@@ -152,7 +152,7 @@ may move it from $\mathbf{p}_{\text{old}}$ to $\mathbf{p}_{\text{new}}$ and on
 resolution receives $S(\mathbf{p}_{\text{new}}, j) - S(\mathbf{p}_{\text{old}}, j)$.
 Because the rule is proper, each trader is incentivized to report truthfully, and
 the market maker's worst-case loss is bounded. Hanson's **LMSR** is the MSR built
-from the logarithmic score — see
+from the logarithmic score, see
 [`market-scoring-rules-and-amms.md`](market-scoring-rules-and-amms.md).
 
 ### 10. CRPS: Scoring Distributional Forecasts

@@ -9,7 +9,7 @@ literatures developed largely independently but are unified by the cost-function
 
 ---
 
-## Part I — Market Scoring Rules and Cost-Function Market Makers
+## Part I, Market Scoring Rules and Cost-Function Market Makers
 
 ### 1. Hanson's Logarithmic Market Scoring Rule (LMSR)
 
@@ -35,7 +35,7 @@ A trader moving the quantity vector from $q$ to $q'$ pays $C(q') - C(q)$. The
 $$p_i(q) = \frac{\partial C}{\partial q_i}
         = \frac{\exp(q_i/b)}{\sum_j \exp(q_j/b)},$$
 
-automatically non-negative and summing to one — the market's probability
+automatically non-negative and summing to one, the market's probability
 estimate.
 
 #### The liquidity parameter $b$
@@ -58,7 +58,7 @@ the market aggregates.
 The logarithmic scoring rule $S(\mathbf{p}, i) = b\log p_i$ is the prototypical
 strictly proper rule; LMSR is its sequential "market" form. The cost function
 $C(q)$ is the convex conjugate whose induced prices are the log rule's optimal
-report — the duality between Bregman-divergence proper scoring rules and convex
+report, the duality between Bregman-divergence proper scoring rules and convex
 cost functions later made explicit by Abernethy, Chen & Wortman Vaughan.
 
 > Reference implementations: [`mechanisms/lmsr.py`](../mechanisms/lmsr.py) and
@@ -89,11 +89,11 @@ Plain LMSR fixes liquidity $b$ and runs at a guaranteed expected loss.
   Homogeneous Risk Measures."** Grounds liquidity sensitivity in the theory of
   homogeneous (coherent) risk measures.
 - **Othman & Sandholm (2011), "Automated Market-Making in the Large: The Gates
-  Hillman Prediction Market"** — a large real-world deployment.
+  Hillman Prediction Market"**, a large real-world deployment.
 
 ---
 
-## Part II — Constant Function Market Makers (DeFi AMMs)
+## Part II, Constant Function Market Makers (DeFi AMMs)
 
 ### 4. CFMMs and constant product
 
@@ -122,7 +122,7 @@ input. Liquidity providers (LPs) deposit both assets and earn fees.
 
 - **Martinelli & Mushegian (2019), Balancer whitepaper.** Generalizes to a
   **constant weighted-geometric-mean** invariant $\prod_i R_i^{w_i} = k$,
-  $\sum_i w_i = 1$ — a self-rebalancing index fund; constant product is the
+  $\sum_i w_i = 1$, a self-rebalancing index fund; constant product is the
   two-asset equal-weight case.
 - **Egorov (2019), StableSwap (Curve) whitepaper.** A hybrid interpolating between
   the constant-sum function (zero slippage, for pegged assets) and constant
@@ -151,7 +151,7 @@ only when accumulated fees exceed impermanent loss.
 **Adams, Zinsmeister, Salem, Keefer & Robinson (2021), "Uniswap v3 Core."**
 Introduces **concentrated liquidity**: LPs allocate capital to chosen price ranges
 $[p_a, p_b]$, behaving like a constant-product market on shifted "virtual
-reserves" within the range — far greater capital efficiency, at the cost of going
+reserves" within the range, far greater capital efficiency, at the cost of going
 inactive once price exits the range.
 
 ### 8. The bridge between prediction-market AMMs and DeFi AMMs
@@ -160,7 +160,7 @@ Both families are special cases of the **cost-function / trading-function**
 abstraction. A prediction-market maker is a convex potential $C(q)$ with prices
 $\nabla C(q)$; a DeFi CFMM is a concave trading function $\varphi(R)$ with spot
 prices from the ratio of its partials. Up to sign conventions and a change of
-variables, these are the *same object viewed through convex duality* — convexity
+variables, these are the *same object viewed through convex duality*, convexity
 ⇔ no-arbitrage, bounded conjugate domain ⇔ bounded loss.
 
 - **Angeris, Chitra, Evans & Boyd (2021/2023), "Constant Function Market Makers:
@@ -172,7 +172,7 @@ liquidity sensitivity, and Uniswap/Balancer/Curve are all instances of
 *convex-potential market making*. The prediction-market literature emphasized
 bounded loss and information aggregation (a *subsidized* elicitation device); the
 DeFi literature emphasized fees, impermanent loss / LVR, and capital efficiency (a
-*fee-earning* liquidity venue) — but the underlying mathematics is shared.
+*fee-earning* liquidity venue), but the underlying mathematics is shared.
 
 ---
 

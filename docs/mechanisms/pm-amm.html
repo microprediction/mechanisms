@@ -30,7 +30,7 @@
 
   <main>
     <p class="pagenav"><a href="../catalog.html">&larr; Catalog</a></p>
-    <h1>pm-AMM — parimutuel AMM for binary markets</h1>
+    <h1>pm-AMM, parimutuel AMM for binary markets</h1>
 
     <p class="lead">
       A <strong>binary outcome token</strong> pays \$1 if an event occurs and \$0
@@ -40,19 +40,19 @@
       exactly that lifecycle. Rather than borrow a curve designed for assets that
       wander indefinitely, it derives its invariant from <em>Gaussian score
       dynamics</em> and reads the token price off the reserves as a
-      Black-Scholes binary-option probability — concentrating liquidity where the
+      Black-Scholes binary-option probability, concentrating liquidity where the
       outcome is most uncertain and thinning it where it is nearly settled.
     </p>
 
     <h2>Why a generic CFMM is the wrong shape</h2>
     <p>
       A <a href="./amm.html">constant-product pool</a> assumes its two assets
-      retain value across any price ratio — the curve $x \cdot y = k$ never lets a
+      retain value across any price ratio, the curve $x \cdot y = k$ never lets a
       reserve hit zero. A binary outcome token has the opposite destiny: by
       resolution one side is worth $1$ and the other $0$. Liquidity providers in a
       constant-product pool are short volatility, so as price marches to an
       extreme the arbitrage flow rebalances them into the worthless token and the
-      impermanent loss is total — the LP is guaranteed to be holding the loser at
+      impermanent loss is total, the LP is guaranteed to be holding the loser at
       settlement. The constant-product shape spreads liquidity uniformly across
       all price ratios, which is precisely backwards: most of it sits in regions
       ($p$ near $0$ or $1$) where, near resolution, almost no genuine trading
@@ -68,8 +68,8 @@
 
     <h2>Gaussian score dynamics</h2>
     <p>
-      Model the latent signal behind the market — a vote margin, a score
-      differential, a polling lead — as a Brownian motion $Z_t$ that the event
+      Model the latent signal behind the market, a vote margin, a score
+      differential, a polling lead, as a Brownian motion $Z_t$ that the event
       will eventually freeze at some horizon $T$. The YES token pays off if the
       signal finishes above a threshold, so its fair price today is the
       probability of that event:
@@ -113,7 +113,7 @@
       and $\Phi(0) = 0.5$; as the pool drains one token, $y - x$ grows large, the
       argument runs off to $\pm\infty$, and the price saturates at $1$ or $0$. The
       liquidity scale $L$ sets how much reserve imbalance it takes to move the
-      price a given amount — large $L$ means a deep, slow-moving market.
+      price a given amount, large $L$ means a deep, slow-moving market.
     </p>
     <p class="muted">
       In code: <code>pm_amm_invariant(x, y, L)</code> returns the left-hand side
@@ -121,7 +121,7 @@
       $\Phi\big((y-x)/L\big)$, with <code>implied_price(y - x, L)</code> as a
       convenience over the reserve difference. The normal $\Phi$ and $\phi$ are
       <code>norm_cdf</code> and <code>norm_pdf</code>, built on
-      <code>math.erf</code> with no scipy dependency — all in
+      <code>math.erf</code> with no scipy dependency, all in
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/pm_amm.py">mechanisms/pm_amm.py</a>.
     </p>
 
@@ -129,7 +129,7 @@
     <p>
       Because the price is $\Phi\big((y-x)/L\big)$, the sensitivity of price to a
       change in the reserve difference is the normal density
-      $\phi\big((y-x)/L\big)/L$ — peaked at $y = x$ (price $0.5$) and decaying
+      $\phi\big((y-x)/L\big)/L$, peaked at $y = x$ (price $0.5$) and decaying
       toward the tails. Inverting that: a fixed amount of capital buys the deepest,
       lowest-slippage liquidity near $0.5$, and progressively thinner liquidity as
       the price approaches $0$ or $1$. This is the shape the binary lifecycle
@@ -143,7 +143,7 @@
       ordinary CFMM that cost is uneven across price levels; for a binary token it
       explodes near the extremes. The pm-AMM's curve is chosen precisely so that,
       under the Gaussian score dynamics above, the LP's expected LVR is
-      <em>uniform</em> over the life of the market — constant per unit time
+      <em>uniform</em> over the life of the market, constant per unit time
       regardless of where the price currently sits. The liquidity profile is the
       direct consequence of demanding that uniformity. It is, in effect, a
       <a href="./parimutuel.html">parimutuel</a> pool given a continuous,

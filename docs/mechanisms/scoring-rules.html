@@ -36,8 +36,8 @@
       A <strong>scoring rule</strong> assigns a number to a probabilistic forecast
       once the outcome is observed. The right rule turns honesty into self-interest:
       a forecaster who is paid (or penalised) by a <em>proper</em> rule cannot do
-      better than to report exactly what they believe. This single property — that
-      truth-telling is optimal — is what makes scoring rules the elicitation engine
+      better than to report exactly what they believe. This single property, that
+      truth-telling is optimal, is what makes scoring rules the elicitation engine
       beneath market scoring rules, the <a href="./lmsr.html">LMSR</a>, forecast
       <a href="./aggregation.html">aggregation</a>, and
       <a href="./peer-prediction.html">peer prediction</a>. Throughout this page
@@ -56,7 +56,7 @@
     <div class="equation-card">$S(p, q) = \sum_{i} q_i \, S(p, i).$</div>
     <p>
       The rule is <strong>proper</strong> if reporting the truth is never worse
-      than lying — $S(q, q) \le S(p, q)$ for every $p$ and $q$ — and
+      than lying, $S(q, q) \le S(p, q)$ for every $p$ and $q$, and
       <strong>strictly proper</strong> if the truth is the <em>unique</em>
       minimiser, so any deviation strictly hurts. This is the
       <strong>elicitation property</strong>: an expert with private information has
@@ -64,7 +64,7 @@
       forecasters, or the true outcome distribution. Geometrically (Savage 1971;
       Gneiting &amp; Raftery 2007) every strictly proper rule corresponds to a
       strictly convex "expected-score" function $G(q) = S(q, q)$, with the rule
-      recovered from its subgradients — the same convex-duality skeleton that
+      recovered from its subgradients, the same convex-duality skeleton that
       reappears in <a href="./cmm.html">cost-function makers</a>.
     </p>
     <p class="muted">
@@ -87,7 +87,7 @@
     </div>
     <p>
       The <strong>logarithmic score</strong> (Good, 1952) is the unique smooth
-      strictly proper <em>local</em> rule — it depends on the forecast only through
+      strictly proper <em>local</em> rule, it depends on the forecast only through
       the probability assigned to what actually happened. It is exactly
       cross-entropy / negative log-likelihood, and it is the score that, when run as
       a market, becomes Hanson's <a href="./lmsr.html">LMSR</a> (a sequentialised
@@ -101,7 +101,7 @@
     </p>
     <p class="muted">
       In code: <code>log_score(p, y)</code>, <code>brier_score(p, y)</code>,
-      <code>spherical_score(p, y)</code> — each taking a 1-D probability vector and
+      <code>spherical_score(p, y)</code>, each taking a 1-D probability vector and
       an integer class index.
     </p>
 
@@ -131,7 +131,7 @@
     <p>
       This is a proper rule for the pair of predictive quantiles at levels
       $\alpha/2$ and $1 - \alpha/2$, so a forecaster cannot game it by quoting an
-      absurdly wide or narrow band — calibration and sharpness are traded off
+      absurdly wide or narrow band, calibration and sharpness are traded off
       automatically.
     </p>
     <p class="muted">
@@ -152,7 +152,7 @@
     </div>
     <p>
       The first term rewards getting close to the truth; the second rewards
-      <em>sharpness</em> (a tight ensemble) — together they make honesty about the
+      <em>sharpness</em> (a tight ensemble), together they make honesty about the
       whole distribution optimal. Its multivariate generalisation is the
       <strong>energy score</strong>: for an ensemble of points $x_i \in \mathbb
       R^d$ and an observation $y$,
@@ -179,7 +179,7 @@
     <p>
       The thread running through all of these rules is the same. Because the
       expected loss is uniquely minimised at the true belief, a forecaster
-      maximises their expected payoff by reporting it — no second-guessing, no
+      maximises their expected payoff by reporting it, no second-guessing, no
       strategic shading, no dependence on what anyone else does. That is what
       "incentive-compatible elicitation" means in one sentence. Strict propriety is
       also what lets these rules be <em>composed</em> into mechanisms: differencing
@@ -196,7 +196,7 @@
 
     <h2 id="demo">Try it</h2>
     <p>A two-outcome forecast $p=[p_A,\,1-p_A]$ scored (loss form, lower is better)
-    against the outcome that actually occurs. All three rules are strictly proper —
+    against the outcome that actually occurs. All three rules are strictly proper,
     each is minimised in expectation by reporting your true belief.</p>
     <div class="demo" id="sr-demo">
       <div class="row"><label>forecast p(A)</label>

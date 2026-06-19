@@ -37,7 +37,7 @@
       every trade; a <a href="./cda.html">limit order book</a> offers zero-slippage
       fills but only when a counterparty happens to be resting. A hybrid takes both:
       match a taker against resting limit orders first, and route only the unmatched
-      remainder to the AMM backstop — the book removes the spread that deters size,
+      remainder to the AMM backstop, the book removes the spread that deters size,
       the AMM removes the empty-book problem.
     </p>
 
@@ -49,8 +49,8 @@
     </p>
     <div class="equation-card">$a + b \ge 1,$</div>
     <p>
-      because together they fund the mint of one YES+NO pair — which costs \$1 and
-      always settles to \$1 — each receiving the side they wanted, with no AMM
+      because together they fund the mint of one YES+NO pair, which costs \$1 and
+      always settles to \$1, each receiving the side they wanted, with no AMM
       involvement and <strong>no slippage</strong>. A YES taker matched against a
       resting NO bid at price $b$ therefore pays $1 - b$ per share. Whatever the
       book cannot fill is routed to an <a href="./lmsr.html">LMSR</a> backstop,
@@ -64,7 +64,7 @@
       complementary book the same order is mostly filled at a fixed price and the
       AMM is barely disturbed. In the demo a 150-share YES buy costs an average
       $0.67$ and moves the AMM from $0.50$ to $0.82$ on its own, versus $0.49$ and
-      a move to $0.57$ through the hybrid — most of the flow absorbed P2P at zero
+      a move to $0.57$ through the hybrid, most of the flow absorbed P2P at zero
       slippage. This is the architecture of on-chain venues that layer a P2P order
       book over an AMM (e.g. PulsePlay over Yellow Network state channels).
     </p>
@@ -82,7 +82,7 @@
 
     <h2 id="demo">Try it</h2>
     <p>Buy YES shares: the matcher first pairs you with resting NO bids
-    (complementary, zero slippage — a NO bid at $b$ funds a YES fill at $1-b$),
+    (complementary, zero slippage, a NO bid at $b$ funds a YES fill at $1-b$),
     then routes the remainder to the LMSR backstop. Book: NO bids 2@0.40, 3@0.30.
     Small orders fill peer-to-peer; large ones spill into the AMM.</p>
     <div class="demo" id="hy-demo">

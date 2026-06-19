@@ -36,7 +36,7 @@
       A <strong>constant-function market maker</strong> replaces the order book
       with a formula. It holds reserves of two or more assets and will accept
       <em>any</em> trade that leaves a chosen <em>trading function</em> of those
-      reserves unchanged. Price is therefore not quoted by anyone — it is read
+      reserves unchanged. Price is therefore not quoted by anyone, it is read
       off the reserves. The same convex object that prices a prediction market
       (a <a href="./cmm.html">cost-function maker</a>), priced from the
       <em>reserves</em> side, becomes the AMM that underpins decentralised
@@ -60,7 +60,7 @@
     <p>
       obtained by solving $\big(x + (1-\gamma)\Delta x\big)\,(y - \Delta y) = k$.
       Because the curve is convex, every finite trade executes at an average
-      price strictly worse than the spot price — the <strong>slippage</strong>,
+      price strictly worse than the spot price, the <strong>slippage</strong>,
       or price impact, which grows with trade size relative to the reserves.
       Deep pools (large $k$) absorb trades with little impact; thin pools move
       sharply.
@@ -75,7 +75,7 @@
     <h2>Constant mean, and StableSwap</h2>
     <p>
       Balancer generalises the product to a <strong>weighted geometric mean</strong>
-      over $n$ assets — a self-rebalancing index fund:
+      over $n$ assets, a self-rebalancing index fund:
     </p>
     <div class="equation-card">
       $\displaystyle\prod_{i} R_i^{\,w_i} = k, \qquad \sum_i w_i = 1.$
@@ -87,7 +87,7 @@
       interpolates between a constant-<em>sum</em> curve (zero slippage, for
       assets meant to trade near par) and constant product (which guarantees the
       pool can never be fully drained), tuned by an amplification coefficient
-      $A$ — the right shape for stablecoin pairs.
+      $A$, the right shape for stablecoin pairs.
     </p>
     <p class="muted">
       In code: <code>ConstantMeanAMM</code> in
@@ -98,7 +98,7 @@
     <p>
       An LP is effectively short volatility. Arbitrageurs always trade the pool
       back to the external market price, so it ends up holding more of whichever
-      asset fell — the LP underperforms simply holding the initial basket. If the
+      asset fell, the LP underperforms simply holding the initial basket. If the
       price ratio moves by a factor $r$, the constant-product pool's value
       relative to holding is
     </p>
@@ -143,7 +143,7 @@
       convexity is exactly no-arbitrage, and a bounded conjugate domain is exactly
       bounded loss. So <a href="./lmsr.html">LMSR</a>, the general
       <a href="./cmm.html">cost-function maker</a>, and Uniswap/Balancer/Curve are
-      all instances of convex-potential market making — the prediction-market side
+      all instances of convex-potential market making, the prediction-market side
       emphasising bounded-loss information elicitation, the DeFi side emphasising
       fees, impermanent loss, and capital efficiency.
     </p>
@@ -152,7 +152,7 @@
     <p>The external market price random-walks; an arbitrageur continuously trades
     against the $x\cdot y=k$ pool to keep its spot price in line. The LP's value
     (reserves marked at the live price) drifts below simply <em>holding</em> the
-    starting basket — the gap is impermanent loss / loss-versus-rebalancing, which
+    starting basket, the gap is impermanent loss / loss-versus-rebalancing, which
     grows with realised volatility.</p>
     <div class="demo" id="amm-anim">
       <canvas id="amm-canvas" height="180"

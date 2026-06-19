@@ -37,7 +37,7 @@
       underneath virtually every modern electronic exchange. Buyers and sellers
       post orders at any moment into a shared <em>limit order book</em>; whenever an
       incoming order is compatible with the best resting order on the other side,
-      a trade prints immediately. There is no auctioneer and no pricing formula —
+      a trade prints immediately. There is no auctioneer and no pricing formula,
       price emerges from a continuous sequence of bilateral matches. It is fast and
       gives immediacy, but the same continuous-time operation that makes it
       responsive is what rewards latency and lets quick traders snipe stale quotes,
@@ -57,7 +57,7 @@
     </p>
     <p>
       In <code>mechanisms/cda.py</code> the book is a <code>LimitOrderBook</code>
-      holding two heaps — bids in a max-heap, asks in a min-heap — with a sequence
+      holding two heaps, bids in a max-heap, asks in a min-heap, with a sequence
       counter to enforce time priority within a price level. An <code>Order</code>
       carries a <code>side</code> (<code>"buy"</code>/<code>"sell"</code>),
       <code>price</code>, <code>qty</code> and <code>trader</code>. Calling
@@ -77,7 +77,7 @@
     <p>
       where $b^\star$ is the best bid and $a^\star$ the best ask. While
       $b^\star \le a^\star$ the book is uncrossed and nothing trades; an order is
-      <strong>marketable</strong> only when it crosses the spread — a buy with
+      <strong>marketable</strong> only when it crosses the spread, a buy with
       $\text{price} \ge a^\star$ or a sell with $\text{price} \le b^\star$.
       In <code>_match</code>, the incoming order walks the opposite heap, filling
       $\min(\text{incoming.qty},\ \text{resting.qty})$ at each level and stopping
@@ -85,10 +85,10 @@
     </p>
     <p>
       Each trade prints at the <strong>resting (maker) price</strong>, not the
-      aggressor's limit — the standard CDA rule, so any price improvement accrues
+      aggressor's limit, the standard CDA rule, so any price improvement accrues
       to the taker who crossed the spread. A large marketable order walks up (or
       down) the book through successively worse levels, so its average execution
-      price degrades with size against the available <code>depth()</code> — the
+      price degrades with size against the available <code>depth()</code>, the
       order-book analogue of an AMM's slippage.
     </p>
 
@@ -101,19 +101,19 @@
       Gode &amp; Sunder (1993) pushed this to the extreme with
       <strong>zero-intelligence (ZI) traders</strong>: agents that submit
       <em>random</em> bids and asks, subject only to a <strong>budget
-      constraint</strong> — buyers never bid above their private value, sellers
+      constraint</strong>, buyers never bid above their private value, sellers
       never ask below their cost, so no trade is ever unprofitable.
     </p>
     <p>
       Even these random, budget-constrained traders drive the CDA to near the
       competitive equilibrium price and capture almost all the available gains from
-      trade. Measuring this by <strong>allocative efficiency</strong> — realized
+      trade. Measuring this by <strong>allocative efficiency</strong>, realized
       surplus as a fraction of the maximum feasible surplus,
     </p>
     <div class="equation-card">$\eta = \dfrac{\sum_{\text{trades}} (v_{\text{buyer}} - c_{\text{seller}})}{\max\text{ feasible surplus}} \approx 1,$</div>
     <p>
-      ZI traders reach near-100%. The lesson — "<em>the market is a partial
-      substitute for individual rationality</em>" — is that the
+      ZI traders reach near-100%. The lesson, "<em>the market is a partial
+      substitute for individual rationality</em>", is that the
       price-then-time-priority matching and the budget constraint do most of the
       allocative work, not the cleverness of the participants. (The trade-off:
       ZI prices are far more volatile than human ones, since nothing damps the
@@ -128,14 +128,14 @@
       Because the CDA processes orders in <em>continuous time</em> and serializes
       them by arrival, it bakes in a speed race. When new information arrives, the
       first trader to react can pick off ("snipe") the stale quotes still resting in
-      the book before the maker can cancel them — a structural arbitrage that
+      the book before the maker can cancel them, a structural arbitrage that
       rewards being microseconds faster rather than better informed. Liquidity
       providers, anticipating this adverse selection, widen their spreads to
       compensate, so the latency race ends up taxing everyone through worse prices.
     </p>
     <p>
       Budish, Cramton &amp; Shim (2015) framed this as the central design flaw of
-      the continuous market — "the high-frequency trading arms race" — and proposed
+      the continuous market, "the high-frequency trading arms race", and proposed
       replacing continuous matching with frequent, discrete clearing. The
       <a href="./fba.html">frequent batch auction</a> collects orders over a short
       interval and clears them all at once at a single uniform price, so that being
@@ -146,7 +146,7 @@
     <h2 id="demo">Watch a live order book</h2>
     <p>Limit orders rest in the book; marketable orders cross and print trades at
     the resting (maker) price. The shaded band is the bid&ndash;ask spread and the
-    dark line is the last trade — price discovery, one order at a time.</p>
+    dark line is the last trade, price discovery, one order at a time.</p>
     <div class="demo" id="cda-anim">
       <canvas id="cda-canvas" height="170"
         style="width:100%;display:block;background:#fff;border:1px solid var(--border);border-radius:6px;"></canvas>
@@ -234,7 +234,7 @@
 
     <h2>Try it: sweep the book</h2>
     <p>A market buy sweeps the resting asks cheapest-first, each fill at the
-    resting (maker) price — so a larger order walks up the book and pays a higher
+    resting (maker) price, so a larger order walks up the book and pays a higher
     average. Book: 4@98, 3@100, 5@102. Set your order's size and limit price.</p>
     <div class="demo" id="cda-demo">
       <div class="row"><label>buy size</label>

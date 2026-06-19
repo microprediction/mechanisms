@@ -36,7 +36,7 @@
       Suppose $m$ forecasters each report a probability distribution over the same
       outcomes. We want one consensus distribution. An <strong>opinion pool</strong>
       is a rule that maps the panel of forecasts to that single distribution. The
-      two canonical pools — <em>linear</em> and <em>logarithmic</em> — differ in
+      two canonical pools, <em>linear</em> and <em>logarithmic</em>, differ in
       whether they <em>average probabilities</em> or <em>average evidence</em>, and
       that one choice fixes almost everything else about how the consensus behaves.
     </p>
@@ -50,8 +50,8 @@
       probability vector. The defining survey is Genest &amp; Zidek (1986),
       <em>Combining Probability Distributions: A Critique and an Annotated
       Bibliography</em>, which frames the question axiomatically: which natural
-      properties — preservation of unanimity, the <em>external Bayesianity</em> of
-      commuting with a shared likelihood update, marginalisation — can a pool
+      properties, preservation of unanimity, the <em>external Bayesianity</em> of
+      commuting with a shared likelihood update, marginalisation, can a pool
       satisfy, and which are mutually exclusive. No single pool satisfies all of
       them, so the operator is a modelling decision, not a default.
     </p>
@@ -70,13 +70,13 @@
     <p>
       It is the most transparent pool: the consensus probability of an outcome is
       just the weighted fraction of belief the panel placed there. It preserves the
-      support — if any single forecaster assigns positive probability to an outcome,
-      so does the pool — which makes it robust to confident dissent and the natural
+      support, if any single forecaster assigns positive probability to an outcome,
+      so does the pool, which makes it robust to confident dissent and the natural
       pool when forecasters are exchangeable. The price of that robustness is
       <strong>under-confidence</strong>: averaging probabilities pulls mass toward
       the centre and inflates the variance of the consensus, so a linear pool of
       sharp, agreeing forecasters is typically <em>less</em> sharp than its members.
-      It is also generically multimodal — it can reproduce a panel's clusters as
+      It is also generically multimodal, it can reproduce a panel's clusters as
       separate bumps rather than reconciling them. In code,
       <code>linear_opinion_pool(forecasts, weights)</code> in
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/aggregation.py">mechanisms/aggregation.py</a>;
@@ -85,7 +85,7 @@
 
     <h2>The logarithmic opinion pool</h2>
     <p>
-      The logarithmic pool is the normalised weighted geometric mean — a weighted
+      The logarithmic pool is the normalised weighted geometric mean, a weighted
       average in log-space, renormalised to sum to one:
     </p>
     <div class="equation-card">
@@ -96,8 +96,8 @@
       <strong>multiplies evidence</strong>: adding log-probabilities is combining
       independent log-likelihoods, so the log pool is the consensus you reach by
       treating each forecaster as carrying separate evidence about the outcome. It
-      is correspondingly <strong>sharper</strong> than its members — unanimous mass
-      reinforces multiplicatively — and it is unimodal under mild conditions. It is
+      is correspondingly <strong>sharper</strong> than its members, unanimous mass
+      reinforces multiplicatively, and it is unimodal under mild conditions. It is
       also <em>externally Bayesian</em>: pooling and then applying a shared
       likelihood update gives the same answer as updating first and then pooling.
       The flip side is decisiveness: because any zero probability annihilates the
@@ -108,8 +108,8 @@
     <p>
       The log pool is intimately tied to scoring. Its log-domain form is exactly the
       operator that, given the panel, minimises the weighted sum of
-      Kullback&ndash;Leibler divergences $\sum_i w_i \, D_{\mathrm{KL}}(\bar p \,\|\, p_i)$
-      — the consensus is the distribution closest to the whole panel in total
+      Kullback&ndash;Leibler divergences $\sum_i w_i \, D_{\mathrm{KL}}(\bar p \,\|\, p_i)$:
+      the consensus is the distribution closest to the whole panel in total
       KL. That is the same relative-entropy geometry that makes the
       <a href="./scoring-rules.html">logarithmic score</a> strictly proper, so the
       log pool is the aggregation counterpart of log-score elicitation. In code,
@@ -119,12 +119,12 @@
     <h2>Robust pooling against adversarial nodes</h2>
     <p>
       Both pools above are linear or log-linear in the reports, so a single extreme
-      forecast can drag the consensus arbitrarily far — fine for an honest panel,
+      forecast can drag the consensus arbitrarily far, fine for an honest panel,
       dangerous for an open network where some nodes may be broken, stale, or
       adversarial. The <strong>depth-trimmed mean</strong> hardens the linear pool by
       discarding outliers first. Each forecast is scored by its
-      <em>outlyingness</em> — here the $L_1$ distance from the coordinate-wise median
-      forecast, a simple proxy for low statistical depth — and the most outlying
+      <em>outlyingness</em>, here the $L_1$ distance from the coordinate-wise median
+      forecast, a simple proxy for low statistical depth, and the most outlying
       $\mathrm{trim}$ fraction is dropped before averaging the rest:
     </p>
     <div class="equation-card">
@@ -145,8 +145,8 @@
     <p>
       Every pool above takes the weights $w_i$ as given, but choosing them is the
       substantive question. Equal weights are the honest default when nothing
-      distinguishes the forecasters; performance weights — set from past scores, so
-      that consistently accurate forecasters count for more — are the usual
+      distinguishes the forecasters; performance weights, set from past scores, so
+      that consistently accurate forecasters count for more, are the usual
       refinement, and tie the pool back to the
       <a href="./scoring-rules.html">scoring rule</a> used to evaluate the panel.
     </p>
@@ -156,11 +156,11 @@
       combined forecast are the classic result of Bates &amp; Granger (1969). With
       forecast-error covariance $\Sigma$, the optimal weights are
       $w \propto \Sigma^{-1}\mathbf{1}$, normalised by
-      $\mathbf{1}^{\top}\Sigma^{-1}\mathbf{1}$ — exactly the minimum-variance
+      $\mathbf{1}^{\top}\Sigma^{-1}\mathbf{1}$, exactly the minimum-variance
       portfolio, with forecasts in place of assets and forecast errors in place of
       returns. The whole difficulty then collapses to estimating the precision
       matrix $\Sigma^{-1}$ from short, noisy histories: estimate it badly and the
-      &ldquo;optimal&rdquo; weights underperform a flat average — the
+      &ldquo;optimal&rdquo; weights underperform a flat average, the
       <em>forecast-combination puzzle</em> (Timmermann 2006; Smith &amp; Wallis 2009).
       The microprediction
       <a href="https://precise.microprediction.org"><code>precise</code></a> package
@@ -177,14 +177,14 @@
       <a href="https://github.com/microprediction/mechanisms/blob/main/papers/nearest-the-pin-parimutuel.md">nearest-the-pin parimutuel</a>
       pool develops exactly this idea: a density-based pot-splitting mechanism in
       which stakes determine weights, the consensus emerges from the allocation, and
-      proper-scoring incentives keep honest reporting optimal — aggregation and
+      proper-scoring incentives keep honest reporting optimal, aggregation and
       reward fused into a single mechanism.
     </p>
 
     <h2 id="demo">Try it</h2>
     <p>Two categorical forecasts over outcomes A/B, equally weighted. The
     <em>linear</em> pool is the arithmetic mean; the <em>logarithmic</em> pool is
-    the normalised geometric mean — sharper, and it pulls toward agreement.</p>
+    the normalised geometric mean, sharper, and it pulls toward agreement.</p>
     <div class="demo" id="agg-demo">
       <div class="row"><label>forecast 1 p(A)</label>
         <input type="range" id="agg-p1" min="1" max="99" value="70" step="1">

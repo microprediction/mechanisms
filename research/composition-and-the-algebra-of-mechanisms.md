@@ -1,6 +1,6 @@
 # Composition and the algebra of mechanisms
 
-The mechanisms in this repository are usually presented as a list — scoring
+The mechanisms in this repository are usually presented as a list, scoring
 rules, market makers, parimutuels, auctions, aggregators. But the interesting
 structure is not the list; it is how they **compose**. This note sketches an
 "algebra": a small set of objects and operators under which the mechanisms are
@@ -31,7 +31,7 @@ A skater has the contract
 dists, state = f(y, state)        # dists : list[Dist] for horizons 1..k
 ```
 
-where every payload is a `Dist` — a weighted Gaussian mixture exposing `.mean`,
+where every payload is a `Dist`, a weighted Gaussian mixture exposing `.mean`,
 `.std`, `.quantile`, `.logpdf`, `.cdf`. Transforms, ensembles, and search all
 *consume and emit that same type*. That closure is the whole reason a handful of
 operators suffice.
@@ -68,7 +68,7 @@ market maker.**
 Skaters expose a small operator set; each lifts to a relationship between
 mechanisms.
 
-**Conjugation** — `conjugate(skater, transform)` runs a model in a transformed
+**Conjugation**, `conjugate(skater, transform)` runs a model in a transformed
 coordinate and maps back (`difference`, `standardize`, `ema`, …; all
 invertible). It appears *twice* in the mechanism world, and the coincidence of
 names is not accidental:
@@ -83,35 +83,35 @@ names is not accidental:
 
 **Ensemble = aggregation.** Skaters' `precision_weighted_ensemble` (∝ 1/MSE) is
 an inverse-variance linear pool; `bayesian_ensemble` (log-likelihood with a
-complexity penalty) is a logarithmic opinion pool — both implemented in
+complexity penalty) is a logarithmic opinion pool, both implemented in
 [`aggregation`](../mechanisms/aggregation.py). The
 [nearest-the-pin pool](../papers/nearest-the-pin-parimutuel.md) is precisely a
-**wealth-weighted ensemble whose weights are updated by realised score** — an
+**wealth-weighted ensemble whose weights are updated by realised score**, an
 ensemble whose mixing weights are themselves a market.
 
-**Residual chaining** — one stage models what the previous stage got wrong; a
+**Residual chaining**, one stage models what the previous stage got wrong; a
 correction/boosting market on the residual stream.
 
-**Sequentialise** — the Hanson functor `score → market maker` (state = wealth).
+**Sequentialise**, the Hanson functor `score → market maker` (state = wealth).
 
-**Pool** — the batch functor `score → parimutuel` (elicitation in one shot
+**Pool**, the batch functor `score → parimutuel` (elicitation in one shot
 rather than sequentially).
 
-**Spec / grammar** — skaters serialise a pipeline to data (`to_json`/`from_json`
+**Spec / grammar**, skaters serialise a pipeline to data (`to_json`/`from_json`
 /`build`) and search over it. The mechanism analogue is a *market over
 pipelines*: the architecture itself becomes the thing being elicited.
 
 ## 3. The generator: convex functions under Legendre duality
 
-Underneath the operators is a single generating object — **convex functions,
+Underneath the operators is a single generating object, **convex functions,
 with Legendre duality as the central involution.**
 
 - A convex `G` generates a strictly proper scoring rule; the induced divergence
-  is `G`'s **Bregman divergence** (Savage 1971; Banerjee et al. 2005) —
+  is `G`'s **Bregman divergence** (Savage 1971; Banerjee et al. 2005),
   `scoring_rules`.
 - A convex potential `C` generates a no-arbitrage cost-function market maker
-  with prices `∇C` (Abernethy–Chen–Wortman Vaughan 2013) — `cmm`.
-- The conjugate `C*` generates the trading function / CFMM — `amm`.
+  with prices `∇C` (Abernethy–Chen–Wortman Vaughan 2013), `cmm`.
+- The conjugate `C*` generates the trading function / CFMM, `amm`.
 
 Operations on convex functions then become operations on mechanisms:
 
@@ -193,8 +193,8 @@ is the range of $R$**,
 $$\text{worst-case loss}=\sup_p R(p)-\inf_p R(p).$$
 
 Taking $R(p)=b\sum_i p_i\log p_i$ (scaled negative entropy, i.e. $b\times$ the
-log-score generator of Theorem 1) gives $C(\mathbf q)=b\log\sum_i e^{q_i/b}$ —
-**Hanson's LMSR** — with worst-case loss $b\log n$.
+log-score generator of Theorem 1) gives $C(\mathbf q)=b\log\sum_i e^{q_i/b}$,
+**Hanson's LMSR**, with worst-case loss $b\log n$.
 
 **Proof sketch.** Conjugate duality gives $\nabla C(\mathbf q)=\arg\max_p$, which
 lies in $\Delta$, and $\langle \nabla C,\mathbf 1\rangle=1$ by the simplex
@@ -213,7 +213,7 @@ The two are the same object read through $C\leftrightarrow C^{*}$: the reachable
 reserve set of the CFMM is the (sub)gradient image of $C$, and the price the
 CFMM quotes equals $\nabla C$ at the corresponding inventory. Thus
 [`amm`](../mechanisms/amm.py) and [`cmm`](../mechanisms/cmm.py) are conjugate
-views of one potential — the "convex dual" edge in the
+views of one potential, the "convex dual" edge in the
 [relationship map](https://mechanisms.microprediction.org/map.html).
 
 ### Proposition 4 (Rosenblatt 1952; Dawid 1984). The PIT, which the critic exploits.
@@ -235,21 +235,21 @@ The cleanest non-trivial pipeline chains two mechanisms through a feedback loop
 
 1. **Elicitation market (the transformation).** A pool of forecasters each
    report a predictive distribution; the wealth-weighted *linear opinion pool*
-   is a single predictive distribution `F_t`. `F_t` is the transformation — the
+   is a single predictive distribution `F_t`. `F_t` is the transformation, the
    coordinate change that should turn outcomes into noise.
 2. **Calibration critic (test for uniformity).** Apply the probability-integral
    transform `u_t = F_t(x_t)` (Dawid's prequential PIT, 1984); if `F_t` is right
    the `u_t` are Uniform(0,1) and `z_t = Φ⁻¹(u_t)` is standard normal. The critic
-   measures how far the z-stream departs from uniform — its detectable edge is
+   measures how far the z-stream departs from uniform, its detectable edge is
    exactly the aggregate's miscalibration.
-3. **Feedback.** Each forecaster's wealth is updated by its log score — the
-   proper-scoring "gradient" — so wealth flows to the calibrated reports, `F_t`
+3. **Feedback.** Each forecaster's wealth is updated by its log score, the
+   proper-scoring "gradient", so wealth flows to the calibrated reports, `F_t`
    sharpens to the truth, and the critic's edge collapses.
 
 This is a **market-native GAN**: a generator (the transform market) against a
 critic (the uniformity market), with a proper score as the loss and wealth as
 the gradient. It is exactly the **z-stream / nearest-the-pin** mechanism of the
-microprediction vision — and z-streams were not only theory: they ran on a live
+microprediction vision, and z-streams were not only theory: they ran on a live
 forecasting platform (Cotton, *Microprediction: Building an Open AI Network*,
 MIT Press, 2022).
 
@@ -258,7 +258,7 @@ bull, a bear, and an overconfident report) against an iid N(0,1) stream:
 
 - z-stream **uniformity error** (TV distance from uniform): equal-weighted
   aggregate `0.165` → converged aggregate `0.068`;
-- **bias** (mean `z`) stays ≈ 0 throughout — the symmetric bull/bear cancel, so
+- **bias** (mean `z`) stays ≈ 0 throughout, the symmetric bull/bear cancel, so
   the *mean never reveals the problem*. It is the **shape** of the PIT that is
   wrong and then fixed, which is exactly why the critic tests uniformity of the
   whole z-stream rather than a moment or two;
@@ -269,8 +269,8 @@ bull, a bear, and an overconfident report) against an iid N(0,1) stream:
 Read this way, market/scoring mechanisms are *composable pipeline stages* with a
 property ordinary pipeline stages lack: each stage carries its own incentive, so
 the pipeline is **self-correcting**. One market picks a transformation; a second
-market is paid to find structure the first one left behind; wealth — not a hand-
-tuned loss — routes credit between them. A forecasting stack, a feature
+market is paid to find structure the first one left behind; wealth, not a hand-
+tuned loss, routes credit between them. A forecasting stack, a feature
 pipeline, or a data-quality monitor can each be posed as a chain of elicitation
 and test markets glued by the PIT.
 
