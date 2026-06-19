@@ -1,0 +1,191 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Connections</title>
+  <link rel="stylesheet" href="./style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">mechanisms</a>
+      <nav>
+        <a href="./catalog.html">Catalog</a>
+        <a href="./demos.html">Demos</a>
+        <a href="./map.html">Map</a>
+        <a href="./connections.html">Connections</a>
+        <a href="./implementations.html">Implementations</a>
+        <a href="./papers.html">Papers</a>
+        <a href="./bibliography.html">Bibliography</a>
+        <a href="./world-cup.html">World Cup</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
+    <h1>Connections</h1>
+    <p class="subtitle">The catalog reads like a list. It is closer to a few facts
+    of convex analysis wearing different institutional clothes. Four of them tie
+    the repository together. The <a href="./map.html">map</a> shows the edges;
+    this page states the theorems.</p>
+
+    <h2>1. Convex duality is the spine</h2>
+    <p>
+      Fix outcomes $\{1,\dots,n\}$ and a convex function $G$ on the probability
+      simplex. Savage's characterisation says a strictly proper
+      <a href="./mechanisms/scoring-rules.html">scoring rule</a> is exactly
+    </p>
+    <div class="equation-card">
+      $S(p,i) = G(p) + \langle\, \nabla G(p),\; e_i - p\,\rangle,$
+    </div>
+    <p>
+      and the edge an honest forecaster $q$ holds over any lie $p$ is the
+      <strong>Bregman divergence</strong> $D_G(q,p)\ge 0$ of that same $G$
+      (Savage 1971; Banerjee et al. 2005; Gneiting &amp; Raftery 2007). Negate and
+      take the convex conjugate: $C = (-G)^\ast$ is a
+      <a href="./mechanisms/cmm.html">cost-function market maker</a> with prices
+      $\nabla C$, arbitrage-free because $C$ is convex, and worst-case loss equal
+      to the range of the conjugate. Hanson's
+      <a href="./mechanisms/lmsr.html">LMSR</a> is the entropic case
+      $C(q)=b\log\sum_i e^{q_i/b}$ with loss $b\log n$ (Hanson 2007;
+      <a href="https://doi.org/10.1145/2465769.2465777">Abernethy, Chen &amp; Wortman Vaughan 2013</a>).
+    </p>
+    <p>
+      The involution $C \leftrightarrow C^\ast$ <em>is</em> the maker-to-CFMM
+      duality: Uniswap and Balancer are the same potential read from the reserve
+      side, not a different mechanism (Frongillo, Papireddygari &amp; Waggoner 2024).
+      And the same duality reaches the order book: a
+      <a href="./mechanisms/fba.html">call or batch auction</a>'s uniform clearing
+      price is the dual variable of &ldquo;maximise matched volume,&rdquo; and a
+      <a href="./mechanisms/parimutuel.html">parimutuel</a> is a convex program
+      whose dual yields the implied odds
+      (<a href="https://doi.org/10.1287/opre.1110.0922">Agrawal et al. 2011</a>).
+      So scoring rules, market makers, CFMMs, batch auctions, and parimutuels are
+      conjugate views of one convex potential.
+    </p>
+
+    <h2>2. Infimal convolution is composition</h2>
+    <p>
+      The operation that <em>combines</em> two of these objects is the
+      <strong>infimal convolution</strong>
+    </p>
+    <div class="equation-card">
+      $(f \mathbin{\square} g)(x) = \inf_{y}\ \{\, f(y) + g(x - y) \,\},$
+    </div>
+    <p>
+      whose one essential property is that it is <em>dual to addition</em>:
+      $(f \mathbin{\square} g)^\ast = f^\ast + g^\ast$ (Rockafellar 1970; Moreau 1965).
+      Summing in one space is inf-convolving in the other. That single identity
+      shows up as the composition law in two literatures that never cite each
+      other:
+    </p>
+    <ul>
+      <li><strong>Markets.</strong> Merge two cost-function makers and the valid
+        trades are exactly the infimal convolution of their cost functions; dually
+        their conjugate scoring-rule generators <em>add</em>, so liquidity (the
+        Hessian of the conjugate) is additive
+        (Bhaskara, Frongillo &amp; Papireddygari 2023,
+        <a href="https://arxiv.org/abs/2311.08725">arXiv:2311.08725</a>).</li>
+      <li><strong>Risk sharing.</strong> The market aggregate of several agents'
+        convex risk measures is their infimal convolution; the minimiser is the
+        Pareto-optimal allocation and the agents' common subgradient is the
+        clearing price
+        (<a href="https://doi.org/10.1007/s00780-005-0152-0">Barrieu &amp; El Karoui 2005</a>;
+        <a href="https://doi.org/10.1111/j.1467-9965.2007.00332.x">Jouini, Schachermayer &amp; Touzi 2008</a>).</li>
+    </ul>
+    <p>
+      Same operation, three readings: pooling liquidity, sharing risk, combining
+      agents. The <a href="./mechanisms/hybrid-market.html">hybrid CLOB+AMM</a> and
+      the <a href="./mechanisms/combinatorial.html">combinatorial market</a> are
+      both instances of merging makers this way. Inf-convolution with a quadratic
+      is the Moreau envelope, whose non-Euclidean form is the mirror map of the
+      next section.
+    </p>
+
+    <h2>3. Exponential weights is the engine</h2>
+    <p>
+      Three mechanisms in three different clusters are one update in disguise,
+      mirror descent with the negative-entropy mirror:
+    </p>
+    <ul>
+      <li><strong>LMSR</strong> prices by Follow-the-Regularised-Leader with the
+        entropic regulariser; the liquidity $b$ is the learning rate and bounded
+        loss is the regret bound (Abernethy, Chen &amp; Wortman Vaughan 2013).</li>
+      <li>The logarithmic <a href="./mechanisms/aggregation.html">opinion pool</a>
+        is the normalised geometric mean, the same multiplicative (Bayesian)
+        mixture; the wealth-weighted pool update
+        $w \leftarrow w\cdot p(y)/\pi$ is the Hedge update.</li>
+      <li><strong>Kelly</strong> sizing maximises log-wealth growth
+        $\sum_i p_i\log(p_i/\pi_i) = \mathrm{KL}(p\,\Vert\,\pi)$, which is exactly
+        the regret of the log score, by that same multiplicative step.</li>
+    </ul>
+    <p>
+      The softmax that prices LMSR is $\nabla$ of the log-sum-exp, the gradient of
+      the conjugate of entropy. The market maker, the aggregator, and the sizing
+      rule are reading the same object off different faces.
+    </p>
+
+    <h2>4. The scoring substrate</h2>
+    <p>
+      Underneath all of it is the dictionary <em>proper scoring rule
+      &harr; convex generator &harr; Bregman divergence</em> (Savage 1971;
+      Banerjee et al. 2005). The three classics are three choices of $G$:
+    </p>
+    <div class="equation-card">
+      $\text{log} \to \mathrm{KL},\qquad
+       \text{Brier} \to \lVert q-p\rVert_2^2,\qquad
+       \text{spherical} \to \text{angular separation.}$
+    </div>
+    <p>
+      Each then has a market-maker twin. The log score is LMSR; the
+      <strong>Brier</strong> (quadratic) score is a quadratic-potential maker, the
+      Euclidean sibling of LMSR's entropic one (the family
+      <code>cmm.py</code>'s <code>quadratic_potential</code> belongs to). Two
+      further links are worth naming:
+    </p>
+    <ul>
+      <li>The <strong>energy score</strong> and CRPS are kernel scoring rules:
+        energy distance equals maximum mean discrepancy with the distance kernel
+        (<a href="https://doi.org/10.1214/13-AOS1140">Sejdinovic et al. 2013</a>),
+        which is why &ldquo;submit a bag of samples&rdquo; is well founded, it is
+        an MMD estimator.</li>
+      <li><a href="./mechanisms/peer-prediction.html">Peer prediction</a> is the
+        same machinery with a peer's report standing in for ground truth: the
+        multi-task mechanisms maximise a Bregman / $f$-mutual-information between
+        reports (Kong &amp; Schoenebeck 2019).</li>
+    </ul>
+
+    <h2>What is settled, and what is not</h2>
+    <p>
+      The first two sections are theorems and the third is a set of standard
+      equivalences. Two adjacent links are suggestive rather than established, and
+      are flagged as such: that score matching (the
+      <a href="./mechanisms/local-scoring.html">Hyvärinen score</a>, which avoids
+      the partition function) is a dual of the LMSR cost (which <em>is</em> the
+      log-partition function), and that the
+      <a href="./mechanisms/pm-amm.html">pm-AMM</a>'s &ldquo;Gaussian score
+      dynamics&rdquo; relate to the score function of information geometry. They
+      may be coincidences of vocabulary; they are not claimed here as results.
+    </p>
+
+    <p class="muted" style="margin-top:18px;">
+      Companion: the <a href="./map.html">relationship map</a> (the same structure
+      as a graph). Worked pipeline and proof sketches:
+      <a href="https://github.com/microprediction/mechanisms/blob/main/research/composition-and-the-algebra-of-mechanisms.md">composition-and-the-algebra-of-mechanisms.md</a>.
+      Sources: <a href="./bibliography.html">bibliography</a>.
+    </p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>
