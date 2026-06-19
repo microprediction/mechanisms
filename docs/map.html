@@ -61,7 +61,10 @@
         <span><span class="line" style="border-top-style:dotted; border-color:#7f8c8d"></span> contrast</span>
     </div>
     <div id="graph"></div>
-    <p class="hint">The <span style="color:#c0392b;font-weight:600">nearest-the-pin parimutuel</span>
+    <p class="hint">Drag any node to pin it where you drop it; the layout no longer
+    springs back.
+    <button id="map-reset" type="button" style="font-size:0.85em;padding:2px 9px;margin-left:4px;cursor:pointer;">Reset layout</button>
+    The <span style="color:#c0392b;font-weight:600">nearest-the-pin parimutuel</span>
     node links to a working draft in the <a href="./papers.html">papers</a> section.</p>
 </div>
 <div id="tooltip"></div>
@@ -253,7 +256,13 @@ const node = g.append("g").selectAll("circle").data(NODES).join("circle")
   .call(d3.drag()
     .on("start",(ev,d)=>{ if(!ev.active) sim.alphaTarget(0.25).restart(); d.fx=d.x; d.fy=d.y; })
     .on("drag",(ev,d)=>{ d.fx=ev.x; d.fy=ev.y; })
-    .on("end",(ev,d)=>{ if(!ev.active) sim.alphaTarget(0); d.fx=null; d.fy=null; }));
+    .on("end",(ev,d)=>{ if(!ev.active) sim.alphaTarget(0); }));   // keep fx/fy so the node stays where dropped
+
+const resetBtn = document.getElementById("map-reset");
+if (resetBtn) resetBtn.addEventListener("click", () => {
+  NODES.forEach(d => { d.fx = null; d.fy = null; });   // release every pin
+  sim.alpha(0.9).restart();
+});
 
 const label = g.append("g").selectAll("text").data(NODES).join("text")
   .attr("class","nodelabel").attr("text-anchor","middle").attr("dy", d=>-((d.r||9)+5)).text(d=>d.label);
