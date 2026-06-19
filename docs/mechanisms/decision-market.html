@@ -62,7 +62,7 @@
     <h2>From conditional prices to a choice</h2>
     <p>
       A decision rule maps the value vector $v$ to a distribution over actions. The
-      obvious one is deterministic <strong>argmax</strong>, put all weight on the
+      obvious one is deterministic <strong>argmax</strong>: put all weight on the
       best action. The softer alternatives keep some weight everywhere: the
       <strong>Boltzmann</strong> (softmax) rule $P(a) \propto e^{v_a/T}$, which
       sharpens toward argmax as the temperature $T \to 0$, and
@@ -91,7 +91,7 @@
     <p>Three actions, each with a conditional market predicting the probability of a
     good outcome (value 1). Set those conditionals, pick a decision rule, and watch
     the choice distribution. Switch to <em>argmax</em> and an action's bar collapses
-    to zero, its market goes unsettled, the manipulable case the stochastic rules
+    to zero; its market goes unsettled, the manipulable case the stochastic rules
     repair.</p>
     <div class="demo" id="dm-demo">
       <div class="row"><label>action A: P(good)</label>
@@ -147,7 +147,8 @@
       })();
     </script>
 
-    <p class="muted">Code: <code>mechanisms/decision_market.py</code> &middot;
+    <p class="muted">Code: <code>mechanisms/decision_market.py</code>; demo
+      <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_decision_market.py">examples/sim_decision_market.py</a> &middot;
       Related: <a href="./combinatorial.html">combinatorial &amp; conditional markets</a>,
       <a href="./lmsr.html">LMSR</a>, <a href="./aggregation.html">aggregation</a> &middot;
       Research: <a href="https://github.com/microprediction/mechanisms/blob/main/research/gaps-and-roadmap.md">gaps-and-roadmap.md</a></p>

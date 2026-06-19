@@ -36,7 +36,7 @@
       A <strong>constant-function market maker</strong> replaces the order book
       with a formula. It holds reserves of two or more assets and will accept
       <em>any</em> trade that leaves a chosen <em>trading function</em> of those
-      reserves unchanged. Price is therefore not quoted by anyone, it is read
+      reserves unchanged. Price is therefore not quoted by anyone; it is read
       off the reserves. The same convex object that prices a prediction market
       (a <a href="./cmm.html">cost-function maker</a>), priced from the
       <em>reserves</em> side, becomes the AMM that underpins decentralised
@@ -98,7 +98,7 @@
     <p>
       An LP is effectively short volatility. Arbitrageurs always trade the pool
       back to the external market price, so it ends up holding more of whichever
-      asset fell, the LP underperforms simply holding the initial basket. If the
+      asset fell; the LP underperforms simply holding the initial basket. If the
       price ratio moves by a factor $r$, the constant-product pool's value
       relative to holding is
     </p>
@@ -148,11 +148,11 @@
       fees, impermanent loss, and capital efficiency.
     </p>
 
-    <h2 id="demo">Watch loss-versus-rebalancing accrue</h2>
+    <h2 id="demo">Watch impermanent loss accrue</h2>
     <p>The external market price random-walks; an arbitrageur continuously trades
     against the $x\cdot y=k$ pool to keep its spot price in line. The LP's value
     (reserves marked at the live price) drifts below simply <em>holding</em> the
-    starting basket, the gap is impermanent loss / loss-versus-rebalancing, which
+    starting basket; that gap, measured against holding, is impermanent loss, and it
     grows with realised volatility.</p>
     <div class="demo" id="amm-anim">
       <canvas id="amm-canvas" height="180"

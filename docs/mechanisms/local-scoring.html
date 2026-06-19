@@ -33,7 +33,7 @@
     <h1>Local (Hyvärinen) scoring rules</h1>
 
     <p class="lead">
-      The log score and CRPS need a <em>normalized</em> density, you must know
+      The log score and CRPS need a <em>normalized</em> density: you must know
       the partition function $Z$. A <strong>local</strong> proper scoring rule
       does not. It depends on the forecast only through the derivatives of
       $\log p$ at the realised outcome, and since $\log p = \log\tilde p - \log Z$,
@@ -47,7 +47,7 @@
       density only through its value and its first $m$ derivatives at the outcome
       $y$. Ordinary proper rules are $0$-local (they use $p(y)$ alone). Parry,
       Dawid &amp; Lauritzen (2012) proved that genuinely local proper rules on the
-      real line exist <em>iff $m$ is even</em>, there is no proper $1$-local
+      real line exist <em>iff $m$ is even</em>: there is no proper $1$-local
       rule, but there are proper rules at every even order, trading more
       derivative information for more modelling freedom while staying free of the
       normalizing constant.

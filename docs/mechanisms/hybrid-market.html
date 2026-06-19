@@ -37,7 +37,7 @@
       every trade; a <a href="./cda.html">limit order book</a> offers zero-slippage
       fills but only when a counterparty happens to be resting. A hybrid takes both:
       match a taker against resting limit orders first, and route only the unmatched
-      remainder to the AMM backstop, the book removes the spread that deters size,
+      remainder to the AMM backstop: the book removes the spread that deters size;
       the AMM removes the empty-book problem.
     </p>
 
@@ -54,7 +54,9 @@
       involvement and <strong>no slippage</strong>. A YES taker matched against a
       resting NO bid at price $b$ therefore pays $1 - b$ per share. Whatever the
       book cannot fill is routed to an <a href="./lmsr.html">LMSR</a> backstop,
-      which always quotes a price.
+      which always quotes a price. Because the two sides are complementary, taking
+      the short side of one outcome is just buying the other, so the book needs only
+      buy orders on each side.
     </p>
 
     <h2>Why the split matters</h2>

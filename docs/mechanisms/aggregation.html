@@ -70,13 +70,13 @@
     <p>
       It is the most transparent pool: the consensus probability of an outcome is
       just the weighted fraction of belief the panel placed there. It preserves the
-      support, if any single forecaster assigns positive probability to an outcome,
+      support: if any single forecaster assigns positive probability to an outcome,
       so does the pool, which makes it robust to confident dissent and the natural
       pool when forecasters are exchangeable. The price of that robustness is
       <strong>under-confidence</strong>: averaging probabilities pulls mass toward
       the centre and inflates the variance of the consensus, so a linear pool of
       sharp, agreeing forecasters is typically <em>less</em> sharp than its members.
-      It is also generically multimodal, it can reproduce a panel's clusters as
+      It is also generically multimodal: it can reproduce a panel's clusters as
       separate bumps rather than reconciling them. In code,
       <code>linear_opinion_pool(forecasts, weights)</code> in
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/aggregation.py">mechanisms/aggregation.py</a>;
@@ -96,7 +96,7 @@
       <strong>multiplies evidence</strong>: adding log-probabilities is combining
       independent log-likelihoods, so the log pool is the consensus you reach by
       treating each forecaster as carrying separate evidence about the outcome. It
-      is correspondingly <strong>sharper</strong> than its members, unanimous mass
+      is correspondingly <strong>sharper</strong> than its members: unanimous mass
       reinforces multiplicatively, and it is unimodal under mild conditions. It is
       also <em>externally Bayesian</em>: pooling and then applying a shared
       likelihood update gives the same answer as updating first and then pooling.

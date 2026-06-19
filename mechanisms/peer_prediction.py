@@ -145,7 +145,7 @@ def correlated_agreement(reports, n_signals: int = None):
     In **binary** settings this is the mechanism for which truthful reporting is
     *stochastically-dominant* truthful (Schoenebeck et al.), i.e. robust to any
     monotone, risk-averse utility — the "Enforced Agreement" property
-    (demonstrated in ``examples/sim_peer_prediction.py``).
+    (demonstrated in ``examples/sim_correlated_agreement.py``).
 
     Parameters
     ----------

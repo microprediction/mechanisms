@@ -36,7 +36,7 @@
       A whole family of automated market makers collapses into a single object: a
       convex <em>potential</em> $C(q)$ over the vector of outstanding shares.
       Abernethy, Chen &amp; Wortman Vaughan (2013) showed that to build a market
-      maker you need only pick such a potential, prices are its gradient, the
+      maker you need only pick such a potential: prices are its gradient, the
       no-arbitrage condition is exactly convexity, and the worst-case subsidy is
       exactly the spread of the conjugate. <a href="./lmsr.html">LMSR</a> is one
       instance (the entropic one); Uniswap-style <a href="./amm.html">CFMMs</a>
@@ -73,7 +73,7 @@
       Why must $C$ be convex? Because convexity is precisely the condition that no
       sequence of trades can be a sure-profit cycle. The cost of a round trip
       $q \to q+\delta \to q$ is zero, and more generally the path cost of moving
-      between two inventories is path-independent, it depends only on the
+      between two inventories is path-independent; it depends only on the
       endpoints, since it telescopes to $C(q') - C(q)$. Convexity makes the price
       $\nabla C$ monotone in $q$: buying an outcome can only raise its price, never
       lower it, so a trader can never buy back more cheaply than they sold. A
@@ -94,10 +94,10 @@
       more responsive market and a larger guaranteed subsidy. Informally,
     </p>
     <div class="equation-card">
-      $\text{worst-case loss} \;=\; \sup_{q} C(q) - \inf_{q} C(q),$
+      $\text{worst-case loss} \;=\; \sup_{q\in\mathcal{Q}} C(q) - \inf_{q\in\mathcal{Q}} C(q),$
     </div>
     <p>
-      taken over the reachable inventories. This is the budget a sponsoring
+      taken over $\mathcal{Q}$, the reachable inventories. This is the budget a sponsoring
       institution knowingly puts up in exchange for the information the market
       aggregates, finite, and fixed by the choice of $C$ before any trade occurs.
     </p>
@@ -132,7 +132,7 @@
     </div>
     <p>
       This is convex (so still arbitrage-free), but its prices $\alpha q$ are not
-      normalized to the probability simplex, they can be negative and need not sum
+      normalized to the probability simplex; they can be negative and need not sum
       to one. So it is a <strong>bounded-budget</strong> liquidity maker rather
       than a probability market: a useful illustration that the cost-function
       recipe is far more general than belief elicitation. It is provided as

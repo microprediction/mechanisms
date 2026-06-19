@@ -37,7 +37,7 @@
       underneath virtually every modern electronic exchange. Buyers and sellers
       post orders at any moment into a shared <em>limit order book</em>; whenever an
       incoming order is compatible with the best resting order on the other side,
-      a trade prints immediately. There is no auctioneer and no pricing formula,
+      a trade prints immediately. There is no auctioneer and no pricing formula;
       price emerges from a continuous sequence of bilateral matches. It is fast and
       gives immediacy, but the same continuous-time operation that makes it
       responsive is what rewards latency and lets quick traders snipe stale quotes,
@@ -101,7 +101,7 @@
       Gode &amp; Sunder (1993) pushed this to the extreme with
       <strong>zero-intelligence (ZI) traders</strong>: agents that submit
       <em>random</em> bids and asks, subject only to a <strong>budget
-      constraint</strong>, buyers never bid above their private value, sellers
+      constraint</strong>, buyers never bid above their private value; sellers
       never ask below their cost, so no trade is ever unprofitable.
     </p>
     <p>
@@ -243,7 +243,7 @@
       <div class="row"><label>limit price</label>
         <input type="range" id="cda-lp" min="97" max="103" value="103" step="1">
         <span class="readout" id="cda-lp-val"></span></div>
-      <div class="readout" id="cda-out"></div>
+      <div class="readout" id="cda-sweep-out"></div>
     </div>
     <script>
       (function () {
@@ -254,7 +254,7 @@
           $("cda-q-val").textContent = q;
           $("cda-lp-val").textContent = lp;
           const r = M.cdaSweepBuy(asks, lp, q), filled = r[0], cost = r[1];
-          $("cda-out").textContent = filled > 0
+          $("cda-sweep-out").textContent = filled > 0
             ? `filled ${filled} @ avg ${(cost / filled).toFixed(3)} · total cost ${cost.toFixed(1)}`
             : "no fill (limit below best ask, or size 0)";
         }

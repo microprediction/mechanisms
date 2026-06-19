@@ -37,7 +37,7 @@
       betting") is pool betting. All wagers on a set of mutually exclusive,
       exhaustive outcomes go into one pool; the operator removes a fixed
       <em>takeout</em> $\tau$ and distributes the remainder pro rata to the
-      backers of the winning outcome. No price is quoted by anyone, the odds
+      backers of the winning outcome. No price is quoted by anyone; the odds
       are read off the pool, and they are not fixed until betting closes. The
       operator carries no outcome risk: the bettors collectively fund every
       payout. Invented by Pierre Oller in the 1860s and mechanised by the
@@ -106,7 +106,7 @@
     </p>
     <div class="equation-card">$p_i = \dfrac{W_i}{W}.$</div>
     <p>
-      Read this way a parimutuel is a simple information-aggregation mechanism,
+      Read this way a parimutuel is a simple information-aggregation mechanism;
       the crowd's money <em>is</em> the probability estimate. Racetrack favourites
       turn out to be remarkably well calibrated, which is why these markets are
       treated as a laboratory for the wisdom of crowds and a conceptual bridge
@@ -123,8 +123,8 @@
       longshots (low-probability outcomes) and underbet favourites. The implied
       probabilities on longshots run above their realised frequencies, so the
       expected return on a longshot is more negative than on a favourite, rather
-      than equalised across all horses as calibrated odds, implied probabilities
-      matching realised frequencies, would give.
+      than equalised across all horses as calibrated odds (implied probabilities
+      matching realised frequencies) would give.
     </p>
     <p>
       The anomaly is old and well documented. Thaler &amp; Ziemba (1988) synthesise
@@ -167,7 +167,7 @@
     <h2 id="demo">Watch the pool find the odds</h2>
     <p>Bets stream onto three runners, drawn from a hidden true distribution. The
     pool fractions are the implied probabilities and the decimal odds re-flow with
-    every bet, early noise settles as the money piles up.</p>
+    every bet; early noise settles as the money piles up.</p>
     <div class="demo" id="pari-anim">
       <div class="row"><label>runner A</label>
         <span class="bar" id="pr-a" style="transition:width 0.15s"></span>

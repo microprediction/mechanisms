@@ -102,7 +102,8 @@
       but against a manipulation-resistant <strong>mark price</strong> built from the
       external index plus a decaying funding basis. Using the mark price for margin
       checks is what prevents momentary, self-inflicted spikes from triggering
-      <em>unfair liquidations</em>.
+      <em>unfair liquidations</em>. Building that index is upstream of the contract;
+      the position methods below take the mark price as given.
     </p>
     <p>
       <code>PerpPosition</code> models a leveraged position with fields
@@ -207,8 +208,8 @@
         function resize() { cv.width = cv.clientWidth || 600; }
         function step() {
           const prem = (mark - index) / index;
-          const F = M.fundingRate(prem, 0.0001, 0.01);
-          mark += -0.4 * F * index + vol() * index * gauss();
+          const F = M.fundingRate(prem, 0.0001, 0.0005);
+          mark += -8.0 * F * index + vol() * index * gauss();
           mark = Math.min(120, Math.max(80, mark));
           cum += M.fundingPayment(10000, F);
           hist.push(mark); if (hist.length > MAX) hist.shift();

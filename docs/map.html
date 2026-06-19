@@ -85,6 +85,7 @@ const NODES = [
   {id:"pinball",   label:"Pinball / quantile loss", c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Consistent scoring function for the tau-quantile; the elementary building block of CRPS."},
   {id:"crps",      label:"CRPS",             c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Continuous Ranked Probability Score: integral of Brier over thresholds; the 1-D special case of the energy score."},
   {id:"energy",    label:"Energy score",     c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Multivariate, sample-friendly strictly proper score. Governs sample-based contests (monteprediction) and the nearest-the-pin parimutuel."},
+  {id:"hyvarinen", label:"Hyvärinen / local score", c:"scoring", url:"./mechanisms/local-scoring.html", note:"An m-local proper scoring rule that reads the density only through its value and derivatives, so it needs no normalising constant; its divergence is the Fisher divergence (score matching)."},
 
   // market makers
   {id:"cmm",   label:"Cost-function maker", c:"maker", url:"./mechanisms/cmm.html", note:"Any convex potential C(q): prices = grad C, convexity = no-arbitrage, bounded gradient = bounded loss (Abernethy-Chen-Wortman Vaughan)."},
@@ -93,6 +94,9 @@ const NODES = [
   {id:"cfmm",  label:"Constant-product AMM",c:"maker", url:"./mechanisms/amm.html", note:"Uniswap x*y=k. The convex dual (trading-function side) of a cost-function maker."},
   {id:"cmean", label:"Constant-mean (Balancer)", c:"maker", url:"./mechanisms/amm.html", note:"Weighted geometric-mean invariant prod R_i^{w_i}=k; constant product is the 2-asset equal-weight case."},
   {id:"pmamm", label:"pm-AMM",              c:"maker", url:"./mechanisms/pm-amm.html", note:"Paradigm's parimutuel AMM for binary tokens via Gaussian score dynamics: a CFMM whose invariant is the Black-Scholes binary price."},
+  {id:"combinatorial", label:"Combinatorial market", c:"maker", url:"./mechanisms/combinatorial.html", note:"LMSR over a combinatorial / joint outcome space; coherent prices for conditional ('if A then B') and combined events."},
+  {id:"hybrid", label:"Hybrid CLOB + AMM", c:"maker", url:"./mechanisms/hybrid-market.html", note:"Matches takers against a resting limit-order book first, routing whatever is left to an LMSR/AMM backstop that always quotes."},
+  {id:"decision", label:"Decision market", c:"maker", url:"./mechanisms/decision-market.html", note:"One conditional market per action, read as ensembling action-conditional forecasts and selecting among them; a full-support stochastic rule keeps every conditional market truthful."},
 
   // parimutuel
   {id:"pari", label:"Parimutuel (pool)", c:"parimutuel", url:"./mechanisms/parimutuel.html", note:"Pool betting: winners split the pot pro rata; odds are endogenous and the house bears no risk."},
@@ -170,6 +174,13 @@ const EDGES = [
 
   // microprediction-specific calibration
   {s:"zstream", t:"ntp",  type:"lineage", label:"calibrates the pool's aggregate"},
+
+  // newer mechanisms
+  {s:"hyvarinen",     t:"logscore",      type:"contrast",   label:"local via derivatives, no normaliser"},
+  {s:"combinatorial", t:"lmsr",          type:"generalize", label:"LMSR over a joint outcome space"},
+  {s:"hybrid",        t:"cda",           type:"lineage",    label:"resting book first"},
+  {s:"hybrid",        t:"lmsr",          type:"lineage",    label:"AMM backstop"},
+  {s:"decision",      t:"combinatorial", type:"lineage",    label:"one conditional market per action"},
 ];
 
 const STYLE = {
