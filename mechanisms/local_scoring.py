@@ -26,6 +26,18 @@ References
   Matching." JMLR 6, 695-709.
 - Parry, M., Dawid, A. P. & Lauritzen, S. (2012). "Proper local scoring rules."
   Annals of Statistics 40(1), 561-592.
+
+Connections
+-----------
+The marginal score ``∇log p`` that this module evaluates is also the object in
+**Tweedie's formula** ``E[θ | y] = y + σ²·∇log p(y)`` (Efron, 2011): the exact
+posterior mean of a latent ``θ`` written in terms of the marginal density alone.
+Hansen & Tong (2026, arXiv:2605.15902) use this to show that the *score-driven*
+filters of econometrics (Creal, Koopman & Lucas, 2013) — which step a latent
+parameter along the conditional likelihood score — are exact Bayesian updates
+under local precision discounting. That bridges this scoring substrate to
+time-series filtering; it is not itself a market mechanism. See
+``docs/connections.html``.
 """
 
 from __future__ import annotations
