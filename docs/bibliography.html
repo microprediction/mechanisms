@@ -27,8 +27,8 @@
   <main class="bib">
     <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
     <h1>Bibliography</h1>
-    <p class="subtitle">The literature behind each mechanism, 181 references,
-    organized by topic. Titles link to their DOI or to the canonical source. A
+    <p class="subtitle">The literature behind each mechanism, organized by topic.
+    Titles link to their DOI or to the canonical source. A
     machine-readable version lives in
     <a href="https://github.com/microprediction/mechanisms/blob/main/research/bibliography.bib">research/bibliography.bib</a>.</p>
 
@@ -263,10 +263,105 @@
     <ul>
       <li>Rockafellar, R. T. (1970). <a href="https://doi.org/10.1515/9781400873173">&ldquo;Convex Analysis.&rdquo;</a> Princeton University Press.</li>
       <li>Moreau, J. (1965). <a href="https://doi.org/10.24033/bsmf.1625">&ldquo;Proximit\&#x27;e et dualit\&#x27;e dans un espace hilbertien.&rdquo;</a> <em>Bulletin de la Soci\&#x27;et\&#x27;e Math\&#x27;ematique de France</em> 93.</li>
+      <li>Borch, K. (1962). <a href="https://doi.org/10.2307/1909887">&ldquo;Equilibrium in a Reinsurance Market.&rdquo;</a> <em>Econometrica</em> 30(3).</li>
+      <li>Wilson, R. (1968). <a href="https://doi.org/10.2307/1909607">&ldquo;The Theory of Syndicates.&rdquo;</a> <em>Econometrica</em> 36(1).</li>
       <li>Barrieu, P. &amp; El Karoui, N. (2005). <a href="https://doi.org/10.1007/s00780-005-0152-0">&ldquo;Inf-convolution of Risk Measures and Optimal Risk Transfer.&rdquo;</a> <em>Finance and Stochastics</em> 9(2).</li>
       <li>Jouini, E., Schachermayer, W. &amp; Touzi, N. (2008). <a href="https://doi.org/10.1111/j.1467-9965.2007.00332.x">&ldquo;Optimal Risk Sharing for Law Invariant Monetary Utility Functions.&rdquo;</a> <em>Mathematical Finance</em> 18(2).</li>
       <li>Sejdinovic, D., Sriperumbudur, B., Gretton, A. &amp; Fukumizu, K. (2013). <a href="https://doi.org/10.1214/13-AOS1140">&ldquo;Equivalence of Distance-Based and RKHS-Based Statistics in Hypothesis Testing.&rdquo;</a> <em>The Annals of Statistics</em> 41(5).</li>
       <li>Bhaskara, A., Frongillo, R. &amp; Papireddygari, M. (2023). <a href="https://arxiv.org/abs/2311.08725">&ldquo;A General Theory of Liquidity Provisioning for Prediction Markets.&rdquo;</a> arXiv:2311.08725.</li>
+    </ul>
+
+    <p class="subtitle" style="margin-top:28px;">The sections below collect the
+    prior art for the three candidate-original generalizations in
+    <a href="https://github.com/microprediction/mechanisms/tree/main/research">research/</a>
+    (the local-score wagering pool, anisotropic sliced scores, and conservation /
+    boosting markets). Exhaustive references are the point.</p>
+
+    <h3>Local &amp; kernel scores: extensions and the blindness of score matching</h3>
+    <ul>
+      <li>Gneiting, T., Stanberry, L. I., Grimit, E. P., Held, L. &amp; Johnson, N. A. (2008). <a href="https://doi.org/10.1007/s11749-008-0114-x">&ldquo;Assessing Probabilistic Forecasts of Multivariate Quantities.&rdquo;</a> <em>TEST</em> 17(2).</li>
+      <li>Gretton, A., Borgwardt, K. M., Rasch, M. J., Schölkopf, B. &amp; Smola, A. (2012). <a href="https://www.jmlr.org/papers/v13/gretton12a.html">&ldquo;A Kernel Two-Sample Test.&rdquo;</a> <em>Journal of Machine Learning Research</em> 13.</li>
+      <li>Steinwart, I. &amp; Ziegel, J. F. (2021). <a href="https://doi.org/10.1016/j.acha.2019.11.005">&ldquo;Strictly Proper Kernel Scores and Characteristic Kernels on Compact Spaces.&rdquo;</a> <em>Applied and Computational Harmonic Analysis</em> 51.</li>
+      <li>Dawid, A. P. &amp; Musio, M. (2015). <a href="https://doi.org/10.1214/15-BA942">&ldquo;Bayesian Model Selection Based on Proper Scoring Rules.&rdquo;</a> <em>Bayesian Analysis</em> 10(2).</li>
+      <li>Waghmare, K. &amp; Ziegel, J. (2026). <a href="https://doi.org/10.1146/annurev-statistics-042424-050626">&ldquo;Proper Scoring Rules for Estimation and Forecast Evaluation.&rdquo;</a> <em>Annual Review of Statistics and Its Application</em> 13.</li>
+      <li>Song, Y., Sohl-Dickstein, J., Kingma, D. P., Kumar, A., Ermon, S. &amp; Poole, B. (2021). <a href="https://arxiv.org/abs/2011.13456">&ldquo;Score-Based Generative Modeling through Stochastic Differential Equations.&rdquo;</a> <em>ICLR</em>.</li>
+      <li>Wenliang, L. K. &amp; Kanagawa, H. (2020). <a href="https://arxiv.org/abs/2008.10087">&ldquo;Blindness of Score-Based Methods to Isolated Components and Mixing Proportions.&rdquo;</a> arXiv:2008.10087.</li>
+      <li>Zhang, M., Key, O., Hayes, P., Barber, D., Paige, B. &amp; Briol, F.-X. (2022). <a href="https://arxiv.org/abs/2209.07396">&ldquo;Towards Healing the Blindness of Score Matching.&rdquo;</a> arXiv:2209.07396.</li>
+      <li>Koehler, F., Heckett, A. &amp; Risteski, A. (2023). <a href="https://arxiv.org/abs/2210.00726">&ldquo;Statistical Efficiency of Score Matching: The View from Isoperimetry.&rdquo;</a> <em>ICLR</em>.</li>
+    </ul>
+
+    <h3>Weighted &amp; localized proper scoring rules (the properness boundary)</h3>
+    <ul>
+      <li>Gneiting, T. &amp; Ranjan, R. (2011). <a href="https://doi.org/10.1198/jbes.2010.08110">&ldquo;Comparing Density Forecasts Using Threshold- and Quantile-Weighted Scoring Rules.&rdquo;</a> <em>Journal of Business &amp; Economic Statistics</em> 29(3).</li>
+      <li>Diks, C., Panchenko, V. &amp; van Dijk, D. (2011). <a href="https://doi.org/10.1016/j.jeconom.2011.04.001">&ldquo;Likelihood-Based Scoring Rules for Comparing Density Forecasts in Tails.&rdquo;</a> <em>Journal of Econometrics</em> 163(2).</li>
+      <li>Holzmann, H. &amp; Klar, B. (2017). <a href="https://doi.org/10.1214/17-AOAS1088">&ldquo;Focusing on Regions of Interest in Forecast Evaluation.&rdquo;</a> <em>The Annals of Applied Statistics</em> 11(4).</li>
+      <li>Ehm, W., Gneiting, T., Jordan, A. &amp; Krüger, F. (2016). <a href="https://doi.org/10.1111/rssb.12154">&ldquo;Of Quantiles and Expectiles: Consistent Scoring Functions, Choquet Representations and Forecast Rankings.&rdquo;</a> <em>JRSS B</em> 78(3).</li>
+      <li>Allen, S., Ginsbourger, D. &amp; Ziegel, J. (2023). <a href="https://doi.org/10.1137/22M1532184">&ldquo;Evaluating Forecasts for High-Impact Events Using Transformed Kernel Scores.&rdquo;</a> <em>SIAM/ASA Journal on Uncertainty Quantification</em> 11(3).</li>
+      <li>de Punder, R., Diks, C., Laeven, R. &amp; van Dijk, D. (2025). <a href="https://doi.org/10.1080/01621459.2025.2576189">&ldquo;Localizing Strictly Proper Scoring Rules.&rdquo;</a> <em>Journal of the American Statistical Association</em>.</li>
+      <li>Pic, R., Dombry, C., Naveau, P. &amp; Taillardat, M. (2025). <a href="https://doi.org/10.5194/ascmo-11-23-2025">&ldquo;Proper Scoring Rules for Multivariate Probabilistic Forecasts based on Aggregation and Transformation.&rdquo;</a> <em>ASCMO</em> 11.</li>
+    </ul>
+
+    <h3>Sliced Wasserstein &amp; projection methods</h3>
+    <ul>
+      <li>Rabin, J., Peyré, G., Delon, J. &amp; Bernot, M. (2012). <a href="https://doi.org/10.1007/978-3-642-24785-9_37">&ldquo;Wasserstein Barycenter and Its Application to Texture Mixing.&rdquo;</a> <em>SSVM</em>, LNCS 6667.</li>
+      <li>Bonneel, N., Rabin, J., Peyré, G. &amp; Pfister, H. (2015). <a href="https://doi.org/10.1007/s10851-014-0506-3">&ldquo;Sliced and Radon Wasserstein Barycenters of Measures.&rdquo;</a> <em>Journal of Mathematical Imaging and Vision</em> 51(1).</li>
+      <li>Deshpande, I. et al. (2019). <a href="https://arxiv.org/abs/1904.05877">&ldquo;Max-Sliced Wasserstein Distance and Its Use for GANs.&rdquo;</a> <em>CVPR</em>.</li>
+      <li>Kolouri, S., Nadjahi, K., Şimşekli, U., Badeau, R. &amp; Rohde, G. K. (2019). <a href="https://arxiv.org/abs/1902.00434">&ldquo;Generalized Sliced Wasserstein Distances.&rdquo;</a> <em>NeurIPS</em>.</li>
+      <li>Nguyen, K., Ho, N., Pham, T. &amp; Bui, H. (2021). <a href="https://arxiv.org/abs/2002.07367">&ldquo;Distributional Sliced-Wasserstein and Applications to Generative Modeling.&rdquo;</a> <em>ICLR</em>.</li>
+      <li>Chen, X., Yang, Y. &amp; Li, Y. (2022). <a href="https://arxiv.org/abs/2006.08812">&ldquo;Augmented Sliced Wasserstein Distances.&rdquo;</a> <em>ICLR</em>.</li>
+      <li>Nguyen, K. &amp; Ho, N. (2023). <a href="https://arxiv.org/abs/2304.13586">&ldquo;Energy-Based Sliced Wasserstein Distance.&rdquo;</a> <em>NeurIPS</em>.</li>
+      <li>Nguyen, K., Ren, T. &amp; Ho, N. (2023). <a href="https://arxiv.org/abs/2301.03749">&ldquo;Markovian Sliced Wasserstein Distances.&rdquo;</a> <em>NeurIPS</em>.</li>
+      <li>Nguyen, K., Zhang, S., Le, T. &amp; Ho, N. (2024). <a href="https://arxiv.org/abs/2401.15889">&ldquo;Sliced Wasserstein with Random-Path Projecting Directions.&rdquo;</a> <em>ICML</em>.</li>
+      <li>Paty, F.-P. &amp; Cuturi, M. (2019). <a href="https://arxiv.org/abs/1901.08949">&ldquo;Subspace Robust Wasserstein Distances.&rdquo;</a> <em>ICML</em>.</li>
+      <li>Lin, T., Fan, C., Ho, N., Cuturi, M. &amp; Jordan, M. I. (2020). <a href="https://arxiv.org/abs/2006.07458">&ldquo;Projection Robust Wasserstein Distance and Riemannian Optimization.&rdquo;</a> <em>NeurIPS</em>.</li>
+      <li>Bonet, C., Drumetz, L. &amp; Courty, N. (2025). <a href="https://arxiv.org/abs/2403.06560">&ldquo;Sliced-Wasserstein Distances and Flows on Cartan-Hadamard Manifolds&rdquo;</a> (defines Mahalanobis-SW). <em>Journal of Machine Learning Research</em> 26(32).</li>
+      <li>Nadjahi, K. et al. (2020). <a href="https://arxiv.org/abs/2003.05783">&ldquo;Statistical and Topological Properties of Sliced Probability Divergences.&rdquo;</a> <em>NeurIPS</em>.</li>
+      <li>Gong, W., Li, Y. &amp; Hernández-Lobato, J. M. (2021). <a href="https://arxiv.org/abs/2006.16531">&ldquo;Sliced Kernelized Stein Discrepancy.&rdquo;</a> <em>ICLR</em>.</li>
+    </ul>
+
+    <h3>Covariance shrinkage &amp; high-dimensional inference</h3>
+    <ul>
+      <li>Stein, C. (1956). &ldquo;Inadmissibility of the Usual Estimator for the Mean of a Multivariate Normal Distribution.&rdquo; <em>Proc. 3rd Berkeley Symposium</em> 1.</li>
+      <li>James, W. &amp; Stein, C. (1961). &ldquo;Estimation with Quadratic Loss.&rdquo; <em>Proc. 4th Berkeley Symposium</em> 1.</li>
+      <li>Ledoit, O. &amp; Wolf, M. (2004). <a href="https://doi.org/10.1016/S0047-259X(03)00096-4">&ldquo;A Well-Conditioned Estimator for Large-Dimensional Covariance Matrices.&rdquo;</a> <em>Journal of Multivariate Analysis</em> 88(2).</li>
+      <li>Ledoit, O. &amp; Wolf, M. (2004). <a href="https://doi.org/10.3905/jpm.2004.110">&ldquo;Honey, I Shrunk the Sample Covariance Matrix.&rdquo;</a> <em>The Journal of Portfolio Management</em> 30(4).</li>
+      <li>Ledoit, O. &amp; Wolf, M. (2012). <a href="https://doi.org/10.1214/12-AOS989">&ldquo;Nonlinear Shrinkage Estimation of Large-Dimensional Covariance Matrices.&rdquo;</a> <em>The Annals of Statistics</em> 40(2).</li>
+      <li>Ledoit, O. &amp; Wolf, M. (2020). <a href="https://doi.org/10.1214/19-AOS1921">&ldquo;Analytical Nonlinear Shrinkage of Large-Dimensional Covariance Matrices.&rdquo;</a> <em>The Annals of Statistics</em> 48(5).</li>
+      <li>Dobriban, E. &amp; Wager, S. (2018). <a href="https://doi.org/10.1214/17-AOS1549">&ldquo;High-Dimensional Asymptotics of Prediction: Ridge Regression and Classification.&rdquo;</a> <em>The Annals of Statistics</em> 46(1).</li>
+      <li>Schäfer, J. &amp; Strimmer, K. (2005). <a href="https://doi.org/10.2202/1544-6115.1175">&ldquo;A Shrinkage Approach to Large-Scale Covariance Matrix Estimation.&rdquo;</a> <em>Statistical Applications in Genetics and Molecular Biology</em> 4(1).</li>
+      <li>Bai, Z. &amp; Saranadasa, H. (1996). &ldquo;Effect of High Dimension: By an Example of a Two Sample Problem.&rdquo; <em>Statistica Sinica</em> 6(2).</li>
+      <li>Srivastava, M. S. &amp; Du, M. (2008). <a href="https://doi.org/10.1016/j.jmva.2006.11.002">&ldquo;A Test for the Mean Vector with Fewer Observations than the Dimension.&rdquo;</a> <em>Journal of Multivariate Analysis</em> 99(3).</li>
+      <li>Chen, S. X. &amp; Qin, Y.-L. (2010). <a href="https://doi.org/10.1214/09-AOS716">&ldquo;A Two-Sample Test for High-Dimensional Data with Applications to Gene-Set Testing.&rdquo;</a> <em>The Annals of Statistics</em> 38(2).</li>
+      <li>Lopes, M. E., Jacob, L. J. &amp; Wainwright, M. J. (2011). <a href="https://arxiv.org/abs/1108.2401">&ldquo;A More Powerful Two-Sample Test in High Dimensions Using Random Projection.&rdquo;</a> <em>NeurIPS</em>.</li>
+      <li>Cotton, P. (2024). <a href="https://arxiv.org/abs/2411.05807">&ldquo;Schur Complementary Allocation: A Unification of Hierarchical Risk Parity and Minimum Variance Portfolios.&rdquo;</a> arXiv:2411.05807.</li>
+      <li>Cotton, P. (2026). <a href="https://arxiv.org/abs/2606.14798">&ldquo;Two Sides of Schur Damping: High-Dimensional Pseudo-Likelihoods and Portfolio Allocation.&rdquo;</a> arXiv:2606.14798.</li>
+    </ul>
+
+    <h3>Machine-learning markets &amp; boosting</h3>
+    <ul>
+      <li>Storkey, A. J. (2011). <a href="https://arxiv.org/abs/1106.4509">&ldquo;Machine Learning Markets.&rdquo;</a> <em>AISTATS</em>, PMLR 15.</li>
+      <li>Storkey, A. J., Millin, J. &amp; Geras, K. (2012). <a href="https://arxiv.org/abs/1206.6443">&ldquo;Isoelastic Agents and Wealth Updates in Machine Learning Markets.&rdquo;</a> <em>ICML</em>.</li>
+      <li>Hu, J. (2012). <a href="https://arxiv.org/abs/1201.3851">&ldquo;Combinatorial Modelling and Learning with Prediction Markets.&rdquo;</a> arXiv:1201.3851.</li>
+      <li>Barbu, A. &amp; Lay, N. (2012). <a href="https://arxiv.org/abs/1102.1465">&ldquo;An Introduction to Artificial Prediction Markets for Classification.&rdquo;</a> <em>Journal of Machine Learning Research</em> 13.</li>
+      <li>Lay, N. &amp; Barbu, A. (2012). <a href="https://arxiv.org/abs/1204.4154">&ldquo;The Artificial Regression Market.&rdquo;</a> arXiv:1204.4154.</li>
+      <li>Nueve, E. &amp; Waggoner, B. (2025). <a href="https://arxiv.org/abs/2505.02959">&ldquo;Smooth Quadratic Prediction Markets.&rdquo;</a> <em>NeurIPS</em>.</li>
+      <li>Freund, Y. &amp; Schapire, R. E. (1997). <a href="https://doi.org/10.1006/jcss.1997.1504">&ldquo;A Decision-Theoretic Generalization of On-Line Learning and an Application to Boosting.&rdquo;</a> <em>Journal of Computer and System Sciences</em> 55(1).</li>
+      <li>Mason, L., Baxter, J., Bartlett, P. L. &amp; Frean, M. (1999). &ldquo;Boosting Algorithms as Gradient Descent.&rdquo; <em>NeurIPS</em> 12.</li>
+      <li>Friedman, J., Hastie, T. &amp; Tibshirani, R. (2000). <a href="https://doi.org/10.1214/aos/1016218223">&ldquo;Additive Logistic Regression: A Statistical View of Boosting.&rdquo;</a> <em>The Annals of Statistics</em> 28(2).</li>
+      <li>Friedman, J. H. (2001). <a href="https://doi.org/10.1214/aos/1013203451">&ldquo;Greedy Function Approximation: A Gradient Boosting Machine.&rdquo;</a> <em>The Annals of Statistics</em> 29(5).</li>
+    </ul>
+
+    <h3>Wagering, competitive scoring &amp; continuous-outcome markets</h3>
+    <ul>
+      <li>Eisenberg, E. &amp; Gale, D. (1959). <a href="https://doi.org/10.1214/aoms/1177706369">&ldquo;Consensus of Subjective Probabilities: The Pari-Mutuel Method.&rdquo;</a> <em>The Annals of Mathematical Statistics</em> 30(1).</li>
+      <li>Kilgour, D. M. &amp; Gerchak, Y. (2004). <a href="https://doi.org/10.1287/deca.1030.0003">&ldquo;Elicitation of Probabilities Using Competitive Scoring Rules.&rdquo;</a> <em>Decision Analysis</em> 1(2).</li>
+      <li>Johnstone, D. J. (2007). <a href="https://doi.org/10.1287/deca.1070.0091">&ldquo;The Parimutuel Kelly Probability Scoring Rule.&rdquo;</a> <em>Decision Analysis</em> 4(2).</li>
+      <li>Gao, X. A., Chen, Y. &amp; Pennock, D. M. (2009). <a href="https://doi.org/10.1007/978-3-642-10841-9_55">&ldquo;Betting on the Real Line.&rdquo;</a> <em>Internet and Network Economics (WINE 2009)</em>, LNCS 5929.</li>
+      <li>Freeman, R., Lahaie, S. &amp; Pennock, D. M. (2017). <a href="https://arxiv.org/abs/1612.04885">&ldquo;Crowdsourced Outcome Determination in Prediction Markets.&rdquo;</a> <em>AAAI</em>.</li>
+      <li>Freeman, R. &amp; Pennock, D. M. (2018). <a href="https://doi.org/10.24963/ijcai.2018/35">&ldquo;An Axiomatic View of the Parimutuel Consensus Mechanism.&rdquo;</a> <em>IJCAI</em>.</li>
+      <li>Zhang, L. (2011). <a href="https://doi.org/10.1016/j.tcs.2010.06.021">&ldquo;Proportional Response Dynamics in the Fisher Market.&rdquo;</a> <em>Theoretical Computer Science</em> 412(24).</li>
+      <li>Dudík, M., Wang, X., Pennock, D. M. &amp; Rothschild, D. M. (2021). <a href="https://arxiv.org/abs/2102.07308">&ldquo;Log-time Prediction Markets for Interval Securities.&rdquo;</a> <em>AAMAS</em>.</li>
+      <li>Raja, A. A., Pinson, P., Kazempour, J. &amp; Grammatico, S. (2022). <a href="https://arxiv.org/abs/2205.02668">&ldquo;A Market for Trading Forecasts: A Wagering Mechanism.&rdquo;</a> arXiv:2205.02668.</li>
     </ul>
 
     <p class="muted" style="margin-top:18px;">
