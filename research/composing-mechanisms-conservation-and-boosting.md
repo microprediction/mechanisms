@@ -201,7 +201,7 @@ generalization translation.
 - Frongillo, R. M. & Reid, M. D. (2015). "Convergence Analysis of Prediction
   Markets via Randomized Subspace Descent." *NeurIPS* 28.
 - Nueve, E. & Waggoner, B. (2025). "Smooth Quadratic Prediction Markets."
-  *NeurIPS*. arXiv:2505.02959.
+  arXiv:2505.02959.
 
 *Machine-learning markets.*
 - Storkey, A. (2011). "Machine Learning Markets." *AISTATS*, PMLR 15, 716–724.

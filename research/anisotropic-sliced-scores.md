@@ -80,7 +80,7 @@ across every forecast being scored and compared. Then `μ_{Σ_ref}` is a fixed
 characteristic-kernel measure, §2 applies verbatim, and the score is strictly
 proper for all `γ`. The reliability dial becomes a *tuning knob on a still-proper
 score*, exactly the position the proper localized scores occupy (twCRPS/owCRPS,
-Allen et al. 2023; de Punder et al. 2025): properness is preserved precisely
+Allen et al. 2023; de Punder et al. 2026): properness is preserved precisely
 because the adaptation depends on a fixed object, not on the candidate forecast.
 
 So the honest form of the conjecture is: **anisotropic slicing against a fixed
@@ -240,8 +240,9 @@ forecast-dependent variant.
 - Allen, S., Ginsbourger, D. & Ziegel, J. (2023). "Evaluating Forecasts for
   High-Impact Events Using Transformed Kernel Scores." *SIAM/ASA JUQ* 11(3),
   906–940. arXiv:2202.12732.
-- de Punder, R., Diks, C., Laeven, R. & van Dijk, D. (2025). "Localizing Strictly
-  Proper Scoring Rules." *JASA* (online-first). doi:10.1080/01621459.2025.2576189.
+- de Punder, R., Diks, C., Laeven, R. & van Dijk, D. (2026). "Localizing Strictly
+  Proper Scoring Rules." *JASA*, pp. 1–13 (online 5 Jan 2026).
+  doi:10.1080/01621459.2025.2576189.
 - Pic, R., Dombry, C., Naveau, P. & Taillardat, M. (2025). "Proper Scoring Rules
   for Multivariate Probabilistic Forecasts based on Aggregation and
   Transformation." *ASCMO* 11, 23–58. arXiv:2407.00650.
