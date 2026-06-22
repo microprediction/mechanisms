@@ -45,7 +45,8 @@ def format_authors(field: str) -> str:
     for person in (p.strip() for p in field.split(" and ") if p.strip()):
         if "," in person:
             last, given = person.split(",", 1)
-            inits = " ".join(w[0] + "." for w in re.findall(r"[^\s.\-]+",
+            given = re.sub(r",\s*(Jr|Sr|II|III|IV)\.?\s*$", "", given.strip())  # drop generational suffix
+            inits = " ".join(w[0] + "." for w in re.findall(r"[^\s.,\-]+",
                                                             latex_to_unicode(given)))
             last = latex_to_unicode(last).strip()
             out.append(f"{last}, {inits}" if inits else last)
