@@ -13,6 +13,18 @@ and back to the consolidated [`bibliography.bib`](bibliography.bib).
 | [composition-and-the-algebra-of-mechanisms.md](composition-and-the-algebra-of-mechanisms.md) | **How the mechanisms compose**, a `skaters`-style operator algebra over distributional beliefs; Savage's characterisation and the convex-duality generator (with proof sketches); a worked elicitation→calibration pipeline | `scoring_rules`, `cmm`, `amm`, `aggregation`, `calibration` |
 | [gaps-and-roadmap.md](gaps-and-roadmap.md) | **Gap analysis & roadmap**, an external audit of the microprediction ecosystem mapped onto this repo: what is already implemented vs genuinely missing (local scoring, CA/EA peer prediction, Kelly, combinatorial markets) | `local_scoring`, `peer_prediction` |
 
+### Generalizations (candidate originality, honestly assessed)
+
+These notes develop generalizations that may be original. Each carries a
+calibrated novelty verdict and an exhaustive, web-verified prior-art appendix —
+the prior art is the point.
+
+| Note | Idea | Verdict |
+|------|------|---------|
+| [local-score-wagering-pool.md](local-score-wagering-pool.md) | A self-funding wagering pool scored by a **local** (Hyvärinen) proper rule, so participants submit **unnormalized** energy-based densities and no partition function is ever computed | Likely novel, narrow gap; honest about score matching's mode-mass blindness |
+| [anisotropic-sliced-scores.md](anisotropic-sliced-scores.md) | **Schur-damped** anisotropic slicing of the energy score with a reliability dial `γ` (develops a conjecture in the nearest-the-pin paper) | Likely novel — strictly proper only if the anisotropy uses a *fixed reference* covariance, not the forecast's own |
+| [composing-mechanisms-conservation-and-boosting.md](composing-mechanisms-conservation-and-boosting.md) | Conservation laws for chained self-funding mechanisms (**edge** vs wealth) and **boosting/residual markets** | Two likely-novel narrow gaps; one sub-question retired as a known theorem |
+
 The PDF source sits in [`../assets/pdf-literature/`](../assets/pdf-literature/):
 Chitra et al.'s *Perpetual Demand Lending Pools* (arXiv:2502.06028).
 

@@ -1,0 +1,32 @@
+name: citations
+
+# Guards the bibliography against the failure modes we hit by hand:
+# duplicate keys, brace imbalance, .bib<->.html drift, and (on a schedule, to
+# keep PR CI offline and deterministic) wrong DOIs / arXiv ids / years / authors.
+
+on:
+  push:
+    paths: ['research/bibliography.bib', 'docs/bibliography.html', 'scripts/**', '.github/workflows/citations.yml']
+  pull_request:
+    paths: ['research/bibliography.bib', 'docs/bibliography.html', 'scripts/**']
+  schedule:
+    - cron: '0 7 * * 1'      # Mondays 07:00 UTC: verify against primary sources
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Offline checks (duplicate keys/DOIs, brace balance, identifiers)
+        run: python scripts/check_citations.py
+      - name: docs/bibliography.html is generated from the .bib (not stale)
+        run: python scripts/build_bibliography.py --check
+      - name: Bibliography .bib <-> .html drift (belt and braces)
+        run: python scripts/check_bib_html_sync.py
+      - name: Online verification against Crossref / arXiv
+        if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+        run: python scripts/check_citations.py --online

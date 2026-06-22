@@ -324,6 +324,14 @@
   doi = {10.3386/w12200}}
 
 % ===================== Parimutuel, dynamic & combinatorial prediction markets =====================
+@inproceedings{gao2009betting,
+  author = {Gao, Xi Alice and Chen, Yiling and Pennock, David M.}, title = {Betting on the Real Line},
+  booktitle = {Internet and Network Economics (WINE)}, series = {Lecture Notes in Computer Science}, volume = {5929},
+  pages = {553--560}, year = {2009}, doi = {10.1007/978-3-642-10841-9_55}}
+@inproceedings{freeman2017crowdsourced,
+  author = {Freeman, Rupert and Lahaie, S\'ebastien and Pennock, David M.}, title = {Crowdsourced Outcome Determination in Prediction Markets},
+  booktitle = {Proceedings of the 31st AAAI Conference on Artificial Intelligence}, year = {2017}, pages = {523--529},
+  doi = {10.1609/aaai.v31i1.10594}, url = {https://arxiv.org/abs/1612.04885}}
 @inproceedings{pennock2004dynamic,
   author = {Pennock, David M.}, title = {A Dynamic Pari-Mutuel Market for Hedging, Wagering, and Information Aggregation},
   booktitle = {Proceedings of the 5th ACM Conference on Electronic Commerce (EC)}, year = {2004}, pages = {170--179},
@@ -508,7 +516,7 @@
   journal = {Science}, volume = {306}, number = {5695}, pages = {462--466}, year = {2004}, doi = {10.1126/science.1102081}}
 @article{jurca2009mechanisms,
   author = {Jurca, Radu and Faltings, Boi}, title = {Mechanisms for Making Crowds Truthful},
-  journal = {Journal of Artificial Intelligence Research}, volume = {34}, pages = {209--253}, year = {2009}, doi = {10.1613/jair.2622}}
+  journal = {Journal of Artificial Intelligence Research}, volume = {34}, pages = {209--253}, year = {2009}, doi = {10.1613/jair.2621}}
 @inproceedings{witkowski2012robust,
   author = {Witkowski, Jens and Parkes, David C.}, title = {A Robust Bayesian Truth Serum for Small Populations},
   booktitle = {Proceedings of the 26th AAAI Conference on Artificial Intelligence (AAAI)}, pages = {1492--1498}, year = {2012}}
@@ -676,3 +684,225 @@
 @misc{bhaskara2023general,
   author = {Bhaskara, Aditya and Frongillo, Rafael and Papireddygari, Maneesha}, title = {A General Theory of Liquidity Provisioning for Prediction Markets},
   year = {2023}, howpublished = {arXiv:2311.08725}, url = {https://arxiv.org/abs/2311.08725}}
+
+% ===================== Generalizations: prior art for the candidate-original notes =====================
+% (local-score-wagering-pool.md, anisotropic-sliced-scores.md,
+%  composing-mechanisms-conservation-and-boosting.md)
+
+% --- Risk sharing & syndicates ---
+@article{borch1962equilibrium,
+  author = {Borch, Karl}, title = {Equilibrium in a Reinsurance Market},
+  journal = {Econometrica}, year = {1962}, volume = {30}, number = {3}, pages = {424--444}, doi = {10.2307/1909887}}
+@article{wilson1968syndicates,
+  author = {Wilson, Robert}, title = {The Theory of Syndicates},
+  journal = {Econometrica}, year = {1968}, volume = {36}, number = {1}, pages = {119--132}, doi = {10.2307/1909607}}
+
+% --- Parimutuel theory & the Fisher-market connection ---
+@article{eisenberg1959consensus,
+  author = {Eisenberg, Edmund and Gale, David}, title = {Consensus of Subjective Probabilities: The Pari-Mutuel Method},
+  journal = {The Annals of Mathematical Statistics}, year = {1959}, volume = {30}, number = {1}, pages = {165--168}, doi = {10.1214/aoms/1177706369}}
+@article{zhang2011proportional,
+  author = {Zhang, Li}, title = {Proportional Response Dynamics in the Fisher Market},
+  journal = {Theoretical Computer Science}, year = {2011}, volume = {412}, number = {24}, pages = {2691--2698}, doi = {10.1016/j.tcs.2010.06.021}}
+% --- Competitive / parimutuel scoring rules ---
+@article{kilgour2004elicitation,
+  author = {Kilgour, D. Marc and Gerchak, Yigal}, title = {Elicitation of Probabilities Using Competitive Scoring Rules},
+  journal = {Decision Analysis}, year = {2004}, volume = {1}, number = {2}, pages = {108--113}, doi = {10.1287/deca.1030.0003}}
+@article{johnstone2007parimutuel,
+  author = {Johnstone, David J.}, title = {The Parimutuel Kelly Probability Scoring Rule},
+  journal = {Decision Analysis}, year = {2007}, volume = {4}, number = {2}, pages = {66--75}, doi = {10.1287/deca.1070.0091}}
+
+% --- Wagering mechanisms (continued) ---
+@inproceedings{freeman2018axiomatic,
+  author = {Freeman, Rupert and Pennock, David M.}, title = {An Axiomatic View of the Parimutuel Consensus Mechanism},
+  booktitle = {Proceedings of the 27th International Joint Conference on Artificial Intelligence (IJCAI)}, year = {2018}, pages = {254--260}, doi = {10.24963/ijcai.2018/35}}
+@misc{raja2022market,
+  author = {Raja, Akhil Ahmed and Pinson, Pierre and Kazempour, Jalal and Grammatico, Sergio}, title = {A Market for Trading Forecasts: A Wagering Mechanism},
+  year = {2022}, howpublished = {arXiv:2205.02668}, url = {https://arxiv.org/abs/2205.02668}}
+
+% --- Local scoring / score-matching bridge ---
+@article{dawidmusio2015bayesian,
+  author = {Dawid, A. Philip and Musio, Monica}, title = {Bayesian Model Selection Based on Proper Scoring Rules},
+  journal = {Bayesian Analysis}, year = {2015}, volume = {10}, number = {2}, pages = {479--499}, doi = {10.1214/15-BA942}}
+@article{waghmare2026proper,
+  author = {Waghmare, Kartik and Ziegel, Johanna}, title = {Proper Scoring Rules for Estimation and Forecast Evaluation},
+  journal = {Annual Review of Statistics and Its Application}, year = {2026}, volume = {13}, pages = {271--296}, doi = {10.1146/annurev-statistics-042424-050626}}
+
+% --- Score-based generative models & the mode-mass blindness of score matching ---
+@inproceedings{song2021sde,
+  author = {Song, Yang and Sohl-Dickstein, Jascha and Kingma, Diederik P. and Kumar, Abhishek and Ermon, Stefano and Poole, Ben}, title = {Score-Based Generative Modeling through Stochastic Differential Equations},
+  booktitle = {International Conference on Learning Representations (ICLR)}, year = {2021}, url = {https://arxiv.org/abs/2011.13456}}
+@misc{wenliang2020blindness,
+  author = {Wenliang, Li Kevin and Kanagawa, Heishiro}, title = {Blindness of Score-Based Methods to Isolated Components and Mixing Proportions},
+  year = {2020}, howpublished = {arXiv:2008.10087}, url = {https://arxiv.org/abs/2008.10087}}
+@misc{zhang2022healing,
+  author = {Zhang, Mingtian and Key, Oscar and Hayes, Peter and Barber, David and Paige, Brooks and Briol, Fran\c{c}ois-Xavier}, title = {Towards Healing the Blindness of Score Matching},
+  year = {2022}, howpublished = {arXiv:2209.07396}, url = {https://arxiv.org/abs/2209.07396}}
+@inproceedings{koehler2023statistical,
+  author = {Koehler, Frederic and Heckett, Alexander and Risteski, Andrej}, title = {Statistical Efficiency of Score Matching: The View from Isoperimetry},
+  booktitle = {International Conference on Learning Representations (ICLR)}, year = {2023}, url = {https://arxiv.org/abs/2210.00726}}
+
+% --- Continuous / measurable-space prediction markets ---
+@inproceedings{dudik2021logtime,
+  author = {Dud{\'i}k, Miroslav and Wang, Xintong and Pennock, David M. and Rothschild, David M.}, title = {Log-time Prediction Markets for Interval Securities},
+  booktitle = {Proceedings of the 20th International Conference on Autonomous Agents and Multiagent Systems (AAMAS)}, year = {2021}, url = {https://arxiv.org/abs/2102.07308}}
+
+% --- Energy / kernel scores ---
+@article{gneiting2008assessing,
+  author = {Gneiting, Tilmann and Stanberry, Larissa I. and Grimit, Eric P. and Held, Leonhard and Johnson, Nicholas A.}, title = {Assessing Probabilistic Forecasts of Multivariate Quantities},
+  journal = {TEST}, year = {2008}, volume = {17}, number = {2}, pages = {211--264}, doi = {10.1007/s11749-008-0114-x}}
+@article{gretton2012kernel,
+  author = {Gretton, Arthur and Borgwardt, Karsten M. and Rasch, Malte J. and Sch{\"o}lkopf, Bernhard and Smola, Alexander}, title = {A Kernel Two-Sample Test},
+  journal = {Journal of Machine Learning Research}, year = {2012}, volume = {13}, pages = {723--773}}
+@article{steinwart2021kernel,
+  author = {Steinwart, Ingo and Ziegel, Johanna F.}, title = {Strictly Proper Kernel Scores and Characteristic Kernels on Compact Spaces},
+  journal = {Applied and Computational Harmonic Analysis}, year = {2021}, volume = {51}, pages = {510--542}, doi = {10.1016/j.acha.2019.11.005}}
+
+% --- Weighted / localized proper scoring rules (the properness boundary) ---
+@article{gneiting2011comparing,
+  author = {Gneiting, Tilmann and Ranjan, Roopesh}, title = {Comparing Density Forecasts Using Threshold- and Quantile-Weighted Scoring Rules},
+  journal = {Journal of Business \& Economic Statistics}, year = {2011}, volume = {29}, number = {3}, pages = {411--422}, doi = {10.1198/jbes.2010.08110}}
+@article{diks2011likelihood,
+  author = {Diks, Cees and Panchenko, Valentyn and van Dijk, Dick}, title = {Likelihood-Based Scoring Rules for Comparing Density Forecasts in Tails},
+  journal = {Journal of Econometrics}, year = {2011}, volume = {163}, number = {2}, pages = {215--230}, doi = {10.1016/j.jeconom.2011.04.001}}
+@article{holzmann2017focusing,
+  author = {Holzmann, Hajo and Klar, Bernhard}, title = {Focusing on Regions of Interest in Forecast Evaluation},
+  journal = {The Annals of Applied Statistics}, year = {2017}, volume = {11}, number = {4}, pages = {2404--2431}, doi = {10.1214/17-AOAS1088}}
+@article{allen2023transformed,
+  author = {Allen, Sam and Ginsbourger, David and Ziegel, Johanna}, title = {Evaluating Forecasts for High-Impact Events Using Transformed Kernel Scores},
+  journal = {SIAM/ASA Journal on Uncertainty Quantification}, year = {2023}, volume = {11}, number = {3}, pages = {906--940}, doi = {10.1137/22M1532184}}
+@article{depunder2025localizing,
+  author = {de Punder, Rutger and Diks, Cees and Laeven, Roger J. A. and van Dijk, Dick}, title = {Localizing Strictly Proper Scoring Rules},
+  journal = {Journal of the American Statistical Association}, year = {2026}, note = {Published online 5 Jan 2026, pp. 1--13}, doi = {10.1080/01621459.2025.2576189}}
+@article{pic2025proper,
+  author = {Pic, Romain and Dombry, Cl{\'e}ment and Naveau, Philippe and Taillardat, Maxime}, title = {Proper Scoring Rules for Multivariate Probabilistic Forecasts based on Aggregation and Transformation},
+  journal = {Advances in Statistical Climatology, Meteorology and Oceanography}, year = {2025}, volume = {11}, number = {1}, pages = {23--58}, doi = {10.5194/ascmo-11-23-2025}}
+@article{ehm2016quantiles,
+  author = {Ehm, Werner and Gneiting, Tilmann and Jordan, Alexander and Kr{\"u}ger, Fabian}, title = {Of Quantiles and Expectiles: Consistent Scoring Functions, Choquet Representations and Forecast Rankings},
+  journal = {Journal of the Royal Statistical Society: Series B}, year = {2016}, volume = {78}, number = {3}, pages = {505--562}, doi = {10.1111/rssb.12154}}
+
+% --- Sliced Wasserstein & direction-adaptation variants ---
+@inproceedings{rabin2012wasserstein,
+  author = {Rabin, Julien and Peyr{\'e}, Gabriel and Delon, Julie and Bernot, Marc}, title = {Wasserstein Barycenter and Its Application to Texture Mixing},
+  booktitle = {Scale Space and Variational Methods (SSVM)}, series = {LNCS}, volume = {6667}, pages = {435--446}, year = {2012}, doi = {10.1007/978-3-642-24785-9_37}}
+@article{bonneel2015sliced,
+  author = {Bonneel, Nicolas and Rabin, Julien and Peyr{\'e}, Gabriel and Pfister, Hanspeter}, title = {Sliced and Radon Wasserstein Barycenters of Measures},
+  journal = {Journal of Mathematical Imaging and Vision}, year = {2015}, volume = {51}, number = {1}, pages = {22--45}, doi = {10.1007/s10851-014-0506-3}}
+@inproceedings{deshpande2019maxsliced,
+  author = {Deshpande, Ishan and Hu, Yuan-Ting and Sun, Ruoyu and Pyrros, Ayis and Siddiqui, Nasir and Koyejo, Sanmi and Zhao, Zhizhen and Forsyth, David and Schwing, Alexander G.}, title = {Max-Sliced {Wasserstein} Distance and Its Use for {GANs}},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)}, year = {2019}, pages = {10648--10656}, url = {https://arxiv.org/abs/1904.05877}}
+@inproceedings{kolouri2019generalized,
+  author = {Kolouri, Soheil and Nadjahi, Kimia and {\c{S}}im{\c{s}}ekli, Umut and Badeau, Roland and Rohde, Gustavo K.}, title = {Generalized Sliced {Wasserstein} Distances},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {2019}, url = {https://arxiv.org/abs/1902.00434}}
+@inproceedings{nguyen2021distributional,
+  author = {Nguyen, Khai and Ho, Nhat and Pham, Tung and Bui, Hung}, title = {Distributional Sliced-{Wasserstein} and Applications to Generative Modeling},
+  booktitle = {International Conference on Learning Representations (ICLR)}, year = {2021}, url = {https://arxiv.org/abs/2002.07367}}
+@inproceedings{chen2022augmented,
+  author = {Chen, Xiongjie and Yang, Yongxin and Li, Yunpeng}, title = {Augmented Sliced {Wasserstein} Distances},
+  booktitle = {International Conference on Learning Representations (ICLR)}, year = {2022}, url = {https://arxiv.org/abs/2006.08812}}
+@inproceedings{nguyenho2023energy,
+  author = {Nguyen, Khai and Ho, Nhat}, title = {Energy-Based Sliced {Wasserstein} Distance},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {2023}, url = {https://arxiv.org/abs/2304.13586}}
+@inproceedings{nguyen2023markovian,
+  author = {Nguyen, Khai and Ren, Tongzheng and Ho, Nhat}, title = {Markovian Sliced {Wasserstein} Distances: Beyond Independent Projections},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {2023}, url = {https://arxiv.org/abs/2301.03749}}
+@inproceedings{nguyen2024randompath,
+  author = {Nguyen, Khai and Zhang, Shujian and Le, Tam and Ho, Nhat}, title = {Sliced {Wasserstein} with Random-Path Projecting Directions},
+  booktitle = {International Conference on Machine Learning (ICML)}, year = {2024}, url = {https://arxiv.org/abs/2401.15889}}
+@inproceedings{paty2019subspace,
+  author = {Paty, Fran\c{c}ois-Pierre and Cuturi, Marco}, title = {Subspace Robust {Wasserstein} Distances},
+  booktitle = {International Conference on Machine Learning (ICML)}, year = {2019}, pages = {5072--5081}, url = {https://arxiv.org/abs/1901.08949}}
+@inproceedings{lin2020projection,
+  author = {Lin, Tianyi and Fan, Chenyou and Ho, Nhat and Cuturi, Marco and Jordan, Michael I.}, title = {Projection Robust {Wasserstein} Distance and {Riemannian} Optimization},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {2020}, url = {https://arxiv.org/abs/2006.07458}}
+@article{bonet2025sliced,
+  author = {Bonet, Cl{\'e}ment and Drumetz, Lucas and Courty, Nicolas}, title = {Sliced-{Wasserstein} Distances and Flows on {Cartan-Hadamard} Manifolds},
+  journal = {Journal of Machine Learning Research}, year = {2025}, volume = {26}, number = {32}, pages = {1--76}, url = {https://arxiv.org/abs/2403.06560}}
+@inproceedings{nadjahi2020statistical,
+  author = {Nadjahi, Kimia and Durmus, Alain and Chizat, L{\'e}na{\"i}c and Kolouri, Soheil and Shahrampour, Shahin and {\c{S}}im{\c{s}}ekli, Umut}, title = {Statistical and Topological Properties of Sliced Probability Divergences},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {2020}, url = {https://arxiv.org/abs/2003.05783}}
+@inproceedings{gong2021sliced,
+  author = {Gong, Wenbo and Li, Yingzhen and Hern{\'a}ndez-Lobato, Jos{\'e} Miguel}, title = {Sliced Kernelized {Stein} Discrepancy},
+  booktitle = {International Conference on Learning Representations (ICLR)}, year = {2021}, url = {https://arxiv.org/abs/2006.16531}}
+
+% --- Covariance shrinkage & closed-form intensity ---
+@inproceedings{stein1956inadmissibility,
+  author = {Stein, Charles}, title = {Inadmissibility of the Usual Estimator for the Mean of a Multivariate Normal Distribution},
+  booktitle = {Proceedings of the Third Berkeley Symposium on Mathematical Statistics and Probability}, volume = {1}, pages = {197--206}, year = {1956}}
+@inproceedings{jamesstein1961estimation,
+  author = {James, W. and Stein, Charles}, title = {Estimation with Quadratic Loss},
+  booktitle = {Proceedings of the Fourth Berkeley Symposium on Mathematical Statistics and Probability}, volume = {1}, pages = {361--379}, year = {1961}}
+@article{ledoitwolf2004wellconditioned,
+  author = {Ledoit, Olivier and Wolf, Michael}, title = {A Well-Conditioned Estimator for Large-Dimensional Covariance Matrices},
+  journal = {Journal of Multivariate Analysis}, year = {2004}, volume = {88}, number = {2}, pages = {365--411}, doi = {10.1016/S0047-259X(03)00096-4}}
+@article{ledoitwolf2004honey,
+  author = {Ledoit, Olivier and Wolf, Michael}, title = {Honey, I Shrunk the Sample Covariance Matrix},
+  journal = {The Journal of Portfolio Management}, year = {2004}, volume = {30}, number = {4}, pages = {110--119}, doi = {10.3905/jpm.2004.110}}
+@article{ledoitwolf2012nonlinear,
+  author = {Ledoit, Olivier and Wolf, Michael}, title = {Nonlinear Shrinkage Estimation of Large-Dimensional Covariance Matrices},
+  journal = {The Annals of Statistics}, year = {2012}, volume = {40}, number = {2}, pages = {1024--1060}, doi = {10.1214/12-AOS989}}
+@article{ledoitwolf2020analytical,
+  author = {Ledoit, Olivier and Wolf, Michael}, title = {Analytical Nonlinear Shrinkage of Large-Dimensional Covariance Matrices},
+  journal = {The Annals of Statistics}, year = {2020}, volume = {48}, number = {5}, pages = {3043--3065}, doi = {10.1214/19-AOS1921}}
+@article{dobriban2018highdim,
+  author = {Dobriban, Edgar and Wager, Stefan}, title = {High-Dimensional Asymptotics of Prediction: Ridge Regression and Classification},
+  journal = {The Annals of Statistics}, year = {2018}, volume = {46}, number = {1}, pages = {247--279}, doi = {10.1214/17-AOS1549}}
+@article{schafer2005shrinkage,
+  author = {Sch{\"a}fer, Juliane and Strimmer, Korbinian}, title = {A Shrinkage Approach to Large-Scale Covariance Matrix Estimation and Implications for Functional Genomics},
+  journal = {Statistical Applications in Genetics and Molecular Biology}, year = {2005}, volume = {4}, number = {1}, doi = {10.2202/1544-6115.1175}}
+
+% --- High-dimensional two-sample tests via random projection ---
+@article{baisaranadasa1996effect,
+  author = {Bai, Zhidong and Saranadasa, Hewa}, title = {Effect of High Dimension: By an Example of a Two Sample Problem},
+  journal = {Statistica Sinica}, year = {1996}, volume = {6}, number = {2}, pages = {311--329}}
+@article{srivastavadu2008test,
+  author = {Srivastava, Muni S. and Du, Meng}, title = {A Test for the Mean Vector with Fewer Observations than the Dimension},
+  journal = {Journal of Multivariate Analysis}, year = {2008}, volume = {99}, number = {3}, pages = {386--402}, doi = {10.1016/j.jmva.2006.11.002}}
+@article{chenqin2010twosample,
+  author = {Chen, Song Xi and Qin, Ying-Li}, title = {A Two-Sample Test for High-Dimensional Data with Applications to Gene-Set Testing},
+  journal = {The Annals of Statistics}, year = {2010}, volume = {38}, number = {2}, pages = {808--835}, doi = {10.1214/09-AOS716}}
+@inproceedings{lopes2011powerful,
+  author = {Lopes, Miles E. and Jacob, Laurent J. and Wainwright, Martin J.}, title = {A More Powerful Two-Sample Test in High Dimensions Using Random Projection},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {2011}, pages = {1206--1214}, url = {https://arxiv.org/abs/1108.2401}}
+
+% --- Markets as online learning; machine-learning markets ---
+@misc{nueve2025smooth,
+  author = {Nueve, Enrique and Waggoner, Bo}, title = {Smooth Quadratic Prediction Markets},
+  year = {2025}, howpublished = {arXiv:2505.02959}, url = {https://arxiv.org/abs/2505.02959}}
+@inproceedings{storkey2011machine,
+  author = {Storkey, Amos J.}, title = {Machine Learning Markets},
+  booktitle = {Proceedings of the 14th International Conference on Artificial Intelligence and Statistics (AISTATS)}, series = {PMLR}, volume = {15}, pages = {716--724}, year = {2011}, url = {https://arxiv.org/abs/1106.4509}}
+@inproceedings{storkey2012isoelastic,
+  author = {Storkey, Amos J. and Millin, Jono and Geras, Krzysztof}, title = {Isoelastic Agents and Wealth Updates in Machine Learning Markets},
+  booktitle = {International Conference on Machine Learning (ICML)}, year = {2012}, url = {https://arxiv.org/abs/1206.6443}}
+@misc{hu2012combinatorial,
+  author = {Hu, Jinli}, title = {Combinatorial Modelling and Learning with Prediction Markets},
+  year = {2012}, howpublished = {arXiv:1201.3851}, url = {https://arxiv.org/abs/1201.3851}}
+@article{barbu2012artificial,
+  author = {Barbu, Adrian and Lay, Nathan}, title = {An Introduction to Artificial Prediction Markets for Classification},
+  journal = {Journal of Machine Learning Research}, year = {2012}, volume = {13}, pages = {2177--2204}, url = {https://arxiv.org/abs/1102.1465}}
+@misc{laybarbu2012regression,
+  author = {Lay, Nathan and Barbu, Adrian}, title = {The Artificial Regression Market},
+  year = {2012}, howpublished = {arXiv:1204.4154}, url = {https://arxiv.org/abs/1204.4154}}
+
+% --- Boosting as functional gradient descent ---
+@article{freund1997decision,
+  author = {Freund, Yoav and Schapire, Robert E.}, title = {A Decision-Theoretic Generalization of On-Line Learning and an Application to Boosting},
+  journal = {Journal of Computer and System Sciences}, year = {1997}, volume = {55}, number = {1}, pages = {119--139}, doi = {10.1006/jcss.1997.1504}}
+@inproceedings{mason1999boosting,
+  author = {Mason, Llew and Baxter, Jonathan and Bartlett, Peter L. and Frean, Marcus}, title = {Boosting Algorithms as Gradient Descent},
+  booktitle = {Advances in Neural Information Processing Systems (NeurIPS)}, year = {1999}, pages = {512--518}}
+@article{friedman2000additive,
+  author = {Friedman, Jerome and Hastie, Trevor and Tibshirani, Robert}, title = {Additive Logistic Regression: A Statistical View of Boosting},
+  journal = {The Annals of Statistics}, year = {2000}, volume = {28}, number = {2}, pages = {337--407}, doi = {10.1214/aos/1016218223}}
+@article{friedman2001greedy,
+  author = {Friedman, Jerome H.}, title = {Greedy Function Approximation: A Gradient Boosting Machine},
+  journal = {The Annals of Statistics}, year = {2001}, volume = {29}, number = {5}, pages = {1189--1232}, doi = {10.1214/aos/1013203451}}
+
+% --- The reliability-dial machinery (Schur damping) ---
+@misc{cotton2024schur,
+  author = {Cotton, Peter}, title = {Schur Complementary Allocation: A Unification of Hierarchical Risk Parity and Minimum Variance Portfolios},
+  year = {2024}, howpublished = {arXiv:2411.05807}, url = {https://arxiv.org/abs/2411.05807}}
+@misc{cotton2026schur,
+  author = {Cotton, Peter}, title = {Two Sides of Schur Damping: High-Dimensional Pseudo-Likelihoods and Portfolio Allocation},
+  year = {2026}, howpublished = {arXiv:2606.14798}, url = {https://arxiv.org/abs/2606.14798}}
