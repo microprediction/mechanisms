@@ -60,6 +60,21 @@ def check_offline(text: str, entries: list[Entry]) -> None:
             err(f"duplicate key '{e.key}' (lines {seen[e.key]} and {e.lineno})")
         seen[e.key] = e.lineno
 
+    # Same paper under two keys: silently duplicates in any generated output.
+    by_doi: dict[str, str] = {}
+    by_title: dict[str, str] = {}
+    for e in entries:
+        if e.doi:
+            d = e.doi.lower()
+            if d in by_doi:
+                err(f"duplicate DOI {e.doi}: '{by_doi[d]}' and '{e.key}'")
+            by_doi[d] = e.key
+        t = norm_title(e.title)
+        if t and t in by_title and by_title[t] != e.key:
+            err(f"duplicate title under two keys: '{by_title[t]}' and '{e.key}' "
+                f"({e.title[:50]}...)")
+        by_title[t] = e.key
+
     for e in entries:
         if e.etype in {"book", "incollection", "techreport"}:
             continue  # books/reports legitimately may carry only an ISBN/url

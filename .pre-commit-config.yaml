@@ -9,6 +9,12 @@ repos:
         language: system
         files: '^research/bibliography\.bib$'
         pass_filenames: false
+      - id: bibliography-html-fresh
+        name: docs/bibliography.html generated from .bib (not stale)
+        entry: python scripts/build_bibliography.py --check
+        language: system
+        files: '^(research/bibliography\.bib|docs/bibliography\.html)$'
+        pass_filenames: false
       - id: check-bib-html-sync
         name: bibliography .bib/.html drift
         entry: python scripts/check_bib_html_sync.py

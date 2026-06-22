@@ -21,9 +21,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.x'
-      - name: Offline checks (duplicate keys, brace balance, identifiers)
+      - name: Offline checks (duplicate keys/DOIs, brace balance, identifiers)
         run: python scripts/check_citations.py
-      - name: Bibliography .bib <-> .html drift
+      - name: docs/bibliography.html is generated from the .bib (not stale)
+        run: python scripts/build_bibliography.py --check
+      - name: Bibliography .bib <-> .html drift (belt and braces)
         run: python scripts/check_bib_html_sync.py
       - name: Online verification against Crossref / arXiv
         if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'

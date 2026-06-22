@@ -167,6 +167,33 @@ def norm_title(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", " ", _delatex(s).lower()).strip()
 
 
+_ACCENTS = {'"': "̈", "'": "́", "`": "̀", "^": "̂",
+            "~": "̃", "=": "̄", ".": "̇", "c": "̧",
+            "v": "̌", "u": "̆", "H": "̋", "r": "̊",
+            "k": "̨"}
+_SPECIAL = {r"\ss": "ß", r"\o": "ø", r"\O": "Ø", r"\l": "ł", r"\L": "Ł",
+            r"\aa": "å", r"\AA": "Å", r"\ae": "æ", r"\AE": "Æ",
+            r"\i": "i", r"\j": "j"}
+
+
+def latex_to_unicode(s: str) -> str:
+    """Render LaTeX accents as real Unicode for display (keeps 'Hyvärinen').
+
+    The display counterpart of :func:`_delatex` (which folds to ASCII for
+    matching). ``Hyv{\\"a}rinen`` -> ``Hyvärinen``; ``Fay{\\c{c}}al`` -> ``Fayçal``.
+    """
+    for k, v in _SPECIAL.items():
+        s = re.sub(re.escape(k) + r"(?![a-zA-Z])", v, s)
+
+    def _acc(m: "re.Match") -> str:
+        comb = _ACCENTS.get(m.group(1))
+        return __import__("unicodedata").normalize("NFC", m.group(2) + comb) if comb else m.group(2)
+
+    s = re.sub(r"\\([\"'`^~=.cvuHrk])\s*\{(\w)\}", _acc, s)   # \"{a}  \c{c}
+    s = re.sub(r"\\([\"'`^~=.cvuHrk])\s*(\w)", _acc, s)       # \"a   \'e
+    return s.replace("{", "").replace("}", "").replace("\\", "").strip()
+
+
 if __name__ == "__main__":   # quick smoke test: print a summary
     import sys
     path = sys.argv[1] if len(sys.argv) > 1 else "research/bibliography.bib"

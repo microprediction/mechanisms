@@ -160,7 +160,7 @@ Closest prior art (none instantiates the three-part object):
 - **Barbu & Lay (2012)**, "An Introduction to Artificial Prediction Markets for
   Classification," *JMLR* 13: a market of classifiers betting on labels — ensemble
   pricing, again not residual-staged.
-- **Chen & Wortman Vaughan (2010)**; **Abernethy, Frongillo & Kutty (2014)**, "On
+- **Chen & Wortman Vaughan (2010)**; **Abernethy, Frongillo & Kutty (2015)**, "On
   Risk Measures, Market Making, and Exponential Families," *SIGecom Exchanges*
   13(2): the exponential-family / risk-measure backbone a residual market inherits.
 - **Mason et al. (1999)**; **Friedman (2001)**: the boosting side of the identity.
@@ -251,7 +251,7 @@ generalization translation.
   Risk Transfer." *Finance and Stochastics* 9(2), 269–298.
 - Jouini, E., Schachermayer, W. & Touzi, N. (2008). "Optimal Risk Sharing for Law
   Invariant Monetary Utility Functions." *Math. Finance* 18(2), 269–292.
-- Abernethy, J. D., Frongillo, R. M. & Kutty, S. (2014). "On Risk Measures, Market
+- Abernethy, J. D., Frongillo, R. M. & Kutty, S. (2015). "On Risk Measures, Market
   Making, and Exponential Families." *ACM SIGecom Exchanges* 13(2), 21–25.
 - Bhaskara, A., Frongillo, R. & Papireddygari, M. (2023). "A General Theory of
   Liquidity Provisioning for Prediction Markets." arXiv:2311.08725.
