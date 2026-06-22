@@ -1,0 +1,17 @@
+# Optional local guard. Install once with `pip install pre-commit && pre-commit install`.
+# Runs only the fast, offline, network-free bibliography checks on commit.
+repos:
+  - repo: local
+    hooks:
+      - id: check-citations
+        name: bibliography offline checks (keys, braces, identifiers)
+        entry: python scripts/check_citations.py
+        language: system
+        files: '^research/bibliography\.bib$'
+        pass_filenames: false
+      - id: check-bib-html-sync
+        name: bibliography .bib/.html drift
+        entry: python scripts/check_bib_html_sync.py
+        language: system
+        files: '^(research/bibliography\.bib|docs/bibliography\.html)$'
+        pass_filenames: false
