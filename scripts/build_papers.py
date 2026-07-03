@@ -271,7 +271,7 @@ def resolve_citations(md: str) -> tuple[str, list]:
 
     def group(m: "re.Match") -> str:
         items = []
-        for part in m.group(1).split(";"):
+        for part in re.sub(r"\s+", " ", m.group(1)).split(";"):
             part = part.strip()
             km = re.match(r"@([\w-]+)\s*(?:,\s*(.+))?$", part)
             if not km:
