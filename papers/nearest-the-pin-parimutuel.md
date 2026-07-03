@@ -46,7 +46,7 @@ A classical parimutuel (§[parimutuel](https://mechanisms.microprediction.org/ca
 operates over a finite partition of outcomes $\{1, \dots, n\}$. Bettors stake
 $W_i$ on outcomes; if outcome $j$ realises, the pot is divided among backers of
 $j$ in proportion to their stake. The implied probabilities are the pool
-fractions, and — crucially — the operator bears no risk.
+fractions, and the operator bears no risk.
 
 Modern forecasting is rarely categorical. The object of interest is a *full
 predictive distribution* over a continuous, often multivariate, quantity:

@@ -158,7 +158,7 @@ proper local scoring rule usable for inference — is Dawid & Musio (2014, 2015)
 The mode-mass limitation of §5 is documented directly by Wenliang & Kanagawa
 (2020), Zhang et al. (2022), and Koehler, Heckett & Risteski (2023).
 
-The defensible claim is precise: *the first self-financing wagering mechanism that
+The defensible claim: *the first self-financing wagering mechanism that
 elicits unnormalized (energy-based) density forecasts, via a local proper scoring
 rule, so that no partition function is ever computed.* No new truthfulness theory
 is claimed — properness-implies-truthfulness is inherited from the wagering

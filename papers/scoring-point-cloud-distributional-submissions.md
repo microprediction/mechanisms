@@ -53,7 +53,7 @@ sample-based generative models.
 
 The question this paper answers: *what cloud should a rational participant
 submit?* The answer is not "samples from your belief," and the failure has
-a clean closed form, a one-line repair, and, once repaired, a multi-scale
+a closed form, a one-line repair, and, once repaired, a multi-scale
 structure with its own uses.
 
 Throughout, we idealise the cloud by its sampling law $\rho$ ($m\to\infty$;
@@ -225,7 +225,7 @@ bandwidth before submissions are observed (from the outcome history, a
 reference climatology, or a posted rule) and jitter with that frozen kernel.
 The incentives of participant-endogenous bandwidths are an open problem (§7).
 
-**Attribution, precisely.** The *properness* of the convolved score against a
+**Attribution.** The properness of the convolved score against a
 noised outcome is not new: Bröcker & Smith (2007, §5) prove it for a general
 observation-noise channel, and Ferro (2017, Prop. 3) works out exactly the
 white-noise/Gaussian case. What both left open is strictness. Bröcker &
@@ -234,11 +234,11 @@ necessarily strictly proper, because if $\bar q(z)=\bar p(z)$, this does not
 necessarily mean equality of $p(x)$ and $q(x)$." Lemma 1 closes exactly that
 gap. The discrete-outcome analog is the label-noise literature's forward loss
 correction with an invertible transition matrix (Patrini et al. 2017, Thm. 2;
-van Rooyen & Williamson 2018). The framing flip is the contribution of this
-section: verification treats outcome noise as a *nuisance to be endured*
-(Ferro explicitly doubts the "efficacy" of perturbing observations); read as
-*mechanism design*, deliberately injecting jitter matched to the mechanism's
-own smoothing is what makes the point-cloud game strictly proper.
+van Rooyen & Williamson 2018). Verification treats outcome noise as a
+nuisance to be endured, and Ferro explicitly doubts the "efficacy" of
+perturbing observations; read as mechanism design, jitter matched to the
+mechanism's own smoothing is what makes the point-cloud game strictly
+proper.
 
 ## 4. The heat ladder
 
@@ -295,8 +295,7 @@ used in the examples. $\blacksquare$
 
 The differential identity is de Bruijn's, in relative form (Stam 1959; Barron
 1986; Lyu 2009); its integral form prices the likelihood of diffusion models
-(Song, Durkan, Murray & Ermon 2021). *The identity is not ours; the mechanism
-reading is.* Note the bandwidth floor does real work: at $t=0$ an empirical
+(Song, Durkan, Murray & Ermon 2021). Note the bandwidth floor does real work: at $t=0$ an empirical
 cloud has no density and the identity is vacuous; every rung the mechanism
 actually runs starts at $t\ge h^2$, where everything is smooth.
 

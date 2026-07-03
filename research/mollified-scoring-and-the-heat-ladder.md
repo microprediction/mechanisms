@@ -66,7 +66,7 @@ maximized iff `ρ_h = p*_h` iff `ρ = p*`, because Gaussian convolution is
 injective (its characteristic function never vanishes). The score is
 strictly proper for the *pre-smoothing* density.
 
-Attribution here is precise, because the pieces are older than they look:
+Attribution:
 
 - Properness of the convolved score against a noised outcome is Bröcker &
   Smith (2007, §5) and, worked out for exactly this white-noise model, Ferro
@@ -90,7 +90,7 @@ Attribution here is precise, because the pieces are older than they look:
   of this was found in the scoring-rule literature; it is a short step from
   Bröcker–Smith plus injectivity, and we claim it only as that.
 
-The flip in framing matters: the verification literature treats outcome noise
+The verification literature treats outcome noise
 as a nuisance (Ferro explicitly doubts the "efficacy" of perturbing
 observations). Read as *mechanism design*, deliberately injecting jitter
 matched to the mechanism's own smoothing is what makes the sample-cloud game
@@ -123,7 +123,7 @@ KL(p* ‖ ρ)  =  KL(p*_T ‖ ρ_T)  +  ½ ∫₀ᵀ D_F(p*_t ‖ ρ_t) dt,
 where `D_F(p‖q) = ∫ p ‖∇log p − ∇log q‖²` is the Fisher divergence. (The
 differential form is Stam 1959 / Barron 1986; the relative version is Lyu
 2009; the same identity prices the likelihood of diffusion models in Song et
-al. 2021. The identity is not ours; the mechanism reading is.)
+al. 2021.)
 
 Read as a payment schedule:
 
@@ -146,7 +146,7 @@ Each of `n` participants stakes `sᵢ` and submits one cloud. Fix scales
 splits `w_k · Σsᵢ` by any budget-balanced rule driven by the rung score
 `S_{√(h²+t_k)}(ρᵢ, z)` (additive WSWM form, or the multiplicative pot-split at
 full Kelly). Every rung is self-funding, so the tower is; every rung is
-strictly proper for the cloud by §2. One precision from the paper (v0.2):
+strictly proper for the cloud by §2. From the paper (v0.2):
 paying rung *levels* with weights `w_k` puts *cumulative* weights on the
 Fisher bands; to pay a band directly, use rung *differences*
 `S_k − S_{k+1}`, which are themselves strictly proper (regret = the band's
