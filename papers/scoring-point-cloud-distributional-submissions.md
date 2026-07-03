@@ -351,8 +351,8 @@ $$\frac{d}{dt}\,\mathrm{KL}\!\big(p^*_t\Vert\rho_t\big)
 *where $D_F(p\Vert q)=\int p\,\lVert\nabla\log p-\nabla\log q\rVert^2$ is the
 Fisher divergence.*
 
-**Proof.** Write $p=p^*_t$, $q=\rho_t$, both solving $\partial_t
-u=\tfrac12\Delta u$. Then
+**Proof.** Write $p=p^*_t$, $q=\rho_t$, both solutions of the heat
+equation. Then
 
 $$\frac{d}{dt}\int p\log\frac pq
  \;=\;\int (\partial_t p)\log\frac pq \;+\;\underbrace{\int \partial_t p}_{=0}
@@ -595,8 +595,8 @@ theorem chooses *which* jitter.
 
 ## 9. Related work
 
-Improperness of sample-based scoring: @theis2016note (KDE log-likelihood "an
-improper scoring function"); the fair-scores line for the ensemble CRPS
+Improperness of sample-based scoring: @theis2016note, who call the KDE
+log-likelihood "an improper scoring function"; the fair-scores line for the ensemble CRPS
 [@brocker2012raw; @fricker2013three; @ferro2014fair], with the over-dispersion
 direction for fitted ensembles in @siegert2019ensemble; the estimator view of
 KDE log scores [@kruger2021predictive]; ensemble dressing
@@ -621,8 +621,8 @@ self-funding cloud wagering at a single scale [@lambert2008selffinanced;
 ## 10. Open problems
 
 1. **Fair rungs.** The finite-$m$ correction making each rung's expected score
-   optimized by *sampling* from the belief (the log-score/KDE analog of
-   the fair CRPS of @ferro2014fair), and its interaction with the jitter. All
+   optimized by *sampling* from the belief, the log-score/KDE analog of
+   the fair CRPS of @ferro2014fair, and its interaction with the jitter. All
    results here are population-level; the finite-cloud game is not covered by
    the theorems.
 2. **Endogenous bandwidth.** If the bandwidth is computed from the
