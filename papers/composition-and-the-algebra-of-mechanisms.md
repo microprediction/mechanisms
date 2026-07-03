@@ -1,4 +1,4 @@
-# An Algebra of Mechanisms
+# An Algebra of Prediction-Rewarding Mechanisms
 
 ### Scoring rules, market makers, and pools as composable transducers
 
@@ -49,16 +49,15 @@ Composition is also where guarantees break. Each stage of such a pipeline can
 be individually truthful while the chain is not. The companion paper on
 point-cloud scoring gives a concrete example: inserting an innocuous-looking
 kernel-density smoothing step between the submission and the score changes the
-optimal report from the forecaster's belief to its deconvolution. Seams
-matter, so it is worth being precise about what survives them.
+optimal report from the forecaster's belief to its deconvolution.
 
 Conformal prediction supplies a second motivation, from the opposite
 direction. Split-conformal is itself a composition, a point predictor chained
 into a rank-based calibration stage, but a degenerate one: the pool step is
 skipped by fiat, all credit assigned to a single model in advance, and the
-calibration stage prices the residual flat in the input. The price of that
-degeneracy is quantifiable. The wasted log score of a single-shape conformal
-predictor is the mutual information $I(R;X)$ between residual and input, and
+calibration stage prices the residual flat in the input. The wasted log
+score of a single-shape conformal predictor is the mutual information
+$I(R;X)$ between residual and input, and
 an entrant to a parimutuel residual pool who conditions on the input collects
 it as bankroll growth at exactly that rate [@cotton2026conformalbetting].
 Running the residual stage as an actual pool, rather than assuming its winner,
@@ -234,8 +233,7 @@ duality; it is not the bare Fenchel conjugacy $C\mapsto C^*$.*
 
 We do not reprove the general equivalence here; @frongillo2024axiomatic give
 it in full, and @angeris2023primer and @angeris2021uniswap develop the CFMM
-side. What the note uses is the direction that convex analysis computes
-cleanly, illustrated on the canonical example.
+side.
 
 **Example (constant product).** Take two outcome tokens with reserves
 $r_1,r_2$ and invariant $r_1r_2=k$. The pool's portfolio value at prices
@@ -266,7 +264,7 @@ $\{X\le F^{-}(u)\}$ by a set of probability zero, and
 $\Pr(X\le F^{-}(u))=F(F^{-}(u))=u$ by continuity. The prequential statement
 applies this conditionally at each $t$. $\blacksquare$
 
-Two scope remarks, both load-bearing. First, the converse fails in the strong
+Two scope remarks. First, the converse fails in the strong
 sense: marginally uniform PITs do not certify an informative forecast.
 Reporting the unconditional law $F$ of an iid sequence gives
 $F(X_t)\sim\mathrm{Uniform}(0,1)$ even if valuable covariates were ignored. A
@@ -275,8 +273,8 @@ complements, and does not replace, a proper score that rewards sharp
 conditional distributions. Conformal prediction lives on exactly this
 distinction: a split-conformal predictor achieves marginal coverage by
 construction, the uniform-PIT guarantee, while free to ignore the
-conditional information in the input. The gap is not merely qualitative. For
-a single-shape conformal predictor the wasted log score equals the mutual
+conditional information in the input. For a single-shape conformal predictor
+the wasted log score equals the mutual
 information $I(R;X)$ between residual and input, and an entrant to the
 parimutuel pool of the companion paper who conditions on $X$ collects it as
 bankroll growth at exactly that rate; the flat-in-$X$ conformal report is the
@@ -332,7 +330,7 @@ $\sum_i w_i\,\mathrm{KL}(p\Vert q_i)=\int p\log p-\int p\,\overline{\log q}$
 with $\overline{\log q}=\sum_i w_i\log q_i$; the Lagrange condition is
 $\log p=\overline{\log q}+\mathrm{const}$. $\blacksquare$
 
-One distinction matters in practice. Training weights by cumulative log score
+Training weights by cumulative log score
 and then mixing linearly, $\sum_m w_m F_m$, is Bayesian model averaging, a
 linear pool with score-trained weights; the logarithmic pool multiplies
 densities and renormalizes. Both appear in the repository's `aggregation`

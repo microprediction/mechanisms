@@ -147,8 +147,8 @@
       Each then has a market-maker twin. The log score is LMSR; the
       <strong>Brier</strong> (quadratic) score is a quadratic-potential maker, the
       Euclidean sibling of LMSR's entropic one (the family
-      <code>cmm.py</code>'s <code>quadratic_potential</code> belongs to). Two
-      further links are worth naming:
+      <code>cmm.py</code>'s <code>quadratic_potential</code> belongs to).
+      Further links:
     </p>
     <ul>
       <li>The <strong>energy score</strong> and CRPS are kernel scoring rules:
@@ -160,42 +160,23 @@
         same machinery with a peer's report standing in for ground truth: the
         multi-task mechanisms maximise a Bregman / $f$-mutual-information between
         reports (Kong &amp; Schoenebeck 2019).</li>
+      <li>The object the
+        <a href="./mechanisms/local-scoring.html">Hyvärinen score</a> evaluates is
+        the marginal score $\nabla\log p(y)$, and <strong>Tweedie's formula</strong>
+        $\;\mathbb{E}[\theta \mid y] = y + \sigma^2\,\nabla\log p(y)\;$
+        (<a href="https://doi.org/10.1198/jasa.2011.tm11181">Efron 2011</a>) is the
+        exact posterior-mean identity for that same gradient. Hansen &amp; Tong
+        (<a href="https://arxiv.org/abs/2605.15902">2026</a>) use it to show that
+        the score-driven filters of econometrics (Creal, Koopman &amp; Lucas 2013),
+        which step a latent parameter along the conditional likelihood score, are
+        exact Bayesian updates in expectation space under local precision
+        discounting, and the leading approximation otherwise.</li>
     </ul>
-
-    <h2>What is settled, and what is not</h2>
-    <p>
-      The first two sections are theorems and the third is a set of standard
-      equivalences. Two adjacent links are suggestive rather than established, and
-      are flagged as such: that score matching (the
-      <a href="./mechanisms/local-scoring.html">Hyvärinen score</a>, which avoids
-      the partition function) is a dual of the LMSR cost (which <em>is</em> the
-      log-partition function), and that the
-      <a href="./mechanisms/pm-amm.html">pm-AMM</a>'s &ldquo;Gaussian score
-      dynamics&rdquo; relate to the score function of information geometry. They
-      may be coincidences of vocabulary; they are not claimed here as results.
-    </p>
-    <p>
-      A third link is the opposite case &mdash; settled mathematics in adjacent
-      territory. The object the
-      <a href="./mechanisms/local-scoring.html">Hyvärinen score</a> evaluates is the
-      <em>marginal score</em> $\nabla\log p(y)$, and <strong>Tweedie's formula</strong>
-      $\;\mathbb{E}[\theta \mid y] = y + \sigma^2\,\nabla\log p(y)\;$
-      (<a href="https://doi.org/10.1198/jasa.2011.tm11181">Efron 2011</a>) is the
-      exact posterior-mean identity for that same gradient. Hansen &amp; Tong
-      (<a href="https://arxiv.org/abs/2605.15902">2026</a>) use it to show that the
-      <em>score-driven</em> filters of econometrics (Creal, Koopman &amp; Lucas 2013)
-      &mdash; which step a latent parameter along the conditional likelihood score
-      &mdash; are exact Bayesian updates in expectation space under local precision
-      discounting, and the leading approximation otherwise. This is a theorem, not a
-      coincidence; the caveat is only that it bridges the scoring substrate to
-      time-series <em>filtering</em>, not to a market mechanism, so it sits one room
-      over from the catalog rather than inside it.
-    </p>
 
     <p class="muted" style="margin-top:18px;">
       Companion: the <a href="./map.html">relationship map</a> (the same structure
       as a graph). Worked pipeline and proofs:
-      <a href="./papers/composition-and-the-algebra-of-mechanisms.html">An Algebra of Mechanisms</a>.
+      <a href="./papers/composition-and-the-algebra-of-mechanisms.html">An Algebra of Prediction-Rewarding Mechanisms</a>.
       Sources: <a href="./bibliography.html">bibliography</a>.
     </p>
   </main>
