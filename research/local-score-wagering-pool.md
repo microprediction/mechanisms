@@ -109,7 +109,10 @@ Song & Ermon 2019). It transfers directly: the honest fix here is the same one �
 or the densities, with Gaussians of decreasing width) and pool the scores; the
 coarse scales connect the modes and restore identifiability of the mixing
 proportions. That makes the pool's failure mode a *parameter*, not a surprise —
-and ties it to an active ML literature.
+and ties it to an active ML literature. The mechanism version of this fix — a
+ladder of mollified log-score pools whose rung differences pay exactly the
+Fisher divergence, with the coarse rung carrying the mode mass — is worked out
+in [mollified-scoring-and-the-heat-ladder.md](mollified-scoring-and-the-heat-ladder.md).
 
 ## 6. Construction subtleties (honest)
 

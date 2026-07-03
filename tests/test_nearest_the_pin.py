@@ -78,3 +78,67 @@ def test_sliced_energy_1d_is_crps():
     sliced = ntp.energy_score_via_projection(samples, y, n_proj=50, rng=rng)
     crps = sr.crps_ensemble(samples.ravel(), 0.3)
     assert sliced == pytest.approx(crps, rel=1e-9)
+
+
+# --------------- mollified scoring (deconvolution incentive & repair) --------------- #
+# Analytic setting: truth N(0,1), Gaussian KDE bandwidth h, report a cloud from
+# N(0,v). The population-smoothed report is N(0, v+h^2), so
+#   raw KDE log score:  E log rho_h(z), z~N(0,1)      -> f_raw(v)
+#   mollified score:    int p*_h log rho_h            -> f_moll(v)
+# with closed forms below. The theorem: f_raw peaks at v = 1 - h^2 (shave the
+# bandwidth: improper), f_moll peaks at v = 1 (truthful: strictly proper).
+
+def _f_raw(v, h2):
+    s = v + h2
+    return -0.5 * np.log(2 * np.pi * s) - 1.0 / (2 * s)
+
+
+def _f_moll(v, h2):
+    s = v + h2
+    return -0.5 * np.log(2 * np.pi * s) - (1.0 + h2) / (2 * s)
+
+
+def test_raw_kde_log_score_prefers_deconvolved_report():
+    # Improperness, with the closed-form optimum v* = tau^2 - h^2.
+    h2 = 0.25
+    grid = np.linspace(0.4, 1.6, 1201)
+    v_star = grid[np.argmax(_f_raw(grid, h2))]
+    assert v_star == pytest.approx(1.0 - h2, abs=2e-3)   # shave exactly h^2
+    assert _f_raw(1.0 - h2, h2) > _f_raw(1.0, h2)        # beats honesty
+
+
+def test_mollified_score_prefers_truthful_report():
+    # The jittered-pin repair restores the truthful optimum v* = tau^2.
+    h2 = 0.25
+    grid = np.linspace(0.4, 1.6, 1201)
+    v_star = grid[np.argmax(_f_moll(grid, h2))]
+    assert v_star == pytest.approx(1.0, abs=2e-3)
+    assert _f_moll(1.0, h2) > _f_moll(1.0 - h2, h2)      # honesty beats shaving
+
+
+def test_mollified_log_score_matches_analytic_value():
+    # Function-level check: on a large cloud from N(0,1) the mollified score at
+    # z=0 approaches (phi_h * log N(0,1+h^2))(0) = -log(2*pi*(1+h^2))/2 - h^2/(2*(1+h^2)).
+    rng = np.random.default_rng(7)
+    h = 0.5
+    cloud = rng.standard_normal((20000, 1))
+    got = ntp.mollified_log_score(cloud, [0.0], bandwidth=h)
+    want = -0.5 * np.log(2 * np.pi * (1 + h * h)) - h * h / (2 * (1 + h * h))
+    assert got == pytest.approx(want, abs=0.02)
+
+
+def test_mollified_log_score_montecarlo_agrees_with_quadrature():
+    # The d>1 (seeded MC) path is consistent with the 1-D quadrature path via an
+    # exact separability identity: embed the cloud as (x_i, 0). The product
+    # Gaussian kernel factorizes, so KDE_2d((a, b)) = KDE_1d(a) * phi_h(b), and
+    # the mollified score splits as
+    #   S_2d = S_1d + E[log phi_h(h*eps)] = S_1d - log(2*pi*h^2)/2 - 1/2.
+    rng = np.random.default_rng(11)
+    h = 0.4
+    cloud = rng.standard_normal((4000, 1))
+    quad = ntp.mollified_log_score(cloud, [0.3], bandwidth=h)
+    cloud2 = np.hstack([cloud, np.zeros_like(cloud)])
+    mc2 = ntp.mollified_log_score(cloud2, [0.3, 0.0], bandwidth=h,
+                                  n_nodes=20000, rng=3)
+    offset = -0.5 * np.log(2 * np.pi * h * h) - 0.5
+    assert mc2 - quad == pytest.approx(offset, abs=0.05)

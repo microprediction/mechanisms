@@ -21,6 +21,21 @@ Two ways to turn a sample cloud into a score at ``z`` are provided:
 
 See ``papers/nearest-the-pin-parimutuel.md`` for the derivation and the links to
 the random-projections literature and the Schur pseudo-likelihood.
+
+Proper-scoring caveat (and repair)
+----------------------------------
+Scoring the KDE of a submitted cloud **at the raw outcome** is improper for the
+cloud: because the mechanism smooths the submission by the kernel, the optimal
+strategy is to submit the *deconvolution* of your belief by the kernel — for a
+Gaussian belief ``N(0, τ²)`` and bandwidth ``h``, a cloud from ``N(0, τ² − h²)``
+(shave exactly ``h²`` off the variance; Theis, van den Oord & Bethge 2016 note
+the improperness; the closed form is in
+``research/mollified-scoring-and-the-heat-ladder.md``). The repair is symmetric:
+*if you smooth the forecasts, smooth the outcome too.* :func:`mollified_log_score`
+scores ``E_ε[log q̂(z + hε)]`` — equivalently, jitter the pin by the KDE
+bandwidth — which is strictly proper for the pre-smoothing density because
+Gaussian convolution is injective (properness: Bröcker & Smith 2007 §5, Ferro
+2017; strictness via the nonvanishing Gaussian characteristic function).
 """
 
 from __future__ import annotations
@@ -33,6 +48,7 @@ from .scoring_rules import crps_ensemble
 
 __all__ = [
     "kde_density",
+    "mollified_log_score",
     "pot_split",
     "projection_constant",
     "energy_score_via_projection",
@@ -59,6 +75,37 @@ def kde_density(samples, z, bandwidth: float = None) -> float:
     norm = 1.0 / ((2 * math.pi * h2) ** (d / 2.0))
     sq = np.sum((x - z[None, :]) ** 2, axis=1)
     return float(norm * np.mean(np.exp(-sq / (2 * h2))))
+
+
+def mollified_log_score(samples, z, bandwidth: float = None, n_nodes: int = 40,
+                        rng=None) -> float:
+    r"""Mollified log score of a cloud: "jitter the pin by the KDE bandwidth".
+
+    ``S_h = E_ε[ log q̂_h(z + hε) ]`` with ``ε ~ N(0, I)`` and ``q̂_h`` the
+    Gaussian KDE of the cloud. Whereas ``log kde_density(cloud, z)`` is improper
+    (its optimum is the belief *deconvolved* by the kernel — see the module
+    docstring), this score is **strictly proper for the pre-smoothing density**:
+    its expectation is ``∫ p*_h log q̂_h``, maximised iff ``q̂_h = p*_h`` iff the
+    cloud is drawn from the belief, since Gaussian convolution is injective.
+
+    In one dimension the jitter integral is computed by Gauss–Hermite quadrature
+    (deterministic); in higher dimensions by seeded Monte Carlo with ``n_nodes``
+    draws (pass ``rng`` for reproducibility).
+    """
+    x = np.atleast_2d(np.asarray(samples, float))
+    z = np.asarray(z, float).ravel()
+    m, d = x.shape
+    if bandwidth is None:
+        bandwidth = max(m ** (-1.0 / (d + 4)) * np.std(x, axis=0).mean(), 1e-6)
+    if d == 1:
+        nodes, weights = np.polynomial.hermite.hermgauss(n_nodes)
+        pts = z[0] + math.sqrt(2.0) * bandwidth * nodes          # ε = √2·h·x
+        logs = [math.log(kde_density(x, [p], bandwidth=bandwidth)) for p in pts]
+        return float(np.dot(weights, logs) / math.sqrt(math.pi))
+    rng = np.random.default_rng(rng)
+    eps = rng.standard_normal((n_nodes, d)) * bandwidth
+    logs = [math.log(kde_density(x, z + e, bandwidth=bandwidth)) for e in eps]
+    return float(np.mean(logs))
 
 
 def pot_split(densities, stakes, b: float = 0.1):
