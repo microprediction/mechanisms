@@ -165,9 +165,7 @@ def md_to_html(md: str) -> tuple[str, str]:
         line = raw.rstrip()
         stripped = line.strip()
         if not stripped:
-            if in_quote and not para:
-                pass
-            close_blocks() if not in_quote else flush_para()
+            close_blocks()   # a blank line ends paragraph, list, and quote
             continue
         if stripped.startswith("---") and set(stripped) <= {"-"}:
             close_blocks(); out.append("    <hr />"); continue
@@ -181,8 +179,8 @@ def md_to_html(md: str) -> tuple[str, str]:
             out.append(f'    <h{level} id="{anchor}">{_inline(txt)}</h{level}>')
             continue
         if stripped.startswith(">"):
-            flush_para()
             if not in_quote:
+                flush_para()
                 if in_list:
                     out.append("    </ul>"); in_list = False
                 out.append("    <blockquote>"); in_quote = True
@@ -190,7 +188,7 @@ def md_to_html(md: str) -> tuple[str, str]:
             if content:
                 para.append(content)
             else:
-                flush_para()
+                flush_para()   # a bare ">" marks a paragraph break
             continue
         if in_quote and not stripped.startswith(">"):
             para.append(stripped)  # lazy blockquote continuation
@@ -210,11 +208,9 @@ def md_to_html(md: str) -> tuple[str, str]:
             out.append(f"      <li><strong>{m.group(1)}.</strong> "
                        + _inline(m.group(2)) + "</li>")
             continue
-        if in_list and raw.startswith(("   ", "\t")):   # list-item continuation
+        if in_list:   # indented or lazy continuation of the previous item
             out[-1] = out[-1][:-5] + " " + _inline(stripped) + "</li>"
             continue
-        if in_list:
-            out.append("    </ul>"); in_list = False
         para.append(stripped)
     close_blocks()
     body = _restore_math("\n".join(out), spans)

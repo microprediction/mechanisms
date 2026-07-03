@@ -115,13 +115,9 @@
     <p>This is also the risk-sharing literature's composition law: the aggregate of several agents' convex risk measures is their infimal convolution, with the Pareto allocation as minimiser and the common subgradient as the clearing price (<a href="#ref-barrieu2005inf">Barrieu &amp; El Karoui 2005</a>; <a href="#ref-jouini2008optimal">Jouini et al. 2008</a>); the market-liquidity reading is developed by Bhaskara et al. (<a href="#ref-bhaskara2023general">2023</a>).</p>
     <p><strong>Conjugate.</strong> Run a stage in a transformed coordinate and map back. This is where propriety needs care, and the theory splits in two:</p>
     <ul>
-      <li><em>Fixed transformations.</em> Properness is preserved under any fixed</li>
+      <li><em>Fixed transformations.</em> Properness is preserved under any fixed transformation of forecast and outcome, and strict propriety iff the transformation is injective (<a href="#ref-allen2023transformed">Allen et al. 2023, Prop. 4</a>; <a href="#ref-pic2025proper">Pic et al. 2025, Prop. 1</a>). The Markov-kernel (stochastic channel) extension, strict propriety iff the channel is injective on laws, is Theorem 2 of the companion point-cloud paper, whose Theorem 1 also exhibits the canonical failure: a KDE smoothing seam whose raw-outcome score elicits a deconvolution.</li>
+      <li><em>Forecast-dependent transformations.</em> The PIT critic transforms outcomes by the reported $F$ itself, so the fixed-transformation theorems do not apply to it; Proposition 4 and its scope remarks are the correct warrant, and the critic is a calibration diagnostic rather than a strictly proper score. The stacked-lottery design (<a href="#ref-cotton2020lottery">Cotton 2020, slides 29-31</a>) is this operator in practice: percentiles from one game feed the next, and calibration is produced by composing monotone maps contributed by competing algorithms.</li>
     </ul>
-    <p>transformation of forecast and outcome, and strict propriety iff the transformation is injective (<a href="#ref-allen2023transformed">Allen et al. 2023, Prop. 4</a>; <a href="#ref-pic2025proper">Pic et al. 2025, Prop. 1</a>). The Markov-kernel (stochastic channel) extension, strict propriety iff the channel is injective on laws, is Theorem 2 of the companion point-cloud paper, whose Theorem 1 also exhibits the canonical failure: a KDE smoothing seam whose raw-outcome score elicits a deconvolution.</p>
-    <ul>
-      <li><em>Forecast-dependent transformations.</em> The PIT critic transforms outcomes by</li>
-    </ul>
-    <p>the reported $F$ itself, so the fixed-transformation theorems do not apply to it; Proposition 4 and its scope remarks are the correct warrant, and the critic is a calibration diagnostic rather than a strictly proper score. The stacked-lottery design (<a href="#ref-cotton2020lottery">Cotton 2020, slides 29-31</a>) is this operator in practice: percentiles from one game feed the next, and calibration is produced by composing monotone maps contributed by competing algorithms.</p>
     <p><strong>Residual.</strong> Let a stage emit the aggregate $F_1$, and let a second market elicit a distribution for the residual $U=F_1(X)$, settling at the realised $u=F_1(x)$. If $F_1$ is the true conditional law then $U$ is uniform (Proposition 4) and the second market has nothing to price; whatever structure remains in the residual is the second stage's edge. The corrected forecast composes the two reports.</p>
     <p><strong>Proposition 7 (the correction is a multiplicative reweighting).</strong> <em>Let $F_1$ be strictly increasing with density $p_1&gt;0$ and let the residual market's consensus be a distribution $G$ on $[0,1]$ with density $g$. The composed forecast $F=G\circ F_1$ has density</em></p>
     <p>$$p(x) \;=\; p_1(x)\, g\!\big(F_1(x)\big),$$</p>
@@ -171,21 +167,11 @@
     <p><strong>Proposition 12 (sample-based elicitation; Cotton (<a href="#ref-cotton2026pointcloud">2026</a>), Thms 1-2).</strong> <em>Score the bandwidth-$h$ kernel density estimate of a submitted cloud by the logarithmic score. Settled at the raw outcome, the optimal cloud is drawn from a deconvolution of the belief (for Gaussian beliefs and kernels, the belief with $h^2$ removed from the variance). Settled at the outcome jittered by the same kernel, truthful sampling is optimal, and strictly so whenever the kernel's characteristic function has dense nonzero support: the smoothing channel is injective on laws.</em></p>
     <p>The proof is in the companion paper. What matters here is what the repair buys the algebra: with jittered settlement the cloud <em>is</em> a valid message, and the operators of §4 act on clouds directly.</p>
     <ul>
-      <li><em>Conjugate</em> acts pointwise: the pushforward of a cloud under $\psi$ is</li>
+      <li><em>Conjugate</em> acts pointwise: the pushforward of a cloud under $\psi$ is $\psi$ applied to each sample, with no Jacobian computed anywhere. This is the practical reason to prefer sample messages: transformation of densities requires calculus, transformation of clouds requires arithmetic.</li>
+      <li><em>Pool</em> (linear) is a wealth-weighted union: sample from participant $i$'s cloud with probability proportional to $w_i$. The linear pool is the sample-native aggregate; the logarithmic pool has no comparably clean sample form, since multiplying densities requires importance weights.</li>
+      <li><em>Residual</em> acts by ranking: pass each sample through the upstream CDF. Composition of monotone maps, the stacked-lottery operation, is again pointwise on samples.</li>
+      <li><em>Sequentialise</em> is the nearest-the-pin pool itself: the market's state is the field's aggregate cloud.</li>
     </ul>
-    <p>$\psi$ applied to each sample, with no Jacobian computed anywhere. This is the practical reason to prefer sample messages: transformation of densities requires calculus, transformation of clouds requires arithmetic.</p>
-    <ul>
-      <li><em>Pool</em> (linear) is a wealth-weighted union: sample from participant $i$'s</li>
-    </ul>
-    <p>cloud with probability proportional to $w_i$. The linear pool is the sample-native aggregate; the logarithmic pool has no comparably clean sample form, since multiplying densities requires importance weights.</p>
-    <ul>
-      <li><em>Residual</em> acts by ranking: pass each sample through the upstream CDF.</li>
-    </ul>
-    <p>Composition of monotone maps, the stacked-lottery operation, is again pointwise on samples.</p>
-    <ul>
-      <li><em>Sequentialise</em> is the nearest-the-pin pool itself: the market's state is</li>
-    </ul>
-    <p>the field's aggregate cloud.</p>
     <p>One caveat governs the order of operations. Smoothing and conjugation commute only for affine maps: for $\psi(x)=ax+b$ and a Gaussian kernel, the KDE of the mapped cloud at bandwidth $|a|h$ equals the pushforward of the bandwidth-$h$ KDE, and for nonlinear $\psi$ no bandwidth makes this an identity. The smoothing seam and its jitter must therefore be applied in the settlement coordinates, after all transforms, which in pipeline terms says the KDE stage belongs immediately before settlement and nowhere else.</p>
     <h2 id="7-margins-and-copulas">7. Margins and copulas</h2>
     <p>A multivariate settlement can be factored. By Sklar's theorem (<a href="#ref-sklar1959">Sklar 1959</a>) a joint law with continuous margins $F_1,\dots,F_d$ and copula $C$ has density</p>

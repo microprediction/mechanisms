@@ -43,12 +43,11 @@
     <p>A classical parimutuel operates over a finite partition of outcomes. Bettors stake on outcomes; the pot is divided among backers of the realised outcome in proportion to stake; the implied probabilities are the pool fractions, and the operator bears no risk. Modern forecasting is rarely categorical: the object of interest is a full predictive distribution over a continuous, often multivariate quantity, and the natural generalisation replaces "a ticket on outcome $j$" with "probability mass placed near the point $z$".</p>
     <p>Operationally, a contest accepts from each participant $i$ a cloud $x^{(i)}_1,\dots,x^{(i)}_m\in\mathbb R^d$, smooths it into a density $\hat q_i = \tfrac1m\sum_j \varphi_h(\cdot-x^{(i)}_j)$, and, when the outcome $z$ is revealed, rewards $\log \hat q_i(z)$ or splits a pot in proportion to $\hat q_i(z)$. This is the reward rule of <a href="https://monteprediction.com">monteprediction.com</a>, described there as</p>
     <blockquote>
-    <p>"a splitting of the pot in proportion to the density that you ascribe to the</p>
-    <p>truth $z$, [which] also depends on the density that others ascribe to $z$,"</p>
+    <p>"a splitting of the pot in proportion to the density that you ascribe to the truth $z$, [which] also depends on the density that others ascribe to $z$,"</p>
+    </blockquote>
     <p>and it is also the standard evaluation protocol for sample-based generative models. Not every contest smooths: in the MidOne contests at CrunchDAO (<a href="#ref-crunchdao_midone">CrunchDAO 2024</a>), participants supplied densities directly, through a shared convention for density specifications (<a href="#ref-cotton_density">Cotton 2024</a>), and the incentive analysed in §3 does not arise. This paper concerns cloud submissions.</p>
     <p>Two questions organise what follows. What does the pool built on this rule look like, and in what sense is it truthful (§2)? And, more delicately: <em>what cloud should a rational participant submit?</em> The answer to the second is <em>not</em> "samples from your belief," and the failure has a closed form (§3), a one-line repair (§4), and, once repaired, a multi-scale structure (§5).</p>
     <p>Throughout, we idealise the cloud by its sampling law $\rho$ ($m\to\infty$; finite $m$ is Open Problem 1), so the mechanism observes $T_h\rho := \rho*\varphi_h$, where $\varphi_h$ is a symmetric density on $\mathbb R^d$, taken strictly positive (Gaussian, canonically) so that log scores are finite; the strict-propriety results themselves need only the channel to be fixed and injective, so compactly supported kernels qualify under Lemma 1's characteristic-function condition with extended-score conventions. The truth $p^*$ is absolutely continuous with finite differential entropy, and all expectations below are assumed finite (for Gaussian kernels and beliefs with finite second moments, $\log T_h\rho$ has at-worst-quadratic tails, so this is mild). Point-mass examples are understood in the obvious measure-theoretic extension.</p>
-    </blockquote>
     <h2 id="2-the-pool-a-nearest-the-pin-parimutuel">2. The pool: a nearest-the-pin parimutuel</h2>
     <p>Why a <em>density</em> split, and not some other functional? Because the parimutuel already has a sharp incentive theory in the discrete case, and it is exactly the one we want. Consider $n$ outcomes with true probabilities $p_k$, and a parimutuel in which a player allocates a unit stake as a distribution $b = (b_1, \dots, b_n)$ over outcomes. If the rest of the pool's stake fractions are $r_k$ and the player is small, a unit bet on $k$ returns $1/r_k$ when $k$ occurs. A player maximising the expected log growth of wealth solves</p>
     <p>$$\max_{b \in \Delta}\; \sum_k p_k \log\frac{b_k}{r_k},$$</p>
@@ -63,31 +62,17 @@
     <p>$$q^\ast \;=\; r + \frac{p - r}{b}\,:$$</p>
     <p>the crowd plus the participant's disagreement, levered by $1/b$. Three regimes follow.</p>
     <ul>
-      <li>At $b = 1$ the submission is $p$ itself: all-in, bet your beliefs, whatever</li>
+      <li>At $b = 1$ the submission is $p$ itself: all-in, bet your beliefs, whatever the crowd does (still within the price-taking model).</li>
+      <li>For $0 &lt; b &lt; 1$, truth-telling $q = p$ is optimal iff $r = p$: truthful reporting is the symmetric-equilibrium report, not a dominant strategy. The numerical check in <a href="https://github.com/microprediction/mechanisms/blob/main/tests/test_nearest_the_pin.py"><code>test_nearest_the_pin.py</code></a>, a truthful reporter out-growing a biased one against a truthful field, is an equilibrium statement.</li>
+      <li>As $b \to 0$ the lever blows up, the truncation binds, and the best response degenerates toward a spike at the argmax of $p/r$: a small-stake participant is paid to hunt the crowd's most underpriced point, not to report a density. (The objective becomes linear in $q$; there is no Gibbs argument in this limit.)</li>
     </ul>
-    <p>the crowd does (still within the price-taking model).</p>
-    <ul>
-      <li>For $0 &lt; b &lt; 1$, truth-telling $q = p$ is optimal iff $r = p$: truthful</li>
-    </ul>
-    <p>reporting is the symmetric-equilibrium report, not a dominant strategy. The numerical check in <a href="https://github.com/microprediction/mechanisms/blob/main/tests/test_nearest_the_pin.py"><code>test_nearest_the_pin.py</code></a>, a truthful reporter out-growing a biased one against a truthful field, is an equilibrium statement.</p>
-    <ul>
-      <li>As $b \to 0$ the lever blows up, the truncation binds, and the best</li>
-    </ul>
-    <p>response degenerates toward a spike at the argmax of $p/r$: a small-stake participant is paid to hunt the crowd's most underpriced point, not to report a density. (The objective becomes linear in $q$; there is no Gibbs argument in this limit.)</p>
     <p>Proper-score payments do transfer cleanly to the <em>additive</em> stake-weighted transfer $\Delta W_i = s_i\,(S_i - \bar S)$ of §5, which is the incentive-compatible form for fractional stakes; a pot split <em>proportional</em> to a score value is not an affine function of the score, and properness alone does not make it truthful.</p>
     <p><strong>Relationship to other mechanisms.</strong></p>
     <ul>
-      <li>It is the continuous, density-weighted limit of the discrete parimutuel</li>
+      <li>It is the continuous, density-weighted limit of the discrete parimutuel above, and a density-pot-split generalisation of Pennock's dynamic parimutuel market (DPM) (<a href="#ref-pennock2004dynamic">Pennock 2004</a>): the DPM prices shares on discrete outcomes via a cost function; NTP prices density mass on a continuum.</li>
+      <li>Its truthfulness rests on the logarithmic score / log-wealth growth, the same object that, applied <em>sequentially</em>, gives Hanson's LMSR (<a href="#ref-hanson2007logarithmic">Hanson 2007</a>). NTP is the <em>pooled</em> reading; LMSR is the <em>sequential</em> reading.</li>
+      <li>For directly reported densities the implicit score is the log score, strictly proper for the report. For clouds the KDE map changes the report space: §3–§4 analyse when raw settlement is improper for the cloud and how matched jitter repairs it, and §6 connects the projection version to the energy score.</li>
     </ul>
-    <p>above, and a density-pot-split generalisation of Pennock's dynamic parimutuel market (DPM) (<a href="#ref-pennock2004dynamic">Pennock 2004</a>): the DPM prices shares on discrete outcomes via a cost function; NTP prices density mass on a continuum.</p>
-    <ul>
-      <li>Its truthfulness rests on the logarithmic score / log-wealth growth, the</li>
-    </ul>
-    <p>same object that, applied <em>sequentially</em>, gives Hanson's LMSR (<a href="#ref-hanson2007logarithmic">Hanson 2007</a>). NTP is the <em>pooled</em> reading; LMSR is the <em>sequential</em> reading.</p>
-    <ul>
-      <li>For directly reported densities the implicit score is the log score,</li>
-    </ul>
-    <p>strictly proper for the report. For clouds the KDE map changes the report space: §3–§4 analyse when raw settlement is improper for the cloud and how matched jitter repairs it, and §6 connects the projection version to the energy score.</p>
     <p>These incentive statements concern the reported <em>density</em> $q$. In practice $q$ is constructed from a sample cloud by KDE, so the report space is the cloud and the mechanism applies $q = \rho * \varphi_h$. The truthful object and the submitted object come apart, and the next two sections are about the gap.</p>
     <h2 id="3-the-deconvolution-incentive">3. The deconvolution incentive</h2>
     <p><strong>Theorem 1 (improperness of raw-outcome KDE scoring).</strong> <em>Let $S_{\mathrm{raw}}(\rho,z)=\log(T_h\rho)(z)$. Then</em></p>
@@ -175,21 +160,11 @@
     <p><strong>The projection-scored pool.</strong> For each direction $u$, compute the 1-D CRPS of participant $i$'s projected cloud at $\langle u, z\rangle$ and average over $u$: the sliced energy score $\mathrm{ES}_i$. The score is negatively oriented (smaller is better), so the incentive-compatible wager is the additive stake-weighted transfer of §5 driven by its negation, $\Delta W_i = s_i\big((-\mathrm{ES}_i) - \overline{(-\mathrm{ES})}\big)$: self-funding, and properness transfers cleanly because the payoff is affine in a proper score. A pot split <em>proportional</em> to a transformed score value is a different mechanism and is not covered by the properness theorem (§2). Two further cautions. The directions must be drawn from a full-support distribution after submissions are in: a fixed, pre-announced finite set of directions elicits only those one-dimensional marginals, not the joint law. And because no kernel smoothing is applied, the deconvolution incentive of §3 does not arise; the finite-$m$ analog is the fairness correction of Ferro (<a href="#ref-ferro2014fair">2014</a>), applied slice-wise in one dimension. This is, in spirit, the projection version at <a href="https://www.monteprediction.com">monteprediction</a>: score the eleven-dimensional cloud through its one-dimensional shadows.</p>
     <p><strong>Link to the random-projections literature.</strong> Slicing a high-dimensional problem into random 1-D projections is a recurring, theoretically-backed device:</p>
     <ul>
-      <li>Johnson–Lindenstrauss (<a href="#ref-johnson1984extensions">Johnson &amp; Lindenstrauss 1984</a>): for a <em>fixed finite</em> cloud,</li>
+      <li>Johnson–Lindenstrauss (<a href="#ref-johnson1984extensions">Johnson &amp; Lindenstrauss 1984</a>): for a <em>fixed finite</em> cloud, random projections approximately preserve the pairwise Euclidean distances entering the empirical energy score. Population-level and participant-ranking guarantees need separate concentration arguments (Open Problem 7).</li>
+      <li>Sliced Wasserstein distances (<a href="#ref-rabin2012wasserstein">Rabin et al. 2012</a>; <a href="#ref-bonneel2015sliced">Bonneel et al. 2015</a>): average 1-D optimal-transport costs over random projections, a now-standard, cheap surrogate for the multivariate Wasserstein distance — the optimal-transport cousin of (PROJ).</li>
+      <li>Sliced score matching (<a href="#ref-song2020sliced">Song et al. 2020</a>): estimate high-dimensional score functions through random projections, for the same computational reasons.</li>
+      <li>Energy distance (<a href="#ref-szekely2013energy">Székely &amp; Rizzo 2013</a>) is itself an integral of squared characteristic-function differences and, via the identity above, of absolute projected differences; the projection representation is intrinsic, not a heuristic.</li>
     </ul>
-    <p>random projections approximately preserve the pairwise Euclidean distances entering the empirical energy score. Population-level and participant-ranking guarantees need separate concentration arguments (Open Problem 7).</p>
-    <ul>
-      <li>Sliced Wasserstein distances (<a href="#ref-rabin2012wasserstein">Rabin et al. 2012</a>; <a href="#ref-bonneel2015sliced">Bonneel et al. 2015</a>):</li>
-    </ul>
-    <p>average 1-D optimal-transport costs over random projections, a now-standard, cheap surrogate for the multivariate Wasserstein distance — the optimal-transport cousin of (PROJ).</p>
-    <ul>
-      <li>Sliced score matching (<a href="#ref-song2020sliced">Song et al. 2020</a>): estimate high-dimensional score</li>
-    </ul>
-    <p>functions through random projections, for the same computational reasons.</p>
-    <ul>
-      <li>Energy distance (<a href="#ref-szekely2013energy">Székely &amp; Rizzo 2013</a>) is itself an integral of squared</li>
-    </ul>
-    <p>characteristic-function differences and, via the identity above, of absolute projected differences; the projection representation is intrinsic, not a heuristic.</p>
     <p>The projection version is not an approximation bolted onto the mechanism; it is the <em>native</em> high-dimensional form of a density-pot-split parimutuel whose proper score (the energy score) is, by construction, an average over random projections.</p>
     <h2 id="7-two-routes-to-high-dimensional-scoring">7. Two routes to high-dimensional scoring</h2>
     <p>Step back from the pool to the statistical problem underneath: how do you score a joint distributional forecast in $\mathbb{R}^d$ when $d$ is large relative to the data you can condition on? This is exactly the regime ($p &gt; n$) in which the naïve held-out Gaussian likelihood, the density-based score, becomes unreliable, because the estimated covariance is rank-deficient and its inverse is nonsense.</p>
@@ -200,13 +175,9 @@
     <h2 id="8-microprediction-and-a-historical-note">8. Microprediction, and a historical note</h2>
     <p>The nearest-the-pin parimutuel is one of the mechanisms of the microprediction vision (<a href="#ref-cotton2022microprediction">Cotton 2022</a>): a web-scale network of autonomous forecasters continuously submitting <em>distributional</em> predictions and being paid by self-funding, truth-eliciting pools. Two further pieces close the loop:</p>
     <ul>
-      <li>Calibration via Z-streams. The crowd's aggregate density $Q$ induces, for a</li>
+      <li>Calibration via Z-streams. The crowd's aggregate density $Q$ induces, for a scalar quantity, $z$-scores $\Phi^{-1}(F(x))$; if the market is calibrated these are standard normal over time, and any departure (fat tails, skew, autocorrelation) is an exploitable, self-correcting anomaly. The pool's payouts push the aggregate back toward calibration.</li>
+      <li>Aggregation. The crowd density $Q$ is itself a forecast, a wealth-weighted pool of the participants' densities: a (log-)opinion pool whose weights are endogenously set by past accuracy.</li>
     </ul>
-    <p>scalar quantity, $z$-scores $\Phi^{-1}(F(x))$; if the market is calibrated these are standard normal over time, and any departure (fat tails, skew, autocorrelation) is an exploitable, self-correcting anomaly. The pool's payouts push the aggregate back toward calibration.</p>
-    <ul>
-      <li>Aggregation. The crowd density $Q$ is itself a forecast, a wealth-weighted</li>
-    </ul>
-    <p>pool of the participants' densities: a (log-)opinion pool whose weights are endogenously set by past accuracy.</p>
     <p>The microprediction platform, launched in 2019, collected a billion predictions over the course of its operation, 225 samples at a time, and added a small amount of noise to submissions and to the ground truth before settling its cloud-based lotteries. This was <em>merely intuitive</em>, a fairness-and-anti-gaming instinct about discreteness and ties, with no incentive theorem attached; the platform paper recorded the practice in one line and moved on. The verification literature, meanwhile, treated outcome noise as a defect: something to be modelled away (<a href="#ref-saetra2004effects">Saetra et al. 2004</a>; <a href="#ref-candille2008impact">Candille &amp; Talagrand 2008</a>), with Ferro (<a href="#ref-ferro2017observation">2017</a>) doubting the value of perturbing observations.</p>
     <p>Theorem 2 is the missing theorem: symmetrized jitter is what makes a smoothed-submission game strictly proper for the submitted law. The theory also sharpens the intuition into design guidance it could not supply on its own: the jitter distribution matters. Kernels whose characteristic function has dense support (Gaussian, Laplace, even uniform) preserve strict properness; band-limited kernels do not (Lemma 1). Intuition chose jitter; the theorem chooses <em>which</em> jitter.</p>
     <h2 id="9-related-work">9. Related work</h2>
