@@ -1,6 +1,6 @@
-# Composition and the Algebra of Mechanisms
+# An Algebra of Mechanisms
 
-### Mechanisms as stateful transducers over distributional beliefs
+### Scoring rules, market makers, and pools as composable transducers
 
 Peter Cotton · *Working draft v0.2* · 2026
 
@@ -17,9 +17,10 @@ scoring-rule construction gives cost-function market makers by Fenchel
 conjugacy, and CFMMs are related to cost-function markets by convex level-set
 dualities. A small operator set (sequentialise, pool, conjugate, ensemble,
 residual) organizes the catalogue, and the pooling and merging operators are
-theorems: the linear and logarithmic opinion pools are the two
-Kullback-Leibler barycenters, and merging two market makers is an infimal
-convolution under which liquidity adds. A worked pipeline chains an
+classical theorems: the linear and logarithmic opinion pools are the two
+Kullback-Leibler barycenters, and merging two market makers is the infimal
+convolution of the risk-sharing and parallel-market-making literatures, under
+which liquidity adds. A worked pipeline chains an
 elicitation market into a PIT-based calibration critic, with wealth updated by
 proper-score increments. The note separates four issues that are often
 blurred: closure of the message type, convex generation of the individual
@@ -338,7 +339,8 @@ densities and renormalizes. Both appear in the repository's `aggregation`
 module; they are different aggregates with different sharpness
 [@genest1986combining].
 
-**Merge (Proposition 6: merging makers is infimal convolution).** *For closed
+**Merge (Proposition 6: merging makers is infimal convolution;
+@rockafellar1970convex, @bhaskara2023general).** *For closed
 proper convex $f,g$: $(f\,\square\,g)^*=f^*+g^*$. Consequently, merging two
 cost-function makers with regularisers $R_1,R_2$ (cost functions
 $C_i=R_i^*$) yields the maker with regulariser $R_1+R_2$, and merging

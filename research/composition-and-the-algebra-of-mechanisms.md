@@ -1,4 +1,4 @@
-# Composition and the algebra of mechanisms
+# An algebra of mechanisms
 
 This note has been promoted to a technical note in
 [`papers/composition-and-the-algebra-of-mechanisms.md`](../papers/composition-and-the-algebra-of-mechanisms.md),
