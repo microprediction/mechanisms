@@ -15,7 +15,10 @@ from convex entropies, cost-function market makers by Fenchel conjugacy,
 CFMMs by convex level-set duality. The pooling and merging operators are
 classical: the linear and logarithmic pools are the two Kullback-Leibler
 barycenters, and merging market makers is the infimal convolution of risk
-sharing, under which liquidity adds. The benefit is illustrated by the
+sharing, under which liquidity adds. The message type extends to finite
+sample clouds, with propriety preserved by jittered settlement, and joint
+laws factor into margin stages plus a copula stage settled on the rank
+vector. The benefit is illustrated by the
 simplest two-stage example, where stagewise equilibrium dominates conformal
 prediction: a residual market collects the conformal predictor's information
 gap $I(R;X)$ as bankroll growth while its marginal coverage stays exact.
@@ -37,12 +40,14 @@ behind it was presented at MIT CSAIL in 2020 [@cotton2020lottery, slides
 games, and calibration is achieved by composing monotone transformations, each
 contributed by one or more algorithms.
 
-Composition is also where guarantees break. Each stage of such a pipeline can
-be individually truthful while the chain is not. The companion paper on
-point-cloud scoring [@cotton2026pointcloud] gives a concrete example:
-inserting an innocuous-looking
-kernel-density smoothing step between the submission and the score changes the
-optimal report from the forecaster's belief to its deconvolution.
+Chaining stages raises the question of what each stage elicits, and the
+answer moves under transformation of the message or the outcome. Scoring a
+kernel-smoothed submission at the raw outcome elicits the deconvolution of
+the belief rather than the belief; jittering the settlement by the smoothing
+kernel repairs it [@cotton2026pointcloud]. This is a property of a single
+stage, not of the chain, and it is the third question below. The repair
+makes a finite sample cloud a legitimate message type, and §6 runs the
+algebra on the objects deployed contests actually collect.
 
 Conformal prediction supplies a second motivation, from the opposite
 direction. Split-conformal is itself a composition, a point predictor chained
@@ -52,13 +57,12 @@ calibration stage prices the residual flat in the input. The wasted log
 score of a single-shape conformal predictor is the mutual information
 $I(R;X)$ between residual and input, and
 an entrant to a parimutuel residual pool who conditions on the input collects
-it as bankroll growth at exactly that rate [@cotton2026conformalbetting].
+it as bankroll growth at exactly that rate (Theorem 9).
 Running the residual stage as an actual pool, rather than assuming its winner,
 is what the operators below are for; Proposition 4 locates the gap in the
-theory of the probability integral transform, and §5 works the example in
-closed form.
+theory of the probability integral transform, and §5 prices it.
 
-This note organizes the catalogue around four questions that are often
+This note organizes the catalogue around three questions that are often
 blurred together:
 
 1. *Message closure.* Can every stage consume and emit one common object, so
@@ -68,14 +72,15 @@ blurred together:
    their duals?
 3. *Propriety under transformation.* When a stage transforms forecasts or
    outcomes, does strict propriety survive?
-4. *Strategic composition.* When stages couple participants' payoffs, do the
-   single-stage incentive properties survive equilibrium play?
 
-The first is an engineering convention (§2, §6). The second and third admit
+The first is an engineering convention (§2, §8). The second and third admit
 theorems, which are stated with complete proofs in §3 and §4; none of the
 mathematics is new, but the proofs are collected in one place and one
-convention. The fourth is open beyond the special cases analysed in the
-companion paper, and §7 records what is known.
+convention. Play is stagewise throughout: no participant deviates across
+stages (§4). Cross-stage strategy is outside the note's scope. Section 5
+prices the conformal residual; §6 extends the message type to sample clouds;
+§7 factors multivariate elicitation into margin stages and a copula stage
+settled on the rank vector.
 
 ## 2. Preliminaries
 
@@ -269,7 +274,7 @@ the wasted log score equals the mutual
 information $I(R;X)$ between residual and input, and an entrant to the
 parimutuel pool of the companion paper who conditions on $X$ collects it as
 bankroll growth at exactly that rate; the flat-in-$X$ conformal report is the
-break-even crowd [@cotton2026conformalbetting]. Second, for discrete forecasts the randomized PIT
+break-even crowd (Theorem 9). Second, for discrete forecasts the randomized PIT
 preserves the exact uniform null, while the mid-PIT is a convenient
 deterministic diagnostic with a different null distribution.
 
@@ -399,7 +404,7 @@ wrong is the functional-gradient step of boosting under log loss
 stagewise boosting with wealth as the learning rate. What Proposition 7 does
 not settle is the game across stages: who funds the residual pot, and whether
 a forecaster free to enter both stages prefers to withhold information from
-the first and sell it to the second (§7).
+the first and sell it to the second (§9).
 
 **Spec.** Serialise a pipeline to data and search over it; the mechanism
 analogue is a market over pipelines. Also open.
@@ -424,65 +429,266 @@ only through stage $k$'s transfer map, since every other stage's reports,
 and hence its inputs, are held fixed; the stage-$k$ hypothesis then makes
 the truthful report a best response. $\blacksquare$
 
-What the concept excludes is cross-stage deviation, the derivative-on-the-
-underlying play of §7.
+What the concept excludes is cross-stage deviation: a downstream stake is a
+derivative written on an upstream settlement, with the attendant incentives
+to distort the underlying [@kumar1992futures; @jarrow1994derivative;
+@hanson2009manipulator; @ostrovsky2012information]. The note works under
+stagewise play throughout.
 
-## 5. Worked composition: pricing the conformal residual
+## 5. Betting against a conformal predictor
 
 The introduction claimed that split-conformal prediction is a degenerate
 composition and that running the residual stage as a market collects what
-the degeneracy wastes. This section proves it in the simplest setting that
-carries the full structure.
+the degeneracy wastes. This section proves it. A point predictor leaves a
+residual $R$; conformalization re-levels its marginal law. Write $U=G(R)$
+for the PIT of the residual, $G$ the marginal CDF of $R$, so $U$ is
+marginally uniform whatever the model (Proposition 4), and let
+$g(u\mid x)$ be the conditional density of $U$ given $X=x$. Since
+$R\mapsto G(R)$ is almost surely invertible, $I(U;X)=I(R;X)$, and because
+the marginal of $U$ is uniform,
 
-Let the residual left by a fixed point predictor remain correlated with the
-input: $(R,X)$ jointly Gaussian with correlation $\rho$, marginally
-$R\sim N(0,\sigma_R^2)$ and $X\sim N(0,\sigma_X^2)$. Any misspecified linear
-predictor produces this. The split-conformal wrapper reports the marginal
-law of $R$ at every $x$; its coverage is exact at every level, since the
-marginal PIT $F_R(R)$ is uniform (Proposition 4). The wrapper passes the
-only test it runs.
+$$I(R;X)\;=\;\mathbb E_X\,\mathrm{KL}\big(P_{R\mid X}\,\Vert\,G\big)
+\;=\;\mathbb E_X\!\int_0^1 g(u\mid X)\log g(u\mid X)\,\mathrm du.$$
 
-Now run the residual stage as a market of the Residual operator: reports are
-densities for $R$, settled by the logarithmic score. The wrapper's report is
-$N(0,\sigma_R^2)$, flat in $x$; an entrant who conditions reports the
-conditional law
-$R\mid X=x\sim N\!\big(\rho(\sigma_R/\sigma_X)\,x,\ (1-\rho^2)\sigma_R^2\big)$.
+The residual stage is the parimutuel of the companion paper run on the rank
+scale. Two facts about that pool are needed.
 
-**Proposition 9 (the rent).** *Per observation, the conditioning entrant's
-expected log-score edge over the flat report is*
+**Lemma 1 (pool payoff).** *Normalise the pool to one and let the crowd's
+aggregate stake have density $q$ on the outcome space. An infinitesimal,
+price-taking entrant who stakes unit wealth with density $b$ holds, after
+outcome $u$, the wealth $W(u)=b(u)/q(u)$.*
 
-$$\mathbb E\,\big[\mathrm{KL}\big(\,p_{R\mid X}\ \Vert\ p_R\,\big)\big]
-\;=\; -\tfrac12\log(1-\rho^2)\;=\;I(R;X),$$
+**Proof.** Bin the outcome axis at width $\delta$. The crowd stakes
+$q(u)\delta$ of the unit pool on the bin at $u$, the entrant $b(u)\delta$.
+If the outcome lands there the pool is split in proportion to stake, so the
+per-unit payoff is $1/(q(u)\delta)$ and the entrant collects
+$b(u)\delta\cdot 1/(q(u)\delta)=b(u)/q(u)$. The bin width cancels and the
+limit is the Radon-Nikodym derivative $\mathrm db/\mathrm dq$.
+$\blacksquare$
 
-*a Kelly-staked entrant's bankroll grows at exactly this rate against the
-flat crowd, and the composed forecast of Proposition 7 built from the
-entrant's report recovers the conditional law exactly.*
+The cancellation is what makes a lottery on a point outcome well posed: the
+pool divides two vanishing quantities and the ratio survives, with no
+reference measure and no posted odds.
 
-**Proof.** With $m(x)=\rho(\sigma_R/\sigma_X)x$ and
-$s^2=(1-\rho^2)\sigma_R^2$,
+**Lemma 2 (log-optimal growth).** *If the outcome is drawn from $p$, the
+expected log-growth of an entrant staking $b$ against a crowd staking $q$
+is*
 
-$$\mathrm{KL}\big(N(m,s^2)\,\Vert\,N(0,\sigma_R^2)\big)
-=\log\frac{\sigma_R}{s}+\frac{s^2+m^2}{2\sigma_R^2}-\frac12,$$
+$$\mathbb E_{U\sim p}\Big[\log\frac{b(U)}{q(U)}\Big]
+=\mathrm{KL}(p\Vert q)-\mathrm{KL}(p\Vert b)\;\le\;\mathrm{KL}(p\Vert q),$$
 
-and $\mathbb E[m(X)^2]=\rho^2\sigma_R^2$, so the expectation is
-$-\tfrac12\log(1-\rho^2)$, the mutual information of a bivariate Gaussian
-pair. The Kelly growth rate is
-$\mathbb E[\log p_{R\mid X}(R)-\log p_R(R)]$, the same expectation. For the
-recovery, the entrant's report on the residual rank $U=F_R(R)$ has
-conditional density $g(u\mid x)=p_{R\mid X}(F_R^{-}(u))/p_R(F_R^{-}(u))$,
-and Proposition 7 composes to
-$p_R(r)\,g(F_R(r)\mid x)=p_{R\mid X}(r)$. $\blacksquare$
+*with equality iff $b=p$: the log-optimal stake is the truth.*
 
-At $\rho=\tfrac12$ the rent is $0.144$ nats per observation and the
-entrant's bankroll doubles every five observations; at $\rho=0.3$, every
-fifteen. Throughout, the conformal band's marginal coverage remains exact:
-the wrapper's own diagnostic is uniform while the transfer runs, which is
-the sense in which marginal coverage is the wrong audit for a composed
-system. The wealth flow is the mechanism's estimator of $I(R;X)$, the
-sequential counterpart of the static bounds in
-[@cotton2026conformalbetting].
+**Proof.** Add and subtract $\log p$ inside the expectation; Gibbs'
+inequality kills the second term exactly at $b=p$. $\blacksquare$
 
-## 6. Implementation notes
+The lemmas are the parimutuel form of the Kelly-Breiman log-optimality
+principle [@kelly1956newinterpretation; @cover2006; @barroncover1988]; when
+the crowd prices
+the marginal, the growth of belief $b$ is
+$I(R;X)-\mathbb E_X\,\mathrm{KL}(g(\cdot\mid X)\Vert b(\cdot\mid X))$, a
+decomposition written by @kemp2022bayesian for population growth in
+stochastic environments.
+
+**Theorem 9 (parimutuel rent of a conformal predictor).** *Put the pool on
+the rank scale. The single-shape conformal predictor is the crowd that
+prices it flat, $q\equiv 1$ on $[0,1]$. Against it:*
+
+*(i) an entrant who knows only the marginal stakes $b\equiv1$ and grows at
+rate zero: marginal coverage stated as wealth;*
+
+*(ii) an entrant who observes $X$ and stakes $b=g(\cdot\mid X)$ grows per
+round at rate $\mathbb E_X\,\mathrm{KL}(g(\cdot\mid X)\Vert 1)=I(R;X)$;*
+
+*(iii) with a track take $\tau\in[0,1)$ the informed rate is
+$I(R;X)+\log(1-\tau)$, positive iff $I(R;X)>-\log(1-\tau)$.*
+
+**Proof.** Lemma 1 with $q\equiv1$ makes the payoff $b(U)$; Lemma 2 makes
+the growth $\mathrm{KL}(p\Vert 1)-\mathrm{KL}(p\Vert b)$ for true
+conditional law $p=g(\cdot\mid x)$. For (i), $b=1$ and the marginal of $U$
+is uniform, so the rate is zero. For (ii), conditioning on $X=x$ the optimal
+stake is $g(\cdot\mid x)$ with conditional rate
+$\mathrm{KL}(g(\cdot\mid x)\Vert 1)=\int g\log g$; averaging over $X$ gives
+$I(R;X)$ by the display above. For (iii) every payoff is multiplied by
+$1-\tau$, adding $\log(1-\tau)$ to the rate. $\blacksquare$
+
+The certificate and the leak are two readings of one pool. Marginal
+coverage is part (i), a break-even statement; part (ii) is what the
+certificate cannot see, and re-leveling cannot close it because re-leveling
+acts on the marginal, where the leak is invisible. Conformal re-leveling
+takes no rake, so any conditional information at all is pure profit.
+
+**Example (Gaussian residual).** Let $(R,X)$ be jointly Gaussian with
+correlation $\rho$, marginally $R\sim N(0,\sigma_R^2)$,
+$X\sim N(0,\sigma_X^2)$; any misspecified linear predictor produces this.
+The informed entrant's report is
+$R\mid X=x\sim N(\rho(\sigma_R/\sigma_X)x,\,(1-\rho^2)\sigma_R^2)$, and with
+$m(x)=\rho(\sigma_R/\sigma_X)x$, $s^2=(1-\rho^2)\sigma_R^2$,
+
+$$\mathbb E_X\,\mathrm{KL}\big(N(m,s^2)\,\Vert\,N(0,\sigma_R^2)\big)
+=\mathbb E_X\Big[\log\frac{\sigma_R}{s}+\frac{s^2+m^2}{2\sigma_R^2}
+-\frac12\Big]=-\tfrac12\log(1-\rho^2)=I(R;X).$$
+
+At $\rho=\tfrac12$ the rent is $0.144$ nats per observation and the informed
+bankroll doubles every five observations; at $\rho=0.3$, every fifteen.
+Throughout, the conformal band's marginal coverage remains exact. The
+composed forecast of Proposition 7 built from the entrant's rank report
+$g(u\mid x)=p_{R\mid X}(G^{-}(u))/p_R(G^{-}(u))$ recovers the conditional
+law exactly: $p_R(r)\,g(G(r)\mid x)=p_{R\mid X}(r)$.
+
+**The mechanism is deployed.** The microprediction platform's
+nearest-the-pin pool [@cotton2022microprediction] pays each entry its sample
+density at the realised value relative to the field's, the payoff of Lemma 1
+with densities estimated from submitted samples; the MidOne contest
+[@crunchdao_midone] prices an explicit density [@cotton_density] the same
+way, and its priced object is a residual stream. A conformal predictor
+entering either pool is the participant that prices flat in $X$, and Theorem
+9 is the bankroll of its better-informed competitor.
+
+**Measuring the rent.** The rent is defined through a log score, so it is
+estimated rather than read off. Two routes:
+
+**Proposition 10 (certified lower bound).** *Let $\mathrm{HSIC}(U,X)$ be
+computed with a bounded product kernel, $k\le K$. Then
+$I(R;X)\ \ge\ \mathrm{HSIC}(U,X)/(2K)$.*
+
+**Proof.** $\mathrm{MMD}=\mathrm{HSIC}^{1/2}$ is the integral probability
+metric over the unit ball of the tensor RKHS, whose witnesses satisfy
+$\lVert f\rVert_\infty\le\sqrt K$, so
+$\mathrm{MMD}\le 2\sqrt K\,\mathrm{TV}$ between the joint law and the
+product of marginals. Pinsker's inequality [@cover2006] gives
+$I(U;X)=\mathrm{KL}\ge 2\,\mathrm{TV}^2$, and $I(U;X)=I(R;X)$. Combining,
+$I(R;X)\ge 2(\mathrm{MMD}/2\sqrt K)^2=\mathrm{HSIC}/(2K)$. $\blacksquare$
+
+Distance covariance [@szekely2007measuring] is a fixed multiple of an HSIC
+[@sejdinovic2013equivalence], so a measured dependence between rank and
+input certifies
+a minimum extractable rent. No matching upper bound exists with a fixed
+kernel: MMD metrizes weak convergence [@simongabriel2023metrizing] and KL
+does not.
+
+**Proposition 11 (anytime-valid test and consistent estimate).** *At round
+$t$ choose a betting density $b_t(\cdot\mid x)\ge0$ with
+$\int_0^1 b_t(u\mid x)\,\mathrm du=1$ from the history, and set
+$W_t=\prod_{s\le t}b_s(U_s\mid X_s)$. (i) Under $H_0:U\perp X$, $(W_t)$ is a
+non-negative martingale with mean one, so
+$\Pr(\sup_t W_t\ge1/\alpha)\le\alpha$ [@ville1939]: rejecting when
+$W_t\ge1/\alpha$ is an anytime-valid level-$\alpha$ test of conditional
+miscoverage. (ii) If $b_t\to g$, then
+$t^{-1}\log W_t\to I(R;X)$ almost surely.*
+
+**Proof.** (i) Under $H_0$, $U_t\mid X_t$ is uniform and independent of the
+past, so each factor has conditional mean $\int_0^1 b_t=1$; Ville's
+inequality applies to the resulting martingale. (ii)
+$t^{-1}\sum_s\log b_s(U_s\mid X_s)\to\mathbb E[\log g(U\mid X)]=I(R;X)$ by
+the law of large numbers and the display opening this section.
+$\blacksquare$
+
+The wealth process is simultaneously the test and the estimator; it is the
+log-optimal e-variable of safe testing [@gruenwald2024safe;
+@vovk2021evalues] for the null $U\perp X$, with conformal test martingales
+as ancestor [@vovk2003testing]. Sequential tests of forecast calibration
+[@arnold2023sequentially] and conditional independence by betting
+[@shaer2023modelx] use the same mechanics; the identification of the growth
+rate with the conformal predictor's information gap, and with the realised
+bankroll in a deployed pool, is the reading here. One measurement caveat:
+$U=G(R)$ uses the true marginal, and with empirical ranks the null is exact
+in the full-conformal, leave-one-out sense. And one scope remark: by the
+distribution-free no-go results [@lei2014distribution; @barber2021limits;
+@vovk2012conditional] no procedure certifies conditional coverage from data
+alone, so a quiet e-process means no rent found at this power, never
+conditional validity.
+
+## 6. Samples as messages
+
+The message type has so far been a distribution given exactly. Deployed
+contests collect something rougher: a finite cloud of samples, smoothed by
+the operator into a density before settlement. The companion paper gives the
+sample-based elicitation result the algebra needs
+[@cotton2026pointcloud]:
+
+**Proposition 12 (sample-based elicitation; @cotton2026pointcloud, Thms
+1-2).** *Score the bandwidth-$h$ kernel density estimate of a submitted
+cloud by the logarithmic score. Settled at the raw outcome, the optimal
+cloud is drawn from a deconvolution of the belief (for Gaussian beliefs and
+kernels, the belief with $h^2$ removed from the variance). Settled at the
+outcome jittered by the same kernel, truthful sampling is optimal, and
+strictly so whenever the kernel's characteristic function has dense nonzero
+support: the smoothing channel is injective on laws.*
+
+The proof is in the companion paper. What matters here is what the repair
+buys the algebra: with jittered settlement the cloud *is* a valid message,
+and the operators of §4 act on clouds directly.
+
+- *Conjugate* acts pointwise: the pushforward of a cloud under $\psi$ is
+  $\psi$ applied to each sample, with no Jacobian computed anywhere. This is
+  the practical reason to prefer sample messages: transformation of
+  densities requires calculus, transformation of clouds requires
+  arithmetic.
+- *Pool* (linear) is a wealth-weighted union: sample from participant $i$'s
+  cloud with probability proportional to $w_i$. The linear pool is the
+  sample-native aggregate; the logarithmic pool has no comparably clean
+  sample form, since multiplying densities requires importance weights.
+- *Residual* acts by ranking: pass each sample through the upstream CDF.
+  Composition of monotone maps, the stacked-lottery operation, is again
+  pointwise on samples.
+- *Sequentialise* is the nearest-the-pin pool itself: the market's state is
+  the field's aggregate cloud.
+
+One caveat governs the order of operations. Smoothing and conjugation
+commute only for affine maps: for $\psi(x)=ax+b$ and a Gaussian kernel, the
+KDE of the mapped cloud at bandwidth $|a|h$ equals the pushforward of the
+bandwidth-$h$ KDE, and for nonlinear $\psi$ no bandwidth makes this an
+identity. The smoothing seam and its jitter must therefore be applied in the
+settlement coordinates, after all transforms, which in pipeline terms says
+the KDE stage belongs immediately before settlement and nowhere else.
+
+## 7. Margins and copulas
+
+A multivariate settlement can be factored. By Sklar's theorem [@sklar1959]
+a joint law with continuous margins $F_1,\dots,F_d$ and copula $C$ has
+density
+
+$$p(x)\;=\;\prod_{i=1}^d f_i(x_i)\;\cdot\;
+c\big(F_1(x_1),\dots,F_d(x_d)\big),$$
+
+with $c$ the copula density on $[0,1]^d$.
+
+**Proposition 13 (the log score factors).** *For a joint report assembled
+from margin reports $f_i$ and a copula report $c$,*
+
+$$\log p(x)\;=\;\sum_{i=1}^d\log f_i(x_i)\;+\;\log c(u),
+\qquad u_i=F_i(x_i),$$
+
+*so a pipeline of $d$ margin stages and one copula stage settled on the rank
+vector $u$ pays every stage a logarithmic score of its own object, and the
+chain's log score is the sum. Given the margin reports, the copula stage's
+score is strictly proper for the law of the rank vector; that law is the
+copula of the joint iff the margins are correct.*
+
+**Proof.** Take logarithms in Sklar's density factorization; the summands
+are exactly the stage scores. Strict propriety of the rank stage is Theorem
+1 applied to densities on $[0,1]^d$, the transform $x\mapsto u$ being fixed
+once the margin reports are given. The final clause is Sklar's theorem
+applied to the true joint law. $\blacksquare$
+
+This is the two-stage estimation logic of inference functions for margins
+[@joe1997multivariate], and the factorization underlies out-of-sample
+copula comparison [@diks2010copula]; here it is read as a market design.
+The copula stage is the multivariate Residual operator: under correct
+margins the rank vector has uniform margins and its joint law is the
+dependence structure alone, so a rank-settled market elicits dependence
+separately from level, and is invariant to any recalibration of the
+margins. The microprediction platform ran exactly this factoring: alongside
+univariate z-streams it operated bivariate and trivariate streams in which
+community-implied percentiles were embedded by a space-filling curve into
+one settled scalar [@cotton2022microprediction], a copula market in
+production. Sample messages compose with the factoring: rank each
+coordinate of a submitted cloud through the margin CDFs and the result is a
+cloud on $[0,1]^d$ for the copula stage, with the §6 seam discipline
+applied at that stage's settlement.
+
+## 8. Implementation notes
 
 The mechanisms of the catalogue are implemented against a single interface
 patterned on the skaters time-series contract [@cotton_skaters], a successor
@@ -494,18 +700,9 @@ transforms, ensembles, and residual constructions of §4 all consume and emit
 the one type. Scores are implemented in loss form; the text uses reward
 form.
 
-## 7. Open problems
+## 9. Open problems
 
-1. *Strategic composition.* Proposition 8 settles stagewise play; deviations
-   that span stages are open. A downstream stake is a derivative written on
-   an upstream settlement, and the derivative position creates an incentive
-   to distort the underlying. Cash-settled futures reward manipulating the
-   settlement price [@kumar1992futures], option positions reward moving the
-   underlying [@jarrow1994derivative], and in prediction markets anticipated
-   manipulation is priced in and can even sharpen the aggregate
-   [@hanson2009manipulator; @ostrovsky2012information]. Which of these
-   results transfer across mechanism seams is the question.
-2. *Conservation of edge.* Wealth conservation is automatic, a sum of
+1. *Conservation of edge.* Wealth conservation is automatic, a sum of
    stage-level zeros, and is not the invariant. The invariant that can fail
    is the edge a truthful participant holds over the price, $D_G(q,\pi)$.
    For the logarithmic score the edge is $\mathrm{KL}(q\Vert\pi)$ and the
@@ -514,7 +711,7 @@ form.
    sufficient for the pair [@csiszar1967information]. Open is the same
    statement for the Bregman edge of a general generator $G$, and the rate
    at which edge leaks through an approximately non-sufficient interface.
-3. *Residual markets.* Proposition 7 gives the single-step correction; a
+2. *Residual markets.* Proposition 7 gives the single-step correction; a
    chain of residual markets is stagewise boosting with wealth as the
    learning rate. Open: the microstructure (who funds each residual pot, and
    when it settles relative to the stage before), whether a forecaster free
@@ -522,7 +719,13 @@ form.
    it downstream, and whether the iterated correction converges to the true
    conditional law as boosting does. Split-conformal prediction is the
    one-participant degenerate case, with its rent $I(R;X)$ as the value left
-   on the table [@cotton2026conformalbetting].
+   on the table (Theorem 9).
+3. *Copula markets.* A rank-settled stage elicits dependence separately
+   from margins (Proposition 13) and is invariant to margin recalibration.
+   Open: the equilibrium when the same participants trade margin and copula
+   stages, and the choice of embedding for $d\ge2$, the space-filling
+   curves as deployed against the random one-dimensional projections of the
+   companion paper.
 
 ## References
 
