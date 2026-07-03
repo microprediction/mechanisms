@@ -63,7 +63,7 @@ def bayesian_truth_serum(information_reports: Sequence[int],
     the **information score** (answer is more common than collectively predicted)
     plus the **prediction score** (negative KL between the empirical distribution
     ``\\bar x`` and the respondent's prediction ``y_i``). Truthful reporting is a
-    Bayesian Nash equilibrium; honest, well-calibrated respondents score highest.
+    Bayesian Nash equilibrium; truthful, well-calibrated respondents score highest.
 
     Parameters
     ----------

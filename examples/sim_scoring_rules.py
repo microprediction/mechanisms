@@ -1,8 +1,8 @@
-"""Simulation: why proper scoring rules make honesty pay.
+"""Simulation: why proper scoring rules make truthfulness pay.
 
 A forecaster has a true belief about a 3-outcome event. We draw many outcomes
 from that belief and accumulate the loss of (a) reporting truthfully vs (b) a
-confident misreport, under the log, Brier and spherical rules. Honest reporting
+confident misreport, under the log, Brier and spherical rules. Truthful reporting
 wins every time — that is exactly what "strictly proper" means.
 
 Run:  python examples/sim_scoring_rules.py
@@ -25,19 +25,19 @@ def simulate(rounds=20000, seed=0):
     rules = {"log": sr.log_score, "brier": sr.brier_score, "spherical": sr.spherical_score}
     out = {}
     for name, fn in rules.items():
-        honest = np.mean([fn(belief, y) for y in outcomes])
+        truthful = np.mean([fn(belief, y) for y in outcomes])
         lying = np.mean([fn(misreport, y) for y in outcomes])
-        out[name] = (honest, lying)
+        out[name] = (truthful, lying)
     return belief, misreport, out
 
 
 def main():
-    section("Proper scoring rules — honesty pays (mean loss, lower is better)")
+    section("Proper scoring rules — truthfulness pays (mean loss, lower is better)")
     belief, misreport, out = simulate()
     print(f"true belief = {belief},  misreport = {misreport}\n")
-    for name, (honest, lying) in out.items():
-        verdict = "honest wins ✓" if honest < lying else "??"
-        print(f"  {name:<10} honest {honest:.4f}   misreport {lying:.4f}   {verdict}")
+    for name, (truthful, lying) in out.items():
+        verdict = "truthful wins ✓" if truthful < lying else "??"
+        print(f"  {name:<10} truthful {truthful:.4f}   misreport {lying:.4f}   {verdict}")
 
     section("Distributional forecasts — the energy score ranks ensembles")
     rng = np.random.default_rng(1)

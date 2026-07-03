@@ -5,7 +5,7 @@ is better) to a probabilistic forecast ``p`` once the outcome ``y`` is observed.
 A rule is **proper** if reporting one's true belief maximises expected reward
 (minimises expected loss), and **strictly proper** if the true belief is the
 *unique* optimiser. Properness is what makes a scoring rule incentive-compatible:
-an expert with private information cannot do better than to report it honestly.
+an expert with private information cannot do better than to report it truthfully.
 
 References
 ----------

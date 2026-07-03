@@ -39,7 +39,7 @@
       is no such outcome, when the thing being elicited is never verified.
       Instead of comparing a report to ground truth, it scores a report by its
       <em>statistical relationship to other agents' reports</em>, and is designed
-      so that honest reporting is an equilibrium. The technical work is entirely
+      so that truthful reporting is an equilibrium. The technical work is entirely
       in defeating the obvious bad equilibrium: paying for agreement invites
       everyone to agree on nothing in particular.
     </p>
@@ -69,7 +69,7 @@
     <div class="equation-card">$\mathrm{OA}(a,b) = \mathbf{1}[\,a = b\,].$</div>
     <p>
       Truth-telling is indeed <em>an</em> equilibrium of this game, if I expect
-      you to report honestly and our signals are correlated, matching your likely
+      you to report truthfully and our signals are correlated, matching your likely
       answer means reporting my own. But it is not the only one, and not the
       attractive one. The constant strategy "always report option 0," played by
       everyone, scores a perfect $1$ on every pairing while revealing no private
@@ -93,7 +93,7 @@
       distribution over the answers estimating how the <em>rest of the
       population</em> will answer. The mechanism then rewards answers that are
       more common than the population collectively predicted them to be,
-      "surprisingly common" answers. Honest respondents are surprisingly common
+      "surprisingly common" answers. Truthful respondents are surprisingly common
       because they have private knowledge that others, when predicting, cannot
       fully anticipate.
     </p>
@@ -141,7 +141,7 @@
       same logarithmic, strictly proper structure that drives the
       <a href="./scoring-rules.html">scoring-rules</a> family, here applied not
       to an outcome but to the crowd's own distribution. Together the two terms
-      make it best to report both an honest answer and an honest belief about
+      make it best to report both a truthful answer and a truthful belief about
       everyone else.
     </p>
 
@@ -150,9 +150,9 @@
       Prelec's theorem is that, under a common-prior model where each agent's
       signal shifts their posterior over the population distribution, truthful
       reporting of both $x_i$ and $y_i$ is a <strong>Bayesian Nash
-      equilibrium</strong>, and honest, well-calibrated respondents earn the
+      equilibrium</strong>, and truthful, well-calibrated respondents earn the
       highest expected score. Crucially the information score has positive
-      expected value precisely because honest answers are the surprisingly common
+      expected value precisely because truthful answers are the surprisingly common
       ones, which is what dismantles the constant-report equilibrium that defeats
       output agreement.
     </p>
@@ -166,7 +166,7 @@
       Frongillo and Parkes (2016), relaxes these. By scoring agents across many
       tasks and rewarding agreement only beyond what correlation alone would
       predict, Correlated Agreement attains <em>informed truthfulness</em>: no
-      strategy beats honest reporting, and honest reporting strictly beats every
+      strategy beats truthful reporting, and truthful reporting strictly beats every
       uninformative one, without the mechanism needing to know the prior in
       advance.
     </p>
@@ -189,7 +189,7 @@
       nets zero. In the binary case truthful reporting is moreover
       <strong>stochastically-dominant</strong> truthful (the "Enforced Agreement"
       property of Schoenebeck et al.): its entire score distribution lies to the right of any deviation's,
-      so honesty wins for every risk-averse, monotone utility, not just in
+      so truthfulness wins for every risk-averse, monotone utility, not just in
       expectation. The demo shows the truthful 10th percentile beating 100% of a
       constant deviator's outcomes.
     </p>

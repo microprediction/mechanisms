@@ -57,10 +57,10 @@
       them, so the operator is a modelling decision, not a default.
     </p>
     <p>
-      A panel disagrees in two ways that a pool must handle differently: honest
+      A panel disagrees in two ways that a pool must handle differently: truthful
       <em>spread</em> of opinion, which we want to summarise, and a few badly wrong
       or adversarial reports, which we want to discount. The first three pools below
-      treat all reports as honest; the fourth defends against the second case.
+      treat all reports as truthful; the fourth defends against the second case.
     </p>
 
     <h2>The linear opinion pool</h2>
@@ -120,7 +120,7 @@
     <h2>Robust pooling against adversarial nodes</h2>
     <p>
       Both pools above are linear or log-linear in the reports, so a single extreme
-      forecast can drag the consensus arbitrarily far, fine for an honest panel,
+      forecast can drag the consensus arbitrarily far, fine for a truthful panel,
       dangerous for an open network where some nodes may be broken, stale, or
       adversarial. The <strong>depth-trimmed mean</strong> hardens the linear pool by
       discarding outliers first. Each forecast is scored by its
@@ -145,7 +145,7 @@
     <h2>Choosing the weights</h2>
     <p>
       Every pool above takes the weights $w_i$ as given, but choosing them is the
-      substantive question. Equal weights are the honest default when nothing
+      substantive question. Equal weights are the truthful default when nothing
       distinguishes the forecasters; performance weights, set from past scores, so
       that consistently accurate forecasters count for more, are the usual
       refinement, and tie the pool back to the
@@ -178,7 +178,7 @@
       <a href="https://github.com/microprediction/mechanisms/blob/main/papers/nearest-the-pin-parimutuel.md">nearest-the-pin parimutuel</a>
       pool develops exactly this idea: a density-based pot-splitting mechanism in
       which stakes determine weights, the consensus emerges from the allocation, and
-      proper-scoring incentives keep honest reporting optimal, aggregation and
+      proper-scoring incentives keep truthful reporting optimal, aggregation and
       reward fused into a single mechanism.
     </p>
 

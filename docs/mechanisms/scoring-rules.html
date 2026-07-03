@@ -35,7 +35,7 @@
 
     <p class="lead">
       A <strong>scoring rule</strong> assigns a number to a probabilistic forecast
-      once the outcome is observed. The right rule turns honesty into self-interest:
+      once the outcome is observed. The right rule turns truthfulness into self-interest:
       a forecaster who is paid (or penalised) by a <em>proper</em> rule cannot do
       better than to report exactly what they believe. This single property, that
       truth-telling is optimal, is what makes scoring rules the elicitation engine
@@ -153,7 +153,7 @@
     </div>
     <p>
       The first term rewards getting close to the truth; the second rewards
-      <em>sharpness</em> (a tight ensemble); together they make honesty about the
+      <em>sharpness</em> (a tight ensemble); together they make truthfulness about the
       whole distribution optimal. Its multivariate generalisation is the
       <strong>energy score</strong>: for an ensemble of points $x_i \in \mathbb
       R^d$ and an observation $y$,
@@ -176,7 +176,7 @@
       <code>energy_score(samples, y, beta=1.0)</code>.
     </p>
 
-    <h2>Why properness makes honesty dominant</h2>
+    <h2>Why properness makes truthfulness dominant</h2>
     <p>
       The thread running through all of these rules is the same. Because the
       expected loss is uniquely minimised at the true belief, a forecaster

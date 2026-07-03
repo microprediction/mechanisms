@@ -55,7 +55,7 @@ def simulate(b=100.0):
         print(f"\n  {name}")
         labeled_bars([(f"P(action {a})", dist[a]) for a in range(3)], vmax=1.0)
 
-    section("Why a stochastic rule keeps every market honest")
+    section("Why a stochastic rule keeps every market truthful")
     argmax_d = argmax_decision(v)
     soft_d = softmax_decision(v, temperature=0.30)
     unsettled = [int(a) for a in np.flatnonzero(argmax_d == 0.0)]

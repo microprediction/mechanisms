@@ -24,7 +24,7 @@ this common design is **improper**: because the mechanism smooths the
 submission, the optimal cloud is drawn not from the forecaster's belief but
 from its **deconvolution** by the smoothing kernel (Theorem 1; for a Gaussian
 belief $N(\mu,\tau^2)$ and bandwidth $h$, the optimal submission is
-$N(\mu,\tau^2-h^2)$ — shave exactly the bandwidth off your variance), with an
+$N(\mu,\tau^2-h^2)$ — shave exactly the bandwidth off your variance), with a
 truthfulness gap equal to $\mathrm{KL}(p^*\Vert p^**\varphi_h)>0$. The repair is
 symmetric and one line: **if you smooth the forecasts, smooth the outcome
 too**. Jittering the outcome by the same kernel — equivalently, the *mollified

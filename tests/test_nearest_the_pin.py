@@ -1,6 +1,6 @@
 """Tests for the nearest-the-pin parimutuel.
 
-Verifies the self-funding (zero-sum) pot split, the log-wealth honesty incentive,
+Verifies the self-funding (zero-sum) pot split, the log-wealth truthfulness incentive,
 and the projection identity that the sliced energy score recovers the
 multivariate energy score.
 """
@@ -33,10 +33,10 @@ def test_pot_split_no_mass_returns_stakes():
     np.testing.assert_allclose(dW, [0.0, 0.0])
 
 
-def test_log_wealth_honesty_incentive():
+def test_log_wealth_truthfulness_incentive():
     # A log-wealth maximiser should prefer reporting the true density.
     # Outcomes drawn from N(0,1); compare expected log-wealth growth of a player
-    # reporting the truth vs a biased report, against a fixed honest crowd.
+    # reporting the truth vs a biased report, against a fixed truthful crowd.
     rng = np.random.default_rng(0)
     grid_true = lambda z: np.exp(-0.5 * z ** 2) / np.sqrt(2 * np.pi)
     grid_bias = lambda z: np.exp(-0.5 * (z - 1.0) ** 2) / np.sqrt(2 * np.pi)
@@ -45,7 +45,7 @@ def test_log_wealth_honesty_incentive():
     def growth(report):
         g = 0.0
         for z in draws:
-            # crowd: two honest players + our player `report`
+            # crowd: two truthful players + our player `report`
             q = [grid_true(z), grid_true(z), report(z)]
             dW = ntp.pot_split(q, [100.0, 100.0, 100.0], b=0.1)
             g += np.log1p(dW[2] / 100.0)

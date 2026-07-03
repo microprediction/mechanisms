@@ -10,7 +10,7 @@ pool of tasks.
 
 We also show the "Enforced Agreement" property: in the binary case truthful
 reporting is *stochastically dominant* — its whole score distribution sits to the
-right of a deviator's, so honesty wins for any risk-averse, monotone utility.
+right of a deviator's, so truthfulness wins for any risk-averse, monotone utility.
 
 Run:  python examples/sim_correlated_agreement.py
 """
@@ -62,7 +62,7 @@ def simulate(n_agents=8, n_tasks=400, q=0.82, seed=0):
                   ("flipper", s_flip - min(s_truth, s_const, s_flip))],
                  vmax=(s_truth - min(s_truth, s_const, s_flip)) or 1.0, fmt="{:.3f}")
     print(f"  raw CA scores:  truthful {s_truth:+.3f}   constant {s_const:+.3f}   flipper {s_flip:+.3f}")
-    print("  honest reporting pays the most; the constant exploit nets ~0.")
+    print("  truthful reporting pays the most; the constant exploit nets ~0.")
 
     section("Enforced Agreement: truthful reporting stochastically dominates")
     R = 300

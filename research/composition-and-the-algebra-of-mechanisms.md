@@ -136,7 +136,7 @@ in $\{1,\dots,n\}$, a report is $p$ in the simplex $\Delta$, and the expected
 score of reporting $p$ when one believes $q$ is
 $S(p;q)=\sum_i q_i\, S(p,i)$.
 
-A scoring rule is **proper** if honesty is optimal, $S(q;q)\ge S(p;q)$ for all
+A scoring rule is **proper** if truthfulness is optimal, $S(q;q)\ge S(p;q)$ for all
 $p,q$, and **strictly proper** if equality forces $p=q$.
 
 ### Theorem 1 (Savage 1971; McCarthy 1956). Characterisation of proper scoring rules.
@@ -148,7 +148,7 @@ $$S(p,i) \;=\; G(p) + \langle\, G'(p),\; e_i - p\,\rangle,
 \qquad G'(p)\in\partial G(p),$$
 
 where $e_i$ is the $i$-th unit vector. It is *strictly* proper iff $G$ is
-*strictly* convex, and then $G(p)=S(p;p)$ is the **expected score of an honest
+*strictly* convex, and then $G(p)=S(p;p)$ is the **expected score of a truthful
 forecaster** (the "generalised entropy") and $G'(p)$ is its gradient.
 
 **Proof sketch.**

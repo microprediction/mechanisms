@@ -64,7 +64,7 @@ with participants risking a fixed fraction (≈ 0.1) of their wealth each round.
 We call it the **nearest-the-pin parimutuel**: the closer your mass lands to the
 pin, relative to the field, the larger your share of the pot.
 
-## 2. The discrete parimutuel is log-optimally honest
+## 2. The discrete parimutuel is log-optimally truthful
 
 Why a *density* split, and not some other functional? Because the parimutuel
 already has a sharp incentive theory in the discrete case, and it is exactly the
@@ -81,7 +81,7 @@ $$\max_{b \in \Delta}\; \sum_k p_k \log\frac{b_k}{r_k},$$
 whose unique maximiser is $b_k = p_k$ — *bet your beliefs* (Kelly 1956; Breiman
 1961). The growth rate at the optimum is the Kullback–Leibler divergence
 $D(p \,\|\, r)$, i.e. the player profits exactly to the extent their (true)
-belief beats the crowd's implied distribution. Log-wealth maximisation and honest
+belief beats the crowd's implied distribution. Log-wealth maximisation and truthful
 reporting coincide, and the quantity being maximised is the **logarithmic
 score** of the player's report against the realised outcome, net of the crowd.
 
@@ -107,7 +107,7 @@ $$\boxed{\;\Delta W_i \;=\; S\,\frac{s_i\,q_i(z)}{\sum_j s_j\,q_j(z)} \;-\; s_i\
 the operator bears no risk, exactly as in the racetrack tote. (Implemented and
 tested in [`pot_split`](../mechanisms/nearest_the_pin.py).)
 
-**Honesty.** Fixing the field's reports and stakes, the aggregate density at $z$
+**Truthfulness.** Fixing the field's reports and stakes, the aggregate density at $z$
 is $Q(z) = \sum_j s_j q_j(z)$. A small participant's expected log-wealth growth
 from reporting $q$ is, to first order in $b$,
 
@@ -119,7 +119,7 @@ $\int q = 1$ is, by the same Gibbs argument as §2, $q = p$: the **true** densit
 As in the discrete case the growth rate is governed by a logarithmic comparison
 of the player's density to the crowd's. We verify the incentive numerically in
 [`test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py): a truthful
-reporter out-grows a biased one against an honest field.
+reporter out-grows a biased one against a truthful field.
 
 > **Caveat (added v0.2): the truthful object is the *density*, not the *cloud*.**
 > The claim above concerns the reported density $q$. When $q$ is *constructed
@@ -143,7 +143,7 @@ reporter out-grows a biased one against an honest field.
   **density-pot-split generalisation of Pennock's dynamic parimutuel market**
   (DPM): the DPM prices shares on discrete outcomes via a cost function; NTP
   prices density mass on a continuum.
-- Its honesty rests on the **logarithmic score** / log-wealth growth, the same
+- Its truthfulness rests on the **logarithmic score** / log-wealth growth, the same
   object that, applied *sequentially*, gives Hanson's LMSR. NTP is the *pooled*
   reading; LMSR is the *sequential* reading.
 - The score it implicitly applies to a sample cloud is a **strictly proper
@@ -191,8 +191,8 @@ few thousand directions, and equals the CRPS exactly in 1-D
 projection-based skill score: for each direction $u$, the 1-D CRPS (or 1-D
 density) of participant $i$'s projected cloud at $\langle u, z\rangle$; average
 over $u$ to get a per-participant score; split the pot in proportion to it. The
-pool keeps its self-funding and honesty properties (the energy score is proper,
-so honest reporting is still optimal) while becoming computable and stable in
+pool keeps its self-funding and truthfulness properties (the energy score is proper,
+so truthful reporting is still optimal) while becoming computable and stable in
 high dimensions. This is, in spirit, the projection version at monteprediction:
 score the eleven-dimensional cloud through its one-dimensional shadows.
 
@@ -265,7 +265,7 @@ analysis open.
 The nearest-the-pin parimutuel is one of the mechanisms in the spirit of the
 **microprediction** vision (Cotton 2022): a web-scale network of autonomous
 forecasters continuously submitting *distributional* predictions and being paid
-by self-funding, honesty-eliciting pools. The book surveys a range of such
+by self-funding, truth-eliciting pools. The book surveys a range of such
 reward mechanisms; the nearest-the-pin pool is one concrete instance. Two
 further pieces close the loop:
 
@@ -284,7 +284,7 @@ the scoring-rule, parimutuel, and aggregation families mapped in the
 
 ## 7. Open questions
 
-1. **Finite-$b$ and finite-$n$ honesty.** §3's honesty argument is first-order in
+1. **Finite-$b$ and finite-$n$ truthfulness.** §3's truthfulness argument is first-order in
    the wealth fraction $b$ and assumes a small participant. What is the exact
    equilibrium for finite $b$ and finitely many strategic participants? (The
    discrete DPM is known to admit non-truthful equilibria; cf. the projection
@@ -319,5 +319,5 @@ the scoring-rule, parimutuel, and aggregation families mapped in the
 - Vecchia, A. V. (1988). "Estimation and Model Identification for Continuous Spatial Processes." *JRSS-B* 50(2).
 
 *Implementation: [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py).
-Tests (self-funding, honesty, projection identity):
+Tests (self-funding, truthfulness, projection identity):
 [`tests/test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py).*
