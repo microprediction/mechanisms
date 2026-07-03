@@ -30,6 +30,7 @@
 
   <main>
     <p class="pagenav"><a href="../papers.html">&larr; Papers</a> &middot;
+      <a href="./nearest-the-pin-parimutuel.pdf">pdf</a> &middot;
       <a href="https://github.com/microprediction/mechanisms/blob/main/papers/nearest-the-pin-parimutuel.md">markdown source</a></p>
     <h1 id="the-nearest-the-pin-parimutuel">The Nearest-the-Pin Parimutuel</h1>
     <h3 id="a-continuous-projection-scored-pool-for-distributional-forecasts">A continuous, projection-scored pool for distributional forecasts</h3>
@@ -100,7 +101,7 @@
     <p>$$\boxed{\;\mathrm{ES}(P, y) \;=\; c_d^{-1}\;\mathbb{E}_u\big[\,\mathrm{CRPS}(P_u,\ \langle u, y\rangle)\,\big]\;}
 \tag{PROJ}$$</p>
     <p>where $P_u$ is the law of the projected sample $\langle u, X\rangle$. The multivariate energy score <em>is</em> the average over random directions of the one-dimensional CRPS — and the energy score is strictly proper for the full distribution (Gneiting &amp; Raftery 2007). The sliced quantity is therefore a proper score that needs only 1-D evaluations. We verify (PROJ) numerically: in <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py"><code>energy_score_via_projection</code></a> the sliced estimate matches the exact multivariate energy score within a few percent at a few thousand directions, and equals the CRPS exactly in 1-D (<a href="https://github.com/microprediction/mechanisms/blob/main/tests/test_nearest_the_pin.py"><code>test_nearest_the_pin.py</code></a>).</p>
-    <p><strong>The projection-scored nearest-the-pin.</strong> Replace $q_i(z)$ in (NTP) by a projection-based skill score: for each direction $u$, the 1-D CRPS (or 1-D density) of participant $i$'s projected cloud at $\langle u, z\rangle$; average over $u$ to get a per-participant score; split the pot in proportion to it. The pool keeps its self-funding and truthfulness properties (the energy score is proper, so truthful reporting is still optimal) while becoming computable and stable in high dimensions. This is, in spirit, the projection version at monteprediction: score the eleven-dimensional cloud through its one-dimensional shadows.</p>
+    <p><strong>The projection-scored nearest-the-pin.</strong> Replace $q_i(z)$ in (NTP) by a projection-based skill score: for each direction $u$, the 1-D CRPS (or 1-D density) of participant $i$'s projected cloud at $\langle u, z\rangle$; average over $u$ to get a per-participant score; split the pot in proportion to it. The pool keeps its self-funding and truthfulness properties (the energy score is proper, so truthful reporting is still optimal) while becoming computable and stable in high dimensions. This is, in spirit, the projection version at <a href="https://www.monteprediction.com">monteprediction</a>: score the eleven-dimensional cloud through its one-dimensional shadows.</p>
     <p><strong>Link to the random-projections literature.</strong> Slicing a high-dimensional problem into random 1-D projections is a recurring, theoretically-backed device:</p>
     <ul>
       <li><strong>Johnson–Lindenstrauss (1984):</strong> random projections approximately preserve</li>

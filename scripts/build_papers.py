@@ -63,6 +63,7 @@ PAGE = """<!doctype html>
 
   <main>
     <p class="pagenav"><a href="../papers.html">&larr; Papers</a> &middot;
+      <a href="./{slug}.pdf">pdf</a> &middot;
       <a href="https://github.com/microprediction/mechanisms/blob/main/papers/{src}">markdown source</a></p>
 {body}
   </main>
@@ -216,7 +217,8 @@ def md_to_html(md: str) -> tuple[str, str]:
 def build_one(name: str) -> tuple[Path, str]:
     md = (SRC / name).read_text(encoding="utf-8")
     title, body = md_to_html(md)
-    page = PAGE.format(title=html_mod.escape(title), src=name, body=body)
+    page = PAGE.format(title=html_mod.escape(title), src=name,
+                       slug=name[:-3], body=body)
     return OUT / (name[:-3] + ".html"), page
 
 

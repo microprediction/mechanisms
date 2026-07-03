@@ -36,8 +36,9 @@
     these are new work.</p>
 
     <h2 id="nearest-the-pin">The Nearest-the-Pin Parimutuel</h2>
-    <p class="muted">Peter Cotton · working draft v0.1 ·
+    <p class="muted">Peter Cotton · working draft v0.2 ·
       <a href="./papers/nearest-the-pin-parimutuel.html">full draft</a> ·
+      <a href="./papers/nearest-the-pin-parimutuel.pdf">pdf</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py">implementation</a></p>
     <p class="lead">
       A parimutuel pool whose outcomes form a continuum. Each participant submits a
@@ -70,7 +71,9 @@
           \qquad c_d=\tfrac{\Gamma(d/2)}{\sqrt\pi\,\Gamma((d+1)/2)},$$
         the average sliced CRPS <em>is</em> the multivariate energy score, a
         strictly proper score built from cheap 1-D evaluations. This is the
-        projection version used for monteprediction's eleven-dimensional clouds,
+        projection version used for
+        <a href="https://www.monteprediction.com">monteprediction</a>'s
+        eleven-dimensional clouds,
         and it places the mechanism inside the random-projections literature
         (Johnson–Lindenstrauss, sliced Wasserstein, sliced score matching).</li>
       <li><strong>Two routes to high-dimensional scoring.</strong> Turning a joint
@@ -90,6 +93,7 @@
     <h2 id="point-cloud-scoring">Scoring Point-Cloud Distributional Submissions</h2>
     <p class="muted">Peter Cotton · working draft v0.1 ·
       <a href="./papers/scoring-point-cloud-distributional-submissions.html">full draft</a> ·
+      <a href="./papers/scoring-point-cloud-distributional-submissions.pdf">pdf</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py">implementation</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/research/mollified-scoring-and-the-heat-ladder.md">prior-art audit</a></p>
     <p class="lead">
@@ -114,107 +118,15 @@
           \underbrace{D_F(p^*_t\Vert\rho_t)}_{\text{shape (Hyvärinen)}}\,dt$
     </div>
 
-    <h3 id="pin-demo">Try it: how much should we jitter?</h3>
+    <h3 id="pin-demo">Try it</h3>
     <p>
-      Truth is $N(0,1)$. The mechanism smooths your cloud with KDE bandwidth $h$,
-      and jitters the pin with s.d. $j$. The curves are <em>exact</em> expected
-      scores (closed forms, parity-tested against the Python library), and the
-      whole story is one formula: the score peaks at
-      $v^\ast = 1 + j^2 - h^2$. With $j=0$ (<span style="color:#c0392b">red</span>,
-      no jitter) the mechanism pays you to <em>shave</em> $h^2$ off your
-      variance; with $j&gt;h$ it pays you to <em>pad</em>. Truth-telling sits at
-      $v^\ast=1$ <strong>iff $j=h$</strong>: <em>jitter exactly as much as you
-      smooth</em> — the jitter is not a tuning knob, it is pinned to the
-      bandwidth. Slide $j$ and watch the
-      <span style="color:#1e8449">green</span> peak cross the truth line.
+      The interactive version — sliders for your cloud variance $v$, the KDE
+      bandwidth $h$, and the pin jitter $j$, with the exact expected-score
+      curves peaking at $v^\ast = 1 + j^2 - h^2$ — lives on the
+      <a href="./mechanisms/point-cloud-scoring.html#demo">point-cloud scoring
+      page</a>. Only $j = h$ puts the peak at the truth: <em>jitter exactly as
+      much as you smooth</em>.
     </p>
-    <div class="demo" id="pcs-demo">
-      <div class="row"><label>your cloud variance v</label>
-        <input type="range" id="pcs-v" min="30" max="170" value="100" step="1">
-        <span class="readout" id="pcs-v-val"></span></div>
-      <div class="row"><label>KDE bandwidth h</label>
-        <input type="range" id="pcs-h" min="10" max="90" value="50" step="5">
-        <span class="readout" id="pcs-h-val"></span></div>
-      <div class="row"><label>pin jitter j</label>
-        <input type="range" id="pcs-j" min="0" max="120" value="50" step="5">
-        <span class="readout" id="pcs-j-val"></span></div>
-      <p class="readout" style="margin:6px 0 4px 0;">
-        <span style="color:#c0392b;">■</span> raw score ($j=0$): peak at $v=1-h^2$ &nbsp;
-        <span style="color:#1e8449;">■</span> jittered-pin score: peak at $v = 1 + j^2 - h^2$ &nbsp;
-        <span style="color:#bbb;">│</span> truth $v=1$
-      </p>
-      <canvas id="pcs-canvas" width="660" height="300"
-              style="max-width:100%;border:1px solid #ddd;border-radius:6px;background:#fff;"></canvas>
-      <div class="readout" id="pcs-out"></div>
-    </div>
-    <script src="./js/mechanisms.js"></script>
-    <script>
-      (function () {
-        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
-        const cv = $("pcs-canvas"), ctx = cv.getContext("2d");
-        const V0 = 0.3, V1 = 2.1;                       // report-variance axis
-        function draw() {
-          const v = +$("pcs-v").value / 100, h = +$("pcs-h").value / 100,
-                j = +$("pcs-j").value / 100;
-          $("pcs-v-val").textContent = v.toFixed(2);
-          $("pcs-h-val").textContent = h.toFixed(2);
-          $("pcs-j-val").textContent = j.toFixed(2) + (Math.abs(j - h) < 1e-9 ? "  (= h ✓)" : "");
-          const W = cv.width, H = cv.height, L = 46, R = 12, T = 12, B = 30;
-          // exact curves: raw (j = 0) and jittered-pin at the chosen j
-          const N = 240, raw = [], mol = [];
-          let lo = Infinity, hi = -Infinity;
-          for (let i = 0; i <= N; i++) {
-            const x = V0 + (V1 - V0) * i / N;
-            const a = M.gaussianExpectedRawKdeLogScore(x, h);
-            const b = M.gaussianExpectedMollifiedLogScore(x, h, 1.0, j);
-            raw.push([x, a]); mol.push([x, b]);
-            lo = Math.min(lo, a, b); hi = Math.max(hi, a, b);
-          }
-          const pad = 0.06 * (hi - lo); lo -= pad; hi += pad;
-          const X = (x) => L + (W - L - R) * (x - V0) / (V1 - V0);
-          const Y = (y) => T + (H - T - B) * (hi - y) / (hi - lo);
-          ctx.clearRect(0, 0, W, H);
-          // truth line at v = 1 (darker so the crossing is visible)
-          ctx.strokeStyle = "#ccc"; ctx.setLineDash([4, 4]);
-          ctx.beginPath(); ctx.moveTo(X(1), T); ctx.lineTo(X(1), H - B); ctx.stroke();
-          ctx.setLineDash([]);
-          ctx.strokeStyle = "#999";
-          ctx.strokeRect(L, T, W - L - R, H - T - B);
-          const plot = (pts, color) => {
-            ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
-            pts.forEach(([x, y], i) => i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)));
-            ctx.stroke();
-          };
-          plot(raw, "#c0392b"); plot(mol, "#1e8449");
-          // peaks: raw at 1 - h^2, jittered at 1 + j^2 - h^2 (clamped to axis)
-          const clamp = (x) => Math.max(V0, Math.min(V1, x));
-          const dot = (x, y, color, r) => {
-            ctx.fillStyle = color; ctx.beginPath();
-            ctx.arc(X(x), Y(y), r || 4.5, 0, 2 * Math.PI); ctx.fill();
-          };
-          const pr = clamp(1 - h * h), pm = clamp(1 + j * j - h * h);
-          dot(pr, M.gaussianExpectedRawKdeLogScore(pr, h), "#c0392b");
-          dot(pm, M.gaussianExpectedMollifiedLogScore(pm, h, 1.0, j), "#1e8449");
-          // your position on both curves
-          const yr = M.gaussianExpectedRawKdeLogScore(v, h);
-          const ym = M.gaussianExpectedMollifiedLogScore(v, h, 1.0, j);
-          dot(v, yr, "#2c3e50", 3.2); dot(v, ym, "#2c3e50", 3.2);
-          ctx.fillStyle = "#666"; ctx.font = "12px sans-serif";
-          ctx.fillText("report variance v", W / 2 - 40, H - 8);
-          ctx.fillText("1", X(1) - 3, H - B + 14);
-          const vstar = 1 + j * j - h * h;
-          $("pcs-out").innerHTML =
-            "peak of the jittered-pin score: v* = 1 + j² − h² = <b>" + vstar.toFixed(2) + "</b>" +
-            (Math.abs(j - h) < 1e-9
-              ? " — <b>truthful</b>: jitter matches the bandwidth"
-              : (j < h ? " — under-jittered: still pays shaving by " + (h * h - j * j).toFixed(2)
-                       : " — over-jittered: pays padding by " + (j * j - h * h).toFixed(2))) +
-            " &nbsp;·&nbsp; your v scores " + ym.toFixed(4) + " (jittered) / " + yr.toFixed(4) + " (raw)";
-        }
-        ["pcs-v", "pcs-h", "pcs-j"].forEach((id) => $(id).addEventListener("input", draw));
-        draw();
-      })();
-    </script>
     <p>
       The <a href="./papers/scoring-point-cloud-distributional-submissions.html">draft</a>
       proves the three theorems (the deconvolution incentive, strict properness

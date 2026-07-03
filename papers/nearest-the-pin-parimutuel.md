@@ -193,8 +193,9 @@ density) of participant $i$'s projected cloud at $\langle u, z\rangle$; average
 over $u$ to get a per-participant score; split the pot in proportion to it. The
 pool keeps its self-funding and truthfulness properties (the energy score is proper,
 so truthful reporting is still optimal) while becoming computable and stable in
-high dimensions. This is, in spirit, the projection version at monteprediction:
-score the eleven-dimensional cloud through its one-dimensional shadows.
+high dimensions. This is, in spirit, the projection version at
+[monteprediction](https://www.monteprediction.com): score the
+eleven-dimensional cloud through its one-dimensional shadows.
 
 **Link to the random-projections literature.** Slicing a high-dimensional problem
 into random 1-D projections is a recurring, theoretically-backed device:

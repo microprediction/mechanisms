@@ -11,6 +11,7 @@ drift; these scripts make that whole class of error cheap to catch automatically
 | [`check_citations.py`](check_citations.py) | Validates `research/bibliography.bib`. | optional |
 | [`build_bibliography.py`](build_bibliography.py) | **Generates `docs/bibliography.html` from the `.bib`** — the `.bib` is the single source of truth. `--check` fails if the committed HTML is stale. | no |
 | [`build_papers.py`](build_papers.py) | **Renders `papers/*.md` into readable KaTeX pages** under `docs/papers/` (math-protected markdown converter; repo links rewritten). `--check` fails if a rendered page is stale. | no |
+| [`build_pdfs.py`](build_pdfs.py) | **Builds PDF versions of the papers** into `docs/papers/` via pandoc + xelatex (run locally; needs a TeX distribution — not wired into CI). | no |
 | [`check_bib_html_sync.py`](check_bib_html_sync.py) | Drift detector between `.bib` and `.html`. Now belt-and-braces behind the generator. | no |
 
 ## Usage
