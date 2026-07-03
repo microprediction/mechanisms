@@ -161,6 +161,27 @@
     return ((1 - takeout) * tot) / stakes[winner];
   }
 
+  // ---- nearest-the-pin: KDE density and pot split (mirrors nearest_the_pin.py) --
+  function kdeDensity1d(samples, z, h) {
+    const m = samples.length;
+    const norm = 1.0 / Math.sqrt(2 * Math.PI * h * h);
+    let s = 0;
+    for (let i = 0; i < m; i++) {
+      const d = samples[i] - z;
+      s += Math.exp(-(d * d) / (2 * h * h));
+    }
+    return (norm * s) / m;
+  }
+
+  function ntpPotSplit(densities, wealth, b) {
+    const stakes = wealth.map((w) => b * w);
+    const pot = stakes.reduce((a, v) => a + v, 0);
+    let tot = 0;
+    for (let i = 0; i < stakes.length; i++) tot += stakes[i] * densities[i];
+    if (tot === 0) return stakes.map(() => 0);
+    return stakes.map((s, i) => (pot * s * densities[i]) / tot - s);
+  }
+
   // ---- point-cloud scoring (deconvolution incentive & jittered-pin repair) --
   // All-Gaussian closed forms mirroring mechanisms/nearest_the_pin.py. Truth
   // N(0, tau^2), cloud drawn from N(0, v), KDE bandwidth h. Raw scoring peaks
@@ -375,6 +396,8 @@
     fisherDivergenceGaussian,
     quadraticCost,
     quadraticPrices,
+    kdeDensity1d,
+    ntpPotSplit,
     gaussianExpectedRawKdeLogScore,
     gaussianExpectedMollifiedLogScore,
     combinatorialPrices,

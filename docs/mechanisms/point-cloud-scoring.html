@@ -111,6 +111,241 @@
       $h^2$-shaved cloud; the jittered pin prefers the truth.
     </p>
 
+    <h2 id="race">The race: shave against the truth</h2>
+    <p>
+      A Galton board drops the truth: sixteen rows of pegs, so the pin lands
+      standard-normally. Three players submit clouds of $m=150$ samples each
+      round: <span style="color:#1e8449">truthful</span> ($v=1$),
+      <span style="color:#c0392b">shaver</span> ($v=1-h^2$) and
+      <span style="color:#7f8c8d">padder</span> ($v=1+h^2$), with $h=0.7$. The
+      pot splits by the density each cloud's KDE puts at the pin. With the raw
+      pin ($j=0$) the shaver's wealth pulls ahead, exactly as Theorem&nbsp;1
+      predicts. Slide the jitter to $j=h$ (settlement then averages the log
+      density over sixteen jittered pins, the mollified score of §4 of the
+      paper, drawn as ghost ticks) and the truthful player wins.
+    </p>
+    <div class="demo" id="race-demo">
+      <div class="row"><label>pin jitter j</label>
+        <input type="range" id="rc-j" min="0" max="120" value="0" step="5">
+        <span class="readout" id="rc-j-val"></span>
+        <button id="rc-match" type="button">j = h</button></div>
+      <div class="row">
+        <button id="rc-play" type="button">Play</button>
+        <button id="rc-sprint" type="button">Sprint 300 rounds</button>
+        <button id="rc-reset" type="button">Reset</button>
+        <span class="readout" id="rc-round"></span></div>
+      <canvas id="rc-canvas" width="680" height="520"
+              style="max-width:100%;border:1px solid #ddd;border-radius:6px;background:#fff;"></canvas>
+      <div class="readout" id="rc-verdict"></div>
+    </div>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const cv = $("rc-canvas"), ctx = cv.getContext("2d");
+        const H = 0.7, MS = 150, B = 0.5, NJ = 16, ROWS = 16, X0 = -3.4, X1 = 3.4;
+        const P = [
+          {name: "truthful", v: 1.0,        color: "#1e8449"},
+          {name: "shaver",   v: 1 - H * H,  color: "#c0392b"},
+          {name: "padder",   v: 1 + H * H,  color: "#7f8c8d"},
+        ];
+        // seeded rng + gaussian, so Reset reproduces
+        let seed = 12345;
+        function rnd() {
+          seed = (seed + 0x6D2B79F5) | 0;
+          let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+          t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+          return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        }
+        function gauss() {
+          let u = 0, v = 0;
+          while (u === 0) u = rnd();
+          while (v === 0) v = rnd();
+          return Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+        }
+        // geometry
+        const W = cv.width, HT = cv.height;
+        const BOARD = {top: 16, bot: 176}, AXIS = 188;
+        const CURVES = {top: 200, bot: 330}, BARS = {top: 356, bot: 500};
+        const X = (x) => 40 + (W - 80) * (x - X0) / (X1 - X0);
+        // state
+        let wealth, round, playing = false, anim = null;
+        function reset() {
+          seed = 12345; wealth = P.map(() => 100); round = 0;
+          playing = false; anim = null; $("rc-play").textContent = "Play";
+          drawAll(null);
+        }
+        function oneRoundMath(j) {
+          const steps = [];
+          let sum = 0;
+          for (let r = 0; r < ROWS; r++) { const st = rnd() < 0.5 ? -1 : 1; steps.push(st); sum += st; }
+          const z = sum / 4;
+          const zps = [];
+          if (j > 0) { for (let k = 0; k < NJ; k++) zps.push(z + j * gauss()); }
+          else zps.push(z);
+          const clouds = P.map(p => {
+            const c = new Array(MS);
+            for (let i = 0; i < MS; i++) c[i] = Math.sqrt(p.v) * gauss();
+            return c;
+          });
+          const q = clouds.map(c => {
+            let s = 0;
+            for (const zp of zps) s += Math.log(M.kdeDensity1d(c, zp, H));
+            return Math.exp(s / zps.length);
+          });
+          const dW = M.ntpPotSplit(q, wealth, B);
+          return {steps, z, zps, clouds, q, dW};
+        }
+        function settle(rd) {
+          for (let i = 0; i < P.length; i++) wealth[i] = Math.max(wealth[i] + rd.dW[i], 1e-6);
+          round += 1;
+        }
+        // drawing
+        function drawBoard(ball) {
+          ctx.strokeStyle = "#999"; ctx.strokeRect(0.5, 0.5, W - 1, HT - 1);
+          ctx.fillStyle = "#c8c8c8";
+          const dy = (BOARD.bot - BOARD.top) / ROWS;
+          for (let r = 1; r <= ROWS; r++) {
+            const y = BOARD.top + r * dy, n = r + 1;
+            for (let k = 0; k < n; k++) {
+              const x = X(((k - (n - 1) / 2)) / 4 * 2);
+              ctx.beginPath(); ctx.arc(x, y, 1.6, 0, 7); ctx.fill();
+            }
+          }
+          ctx.strokeStyle = "#bbb";
+          ctx.beginPath(); ctx.moveTo(X(X0), AXIS); ctx.lineTo(X(X1), AXIS); ctx.stroke();
+          if (ball) {
+            ctx.fillStyle = "#2c3e50";
+            ctx.beginPath(); ctx.arc(ball.x, ball.y, 5, 0, 7); ctx.fill();
+          }
+        }
+        function drawPins(rd, frac) {
+          if (!rd) return;
+          const zp0 = rd.z;
+          ctx.fillStyle = "#2c3e50";
+          ctx.beginPath(); ctx.arc(X(zp0), AXIS, 5, 0, 7); ctx.fill();
+          if (rd.zps.length > 1) {
+            ctx.strokeStyle = "rgba(44,62,80,0.35)";
+            for (const zp of rd.zps) {
+              ctx.beginPath(); ctx.moveTo(X(zp), AXIS - 6 * frac); ctx.lineTo(X(zp), AXIS + 6 * frac); ctx.stroke();
+            }
+          }
+        }
+        function drawCurves(rd, rainFrac) {
+          if (!rd) return;
+          const grid = []; const NG = 120;
+          for (let g = 0; g <= NG; g++) grid.push(X0 + (X1 - X0) * g / NG);
+          let ymax = 0;
+          const dens = rd.clouds.map(c => {
+            const d = grid.map(x => M.kdeDensity1d(c, x, H));
+            ymax = Math.max(ymax, ...d); return d;
+          });
+          const Y = (dv) => CURVES.bot - (CURVES.bot - CURVES.top) * dv / (ymax * 1.08);
+          dens.forEach((d, i) => {
+            ctx.strokeStyle = P[i].color; ctx.lineWidth = 2; ctx.beginPath();
+            d.forEach((dv, g) => g ? ctx.lineTo(X(grid[g]), Y(dv)) : ctx.moveTo(X(grid[g]), Y(dv)));
+            ctx.stroke();
+            if (rainFrac < 1) {                       // falling sample dots
+              ctx.fillStyle = P[i].color;
+              for (let k = 0; k < 40; k++) {
+                const xv = rd.clouds[i][k];
+                const yTarget = Y(M.kdeDensity1d(rd.clouds[i], xv, H));
+                const y = CURVES.top + (yTarget - CURVES.top) * rainFrac;
+                ctx.globalAlpha = 0.5;
+                ctx.beginPath(); ctx.arc(X(xv), y, 1.5, 0, 7); ctx.fill();
+                ctx.globalAlpha = 1;
+              }
+            }
+          });
+          ctx.fillStyle = "#666"; ctx.font = "11px sans-serif";
+          ctx.fillText("the three clouds, smoothed (KDE, h = 0.7)", 46, CURVES.top + 4);
+        }
+        function drawBars() {
+          const lo = Math.min(...wealth, 100) * 0.5, hi = Math.max(...wealth, 100) * 2;
+          const L = (w) => (Math.log(w) - Math.log(lo)) / (Math.log(hi) - Math.log(lo));
+          P.forEach((p, i) => {
+            const y = BARS.top + i * 46;
+            ctx.fillStyle = "#666"; ctx.font = "12px sans-serif";
+            ctx.fillText(p.name, 46, y + 12);
+            ctx.fillStyle = p.color;
+            ctx.fillRect(120, y, (W - 180) * Math.max(L(wealth[i]), 0.01), 18);
+            ctx.fillStyle = "#333";
+            ctx.fillText(wealth[i].toFixed(1), 126 + (W - 180) * Math.max(L(wealth[i]), 0.01), y + 13);
+          });
+          ctx.fillStyle = "#666"; ctx.font = "11px sans-serif";
+          ctx.fillText("wealth (log scale), stake fraction b = 0.5 per round", 46, BARS.top - 8);
+        }
+        function drawAll(rd, ball, rainFrac, pinFrac) {
+          ctx.clearRect(0, 0, W, HT);
+          drawBoard(ball);
+          drawPins(rd, pinFrac === undefined ? 1 : pinFrac);
+          drawCurves(rd, rainFrac === undefined ? 1 : rainFrac);
+          drawBars();
+          $("rc-round").textContent = "round " + round;
+          verdict();
+        }
+        function verdict() {
+          const j = +$("rc-j").value / 100;
+          const lead = P[wealth.indexOf(Math.max(...wealth))].name;
+          let msg = "leader: " + lead + ".";
+          if (round > 30) {
+            msg += (Math.abs(j - H) < 1e-9)
+              ? " Jitter matches the bandwidth: truth-telling is optimal."
+              : (j < H ? " Raw or under-jittered pin: shaving pays. Try j = h."
+                       : " Over-jittered: padding pays. Try j = h.");
+          }
+          $("rc-verdict").textContent = msg;
+        }
+        // animation: ball steps down the rows, then clouds rain, then settle
+        function playRound() {
+          const j = +$("rc-j").value / 100;
+          const rd = oneRoundMath(j);
+          const dy = (BOARD.bot - BOARD.top) / ROWS;
+          let r = 0, disp = 0, t0 = null;
+          function frame(ts) {
+            if (!playing) { anim = null; return; }
+            if (t0 === null) t0 = ts;
+            const rowTime = 26;
+            const target = Math.min(ROWS, Math.floor((ts - t0) / rowTime));
+            while (r < target) { disp += rd.steps[r]; r++; }
+            if (r < ROWS) {
+              drawAll(null, {x: X(disp / 4), y: BOARD.top + r * dy}, 1, 0);
+              anim = requestAnimationFrame(frame); return;
+            }
+            const tRain = (ts - t0 - ROWS * rowTime) / 320;
+            if (tRain < 1) {
+              drawAll(rd, {x: X(rd.z), y: AXIS}, Math.max(tRain, 0), Math.min(Math.max(tRain * 2, 0), 1));
+              anim = requestAnimationFrame(frame); return;
+            }
+            settle(rd);
+            drawAll(rd, null, 1, 1);
+            anim = requestAnimationFrame(playRound2);
+          }
+          anim = requestAnimationFrame(frame);
+        }
+        function playRound2() { if (playing) playRound(); }
+        // controls
+        function updateJ() {
+          const j = +$("rc-j").value / 100;
+          $("rc-j-val").textContent = j.toFixed(2) + (Math.abs(j - H) < 1e-9 ? "  (= h ✓)" : "");
+          verdict();
+        }
+        $("rc-j").addEventListener("input", updateJ);
+        $("rc-match").addEventListener("click", () => { $("rc-j").value = Math.round(H * 100); updateJ(); });
+        $("rc-play").addEventListener("click", () => {
+          playing = !playing;
+          $("rc-play").textContent = playing ? "Pause" : "Play";
+          if (playing && !anim) playRound();
+        });
+        $("rc-sprint").addEventListener("click", () => {
+          const j = +$("rc-j").value / 100;
+          for (let k = 0; k < 300; k++) settle(oneRoundMath(j));
+          drawAll(null);
+        });
+        $("rc-reset").addEventListener("click", reset);
+        reset(); updateJ();
+      })();
+    </script>
+
     <h2 id="demo">Try it: how much should we jitter?</h2>
     <p>
       Truth is $N(0,1)$. The mechanism smooths your cloud with KDE bandwidth

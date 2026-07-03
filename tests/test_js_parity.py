@@ -222,3 +222,15 @@ def test_jitter_calibration_parity():
                            (1.4, 0.5, 1.0, 0.8), (1.2, 0.4, 1.2, 0.6)]:
         assert_parity("gaussianExpectedMollifiedLogScore", [v, h, tau, j],
                       ntp.gaussian_expected_mollified_log_score(v, h, tau, jitter=j))
+
+
+def test_ntp_kde_and_pot_split_parity():
+    from mechanisms import nearest_the_pin as ntp
+    cloud = [-1.2, -0.3, 0.1, 0.4, 0.9, 1.7]
+    for z in (-0.5, 0.0, 0.8):
+        assert_parity("kdeDensity1d", [cloud, z, 0.7],
+                      ntp.kde_density(np.array(cloud).reshape(-1, 1), [z], bandwidth=0.7))
+    q = [0.31, 0.05, 0.22]
+    wealth = [120.0, 80.0, 100.0]
+    js = run_js("ntpPotSplit", [q, wealth, 0.5])
+    np.testing.assert_allclose(js, ntp.pot_split(q, wealth, b=0.5), atol=1e-9)
