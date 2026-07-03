@@ -1,7 +1,7 @@
 # Anisotropic (Schur-damped) sliced scoring rules
 
 *Status: a worked development of an open conjecture from the nearest-the-pin
-paper (§5, §7.3), with a calibrated novelty assessment and one load-bearing
+paper (now §7 and Open Problem 6 of the merged point-cloud scoring paper), with a calibrated novelty assessment and one load-bearing
 technical caveat. Likely novel as a combination; the central properness claim is
 false-until-proven and the note is built around that boundary. See §4 and §6.*
 

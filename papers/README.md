@@ -9,8 +9,8 @@ markdown, run the script, commit both).
 
 | Paper | Status | Topic |
 |-------|--------|-------|
-| [nearest-the-pin-parimutuel.md](nearest-the-pin-parimutuel.md) | Working draft v0.2 | The continuous, density-pot-split parimutuel behind monteprediction; its log-wealth truthfulness, the projection (sliced energy score) version, and the link to random projections and the Schur pseudo-likelihood. Implemented in [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py). |
-| [scoring-point-cloud-distributional-submissions.md](scoring-point-cloud-distributional-submissions.md) | Working draft v0.1 | Scoring a KDE'd sample cloud at the raw outcome is improper — the optimal cloud is the deconvolution of the belief (Gaussian: shave `h²` off the variance). The repair: jitter the pin by the same kernel, strictly proper via injectivity of Gaussian convolution. Run the proper rung at every smoothing scale and de Bruijn's identity splits the pot: the heat-ladder pool. Includes the historical note that microprediction's jitter was intuition first. Implemented and theorem-tested in [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py). |
+| [scoring-point-cloud-distributional-submissions.md](scoring-point-cloud-distributional-submissions.md) | Working draft v0.3 | The nearest-the-pin parimutuel (a continuous, density-pot-split pool, the reward engine behind monteprediction) and the incentive theory of cloud submissions: scoring a KDE at the raw outcome pays the deconvolution of the belief; jittering the pin by the bandwidth restores strict propriety; scoring across smoothing scales splits the log-score edge into shape and mass payments; in high dimensions the pool runs on random projections (the sliced energy score). Absorbs the earlier nearest-the-pin note. Implemented and theorem-tested in [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py). |
+| [nearest-the-pin-parimutuel.md](nearest-the-pin-parimutuel.md) | Merged | Redirect stub; content lives in the paper above (§2, §6, §7). |
 
 A source PDF that motivates the write-ups lives in
 [`../assets/pdf-literature/`](../assets/pdf-literature): Chitra et al.,

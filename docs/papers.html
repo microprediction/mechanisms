@@ -35,81 +35,32 @@
     literature surveys live under <a href="./bibliography.html">bibliography</a>;
     these are new work.</p>
 
-    <h2 id="nearest-the-pin">The Nearest-the-Pin Parimutuel</h2>
-    <p class="muted">Peter Cotton · working draft v0.2 ·
-      <a href="./papers/nearest-the-pin-parimutuel.html">full draft</a> ·
-      <a href="./papers/nearest-the-pin-parimutuel.pdf">pdf</a> ·
-      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py">implementation</a></p>
-    <p class="lead">
-      A parimutuel pool whose outcomes form a continuum. Each participant submits a
-      predictive density (a cloud of Monte-Carlo samples); when the point $z$ is
-      revealed, the pot is split in proportion to the density each placed at $z$,
-      relative to the crowd, a <em>nearest-the-pin</em> reward. It is the engine
-      behind <a href="https://monteprediction.com">monteprediction.com</a>.
-    </p>
-    <div class="equation-card">
-      $\Delta W_i = S\,\dfrac{s_i\,q_i(z)}{\sum_j s_j\,q_j(z)} - s_i,
-       \qquad s_i = b\,W_i$
-    </div>
-    <p>
-      Three claims, all implemented and unit-tested:
-    </p>
-    <ul>
-      <li><strong>Self-funding &amp; truthful.</strong> The split is zero-sum (the
-        operator bears no risk), and for a log-wealth (Kelly) maximiser the unique
-        optimal report is one's <em>true</em> density, the continuous shadow of
-        "bet your beliefs", with growth governed by the logarithmic score against
-        the crowd. <em>Caveat:</em> this is a statement about the
-        <em>density</em>; when the density is built from a sample cloud by KDE,
-        the optimal <em>cloud</em> is the belief deconvolved by the bandwidth —
-        truthful clouds need the jittered pin of the
-        <a href="#point-cloud-scoring">companion paper below</a>.</li>
-      <li><strong>The projection version.</strong> In high dimensions the joint
-        density is hard to estimate, so score the cloud through random
-        one-dimensional projections. By the energy-distance projection identity
-        $$\mathrm{ES}(P,y)=c_d^{-1}\,\mathbb{E}_u\big[\mathrm{CRPS}(P_u,\langle u,y\rangle)\big],
-          \qquad c_d=\tfrac{\Gamma(d/2)}{\sqrt\pi\,\Gamma((d+1)/2)},$$
-        the average sliced CRPS <em>is</em> the multivariate energy score, a
-        strictly proper score built from cheap 1-D evaluations. This is the
-        projection version used for
-        <a href="https://www.monteprediction.com">monteprediction</a>'s
-        eleven-dimensional clouds,
-        and it places the mechanism inside the random-projections literature
-        (Johnson–Lindenstrauss, sliced Wasserstein, sliced score matching).</li>
-      <li><strong>Two routes to high-dimensional scoring.</strong> Turning a joint
-        forecast into a number at $z$ when $d$ is large can go via a structured
-        <em>density</em> (the <a href="https://github.com/microprediction/schur">Schur</a>
-        pseudo-likelihood / Vecchia factorisation, Cotton 2024–25) or via random
-        <em>projection</em> (the sliced energy score). The nearest-the-pin pool
-        runs with either; a conjectured <em>Schur-damped</em> projection score
-        interpolates between them with a single reliability dial $\gamma$.</li>
-    </ul>
-    <p>
-      Read the <a href="./papers/nearest-the-pin-parimutuel.html">full
-      working draft</a> for the derivations, the truthfulness argument, the literature
-      links, and the open questions.
-    </p>
-
+    <span id="nearest-the-pin"></span>
     <h2 id="point-cloud-scoring">Scoring Point-Cloud Distributional Submissions</h2>
-    <p class="muted">Peter Cotton · working draft v0.2 ·
+    <p class="muted">Peter Cotton · working draft v0.3 ·
       <a href="./papers/scoring-point-cloud-distributional-submissions.html">full draft</a> ·
       <a href="./papers/scoring-point-cloud-distributional-submissions.pdf">pdf</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py">implementation</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/research/mollified-scoring-and-the-heat-ladder.md">prior-art audit</a></p>
     <p class="lead">
-      Score a KDE of a submitted sample cloud at the raw outcome and the optimal
-      cloud is the <em>deconvolution</em> of the belief by the kernel: for a
-      Gaussian belief, shave the squared bandwidth off the variance. Jittering
-      the outcome with the same kernel restores strict propriety, since Gaussian
-      convolution is injective. Repeating the repaired score across smoothing
-      scales splits the log-score edge into Fisher-divergence payments for shape
-      plus a coarse-scale payment for mass.
+      A parimutuel over a continuum splits the pot in proportion to the density
+      each participant placed at the realised outcome $z$: the
+      <em>nearest-the-pin</em> reward behind
+      <a href="https://monteprediction.com">monteprediction.com</a>. The pool is
+      self-funding and, at the density level, truthful for a log-wealth (Kelly)
+      maximiser. In practice the submission is a cloud of samples smoothed into
+      a KDE, and that is where the theory bites: scoring the KDE at the raw
+      outcome pays the <em>deconvolution</em> of the belief (shave the squared
+      bandwidth off your variance). Jittering the outcome with the same kernel
+      restores strict propriety, since Gaussian convolution is injective.
+      Repeating the repaired score across smoothing scales splits the log-score
+      edge into Fisher-divergence payments for shape plus a coarse-scale
+      payment for mass; in high dimensions the pool runs instead on random 1-D
+      projections, which recover the multivariate energy score exactly.
     </p>
     <div class="equation-card">
-      $\mathrm{KL}(p^*\Vert\rho)
-        = \underbrace{\mathrm{KL}(p^*_T\Vert\rho_T)}_{\text{mode mass}}
-        + \tfrac12\!\int_0^T\!
-          \underbrace{D_F(p^*_t\Vert\rho_t)}_{\text{shape (Hyvärinen)}}\,dt$
+      $\Delta W_i = S\,\dfrac{s_i\,q_i(z)}{\sum_j s_j\,q_j(z)} - s_i,
+       \qquad v^\ast = \tau^2 + j^2 - h^2$
     </div>
 
     <h3 id="pin-demo">Try it</h3>
@@ -120,15 +71,6 @@
       <a href="./mechanisms/point-cloud-scoring.html#demo">point-cloud scoring
       page</a>. Only $j = h$ puts the peak at the truth: <em>jitter exactly as
       much as you smooth</em>.
-    </p>
-    <p>
-      The <a href="./papers/scoring-point-cloud-distributional-submissions.html">draft</a>
-      proves the three theorems (the deconvolution incentive, strict properness
-      of the mollified score via a Wiener-flavoured injectivity lemma, and the
-      heat-ladder decomposition), and records a historical note: the
-      <a href="https://microprediction.com">microprediction</a> platform
-      jittered submissions and ground truth from its launch, <em>merely intuitive</em>
-      at the time, a theorem now.
     </p>
 
     <h2 id="composition">Composition &amp; the algebra of mechanisms</h2>

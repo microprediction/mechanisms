@@ -25,7 +25,6 @@ SITE = "https://mechanisms.microprediction.org"
 GITHUB = "https://github.com/microprediction/mechanisms/blob/main"
 
 PAPERS = [
-    "nearest-the-pin-parimutuel.md",
     "scoring-point-cloud-distributional-submissions.md",
 ]
 
