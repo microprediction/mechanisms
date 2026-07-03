@@ -11,7 +11,7 @@ Peter Cotton · *Working draft v0.3* · 2026
 A parimutuel over a continuum splits the pot in proportion to the probability
 density each participant placed at the realised outcome. In practice the
 submission is a cloud of Monte-Carlo samples, smoothed into a kernel density
-estimate and scored at the pin. The pot split is self-funding; a log-optimal
+estimate and scored at the pin. The pot split is self-funding; in the price-taking model a log-optimal
 participant's total exposure is their belief, so truthful submission is exact
 all-in and a symmetric equilibrium at fractional stakes, while the small-stake
 limit degenerates. Proper-score payments transfer cleanly to additive
@@ -65,8 +65,12 @@ and, once repaired, a multi-scale structure (§5).
 
 Throughout, we idealise the cloud by its sampling law $\rho$ ($m\to\infty$;
 finite $m$ is Open Problem 1), so the mechanism observes
-$T_h\rho := \rho*\varphi_h$, where $\varphi_h$ is a density on $\mathbb R^d$,
-symmetric, strictly positive (the Gaussian $N(0,h^2 I)$ is canonical). The
+$T_h\rho := \rho*\varphi_h$, where $\varphi_h$ is a symmetric density on
+$\mathbb R^d$, taken strictly positive (Gaussian, canonically) so that log
+scores are finite; the strict-propriety results themselves need only the
+channel to be fixed and injective, so compactly supported kernels qualify
+under Lemma 1's characteristic-function condition with extended-score
+conventions. The
 truth $p^*$ is absolutely continuous with finite differential entropy, and all
 expectations below are assumed finite (for Gaussian kernels and beliefs with
 finite second moments, $\log T_h\rho$ has at-worst-quadratic tails, so this is
@@ -106,8 +110,11 @@ $$\boxed{\;\Delta W_i \;=\; S\,\frac{s_i\,q_i(z)}{\sum_j s_j\,q_j(z)} \;-\; s_i\
 the operator bears no risk, exactly as in the racetrack tote. (Implemented and
 tested in [`pot_split`](../mechanisms/nearest_the_pin.py).)
 
-**Incentives of the pot split.** Fix the field and write $r$ for the crowd's
-aggregate density, so the pool pays density bets at odds $1/r$: a unit staked
+**Incentives of the pot split.** Work in the price-taking model: fix the field,
+write $r$ for the crowd's aggregate density, and treat the odds $1/r$ as
+unmoved by the participant's own stake (in (NTP) the player's $s_i q_i(z)$
+also sits in the denominator, so a non-infinitesimal player moves their own
+odds; that equilibrium is Open Problem 3). A unit staked
 as $q$ returns $q(z)/r(z)$ at the pin. One accounting identity organises
 everything: *in a parimutuel, cash is a bet on the crowd.* Staking the crowd
 density $r$ returns exactly one whatever $z$ realises, so a participant
@@ -116,15 +123,20 @@ $\tilde q = (1-b)\,r + b\,q$, and the classical argument applies to
 $\tilde q$: the log-optimal investor's total exposure is $p$, whatever the
 odds. Inverting the accounting, the optimal submission is
 
-$$q^\ast \;=\; r + \frac{p - r}{b}\,,$$
+$$q^\ast_b(z) \;=\; \Big[\frac{p(z)}{\lambda} - \frac{1-b}{b}\,r(z)\Big]_+,$$
 
-truncated at zero and renormalised where the right side goes negative
-(equivalently, maximising $\int p \log((1-b) + b\,q/r)$ over densities gives
-$q \propto (p/\lambda - \tfrac{1-b}{b}\,r)_+$): the crowd plus the
-participant's disagreement, levered by $1/b$. Three regimes follow.
+the KKT solution of maximising $\int p \log((1-b) + b\,q/r)$ over densities,
+with $\lambda>0$ chosen so that $\int q^\ast_b = 1$. When the bracket is
+nonnegative everywhere the multiplier is $\lambda = b$ and the solution is the
+affine formula
+
+$$q^\ast \;=\; r + \frac{p - r}{b}\,:$$
+
+the crowd plus the participant's disagreement, levered by $1/b$. Three regimes
+follow.
 
 - At $b = 1$ the submission is $p$ itself: all-in, bet your beliefs, whatever
-  the crowd does.
+  the crowd does (still within the price-taking model).
 - For $0 < b < 1$, truth-telling $q = p$ is optimal iff $r = p$: truthful
   reporting is the symmetric-equilibrium report, not a dominant strategy. The
   numerical check in
@@ -154,9 +166,11 @@ does not make it truthful.
   same object that, applied *sequentially*, gives Hanson's LMSR
   [@hanson2007logarithmic]. NTP is the *pooled* reading; LMSR is the
   *sequential* reading.
-- The score it implicitly applies to a sample cloud is a strictly proper
-  scoring rule for the predictive density; §6 makes this precise and connects
-  it to the energy score.
+- For directly reported densities the implicit score is the log score,
+  strictly proper for the report. For clouds the KDE map changes the report
+  space: §3–§4 analyse when raw settlement is improper for the cloud and how
+  matched jitter repairs it, and §6 connects the projection version to the
+  energy score.
 
 These incentive statements concern the reported *density* $q$. In practice
 $q$ is constructed from a sample cloud by KDE, so the report space is the
@@ -407,11 +421,17 @@ actually runs starts at $t\ge h^2$, where everything is smooth.
 $w_k\ge0$. Participant $i$ stakes $s_i$ and submits one cloud. Two payment
 schedules must be distinguished, because they buy different things.
 
-*Level schedule.* Rung $k$ splits $w_k\sum_i s_i$ by a budget-balanced rule
-driven by the rung score $S^{(k)}_i := S_{\sqrt{h^2+t_k}}(\rho_i,z)$ — the
-stake-weighted additive form
-$\Delta W_i^{(k)}=w_k\,s_i\,(S_i^{(k)}-\bar S^{(k)})$ with $\bar S^{(k)}$ the
-stake-weighted mean [@lambert2008selffinanced; @lambert2015axiomatic]. Each
+*Level schedule.* Rung $k$ settles by the stake-weighted additive transfer
+driven by the rung score $S^{(k)}_i := S_{\sqrt{h^2+t_k}}(\rho_i,z)$,
+
+$$\Delta W_i^{(k)}=w_k\,s_i\,(S_i^{(k)}-\bar S^{(k)}),$$
+
+with $\bar S^{(k)}$ the stake-weighted mean
+[@lambert2008selffinanced; @lambert2015axiomatic]. The transfer is
+budget-balanced ($\sum_i \Delta W^{(k)}_i = 0$) but not limited-liability:
+with unbounded scores such as the log score a transfer can exceed the stake,
+so a bounded pot split requires bounded scores, clipping, collateral, or a
+Lambert-style bounded transformation. Each
 rung is strictly proper (Theorem 2), so any nonnegative-weighted sum is. But
 the expected-regret decomposition carries *cumulative* weights on the Fisher
 bands, not the rung weights themselves: writing
