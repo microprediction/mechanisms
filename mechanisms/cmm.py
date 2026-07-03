@@ -3,7 +3,10 @@
 Abernethy, Chen & Wortman Vaughan (2013) showed that a large class of automated
 market makers is described by a single convex *potential* ``C(q)`` over the
 outstanding share vector ``q``: prices are the gradient ``grad C(q)``, convexity
-gives no-arbitrage, and a bounded gradient range gives bounded loss. LMSR is the
+gives no-arbitrage, and a bounded range of the conjugate regularizer ``R = C*``
+on the simplex gives bounded loss (the gradient staying in the simplex is *not*
+enough: the log-barrier / constant-product potential has coherent prices yet
+unbounded loss). LMSR is the
 special case ``C(q) = b log sum exp(q_i / b)``. This module provides the generic
 maker and two instances (LMSR and a quadratic / "sum of squares" maker) so the
 shared structure is explicit.

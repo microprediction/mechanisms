@@ -179,8 +179,8 @@ The three classics in `scoring_rules` are three choices of $G$:
 
 ### Theorem 2 (Hanson 2007; Abernethy–Chen–Wortman Vaughan 2013). Scoring rule ⇒ market maker.
 
-Let $R=-G$ be the convex "cost" conjugate generator and define the cost function
-as its **Legendre–Fenchel conjugate**
+Let $R=G$ — the scoring rule's convex generator of Theorem 1, now read as a
+regulariser — and define the cost function as its **Legendre–Fenchel conjugate**
 
 $$C(\mathbf q)=\sup_{p\in\Delta}\big(\langle p,\mathbf q\rangle - R(p)\big),
 \qquad \text{prices } \ \nabla C(\mathbf q)=\arg\max_{p}(\cdot)\in\Delta .$$

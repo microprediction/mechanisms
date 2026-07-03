@@ -84,7 +84,7 @@ const CLUSTERS = {
 
 const NODES = [
   // scoring rules
-  {id:"logscore",  label:"Log score",        c:"scoring", url:"./mechanisms/scoring-rules.html", note:"The unique local strictly proper rule, S=-log p_y. Run sequentially it becomes LMSR; it is the entropy generating the softmax cost function."},
+  {id:"logscore",  label:"Log score",        c:"scoring", url:"./mechanisms/scoring-rules.html", note:"The unique local strictly proper rule, S=-log p_y. Run sequentially it becomes LMSR; its generator is the negative entropy whose conjugate is the softmax cost function."},
   {id:"brier",     label:"Brier score",      c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Quadratic strictly proper rule. CRPS is its threshold integral."},
   {id:"spherical", label:"Spherical score",  c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Strictly proper rule p_y/||p||. The dynamic parimutuel's projection game is strategically equivalent to it."},
   {id:"pinball",   label:"Pinball / quantile loss", c:"scoring", url:"./mechanisms/scoring-rules.html", note:"Consistent scoring function for the tau-quantile; the elementary building block of CRPS."},
@@ -93,7 +93,7 @@ const NODES = [
   {id:"hyvarinen", label:"Hyvärinen / local score", c:"scoring", url:"./mechanisms/local-scoring.html", note:"An m-local proper scoring rule that reads the density only through its value and derivatives, so it needs no normalising constant; its divergence is the Fisher divergence (score matching)."},
 
   // market makers
-  {id:"cmm",   label:"Cost-function maker", c:"maker", url:"./mechanisms/cmm.html", note:"Any convex potential C(q): prices = grad C, convexity = no-arbitrage, bounded gradient = bounded loss (Abernethy-Chen-Wortman Vaughan)."},
+  {id:"cmm",   label:"Cost-function maker", c:"maker", url:"./mechanisms/cmm.html", note:"Any convex potential C(q): prices = grad C, convexity = no-arbitrage, bounded conjugate-regularizer range = bounded loss (Abernethy-Chen-Wortman Vaughan)."},
   {id:"lmsr",  label:"LMSR",                c:"maker", url:"./mechanisms/lmsr.html", note:"Hanson's logarithmic market scoring rule: C(q)=b log sum e^{q_i/b}. The entropic cost-function maker; bounded loss b log n."},
   {id:"lslmsr",label:"LS-LMSR",             c:"maker", url:"./mechanisms/lmsr.html", note:"Liquidity-sensitive LMSR (Othman-Sandholm): b scales with volume, so the maker earns a spread instead of a guaranteed subsidy."},
   {id:"cfmm",  label:"Constant-product AMM",c:"maker", url:"./mechanisms/amm.html", note:"Uniswap x*y=k. The convex dual (trading-function side) of a cost-function maker."},
@@ -142,7 +142,7 @@ const EDGES = [
   // market-maker family
   {s:"lslmsr", t:"lmsr",  type:"generalize", label:"liquidity scales with volume"},
   {s:"cfmm",   t:"cmean", type:"special",    label:"2-asset, equal weights"},
-  {s:"pmamm",  t:"cfmm",  type:"special",    label:"CFMM for binary tokens"},
+  {s:"pmamm",  t:"cfmm",  type:"lineage",    label:"sibling CFMM, Gaussian invariant"},
 
   // parimutuel family + bridges
   {s:"dpm",   t:"pari",  type:"generalize", label:"adds continuous pricing"},
@@ -156,8 +156,8 @@ const EDGES = [
 
   // scoring-rule relationships
   {s:"crps",  t:"energy", type:"special",   label:"1-D case"},
-  {s:"brier", t:"crps",   type:"lineage",   label:"∫ over thresholds"},
-  {s:"pinball",t:"crps",  type:"special",   label:"threshold component"},
+  {s:"crps",  t:"brier",  type:"lineage",   label:"∫ Brier over thresholds"},
+  {s:"crps",  t:"pinball",type:"lineage",   label:"2∫ pinball over quantiles"},
 
   // auctions
   {s:"fba",  t:"cda",  type:"contrast",  label:"discrete time, uniform price"},
