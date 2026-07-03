@@ -49,6 +49,8 @@ from .scoring_rules import crps_ensemble
 __all__ = [
     "kde_density",
     "mollified_log_score",
+    "gaussian_expected_raw_kde_log_score",
+    "gaussian_expected_mollified_log_score",
     "pot_split",
     "projection_constant",
     "energy_score_via_projection",
@@ -106,6 +108,39 @@ def mollified_log_score(samples, z, bandwidth: float = None, n_nodes: int = 40,
     eps = rng.standard_normal((n_nodes, d)) * bandwidth
     logs = [math.log(kde_density(x, z + e, bandwidth=bandwidth)) for e in eps]
     return float(np.mean(logs))
+
+
+def gaussian_expected_raw_kde_log_score(v: float, h: float, tau: float = 1.0) -> float:
+    r"""Expected **raw** KDE log score, all-Gaussian closed form.
+
+    Truth ``N(0, τ²)``, submitted cloud drawn from ``N(0, v)``, KDE bandwidth
+    ``h``. The mechanism sees the smoothed report ``N(0, v + h²)`` and scores it
+    at the *raw* outcome, so
+
+    .. math:: f(v) = -\tfrac12\log(2\pi(v+h^2)) - \frac{\tau^2}{2(v+h^2)},
+
+    maximised at ``v = τ² − h²`` — the **deconvolution incentive**: shave the
+    bandwidth off your variance (Theorem 1 of the point-cloud scoring paper).
+    """
+    s = float(v) + float(h) ** 2
+    return float(-0.5 * math.log(2 * math.pi * s) - float(tau) ** 2 / (2 * s))
+
+
+def gaussian_expected_mollified_log_score(v: float, h: float, tau: float = 1.0) -> float:
+    r"""Expected **mollified** ("jitter the pin") log score, closed form.
+
+    Same setting, but the outcome is jittered by the KDE kernel, so the score
+    pairs the smoothed report ``N(0, v + h²)`` with the smoothed truth
+    ``N(0, τ² + h²)``:
+
+    .. math:: f(v) = -\tfrac12\log(2\pi(v+h^2)) - \frac{\tau^2 + h^2}{2(v+h^2)},
+
+    maximised at ``v = τ²`` — truthful submission (Theorem 2: strict properness
+    via injectivity of Gaussian convolution).
+    """
+    s = float(v) + float(h) ** 2
+    return float(-0.5 * math.log(2 * math.pi * s)
+                 - (float(tau) ** 2 + float(h) ** 2) / (2 * s))
 
 
 def pot_split(densities, stakes, b: float = 0.1):

@@ -5,7 +5,8 @@ Three claims of increasing ambition: a closed-form improperness (§1), its
 symmetric repair (§2), and a scale-decomposed wagering mechanism (§3–4). The
 ingredients are published; the closed form, the strictness closure, and the
 assembly appear to be new. Every identity below is verified by direct
-computation.*
+computation. **Full write-up with proofs:**
+[papers/scoring-point-cloud-distributional-submissions.md](../papers/scoring-point-cloud-distributional-submissions.md).*
 
 ## 1. The flaw: score a KDE at the raw outcome and you elicit a deconvolution
 

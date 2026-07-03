@@ -201,3 +201,16 @@ def test_decision_market_parity():
         run_js("softmaxDecision", [v, 0.5]), dm.softmax_decision(v, 0.5), atol=1e-9)
     np.testing.assert_allclose(
         run_js("epsilonGreedyDecision", [v, 0.2]), dm.epsilon_greedy_decision(v, 0.2), atol=1e-12)
+
+
+def test_point_cloud_scoring_parity():
+    # Theorem-1/2 closed forms: raw KDE scoring peaks at v = tau^2 - h^2
+    # (deconvolution incentive); the mollified score peaks at v = tau^2.
+    from mechanisms import nearest_the_pin as ntp
+    for v in (0.5, 0.75, 1.0, 1.3):
+        for h in (0.3, 0.5):
+            for tau in (1.0, 1.2):
+                assert_parity("gaussianExpectedRawKdeLogScore", [v, h, tau],
+                              ntp.gaussian_expected_raw_kde_log_score(v, h, tau))
+                assert_parity("gaussianExpectedMollifiedLogScore", [v, h, tau],
+                              ntp.gaussian_expected_mollified_log_score(v, h, tau))

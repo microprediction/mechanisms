@@ -161,6 +161,23 @@
     return ((1 - takeout) * tot) / stakes[winner];
   }
 
+  // ---- point-cloud scoring (deconvolution incentive & jittered-pin repair) --
+  // All-Gaussian closed forms mirroring mechanisms/nearest_the_pin.py. Truth
+  // N(0, tau^2), cloud drawn from N(0, v), KDE bandwidth h. Raw scoring peaks
+  // at v = tau^2 - h^2 (shave the bandwidth: improper); the mollified
+  // ("jitter the pin") score peaks at v = tau^2 (truthful: strictly proper).
+  function gaussianExpectedRawKdeLogScore(v, h, tau) {
+    const t = tau === undefined ? 1.0 : tau;
+    const s = v + h * h;
+    return -0.5 * Math.log(2 * Math.PI * s) - (t * t) / (2 * s);
+  }
+
+  function gaussianExpectedMollifiedLogScore(v, h, tau) {
+    const t = tau === undefined ? 1.0 : tau;
+    const s = v + h * h;
+    return -0.5 * Math.log(2 * Math.PI * s) - (t * t + h * h) / (2 * s);
+  }
+
   // --- aggregation (opinion pools) ----------------------------------------
   function _normWeights(m, weights) {
     let w = weights ? weights.slice() : new Array(m).fill(1 / m);
@@ -354,6 +371,8 @@
     fisherDivergenceGaussian,
     quadraticCost,
     quadraticPrices,
+    gaussianExpectedRawKdeLogScore,
+    gaussianExpectedMollifiedLogScore,
     combinatorialPrices,
     combinatorialMarginal,
     linearFundingRate,

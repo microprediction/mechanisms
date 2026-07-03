@@ -83,6 +83,131 @@
       links, and the open questions.
     </p>
 
+    <h2 id="point-cloud-scoring">Scoring Point-Cloud Distributional Submissions</h2>
+    <p class="muted">Peter Cotton · working draft v0.1 ·
+      <a href="https://github.com/microprediction/mechanisms/blob/main/papers/scoring-point-cloud-distributional-submissions.md">full draft</a> ·
+      <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py">implementation</a> ·
+      <a href="https://github.com/microprediction/mechanisms/blob/main/research/mollified-scoring-and-the-heat-ladder.md">prior-art audit</a></p>
+    <p class="lead">
+      Contests that accept a <em>cloud of samples</em>, smooth it into a KDE, and
+      log-score it at the raw outcome are <strong>improper</strong>: the optimal
+      cloud is the <em>deconvolution</em> of your belief by the kernel — for a
+      Gaussian belief $N(\mu,\tau^2)$ and bandwidth $h$, submit
+      $N(\mu,\tau^2-h^2)$, shaving exactly the bandwidth off your variance. The
+      repair is one line: <strong>if you smooth the forecasts, smooth the outcome
+      too</strong> — jitter the pin by the same kernel. Strict properness follows
+      because Gaussian convolution is injective (its characteristic function
+      never vanishes), closing a gap Bröcker &amp; Smith (2007) flagged and left
+      open. Run the proper rung at every smoothing scale and de Bruijn's identity
+      splits the pot: rung differences pay the Fisher divergence (shape,
+      normalisation-free), the coarse rung pays between-mode mass, the total is
+      the log score — the <em>heat-ladder pool</em>.
+    </p>
+    <div class="equation-card">
+      $\mathrm{KL}(p^*\Vert\rho)
+        = \underbrace{\mathrm{KL}(p^*_T\Vert\rho_T)}_{\text{mode mass}}
+        + \tfrac12\!\int_0^T\!
+          \underbrace{D_F(p^*_t\Vert\rho_t)}_{\text{shape (Hyvärinen)}}\,dt$
+    </div>
+
+    <h3 id="pin-demo">Try it: shave or be honest?</h3>
+    <p>
+      Truth is $N(0,1)$. Choose the variance $v$ of the cloud you submit and the
+      KDE bandwidth $h$. The curves are the <em>exact</em> expected scores (the
+      closed forms of Theorem&nbsp;1, parity-tested against the Python library):
+      raw scoring peaks at $v=1-h^2$ — the mechanism pays you to shave — while
+      the jittered-pin score peaks at $v=1$, honesty restored.
+    </p>
+    <div class="demo" id="pcs-demo">
+      <div class="row"><label>your cloud variance v</label>
+        <input type="range" id="pcs-v" min="30" max="170" value="100" step="1">
+        <span class="readout" id="pcs-v-val"></span></div>
+      <div class="row"><label>KDE bandwidth h</label>
+        <input type="range" id="pcs-h" min="10" max="90" value="50" step="5">
+        <span class="readout" id="pcs-h-val"></span></div>
+      <canvas id="pcs-canvas" width="660" height="300"
+              style="max-width:100%;border:1px solid #ddd;border-radius:6px;background:#fff;"></canvas>
+      <div class="readout" id="pcs-out"></div>
+    </div>
+    <script src="./js/mechanisms.js"></script>
+    <script>
+      (function () {
+        const M = window.Mechanisms, $ = (id) => document.getElementById(id);
+        const cv = $("pcs-canvas"), ctx = cv.getContext("2d");
+        const V0 = 0.3, V1 = 1.7;                       // report-variance axis
+        function draw() {
+          const v = +$("pcs-v").value / 100, h = +$("pcs-h").value / 100;
+          $("pcs-v-val").textContent = v.toFixed(2);
+          $("pcs-h-val").textContent = h.toFixed(2);
+          const W = cv.width, H = cv.height, L = 46, R = 12, T = 14, B = 30;
+          // sample both curves and set a common y-range
+          const N = 240, raw = [], mol = [];
+          let lo = Infinity, hi = -Infinity;
+          for (let i = 0; i <= N; i++) {
+            const x = V0 + (V1 - V0) * i / N;
+            const a = M.gaussianExpectedRawKdeLogScore(x, h);
+            const b = M.gaussianExpectedMollifiedLogScore(x, h);
+            raw.push([x, a]); mol.push([x, b]);
+            lo = Math.min(lo, a, b); hi = Math.max(hi, a, b);
+          }
+          const pad = 0.06 * (hi - lo); lo -= pad; hi += pad;
+          const X = (x) => L + (W - L - R) * (x - V0) / (V1 - V0);
+          const Y = (y) => T + (H - T - B) * (hi - y) / (hi - lo);
+          ctx.clearRect(0, 0, W, H);
+          // axes + gridline at v = 1 (truth) and v = 1 - h^2 (shave)
+          ctx.strokeStyle = "#eee";
+          [1.0, 1.0 - h * h].forEach((g) => {
+            ctx.beginPath(); ctx.moveTo(X(g), T); ctx.lineTo(X(g), H - B); ctx.stroke();
+          });
+          ctx.strokeStyle = "#999";
+          ctx.strokeRect(L, T, W - L - R, H - T - B);
+          const plot = (pts, color) => {
+            ctx.strokeStyle = color; ctx.lineWidth = 2; ctx.beginPath();
+            pts.forEach(([x, y], i) => i ? ctx.lineTo(X(x), Y(y)) : ctx.moveTo(X(x), Y(y)));
+            ctx.stroke();
+          };
+          plot(raw, "#c0392b"); plot(mol, "#1e8449");
+          // peaks
+          const dot = (x, y, color) => {
+            ctx.fillStyle = color; ctx.beginPath();
+            ctx.arc(X(x), Y(y), 4.5, 0, 2 * Math.PI); ctx.fill();
+          };
+          dot(Math.max(V0, 1 - h * h), M.gaussianExpectedRawKdeLogScore(Math.max(V0, 1 - h * h), h), "#c0392b");
+          dot(1.0, M.gaussianExpectedMollifiedLogScore(1.0, h), "#1e8449");
+          // your position on both curves
+          const yr = M.gaussianExpectedRawKdeLogScore(v, h);
+          const ym = M.gaussianExpectedMollifiedLogScore(v, h);
+          ctx.fillStyle = "#2c3e50";
+          [[v, yr], [v, ym]].forEach(([x, y]) => {
+            ctx.beginPath(); ctx.arc(X(x), Y(y), 3.2, 0, 2 * Math.PI); ctx.fill();
+          });
+          // labels
+          ctx.fillStyle = "#c0392b"; ctx.font = "12px sans-serif";
+          ctx.fillText("raw KDE score — peak at v = 1 − h²", L + 8, T + 14);
+          ctx.fillStyle = "#1e8449";
+          ctx.fillText("jittered-pin score — peak at v = 1 (truth)", L + 8, T + 30);
+          ctx.fillStyle = "#666";
+          ctx.fillText("report variance v", W / 2 - 40, H - 8);
+          const shave = (h * h).toFixed(2);
+          $("pcs-out").innerHTML =
+            "raw score at your v: <b>" + yr.toFixed(4) + "</b> (optimal cheat: shave h² = " +
+            shave + " → v = " + (1 - h * h).toFixed(2) + ") &nbsp;·&nbsp; " +
+            "jittered-pin score: <b>" + ym.toFixed(4) + "</b> (optimum: v = 1.00, honesty)";
+        }
+        ["pcs-v", "pcs-h"].forEach((id) => $(id).addEventListener("input", draw));
+        draw();
+      })();
+    </script>
+    <p>
+      The <a href="https://github.com/microprediction/mechanisms/blob/main/papers/scoring-point-cloud-distributional-submissions.md">draft</a>
+      proves the three theorems (the deconvolution incentive, strict properness
+      of the mollified score via a Wiener-flavoured injectivity lemma, and the
+      heat-ladder decomposition), and records a historical note: the
+      <a href="https://microprediction.com">microprediction</a> platform has
+      jittered submissions and ground truth since inception — intuition at the
+      time, theorem now.
+    </p>
+
     <h2 id="composition">Composition &amp; the algebra of mechanisms</h2>
     <p class="muted">Peter Cotton · research note ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/research/composition-and-the-algebra-of-mechanisms.md">full note</a> ·
