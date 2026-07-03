@@ -214,9 +214,20 @@ def md_to_html(md: str) -> tuple[str, str]:
     return title, body
 
 
+def fold_status(body: str) -> str:
+    """Collapse the Status blockquote into a <details> so readers can skip it."""
+    return re.sub(
+        r"(<blockquote>\s*<p><strong>Status\.</strong>[\s\S]*?</blockquote>)",
+        '    <details class="status-note">\n'
+        "      <summary>Status: working draft — scope, assumptions, changelog"
+        "</summary>\n\\1\n    </details>",
+        body, count=1)
+
+
 def build_one(name: str) -> tuple[Path, str]:
     md = (SRC / name).read_text(encoding="utf-8")
     title, body = md_to_html(md)
+    body = fold_status(body)
     page = PAGE.format(title=html_mod.escape(title), src=name,
                        slug=name[:-3], body=body)
     return OUT / (name[:-3] + ".html"), page

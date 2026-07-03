@@ -132,3 +132,9 @@ footer {
   max-width: 900px; margin: 40px auto 24px; padding: 16px 24px;
   font-size: 0.85rem; color: var(--muted); border-top: 1px solid var(--border);
 }
+
+/* Collapsed status note on rendered paper pages */
+.status-note { margin: 14px 0 18px; }
+.status-note summary { cursor: pointer; color: var(--muted); font-size: 0.95rem; }
+.status-note[open] summary { margin-bottom: 6px; }
+.status-note blockquote { margin-top: 6px; }

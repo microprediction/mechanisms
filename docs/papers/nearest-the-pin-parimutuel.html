@@ -35,7 +35,9 @@
     <h1 id="the-nearest-the-pin-parimutuel">The Nearest-the-Pin Parimutuel</h1>
     <h3 id="a-continuous-projection-scored-pool-for-distributional-forecasts">A continuous, projection-scored pool for distributional forecasts</h3>
     <p><strong>Peter Cotton</strong> · <em>Working draft v0.2</em> · 2026</p>
-    <blockquote>
+        <details class="status-note">
+      <summary>Status: working draft — scope, assumptions, changelog</summary>
+<blockquote>
     <p><strong>Status.</strong> This is an evolving working note, not a finished paper. The core</p>
     <p>mechanism and the projection identity (§4) are implemented and unit-tested in</p>
     <p><a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py"><code>mechanisms/nearest_the_pin.py</code></a>; the</p>
@@ -46,6 +48,7 @@
     <p>is the belief deconvolved by the bandwidth; see the companion paper</p>
     <p><a href="./scoring-point-cloud-distributional-submissions.html"><em>Scoring Point-Cloud Distributional Submissions</em></a>.</p>
     </blockquote>
+    </details>
     <hr />
     <h2 id="abstract">Abstract</h2>
     <p>The parimutuel is the oldest information-aggregation mechanism: bettors pool stakes on a finite set of outcomes and winners split the pot pro rata. We study its limit when the outcome is a point $z \in \mathbb{R}^d$ and each participant submits a <em>predictive density</em> — in practice a cloud of Monte-Carlo samples. The pot is split in proportion to the density a participant placed at the realised $z$, relative to the crowd: a <strong>nearest-the-pin</strong> reward. We make three points. (i) The mechanism is self-funding and, for a log-wealth (Kelly) maximiser, strictly incentive-compatible: the unique optimal report is one's true density, which connects the pool's growth-optimal strategy to the logarithmic scoring rule. (ii) In high dimensions the joint density is hard to estimate; the <strong>projection version</strong> — used at <a href="https://monteprediction.com">monteprediction.com</a> for eleven-dimensional forecasts — replaces it with random one-dimensional projections, and by the energy-distance projection identity the average sliced CRPS recovers the multivariate energy score exactly (up to a dimension constant). This places the mechanism inside the <em>random-projections</em> literature. (iii) The high-dimensional scoring problem is the same one solved, from the density side, by the <strong>Schur pseudo-likelihood</strong>: nearest-the-pin sits between two strategies for scoring a joint forecast when $d$ is large relative to the data — structured density estimation (Schur/Vecchia) and random projection (energy/sliced scores).</p>

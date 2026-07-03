@@ -35,7 +35,9 @@
     <h1 id="scoring-point-cloud-distributional-submissions">Scoring Point-Cloud Distributional Submissions</h1>
     <h3 id="the-deconvolution-incentive-jittered-outcomes-and-the-heat-ladder">The deconvolution incentive, jittered outcomes, and the heat ladder</h3>
     <p><strong>Peter Cotton</strong> · <em>Working draft v0.2</em> · 2026</p>
-    <blockquote>
+        <details class="status-note">
+      <summary>Status: working draft — scope, assumptions, changelog</summary>
+<blockquote>
     <p><strong>Status.</strong> An evolving working note, not a finished paper. Theorems 1–3 are</p>
     <p>proved below at working-draft rigor <strong>in the population-law setting</strong>: the</p>
     <p>cloud is idealised by its sampling law, and the smoothing/jitter kernel is</p>
@@ -53,6 +55,7 @@
     <p>with a new proposition that band scores are strictly proper.</p>
     <p>Drafted with AI assistance; errors are mine.</p>
     </blockquote>
+    </details>
     <hr />
     <h2 id="abstract">Abstract</h2>
     <p>Forecasting contests increasingly accept <strong>point clouds</strong> — bags of Monte-Carlo samples standing in for a predictive density — and score them by smoothing the cloud into a density (a KDE) and evaluating at the realised outcome. We show this common design is <strong>improper</strong>: because the mechanism smooths the submission, the optimal cloud is drawn not from the forecaster's belief but from its <strong>deconvolution</strong> by the smoothing kernel (Theorem 1; for a Gaussian belief $N(\mu,\tau^2)$ and bandwidth $h$, the optimal submission is $N(\mu,\tau^2-h^2)$ — shave exactly the bandwidth off your variance), with a truthfulness gap of $\mathrm{KL}(p^*\Vert p^**\varphi_h)$ when the deconvolution is admissible. The repair is symmetric and one line: <strong>if you smooth the forecasts, smooth the outcome too</strong>. Jittering the outcome by the same kernel — equivalently, the <em>mollified log score</em> $S_h(\rho,z)=(\varphi_h*\log\rho_h)(z)$ — is strictly proper for the pre-smoothing law, because convolution by a kernel whose characteristic function has dense support is injective on probability measures (Lemma 1, Theorem 2). Running the proper rung at every smoothing scale then turns de Bruijn's identity into a payment schedule (Theorem 3): rung differences pay the Fisher divergence — normalization-free elicitation of <em>shape</em> — while the coarse rung pays for between-mode <em>mass</em>, and the telescoped total is the full log-score edge. The resulting <strong>heat-ladder pool</strong> is budget-balanced, and in its additive stake-weighted form strictly proper rung by rung in the risk-neutral small-stake limit; all results are population-level, with the kernel fixed in advance. A historical note records that the microprediction platform jittered submissions and ground truth from its launch — a purely intuitive choice at the time, with no theorem behind it; Theorem 2 is that theorem, and it sharpens the intuition into kernel guidance.</p>
