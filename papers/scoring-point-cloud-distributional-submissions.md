@@ -8,28 +8,25 @@ Peter Cotton · *Working draft v0.3* · 2026
 
 ## Abstract
 
-We study nearest-the-pin mechanisms for distributional forecasts submitted as
-Monte Carlo point clouds. In these mechanisms a participant's cloud is
-smoothed into a density and rewarded according to the density assigned to the
-realised outcome, either through a parimutuel pot split or through additive
-proper-score transfers; the microprediction platform ran one such mechanism at
-scale, collecting a billion predictions over the course of its operation, 225
-samples at a time. The main statistical subtlety is that smoothing the
-submission but not the outcome changes the target: raw KDE log scoring is
-improper, and the optimal cloud is drawn from a deconvolution of the
-forecaster's belief by the kernel. In the Gaussian case this means
-deliberately under-dispersing the submission by $h^2$. The fix is symmetric
-noise: jitter the realised outcome with the same kernel used to smooth the
-submitted cloud. We prove a general kernel-channel properness theorem and
-characterize strictness by injectivity of the channel; for convolution kernels
-this is equivalent to the characteristic function having dense support. With
-Gaussian kernels, the repaired score admits a heat-ladder decomposition: the
-relative de Bruijn identity separates log-score regret into Fisher-divergence
-payments across scales and a coarse KL term. For high-dimensional clouds,
-random projections give a complementary implementation, since averaged
-one-dimensional CRPS recovers the multivariate energy score up to an explicit
-dimension constant. All incentive claims are population-level and assume a
-fixed exogenous kernel.
+Point-cloud forecasts are often evaluated by smoothing the submitted samples
+into a kernel density estimate and scoring that density at the realised
+outcome. This apparently natural procedure is not proper: under logarithmic
+scoring at the raw outcome, a forecaster is generally rewarded for submitting
+samples from a deconvolution of their belief by the smoothing kernel, rather
+than from the belief itself. For Gaussian beliefs and Gaussian kernels this
+incentive has the simple form "shave $h^2$ from the covariance." We show that
+the defect is repaired by adding outcome noise from the same kernel used to
+smooth the submission. More generally, composing a proper score with a fixed
+Markov kernel preserves propriety, and strict propriety is recovered exactly
+when the induced channel is injective; for convolution kernels this is
+equivalent to the characteristic function having dense nonzero support. For
+Gaussian kernels, repeating the repaired score over a ladder of smoothing
+scales decomposes log-score regret, via the relative de Bruijn identity, into
+Fisher-divergence bands plus a coarse-scale KL term. We also describe a
+high-dimensional alternative based on random one-dimensional projections,
+whose average CRPS is, up to an explicit dimension constant, the multivariate
+energy score. The results are population-level: finite clouds, endogenous
+bandwidths, and finite-player equilibria are left open.
 
 ---
 
