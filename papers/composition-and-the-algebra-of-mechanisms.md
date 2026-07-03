@@ -300,9 +300,7 @@ the price; an opinion pool is a stage with no outcome argument and zero
 transfers. Composition means wiring the Dist output of one stage to the Dist
 inputs of the next while the side channels thread through.
 
-The operators below act on stages. The first two are constructions from a
-score; the next two are theorems about aggregation and merging; the fifth is
-where propriety can fail; the last two are directions.
+The operators below act on stages.
 
 **Sequentialise.** Theorem 2: a proper score run sequentially against a
 wealth state is a cost-function market maker.
@@ -377,9 +375,36 @@ where propriety needs care, and the theory splits in two:
   in practice: percentiles from one game feed the next, and calibration is
   produced by composing monotone maps contributed by competing algorithms.
 
-**Residual.** One stage models what the previous stage got wrong: a
-correction (boosting) market on the residual stream. Named here as an
-operator; the construction and its incentive analysis are open (§7).
+**Residual.** Let a stage emit the aggregate $F_1$, and let a second market
+elicit a distribution for the residual $U=F_1(X)$, settling at the realised
+$u=F_1(x)$. If $F_1$ is the true conditional law then $U$ is uniform
+(Proposition 4) and the second market has nothing to price; whatever
+structure remains in the residual is the second stage's edge. The corrected
+forecast composes the two reports.
+
+**Proposition 7 (the correction is a multiplicative reweighting).** *Let
+$F_1$ be strictly increasing with density $p_1>0$ and let the residual
+market's consensus be a distribution $G$ on $[0,1]$ with density $g$. The
+composed forecast $F=G\circ F_1$ has density*
+
+$$p(x) \;=\; p_1(x)\, g\!\big(F_1(x)\big),$$
+
+*so $\log p(x)=\log p_1(x)+\log g(u)$ with $u=F_1(x)$: the chain's log score
+is the sum of stage log scores, and the residual stage is paid by a proper
+score on $u$ alone.*
+
+**Proof.** Chain rule: $F'(x)=g(F_1(x))\,p_1(x)$; take logarithms. The
+residual score $\log g(u)$ is the logarithmic score of Theorem 1 applied to
+the report $g$ and outcome $u$, hence strictly proper for the law of $U$.
+$\blacksquare$
+
+Multiplying the density by a ratio fitted to what the current model gets
+wrong is the functional-gradient step of boosting under log loss
+[@mason1999boosting; @friedman2001greedy], so a chain of residual markets is
+stagewise boosting with wealth as the learning rate. What Proposition 7 does
+not settle is the game across stages: who funds the residual pot, and whether
+a forecaster free to enter both stages prefers to withhold information from
+the first and sell it to the second (§7).
 
 **Spec.** Serialise a pipeline to data and search over it; the mechanism
 analogue is a market over pipelines. Also open.
@@ -461,13 +486,15 @@ construction (Theorem 2) is the skater move applied to a score.
    stage seams. The companion research note on conservation and boosting
    states the conjecture: edge is conserved iff the interface is a
    sufficient (injective) reduction.
-3. *Residual markets.* A chain of markets in which stage $t$ prices the
-   residual of stage $t-1$, with wealth as credit routing, remains to be
-   constructed and analysed against the boosting literature. Split-conformal
-   prediction is the one-participant degenerate case, with its rent
-   $I(R;X)$ as the value left on the table
-   [@cotton2026conformalbetting]; the open question is the equilibrium of
-   the non-degenerate pool.
+3. *Residual markets.* Proposition 7 gives the single-step correction; a
+   chain of residual markets is stagewise boosting with wealth as the
+   learning rate. Open: the microstructure (who funds each residual pot, and
+   when it settles relative to the stage before), whether a forecaster free
+   to enter several stages prefers withholding information upstream to sell
+   it downstream, and whether the iterated correction converges to the true
+   conditional law as boosting does. Split-conformal prediction is the
+   one-participant degenerate case, with its rent $I(R;X)$ as the value left
+   on the table [@cotton2026conformalbetting].
 
 ## References
 
