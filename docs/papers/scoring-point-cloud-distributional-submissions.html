@@ -1,0 +1,247 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Scoring Point-Cloud Distributional Submissions</title>
+  <link rel="stylesheet" href="../style.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.css" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/katex.min.js" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.10/dist/contrib/auto-render.min.js" crossorigin="anonymous"
+    onload="renderMathInElement(document.body, {delimiters:[{left:'$$',right:'$$',display:true},{left:'$',right:'$',display:false}]});"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="../index.html">mechanisms</a>
+      <nav>
+        <a href="../catalog.html">Catalog</a>
+        <a href="../demos.html">Demos</a>
+        <a href="../map.html">Map</a>
+        <a href="../connections.html">Connections</a>
+        <a href="../implementations.html">Implementations</a>
+        <a href="../papers.html">Papers</a>
+        <a href="../bibliography.html">Bibliography</a>
+        <a href="../world-cup.html">World Cup</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="../papers.html">&larr; Papers</a> &middot;
+      <a href="https://github.com/microprediction/mechanisms/blob/main/papers/scoring-point-cloud-distributional-submissions.md">markdown source</a></p>
+    <h1 id="scoring-point-cloud-distributional-submissions">Scoring Point-Cloud Distributional Submissions</h1>
+    <h3 id="the-deconvolution-incentive-jittered-outcomes-and-the-heat-ladder">The deconvolution incentive, jittered outcomes, and the heat ladder</h3>
+    <p><strong>Peter Cotton</strong> · <em>Working draft v0.1</em> · 2026</p>
+    <blockquote>
+    <p><strong>Status.</strong> An evolving working note, not a finished paper. Theorems 1–3 are</p>
+    <p>proved below at working-draft rigor; the mechanism and the closed forms are</p>
+    <p>implemented and unit-tested in</p>
+    <p><a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py"><code>mechanisms/nearest_the_pin.py</code></a></p>
+    <p>(<code>mollified_log_score</code>, and tests that verify Theorem 1 numerically in both</p>
+    <p>directions). The prior-art audit lives in</p>
+    <p><a href="https://github.com/microprediction/mechanisms/blob/main/research/mollified-scoring-and-the-heat-ladder.md"><code>research/mollified-scoring-and-the-heat-ladder.md</code></a>.</p>
+    <p>Drafted with AI assistance; errors are mine.</p>
+    </blockquote>
+    <hr />
+    <h2 id="abstract">Abstract</h2>
+    <p>Forecasting contests increasingly accept <strong>point clouds</strong> — bags of Monte-Carlo samples standing in for a predictive density — and score them by smoothing the cloud into a density (a KDE) and evaluating at the realised outcome. We show this common design is <strong>improper</strong>: because the mechanism smooths the submission, the optimal cloud is drawn not from the forecaster's belief but from its <strong>deconvolution</strong> by the smoothing kernel (Theorem 1; for a Gaussian belief $N(\mu,\tau^2)$ and bandwidth $h$, the optimal submission is $N(\mu,\tau^2-h^2)$ — shave exactly the bandwidth off your variance), with an truthfulness gap equal to $\mathrm{KL}(p^*\Vert p^**\varphi_h)&gt;0$. The repair is symmetric and one line: <strong>if you smooth the forecasts, smooth the outcome too</strong>. Jittering the outcome by the same kernel — equivalently, the <em>mollified log score</em> $S_h(\rho,z)=(\varphi_h*\log\rho_h)(z)$ — is strictly proper for the pre-smoothing law, because convolution by a kernel whose characteristic function has dense support is injective on probability measures (Lemma 1, Theorem 2). Running the proper rung at every smoothing scale then turns de Bruijn's identity into a payment schedule (Theorem 3): rung differences pay the Fisher divergence — normalization-free elicitation of <em>shape</em> — while the coarse rung pays for between-mode <em>mass</em>, and the telescoped total is the full log-score edge. The resulting <strong>heat-ladder pool</strong> is budget-balanced and strictly proper rung by rung. A historical note records that the microprediction platform jittered submissions and ground truth from its launch — a purely intuitive choice at the time, with no theorem behind it; Theorem 2 is that theorem, and it sharpens the intuition into kernel guidance.</p>
+    <hr />
+    <h2 id="1-the-problem">1. The problem</h2>
+    <p>A contest accepts from each participant $i$ a cloud $x^{(i)}_1,\dots,x^{(i)}_m\in\mathbb R^d$, smooths it into a density $\hat q_i = \tfrac1m\sum_j \varphi_h(\cdot-x^{(i)}_j)$, and — when the outcome $z$ is revealed — rewards $\log \hat q_i(z)$ (or splits a pot in proportion to $\hat q_i(z)$, the exponentiated form). This is the reward rule of the <a href="./nearest-the-pin-parimutuel.html">nearest-the-pin parimutuel</a> and of monteprediction-style contests, and the standard evaluation protocol for sample-based generative models.</p>
+    <p>The question this paper answers: <em>what cloud should a rational participant submit?</em> The answer is <strong>not</strong> "samples from your belief," and the failure has a clean closed form, a one-line repair, and — once repaired — a multi-scale structure worth wanting for its own sake.</p>
+    <p>Throughout, we idealise the cloud by its sampling law $\rho$ ($m\to\infty$; finite $m$ is Open Problem 1), so the mechanism observes $T_h\rho := \rho*\varphi_h$, where $\varphi_h$ is a density on $\mathbb R^d$, symmetric, strictly positive (the Gaussian $N(0,h^2 I)$ is canonical). The truth is $p^*$; all expectations below are assumed finite (for Gaussian kernels and beliefs with finite second moments, $\log T_h\rho$ has at-worst-quadratic tails, so this is mild).</p>
+    <h2 id="2-the-deconvolution-incentive">2. The deconvolution incentive</h2>
+    <p><strong>Theorem 1 (improperness of raw-outcome KDE scoring).</strong> <em>Let $S_{\mathrm{raw}}(\rho,z)=\log(T_h\rho)(z)$. Then</em></p>
+    <p>$$\mathbb E_{z\sim p^*}\,S_{\mathrm{raw}}(\rho,z)
+   \;=\; -H(p^*) \;-\; \mathrm{KL}\!\big(p^*\,\Vert\, T_h\rho\big),$$</p>
+    <p><em>so the report solves $\min_{q\in T_h\mathcal P}\mathrm{KL}(p^*\Vert q)$, where $\mathcal P$ is the set of probability laws. Consequently:</em></p>
+    <p><em>(i) If the deconvolution $\rho^\dagger := T_h^{-1}p^*$ exists in $\mathcal P$, it is the unique optimal report (uniqueness by Lemma 1), and it differs from the truth.</em></p>
+    <p><em>(ii) Truthful reporting $\rho=p^*$ is strictly suboptimal, with truthfulness gap</em></p>
+    <p>$$\Delta \;=\; \mathrm{KL}\!\big(p^*\Vert p^**\varphi_h\big)\;&gt;\;0
+   \qquad\text{for every } h&gt;0.$$</p>
+    <p><em>(iii) Gaussian closed form: $p^*=N(\mu,\Sigma)$, $\varphi_h=N(0,h^2I)$. The deconvolution exists iff $\Sigma-h^2I\succeq 0$, and then $\rho^\dagger=N(\mu,\Sigma-h^2I)$. In one dimension: shave $h^2$ off the variance, with gap $\Delta=\tfrac12[\log(1+h^2/\tau^2)-h^2/(\tau^2+h^2)]\approx h^4/(4\tau^4)$.</em></p>
+    <p><strong>Proof.</strong> The identity is the standard cross-entropy decomposition, $\int p^*\log q = -H(p^*)-\mathrm{KL}(p^*\Vert q)$, applied to $q=T_h\rho$; maximizing over $\rho$ is minimizing KL over the convex image class $T_h\mathcal P$. (i) If $p^*\in T_h\mathcal P$ the KL term can be driven to zero, its unique minimum, and only by $q=p^*$; Lemma 1 lifts uniqueness of $q$ to uniqueness of $\rho$. (ii) The truthful report attains $\mathrm{KL}(p^*\Vert p^*_h)$ where $p^*_h:=p^**\varphi_h$; this is strictly positive unless $p^*_h=p^*$. Taking characteristic functions, $\hat p^*(\omega)\,(1-\hat\varphi_h(\omega))=0$ for all $\omega$; for the Gaussian kernel $\hat\varphi_h(\omega)=e^{-h^2|\omega|^2/2}&lt;1$ off $\omega=0$, so $\hat p^*$ would have to vanish off the origin, impossible for a characteristic function (continuity and $\hat p^*(0)=1$). (iii) Gaussians: convolution adds covariances; the KL between $N(0,\tau^2)$ and $N(0,\tau^2+h^2)$ is the stated expression; Taylor expansion gives $h^4/(4\tau^4)$. $\blacksquare$</p>
+    <p><strong>Remarks.</strong> (a) When the deconvolution fails to exist ($\Sigma-h^2I\not\succeq
+0$, or a rough $p^*$), the optimum is the KL projection of $p^*$ onto $T_h\mathcal P$ and can degenerate toward atomic clouds — exactly the point-mass exploit of Theis, van den Oord &amp; Bethge (2016), who observed the improperness (without the deconvolution characterization). (b) The gap is fourth order in $h$, which is why the flaw survives casual inspection — but it is a <em>slope</em>, and any optimising submitter, human or fitted, walks down it. (c) The phenomenon is the log-score/bandwidth sibling of the "fair scores" findings for the ensemble CRPS (Fricker, Ferro &amp; Stephenson 2013; Ferro 2014), where the analogous cheat is derived along the ensemble-size axis.</p>
+    <h2 id="3-the-repair-jitter-the-pin">3. The repair: jitter the pin</h2>
+    <p><strong>Definition (mollified log score).</strong> With $\varepsilon\sim N(0,I)$,</p>
+    <p>$$S_h(\rho,z)\;=\;\mathbb E_\varepsilon\big[\log (T_h\rho)(z+h\varepsilon)\big]
+   \;=\;\big(\varphi_h * \log T_h\rho\big)(z).$$</p>
+    <p>Operationally: <em>settle at a jittered outcome</em> $z'=z+h\varepsilon$ — or use the right-hand form, which integrates the jitter analytically and makes settlement deterministic. The two have the same expectation, hence identical incentive properties.</p>
+    <p><strong>Lemma 1 (injectivity criterion).</strong> <em>Convolution $T_\varphi$ is injective on probability measures iff $\{\hat\varphi\neq 0\}$ is dense in $\mathbb R^d$.</em></p>
+    <p><strong>Proof.</strong> ($\Leftarrow$) $T_\varphi\rho=T_\varphi\rho'$ gives $(\hat\rho-\hat\rho')\hat\varphi\equiv0$, so $\hat\rho=\hat\rho'$ on a dense set, hence everywhere by continuity of characteristic functions, hence $\rho=\rho'$ by the uniqueness theorem. ($\Rightarrow$) If $\hat\varphi$ vanishes on an open ball $B$, take a real, even, nonzero $g$ with $\hat g\in C_c^\infty(B\cup(-B))$ (so $g$ is Schwartz, $\int g=0$) and a base density $p$ with tails heavier than Schwartz decay (Cauchy). Then $q=p+\epsilon g$ is a probability density distinct from $p$ for small $\epsilon&gt;0$, and $\widehat{T_\varphi q}=\hat\varphi\,(\hat p+\epsilon\hat g)
+=\hat\varphi\,\hat p$ since $\hat g$ lives where $\hat\varphi=0$: two distinct laws with identical smoothings. $\blacksquare$</p>
+    <p>This is Wiener-flavoured (Wiener's Tauberian theorem is the $L^1$ statement); for probability measures the continuity of characteristic functions buys the dense-support version. Practical reading: <strong>Gaussian and Laplace jitter are injective</strong> (nonvanishing characteristic functions); the <strong>uniform kernel is also fine</strong> (sinc zeros are isolated, hence the nonvanishing set is dense); <strong>band-limited kernels fail</strong> (e.g. Fejér-type kernels, whose characteristic function vanishes on a half-line — two beliefs agreeing on low frequencies become indistinguishable).</p>
+    <p><strong>Theorem 2 (kernel-channel properness).</strong> <em>Let $S$ be a scoring rule, $K$ a Markov kernel with push-forward $T_K$ on laws, and define</em></p>
+    <p>$$S_K(\rho,z)\;=\;\mathbb E_{z'\sim K(z,\cdot)}\big[S(T_K\rho,\,z')\big].$$</p>
+    <p><em>If $S$ is proper, $S_K$ is proper. If $S$ is strictly proper on the image class $T_K\mathcal P$, then $S_K$ is strictly proper on $\mathcal P$ <strong>iff</strong> $T_K$ is injective on $\mathcal P$. In particular the mollified log score $S_h$ is strictly proper for the pre-smoothing law whenever $\{\hat\varphi\neq0\}$ is dense — for Gaussian jitter, always.</em></p>
+    <p><strong>Proof.</strong> By Fubini, $\mathbb E_{z\sim p^*}S_K(\rho,z)=\mathbb E_{w\sim T_Kp^*}S(T_K\rho,w)$: the expected score of the report $T_K\rho$ for the outcome law $T_Kp^*$, under $S$. Properness of $S$ maximizes this at $T_K\rho=T_Kp^*$, which the truthful $\rho=p^*$ achieves — properness. Strict properness of $S$ on the image class forces $T_K\rho=T_Kp^*$ at any maximizer; injectivity of $T_K$ lifts this to $\rho=p^*$, and conversely if $T_K$ is not injective two distinct reports tie. For $S=\log$ and $K$ = convolution by $\varphi_h$: the log score is strictly proper on densities, $T_K\rho=\rho*\varphi_h$ is a density, and Lemma 1 gives injectivity. $\blacksquare$</p>
+    <p><strong>How much to jitter? Exactly as much as you smooth.</strong> The jitter is not a free parameter: it is pinned, kernel for kernel, to the mechanism's own smoothing. Jittering with s.d. $j$ while smoothing with bandwidth $h$ pairs the jittered truth $p^**\varphi_j$ with the smoothed report $\rho*\varphi_h$, and in the all-Gaussian setting the optimal report variance is</p>
+    <p>$$v^\ast \;=\; \tau^2 + j^2 - h^2 .$$</p>
+    <p>At $j=0$ this is Theorem 1's shave; at $j=h$ — and only at $j=h$ — the optimum is the truth; at $j&gt;h$ the mechanism pays <em>padding</em> by $j^2-h^2$. Under-jitter rewards sharpening, over-jitter rewards blurring, and matching the bandwidth is the unique fixed point (the general statement is Theorem 2 with the <em>same</em> kernel on both sides; a mismatched pair elicits $\arg\min_\rho \mathrm{KL}(p^**\varphi_j\,\Vert\,\rho*\varphi_h)$, the $j$-blurred belief deconvolved by $h$). If the KDE bandwidth is data-driven (Scott's rule, say), the pin is jittered with that same realised bandwidth.</p>
+    <p><strong>Attribution, precisely.</strong> The <em>properness</em> of the convolved score against a noised outcome is not new: Bröcker &amp; Smith (2007, §5) prove it for a general observation-noise channel, and Ferro (2017, Prop. 3) works out exactly the white-noise/Gaussian case. What both left open is <em>strictness</em> — Bröcker &amp; Smith, verbatim: "If $S$ is strictly proper though, $\bar S$ is not necessarily strictly proper, because if $\bar q(z)=\bar p(z)$, this does not necessarily mean equality of $p(x)$ and $q(x)$." Lemma 1 closes exactly that gap. The discrete-outcome analog is the label-noise literature's forward loss correction with an invertible transition matrix (Patrini et al. 2017, Thm. 2; van Rooyen &amp; Williamson 2018). The framing flip is the contribution of this section: verification treats outcome noise as a <em>nuisance to be endured</em> (Ferro explicitly doubts the "efficacy" of perturbing observations); read as <em>mechanism design</em>, deliberately injecting jitter matched to the mechanism's own smoothing is what makes the point-cloud game strictly proper.</p>
+    <h2 id="4-the-heat-ladder">4. The heat ladder</h2>
+    <p>Let $p_t := p * N(0,tI)$, the heat flow ($\partial_t p_t=\tfrac12\Delta p_t$). For clouds this is free to compute: the rung at scale $t$ is <em>the same cloud</em> scored with bandwidth $\sqrt{h^2+t}$ against a correspondingly jittered pin, i.e. the §3 score with kernel $\varphi_{\sqrt{h^2+t}}$.</p>
+    <p><strong>Theorem 3 (scale decomposition of the log-score edge).</strong> <em>Let $p^*,\rho$ have finite second moments and densities that are positive and smooth after any positive smoothing (automatic here, since every rung applies $t\ge h^2&gt;0$ of Gaussian smoothing to both). Then for $0\le s&lt;T$,</em></p>
+    <p>$$\frac{d}{dt}\,\mathrm{KL}\!\big(p^*_t\Vert\rho_t\big)
+   \;=\;-\tfrac12\,D_F\!\big(p^*_t\Vert\rho_t\big),
+\qquad
+\mathrm{KL}(p^*_s\Vert\rho_s)
+ = \mathrm{KL}(p^*_T\Vert\rho_T)
+ + \tfrac12\!\int_s^T\! D_F(p^*_t\Vert\rho_t)\,dt,$$</p>
+    <p><em>where $D_F(p\Vert q)=\int p\,\lVert\nabla\log p-\nabla\log q\rVert^2$ is the Fisher divergence.</em></p>
+    <p><strong>Proof.</strong> Write $p=p^*_t$, $q=\rho_t$, both solving $\partial_t
+u=\tfrac12\Delta u$. Then</p>
+    <p>$$\frac{d}{dt}\int p\log\frac pq
+ \;=\;\int (\partial_t p)\log\frac pq \;+\;\underbrace{\int \partial_t p}_{=0}
+ \;-\;\int \frac pq\,\partial_t q .$$</p>
+    <p>First term: $\tfrac12\int \Delta p\,\log(p/q)
+= -\tfrac12\int\nabla p\cdot\nabla\log(p/q)
+= -\tfrac12\int p\,\nabla\log p\cdot(\nabla\log p-\nabla\log q)$. Third term: $-\tfrac12\int \frac pq\,\Delta q
+= \tfrac12\int \nabla\!\Big(\frac pq\Big)\cdot\nabla q
+= \tfrac12\int p\,(\nabla\log p-\nabla\log q)\cdot\nabla\log q$. Summing,</p>
+    <p>$$\frac{d}{dt}\,\mathrm{KL}
+ = -\tfrac12\int p\,\lVert\nabla\log p-\nabla\log q\rVert^2
+ = -\tfrac12 D_F(p\Vert q),$$</p>
+    <p>and integrating over $[s,T]$ gives the display. The integrations by parts are justified because after smoothing by $t\ge h^2&gt;0$ both densities are positive, smooth, with Gaussian-dominated tails and integrable score functions; boundary terms vanish. $\blacksquare$</p>
+    <p>The differential identity is de Bruijn's, in relative form (Stam 1959; Barron 1986; Lyu 2009); its integral form prices the likelihood of diffusion models (Song, Durkan, Murray &amp; Ermon 2021). <em>The identity is not ours; the mechanism reading is.</em> Note the bandwidth floor does real work: at $t=0$ an empirical cloud has no density and the identity is vacuous; every rung the mechanism actually runs starts at $t\ge h^2$, where everything is smooth.</p>
+    <p><strong>The heat-ladder pool.</strong> Fix scales $0=t_0&lt;t_1&lt;\dots&lt;t_K=T$ and weights $w_k\ge0$. Participant $i$ stakes $s_i$ and submits one cloud. At settlement, rung $k$ splits $w_k\sum_i s_i$ by any budget-balanced rule driven by the rung score $S_{\sqrt{h^2+t_k}}(\rho_i,z)$ — the stake-weighted additive form $\Delta W_i^{(k)}=w_k\,s_i\,(S_i^{(k)}-\bar S^{(k)})$ with $\bar S^{(k)}$ the stake-weighted mean (Lambert et al. 2008), or the multiplicative pot split at full Kelly.</p>
+    <p><strong>Corollary.</strong> <em>(i) Each rung, hence the tower, is budget-balanced. (ii) Each rung is strictly proper for the cloud law (Theorem 2), so truthful submission is optimal rung-wise in the small-stake, risk-neutral limit. (iii) By Theorem 3 a truthful participant's edge decomposes across rungs: differences of adjacent rungs pay (integrated) Fisher divergence — Hyvärinen-scored</em> shape*, invariant to the normalization of the submission — while the top rung pays $\mathrm{KL}(p^*_T\Vert\rho_T)$, which at mode-connecting scales carries the between-mode* mass <em>that score matching is blind to (Wenliang &amp; Kanagawa 2020; Zhang et al. 2022; Koehler, Heckett &amp; Risteski 2023). The weights $w_k$ are an explicit dial over what is being purchased.</em></p>
+    <p>Practicalities: rung scores are positively correlated (one cloud, re-smoothed), so discriminative value concentrates in a few well-separated scales; $K$ of order 3–5, geometrically spaced, mirrors the noise ladders of annealed score matching (Song &amp; Ermon 2019).</p>
+    <h2 id="5-historical-note-the-jitter-was-intuition-first">5. Historical note: the jitter was intuition first</h2>
+    <p>The microprediction platform (Cotton 2022; launched 2019) added a small amount of noise to submissions and to the ground truth before settling its cloud-based lotteries. <strong>This was merely intuitive</strong> — a fairness-and-anti-gaming instinct about discreteness and ties, with no incentive theorem attached; the platform paper recorded the practice in one line and moved on. The verification literature, meanwhile, treated outcome noise as a defect: something to be modelled away (Saetra et al. 2004; Candille &amp; Talagrand 2008), with Ferro (2017) explicitly doubting the value of perturbing observations.</p>
+    <p>Theorem 2 is the missing theorem: symmetrized jitter is precisely what makes a smoothed-submission game strictly proper for the submitted law. And the theory returns the favour by <em>sharpening</em> the intuition into design guidance the intuition could not supply: the jitter distribution matters. Kernels whose characteristic function has dense support (Gaussian, Laplace, even uniform) preserve strict properness; band-limited kernels do not (Lemma 1). Intuition chose jitter; the theorem chooses <em>which</em> jitter.</p>
+    <h2 id="6-related-work">6. Related work</h2>
+    <p>Improperness of sample-based scoring: Theis, van den Oord &amp; Bethge (2016) (KDE log-likelihood "an improper scoring function"); the fair-scores line for the ensemble CRPS (Bröcker 2012; Fricker, Ferro &amp; Stephenson 2013; Ferro 2014); the estimator view of KDE log scores (Krüger, Lerch, Thorarinsdottir &amp; Gneiting 2021); discrete impossibility and randomized repair (Kimpara, Frongillo &amp; Waggoner 2023). Convolved scores under observation error: Bröcker &amp; Smith (2007); Ferro (2017); Bessac &amp; Naveau (2021). Noisy-channel learning: Patrini et al. (2017); van Rooyen &amp; Williamson (2018); surrogate scoring rules (Liu, Wang &amp; Chen 2022). Transform-properness: Allen, Ginsbourger &amp; Ziegel (2023, Prop. 4 published / Prop. 3 arXiv v1); Pic, Dombry, Naveau &amp; Taillardat (2025, Prop. 1) — deterministic injective transforms; Theorem 2 is the Markov-kernel extension. The identity: Stam (1959); Barron (1986); Lyu (2009); Song et al. (2021). Local scores: Hyvärinen (2005); Parry, Dawid &amp; Lauritzen (2012). Nearest mechanism neighbours, each missing a leg: Lang, Leutbecher &amp; Maciel (2025) — a Gaussian scale-ladder of proper scores as a <em>training loss</em>; Dudík, Wang, Pennock &amp; Rothschild (2021) — a multi-resolution <em>market</em> by partition refinement, subsidized rather than budget-balanced; Lambert et al. (2008, 2015) and the microprediction pool — self-funding cloud wagering at a single scale. A full audit with verdicts is in the companion <a href="https://github.com/microprediction/mechanisms/blob/main/research/mollified-scoring-and-the-heat-ladder.md">research note</a>.</p>
+    <h2 id="7-open-problems">7. Open problems</h2>
+    <ul>
+      <li><strong>1.</strong> <strong>Fair rungs.</strong> The finite-$m$ correction making each rung's expected score optimized by <em>sampling</em> from the belief (the log-score/KDE analog of Ferro's fair CRPS), and its interaction with the jitter.</li>
+      <li><strong>2.</strong> <strong>Optimal scale weights.</strong> For wealth-concentration objectives, is there a closed-form optimal $w(t)$ — and does it recover the likelihood weighting of Song et al. (2021)?</li>
+      <li><strong>3.</strong> <strong>Anisotropic rungs.</strong> Reference-covariance flows in place of isotropic heat, preserving rung-wise strict properness (cf. the <a href="https://github.com/microprediction/mechanisms/blob/main/research/anisotropic-sliced-scores.md">anisotropic sliced scores note</a>).</li>
+      <li><strong>4.</strong> <strong>The Kelly interpolation.</strong> Between $b\to0$ (linear pot split, mode-seeking) and $b=1$ (log score, truthful), characterize the rung-wise optimal misreport as a function of the stake fraction.</li>
+    </ul>
+    <h2 id="references">References</h2>
+    <ul>
+      <li>Allen, S., Ginsbourger, D. &amp; Ziegel, J. (2023). "Evaluating Forecasts for</li>
+    </ul>
+    <p>High-Impact Events Using Transformed Kernel Scores." <em>SIAM/ASA JUQ</em> 11(3), 906–940.</p>
+    <ul>
+      <li>Barron, A. R. (1986). "Entropy and the Central Limit Theorem." <em>Ann. Probab.</em></li>
+    </ul>
+    <p>14(1), 336–342.</p>
+    <ul>
+      <li>Bessac, J. &amp; Naveau, P. (2021). "Forecast Score Distributions with Imperfect</li>
+    </ul>
+    <p>Observations." <em>ASCMO</em> 7, 53–71.</p>
+    <ul>
+      <li>Bröcker, J. (2012). "Evaluating Raw Ensembles with the Continuous Ranked</li>
+    </ul>
+    <p>Probability Score." <em>QJRMS</em> 138(667), 1611–1617.</p>
+    <ul>
+      <li>Bröcker, J. &amp; Smith, L. A. (2007). "Scoring Probabilistic Forecasts: The</li>
+    </ul>
+    <p>Importance of Being Proper." <em>Weather and Forecasting</em> 22(2), 382–388.</p>
+    <ul>
+      <li>Candille, G. &amp; Talagrand, O. (2008). "Impact of Observational Error on the</li>
+    </ul>
+    <p>Validation of Ensemble Prediction Systems." <em>QJRMS</em> 134(633), 959–971.</p>
+    <ul>
+      <li>Cotton, P. (2022). <em>Microprediction: Building an Open AI Network.</em> MIT Press.</li>
+      <li>Dudík, M., Wang, X., Pennock, D. M. &amp; Rothschild, D. M. (2021). "Log-time</li>
+    </ul>
+    <p>Prediction Markets for Interval Securities." <em>AAMAS</em>.</p>
+    <ul>
+      <li>Ferro, C. A. T. (2014). "Fair Scores for Ensemble Forecasts." <em>QJRMS</em></li>
+    </ul>
+    <p>140(683), 1917–1923.</p>
+    <ul>
+      <li>Ferro, C. A. T. (2017). "Measuring Forecast Performance in the Presence of</li>
+    </ul>
+    <p>Observation Error." <em>QJRMS</em> 143(708), 2665–2676.</p>
+    <ul>
+      <li>Fricker, T. E., Ferro, C. A. T. &amp; Stephenson, D. B. (2013). "Three</li>
+    </ul>
+    <p>Recommendations for Evaluating Climate Predictions." <em>Meteorol. Appl.</em> 20(2), 246–255.</p>
+    <ul>
+      <li>Hyvärinen, A. (2005). "Estimation of Non-Normalized Statistical Models by</li>
+    </ul>
+    <p>Score Matching." <em>JMLR</em> 6, 695–709.</p>
+    <ul>
+      <li>Kimpara, D., Frongillo, R. &amp; Waggoner, B. (2023). "Proper Losses for Discrete</li>
+    </ul>
+    <p>Generative Models." <em>ICML</em>, PMLR 202.</p>
+    <ul>
+      <li>Koehler, F., Heckett, A. &amp; Risteski, A. (2023). "Statistical Efficiency of</li>
+    </ul>
+    <p>Score Matching: The View from Isoperimetry." <em>ICLR</em>.</p>
+    <ul>
+      <li>Krüger, F., Lerch, S., Thorarinsdottir, T. &amp; Gneiting, T. (2021). "Predictive</li>
+    </ul>
+    <p>Inference Based on Markov Chain Monte Carlo Output." <em>Int. Stat. Rev.</em> 89(2), 274–301.</p>
+    <ul>
+      <li>Lambert, N. S., Langford, J., Wortman, J., Chen, Y., Reeves, D. M., Shoham,</li>
+    </ul>
+    <p>Y. &amp; Pennock, D. M. (2008). "Self-Financed Wagering Mechanisms for Forecasting." <em>EC</em>, 170–179; (2015) <em>J. Econ. Theory</em> 156, 389–416.</p>
+    <ul>
+      <li>Lang, S., Leutbecher, M. &amp; Maciel, P. (2025). "A Multi-Scale Loss Formulation</li>
+    </ul>
+    <p>for Learning a Probabilistic Model with Proper Score Optimisation." arXiv:2506.10868.</p>
+    <ul>
+      <li>Liu, Y., Wang, J. &amp; Chen, Y. (2022). "Surrogate Scoring Rules." <em>ACM TEAC</em></li>
+    </ul>
+    <p>10(3).</p>
+    <ul>
+      <li>Lyu, S. (2009). "Interpretation and Generalization of Score Matching." <em>UAI</em>.</li>
+      <li>Parry, M., Dawid, A. P. &amp; Lauritzen, S. (2012). "Proper Local Scoring Rules."</li>
+    </ul>
+    <p><em>Ann. Statist.</em> 40(1), 561–592.</p>
+    <ul>
+      <li>Patrini, G., Rozza, A., Menon, A. K., Nock, R. &amp; Qu, L. (2017). "Making Deep</li>
+    </ul>
+    <p>Neural Networks Robust to Label Noise: A Loss Correction Approach." <em>CVPR</em>.</p>
+    <ul>
+      <li>Pic, R., Dombry, C., Naveau, P. &amp; Taillardat, M. (2025). "Proper Scoring</li>
+    </ul>
+    <p>Rules for Multivariate Probabilistic Forecasts based on Aggregation and Transformation." <em>ASCMO</em> 11, 23–58.</p>
+    <ul>
+      <li>Saetra, Ø., Hersbach, H., Bidlot, J.-R. &amp; Richardson, D. S. (2004). "Effects</li>
+    </ul>
+    <p>of Observation Errors on the Statistics for Ensemble Spread and Reliability." <em>Mon. Wea. Rev.</em> 132(6), 1487–1501.</p>
+    <ul>
+      <li>Song, Y., Durkan, C., Murray, I. &amp; Ermon, S. (2021). "Maximum Likelihood</li>
+    </ul>
+    <p>Training of Score-Based Diffusion Models." <em>NeurIPS</em>.</p>
+    <ul>
+      <li>Song, Y. &amp; Ermon, S. (2019). "Generative Modeling by Estimating Gradients of</li>
+    </ul>
+    <p>the Data Distribution." <em>NeurIPS</em>.</p>
+    <ul>
+      <li>Stam, A. J. (1959). "Some Inequalities Satisfied by the Quantities of</li>
+    </ul>
+    <p>Information of Fisher and Shannon." <em>Information and Control</em> 2(2), 101–112.</p>
+    <ul>
+      <li>Theis, L., van den Oord, A. &amp; Bethge, M. (2016). "A Note on the Evaluation of</li>
+    </ul>
+    <p>Generative Models." <em>ICLR</em>.</p>
+    <ul>
+      <li>van Rooyen, B. &amp; Williamson, R. C. (2018). "A Theory of Learning with</li>
+    </ul>
+    <p>Corrupted Labels." <em>JMLR</em> 18(228), 1–50.</p>
+    <ul>
+      <li>Wenliang, L. K. &amp; Kanagawa, H. (2020). "Blindness of Score-Based Methods to</li>
+    </ul>
+    <p>Isolated Components and Mixing Proportions." arXiv:2008.10087.</p>
+    <ul>
+      <li>Zhang, M., Key, O., Hayes, P., Barber, D., Paige, B. &amp; Briol, F.-X. (2022).</li>
+    </ul>
+    <p>"Towards Healing the Blindness of Score Matching." arXiv:2209.07396.</p>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

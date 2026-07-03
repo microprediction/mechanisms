@@ -1,7 +1,7 @@
 # Anisotropic (Schur-damped) sliced scoring rules
 
 *Status: a worked development of an open conjecture from the nearest-the-pin
-paper (§5, §7.3), with an honest novelty assessment and one load-bearing
+paper (§5, §7.3), with a calibrated novelty assessment and one load-bearing
 technical caveat. Likely novel as a combination; the central properness claim is
 false-until-proven and the note is built around that boundary. See §4 and §6.*
 
@@ -83,7 +83,7 @@ score*, exactly the position the proper localized scores occupy (twCRPS/owCRPS,
 Allen et al. 2023; de Punder et al. 2026): properness is preserved precisely
 because the adaptation depends on a fixed object, not on the candidate forecast.
 
-So the honest form of the conjecture is: **anisotropic slicing against a fixed
+The defensible form of the conjecture is: **anisotropic slicing against a fixed
 reference covariance, with a reliability dial `γ`.** That is the version worth
 building, and it keeps strict properness.
 
@@ -109,7 +109,7 @@ separate forecasts*. That reframing matters because it says there is no single
 forecasters vs. concentrating wealth on skill), and the two regimes want `γ`
 shaped by `Σ_ref` and by `Σ_ref⁻¹` respectively.
 
-## 6. The closed-form dial (imported, honestly)
+## 6. The closed-form dial (imported, with attribution)
 
 The convex-combination dial with a closed-form optimum is mature shrinkage
 mathematics: James–Stein (1961), Ledoit–Wolf linear shrinkage with closed-form
@@ -120,7 +120,7 @@ intensity in the `p > n` regime (Cotton, *Two Sides of Schur Damping*, 2026;
 *Schur Complementary Allocation*, 2024) — but for **covariance/portfolio
 construction, not scoring rules.**
 
-The honest claim is therefore narrow: that `γ⋆` is the right intensity for
+The defensible claim is therefore narrow: that `γ⋆` is the right intensity for
 building `Σ_ref` *as a covariance estimator*; whether it is also optimal for the
 *scoring objective* (power as a test, or wealth-concentration speed inside a
 [nearest-the-pin](../mechanisms/nearest_the_pin.py) pool) is a separate

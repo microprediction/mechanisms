@@ -2,13 +2,17 @@
 
 ### A continuous, projection-scored pool for distributional forecasts
 
-**Peter Cotton** · *Working draft v0.1* · 2026
+**Peter Cotton** · *Working draft v0.2* · 2026
 
 > **Status.** This is an evolving working note, not a finished paper. The core
 > mechanism and the projection identity (§4) are implemented and unit-tested in
 > [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py); the
 > connections to the random-projections literature (§4) and the Schur
 > pseudo-likelihood (§5) are sketched and flagged where conjectural.
+> *v0.2:* added the §3 caveat that truthful reporting concerns the **density**,
+> not the **cloud** — under KDE settlement at the raw outcome the optimal cloud
+> is the belief deconvolved by the bandwidth; see the companion paper
+> [*Scoring Point-Cloud Distributional Submissions*](scoring-point-cloud-distributional-submissions.md).
 
 ---
 
@@ -116,6 +120,23 @@ As in the discrete case the growth rate is governed by a logarithmic comparison
 of the player's density to the crowd's. We verify the incentive numerically in
 [`test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py): a truthful
 reporter out-grows a biased one against an honest field.
+
+> **Caveat (added v0.2): the truthful object is the *density*, not the *cloud*.**
+> The claim above concerns the reported density $q$. When $q$ is *constructed
+> from a sample cloud by KDE* — the parenthetical in the Mechanism paragraph,
+> and what `pot_split` actually does — the report space is the cloud, the
+> mechanism applies $q = \rho * \varphi_h$, and the optimal **cloud** is *not*
+> drawn from one's belief: it is the belief **deconvolved by the bandwidth**
+> (Gaussian belief $N(\mu,\tau^2)$, bandwidth $h$ ⇒ optimal cloud
+> $N(\mu,\tau^2-h^2)$). The two statements are consistent — the optimal
+> *smoothed* cloud still equals the true density, so the density-level optimum
+> stands — but "submit samples from your belief" is **not** optimal under
+> raw-outcome settlement. Truthfulness of the cloud itself is restored by
+> **jittering the pin** by the KDE kernel, strictly proper via injectivity of
+> Gaussian convolution. See the companion paper,
+> [*Scoring Point-Cloud Distributional Submissions*](scoring-point-cloud-distributional-submissions.md),
+> and `mollified_log_score` in
+> [`nearest_the_pin.py`](../mechanisms/nearest_the_pin.py).
 
 **Relationship to other mechanisms.**
 - It is the **continuous, density-weighted limit of the parimutuel** (§2), and a

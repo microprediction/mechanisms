@@ -104,7 +104,7 @@ def test_raw_kde_log_score_prefers_deconvolved_report():
     grid = np.linspace(0.4, 1.6, 1201)
     v_star = grid[np.argmax(_f_raw(grid, h2))]
     assert v_star == pytest.approx(1.0 - h2, abs=2e-3)   # shave exactly h^2
-    assert _f_raw(1.0 - h2, h2) > _f_raw(1.0, h2)        # beats honesty
+    assert _f_raw(1.0 - h2, h2) > _f_raw(1.0, h2)        # beats truth-telling
 
 
 def test_mollified_score_prefers_truthful_report():
@@ -113,7 +113,7 @@ def test_mollified_score_prefers_truthful_report():
     grid = np.linspace(0.4, 1.6, 1201)
     v_star = grid[np.argmax(_f_moll(grid, h2))]
     assert v_star == pytest.approx(1.0, abs=2e-3)
-    assert _f_moll(1.0, h2) > _f_moll(1.0 - h2, h2)      # honesty beats shaving
+    assert _f_moll(1.0, h2) > _f_moll(1.0 - h2, h2)      # truth-telling beats shaving
 
 
 def test_mollified_log_score_matches_analytic_value():
@@ -142,3 +142,14 @@ def test_mollified_log_score_montecarlo_agrees_with_quadrature():
                                   n_nodes=20000, rng=3)
     offset = -0.5 * np.log(2 * np.pi * h * h) - 0.5
     assert mc2 - quad == pytest.approx(offset, abs=0.05)
+
+
+def test_jitter_calibration_peak():
+    # v* = tau^2 + j^2 - h^2: j=0 recovers the raw shave, j=h and only j=h is
+    # truthful, j>h pays padding. "Jitter exactly as much as you smooth."
+    grid = np.linspace(0.05, 3.0, 5901)
+    for h, j, tau in [(0.5, 0.0, 1.0), (0.5, 0.5, 1.0), (0.5, 0.8, 1.0), (0.4, 0.4, 1.2)]:
+        scores = [ntp.gaussian_expected_mollified_log_score(v, h, tau, jitter=j)
+                  for v in grid]
+        v_star = grid[int(np.argmax(scores))]
+        assert v_star == pytest.approx(tau * tau + j * j - h * h, abs=2e-3)

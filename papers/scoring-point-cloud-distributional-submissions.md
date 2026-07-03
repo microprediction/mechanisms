@@ -25,7 +25,7 @@ submission, the optimal cloud is drawn not from the forecaster's belief but
 from its **deconvolution** by the smoothing kernel (Theorem 1; for a Gaussian
 belief $N(\mu,\tau^2)$ and bandwidth $h$, the optimal submission is
 $N(\mu,\tau^2-h^2)$ — shave exactly the bandwidth off your variance), with an
-honesty gap equal to $\mathrm{KL}(p^*\Vert p^**\varphi_h)>0$. The repair is
+truthfulness gap equal to $\mathrm{KL}(p^*\Vert p^**\varphi_h)>0$. The repair is
 symmetric and one line: **if you smooth the forecasts, smooth the outcome
 too**. Jittering the outcome by the same kernel — equivalently, the *mollified
 log score* $S_h(\rho,z)=(\varphi_h*\log\rho_h)(z)$ — is strictly proper for the
@@ -37,9 +37,9 @@ Fisher divergence — normalization-free elicitation of *shape* — while the
 coarse rung pays for between-mode *mass*, and the telescoped total is the full
 log-score edge. The resulting **heat-ladder pool** is budget-balanced and
 strictly proper rung by rung. A historical note records that the
-microprediction platform has jittered submissions and ground truth since
-inception — as intuition, without a theorem; Theorem 2 is that theorem, and it
-sharpens the intuition into kernel guidance.
+microprediction platform jittered submissions and ground truth from its launch
+— a purely intuitive choice at the time, with no theorem behind it; Theorem 2
+is that theorem, and it sharpens the intuition into kernel guidance.
 
 ---
 
@@ -81,7 +81,7 @@ $\mathcal P$ is the set of probability laws. Consequently:*
 $\mathcal P$, it is the unique optimal report (uniqueness by Lemma 1), and it
 differs from the truth.*
 
-*(ii) Truthful reporting $\rho=p^*$ is strictly suboptimal, with honesty gap*
+*(ii) Truthful reporting $\rho=p^*$ is strictly suboptimal, with truthfulness gap*
 
 $$\Delta \;=\; \mathrm{KL}\!\big(p^*\Vert p^**\varphi_h\big)\;>\;0
    \qquad\text{for every } h>0.$$
@@ -177,6 +177,23 @@ For $S=\log$ and $K$ = convolution by $\varphi_h$: the log score is strictly
 proper on densities, $T_K\rho=\rho*\varphi_h$ is a density, and Lemma 1 gives
 injectivity. $\blacksquare$
 
+**How much to jitter? Exactly as much as you smooth.** The jitter is not a
+free parameter: it is pinned, kernel for kernel, to the mechanism's own
+smoothing. Jittering with s.d. $j$ while smoothing with bandwidth $h$ pairs the
+jittered truth $p^**\varphi_j$ with the smoothed report $\rho*\varphi_h$, and
+in the all-Gaussian setting the optimal report variance is
+
+$$v^\ast \;=\; \tau^2 + j^2 - h^2 .$$
+
+At $j=0$ this is Theorem 1's shave; at $j=h$ — and only at $j=h$ — the optimum
+is the truth; at $j>h$ the mechanism pays *padding* by $j^2-h^2$. Under-jitter
+rewards sharpening, over-jitter rewards blurring, and matching the bandwidth is
+the unique fixed point (the general statement is Theorem 2 with the *same*
+kernel on both sides; a mismatched pair elicits
+$\arg\min_\rho \mathrm{KL}(p^**\varphi_j\,\Vert\,\rho*\varphi_h)$, the
+$j$-blurred belief deconvolved by $h$). If the KDE bandwidth is data-driven
+(Scott's rule, say), the pin is jittered with that same realised bandwidth.
+
 **Attribution, precisely.** The *properness* of the convolved score against a
 noised outcome is not new: Bröcker & Smith (2007, §5) prove it for a general
 observation-noise channel, and Ferro (2017, Prop. 3) works out exactly the
@@ -256,7 +273,7 @@ full Kelly.
 **Corollary.** *(i) Each rung, hence the tower, is budget-balanced. (ii) Each
 rung is strictly proper for the cloud law (Theorem 2), so truthful submission
 is optimal rung-wise in the small-stake, risk-neutral limit. (iii) By Theorem
-3 the honest edge decomposes across rungs: differences of adjacent rungs pay
+3 a truthful participant's edge decomposes across rungs: differences of adjacent rungs pay
 (integrated) Fisher divergence — Hyvärinen-scored* shape*, invariant to the
 normalization of the submission — while the top rung pays
 $\mathrm{KL}(p^*_T\Vert\rho_T)$, which at mode-connecting scales carries the
@@ -271,12 +288,11 @@ annealed score matching (Song & Ermon 2019).
 
 ## 5. Historical note: the jitter was intuition first
 
-The microprediction platform (Cotton 2022; live since 2019) has always added a
-small amount of noise to submissions and to the ground truth before settling
-its cloud-based lotteries. **At the time this was intuition** — a
-fairness-and-anti-gaming instinct about discreteness and ties — with no
-incentive theorem attached; the platform paper records the practice in one
-line and moves on. The verification literature, meanwhile, treated outcome
+The microprediction platform (Cotton 2022; launched 2019) added a small amount
+of noise to submissions and to the ground truth before settling its cloud-based
+lotteries. **This was merely intuitive** — a fairness-and-anti-gaming instinct
+about discreteness and ties, with no incentive theorem attached; the platform
+paper recorded the practice in one line and moved on. The verification literature, meanwhile, treated outcome
 noise as a defect: something to be modelled away (Saetra et al. 2004; Candille
 & Talagrand 2008), with Ferro (2017) explicitly doubting the value of
 perturbing observations.
@@ -324,7 +340,7 @@ single scale. A full audit with verdicts is in the companion
    heat, preserving rung-wise strict properness (cf. the
    [anisotropic sliced scores note](../research/anisotropic-sliced-scores.md)).
 4. **The Kelly interpolation.** Between $b\to0$ (linear pot split,
-   mode-seeking) and $b=1$ (log score, honest), characterize the rung-wise
+   mode-seeking) and $b=1$ (log score, truthful), characterize the rung-wise
    optimal misreport as a function of the stake fraction.
 
 ## References

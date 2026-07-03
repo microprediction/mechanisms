@@ -172,10 +172,14 @@
     return -0.5 * Math.log(2 * Math.PI * s) - (t * t) / (2 * s);
   }
 
-  function gaussianExpectedMollifiedLogScore(v, h, tau) {
+  // jitter (s.d. j) defaults to h — the theorem's prescription: jitter exactly
+  // as much as you smooth. Peak at v = tau^2 + j^2 - h^2: j=0 is the raw score
+  // (shave), j=h and only j=h puts the peak at the truth, j>h pays padding.
+  function gaussianExpectedMollifiedLogScore(v, h, tau, jitter) {
     const t = tau === undefined ? 1.0 : tau;
+    const j = jitter === undefined ? h : jitter;
     const s = v + h * h;
-    return -0.5 * Math.log(2 * Math.PI * s) - (t * t + h * h) / (2 * s);
+    return -0.5 * Math.log(2 * Math.PI * s) - (t * t + j * j) / (2 * s);
   }
 
   // --- aggregation (opinion pools) ----------------------------------------

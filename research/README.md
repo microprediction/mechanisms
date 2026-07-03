@@ -13,7 +13,7 @@ and back to the consolidated [`bibliography.bib`](bibliography.bib).
 | [composition-and-the-algebra-of-mechanisms.md](composition-and-the-algebra-of-mechanisms.md) | **How the mechanisms compose**, a `skaters`-style operator algebra over distributional beliefs; Savage's characterisation and the convex-duality generator (with proof sketches); a worked elicitation→calibration pipeline | `scoring_rules`, `cmm`, `amm`, `aggregation`, `calibration` |
 | [gaps-and-roadmap.md](gaps-and-roadmap.md) | **Gap analysis & roadmap**, an external audit of the microprediction ecosystem mapped onto this repo: what is already implemented vs genuinely missing (local scoring, CA/EA peer prediction, Kelly, combinatorial markets) | `local_scoring`, `peer_prediction` |
 
-### Generalizations (candidate originality, honestly assessed)
+### Generalizations (candidate originality, calibrated)
 
 These notes develop generalizations that may be original. Each carries a
 calibrated novelty verdict and an exhaustive, web-verified prior-art appendix —
@@ -21,7 +21,7 @@ the prior art is the point.
 
 | Note | Idea | Verdict |
 |------|------|---------|
-| [local-score-wagering-pool.md](local-score-wagering-pool.md) | A self-funding wagering pool scored by a **local** (Hyvärinen) proper rule, so participants submit **unnormalized** energy-based densities and no partition function is ever computed | Likely novel, narrow gap; honest about score matching's mode-mass blindness |
+| [local-score-wagering-pool.md](local-score-wagering-pool.md) | A self-funding wagering pool scored by a **local** (Hyvärinen) proper rule, so participants submit **unnormalized** energy-based densities and no partition function is ever computed | Likely novel, narrow gap; explicit about score matching's mode-mass blindness |
 | [anisotropic-sliced-scores.md](anisotropic-sliced-scores.md) | **Schur-damped** anisotropic slicing of the energy score with a reliability dial `γ` (develops a conjecture in the nearest-the-pin paper) | Likely novel — strictly proper only if the anisotropy uses a *fixed reference* covariance, not the forecast's own |
 | [composing-mechanisms-conservation-and-boosting.md](composing-mechanisms-conservation-and-boosting.md) | Conservation laws for chained self-funding mechanisms (**edge** vs wealth) and **boosting/residual markets** | Two likely-novel narrow gaps; one sub-question retired as a known theorem |
 | [mollified-scoring-and-the-heat-ladder.md](mollified-scoring-and-the-heat-ladder.md) | KDE-log-scored pools elicit the **deconvolution** of the belief (closed form: shave `h²` off the variance); the repair is to **jitter the pin**; run the proper rung at every smoothing scale and de Bruijn's identity splits the pot — rung differences pay Fisher (shape), the coarse rung pays mode mass, the total is the log score | Improperness known (Theis et al. 2016); closed form, strictness closure, and the **heat-ladder pool** assembly likely novel, narrow gaps; repaired in `nearest_the_pin.py` |

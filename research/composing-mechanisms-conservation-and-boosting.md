@@ -2,7 +2,7 @@
 
 *Status: three open questions from
 [composition-and-the-algebra-of-mechanisms.md](composition-and-the-algebra-of-mechanisms.md)
-(§5), worked up with honest novelty assessments. One is **retired** (it is a known
+(§5), worked up with calibrated novelty assessments. One is **retired** (it is a known
 theorem); two are **likely novel, narrow gap** and are stated here with the
 specific non-trivial consequence each must deliver to be more than "composing
 known results." Prior art is deliberately exhaustive — that is the point.*
@@ -21,7 +21,7 @@ The composition note asks whether an arbitrary *conjugation* (reparametrize the
 outcome or the report by a map `T`, score in the new coordinates) preserves strict
 properness, noting that the probability integral transform does (Dawid) while a
 learned non-invertible map may not. **This is a published dichotomy, not an open
-question**, and the honest move is to cite it and retire the novelty claim.
+question**, and the right move is to cite it and retire the novelty claim.
 
 - **Allen, Ginsbourger & Ziegel (2023)**, "Evaluating Forecasts for High-Impact
   Events Using Transformed Kernel Scores," *SIAM/ASA JUQ*, arXiv:2202.12732,
@@ -70,7 +70,7 @@ of zeros. Stating that as the law would be vacuous.
 
 **The non-trivial invariant is conservation of *edge*, and it requires interface
 sufficiency.** A trader's value in a proper-scoring market is the Bregman
-divergence `D_G(q, π)` — the edge an honest belief `q` holds over the price `π`
+divergence `D_G(q, π)` — the edge a truthful belief `q` holds over the price `π`
 (Savage 1971; Hanson 2003). Compose two stages through an interface map `T` that
 reduces the carried state (stage 2 sees only `T(·)` of stage 1's output). Then:
 

@@ -214,3 +214,11 @@ def test_point_cloud_scoring_parity():
                               ntp.gaussian_expected_raw_kde_log_score(v, h, tau))
                 assert_parity("gaussianExpectedMollifiedLogScore", [v, h, tau],
                               ntp.gaussian_expected_mollified_log_score(v, h, tau))
+
+
+def test_jitter_calibration_parity():
+    from mechanisms import nearest_the_pin as ntp
+    for (v, h, tau, j) in [(0.8, 0.5, 1.0, 0.0), (1.0, 0.5, 1.0, 0.5),
+                           (1.4, 0.5, 1.0, 0.8), (1.2, 0.4, 1.2, 0.6)]:
+        assert_parity("gaussianExpectedMollifiedLogScore", [v, h, tau, j],
+                      ntp.gaussian_expected_mollified_log_score(v, h, tau, jitter=j))

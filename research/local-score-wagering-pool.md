@@ -1,6 +1,6 @@
 # A normalization-free wagering pool (local-score parimutuel)
 
-*Status: a worked generalization with an honest novelty assessment. Likely novel
+*Status: a worked generalization with a calibrated novelty assessment. Likely novel
 as a combination; every ingredient is published. See §7.*
 
 ## 1. The gap
@@ -67,9 +67,9 @@ so `R(z, c·p̃) = R(z, p̃)` for every `c > 0`. The normalizer is not concealed
 is **not an argument of the payout**. There is nothing to game by misreporting
 total mass, because total mass is never read.
 
-## 4. What keeps participants honest
+## 4. What keeps reports truthful
 
-Honesty is enforced not by a normalization constraint but by the **derivative
+Truthful reporting is enforced not by a normalization constraint but by the **derivative
 penalty** `½‖∇log p‖²` (and the Laplacian `Δlog p`). This is the *local surrogate*
 for "probability mass must come from somewhere": you cannot spike your log-density
 at the outcome for free, because a steep, peaked log-density is charged for its own
@@ -104,7 +104,7 @@ it. On disconnected support **you genuinely can hide mass between modes.**
 
 This is not a flaw peculiar to this mechanism; it is the well-known blind spot of
 score matching (the reason annealed and diffusion-based score matching exist:
-Song & Ermon 2019). It transfers directly: the honest fix here is the same one —
+Song & Ermon 2019). It transfers directly: the fix here is the same one —
 **anneal**. Score the submission at several noise scales (convolve the outcome,
 or the densities, with Gaussians of decreasing width) and pool the scores; the
 coarse scales connect the modes and restore identifiability of the mixing
@@ -114,7 +114,7 @@ ladder of mollified log-score pools whose rung differences pay exactly the
 Fisher divergence, with the coarse rung carrying the mode mass — is worked out
 in [mollified-scoring-and-the-heat-ladder.md](mollified-scoring-and-the-heat-ladder.md).
 
-## 6. Construction subtleties (honest)
+## 6. Construction subtleties
 
 - **Unbounded score / limited liability.** Local scores are unbounded (`Δlog p`,
   `‖∇log p‖²` can be arbitrarily large), so the *additive* WSWM payout can in
@@ -150,7 +150,7 @@ thoroughly; the two literatures are disjoint. Closest neighbours:
   outcomes, not continuous, not local, not unnormalized.
 - Kilgour & Gerchak (2004) and **Johnstone (2007)**, *The Parimutuel Kelly
   Probability Scoring Rule*: competitive/parimutuel scoring, with the warning that
-  the parimutuel Kelly score is honest only as a Nash equilibrium, not strictly
+  the parimutuel Kelly score is truthful only as a Nash equilibrium, not strictly
   proper — the relevant caution for §6's `b → 0` claim.
 
 The bridge that makes the keystone legitimate — that the Hyvärinen score *is* a

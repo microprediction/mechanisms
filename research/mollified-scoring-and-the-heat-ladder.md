@@ -1,6 +1,6 @@
 # Mollified scoring and the heat-ladder pool
 
-*Status: a candidate-original mechanism with an honest novelty assessment (§6).
+*Status: a candidate-original mechanism with a calibrated novelty assessment (§6).
 Three claims of increasing ambition: a closed-form improperness (§1), its
 symmetric repair (§2), and a scale-decomposed wagering mechanism (§3–4). The
 ingredients are published; the closed form, the strictness closure, and the
@@ -97,16 +97,16 @@ matched to the mechanism's own smoothing is what makes the sample-cloud game
 strictly proper. One line of code: **jitter the pin by the KDE bandwidth.**
 
 Disclosure: the microprediction platform (Cotton 2022, and the platform paper)
-has always added a small amount of noise to submissions and ground truth — as
-an implementation detail, without incentive analysis. This section is,
-retroactively, the theory of that detail.
+added a small amount of noise to submissions and ground truth — a merely
+intuitive implementation detail at the time, without incentive analysis. This
+section is, retroactively, the theory of that detail.
 
 ## 3. The ladder: run the proper rung at every scale and the edge decomposes
 
 Let `p_t = p * N(0, t)` denote the heat flow (`∂_t p = ½Δp`). Run the §2 rung
 at a ladder of scales `t ∈ [0, T]` — for sample clouds this is free: the rung
 at scale `t` is *the same cloud* scored with bandwidth `√(h² + t)` against a
-correspondingly jittered pin. The honest forecaster's expected edge at scale
+correspondingly jittered pin. A truthful participant's expected edge at scale
 `t` is `KL(p*_t ‖ ρ_t)`, and de Bruijn's identity in integral form gives the
 exact decomposition
 
@@ -148,7 +148,7 @@ failure modes of the repo's existing pools annihilate pairwise: the
 carried by the coarse rungs; the density pool's deconvolution gaming (§1) is
 killed rung-by-rung by the jitter.
 
-Practicalities, honestly stated: rung scores are positively correlated across
+Practicalities: rung scores are positively correlated across
 scales (the same cloud, resmoothing), so the ladder's *discriminative* value
 concentrates in a few well-separated scales — `K` of order 3–5, geometrically
 spaced, is the sensible default, mirroring the noise ladders of annealed score
@@ -195,7 +195,7 @@ prior disclosure of single-scale jitter (by the author), sans theorem.
    reference-covariance flow connects to
    [anisotropic-sliced-scores.md](anisotropic-sliced-scores.md); the same
    fixed-reference discipline should preserve strict properness rung-wise.
-4. **The `b`-interpolation.** Between full Kelly (`b=1`, log score, honest at
+4. **The `b`-interpolation.** Between full Kelly (`b=1`, log score, truthful at
    every rung) and `b → 0` (linear pot-split, mode-seeking), characterize the
    rung-wise optimal misreport as a function of `b` — the mechanism-design
    analog of risk-sensitive score matching.

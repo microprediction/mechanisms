@@ -6,9 +6,9 @@ name: citations
 
 on:
   push:
-    paths: ['research/bibliography.bib', 'docs/bibliography.html', 'scripts/**', '.github/workflows/citations.yml']
+    paths: ['research/bibliography.bib', 'docs/bibliography.html', 'papers/**', 'docs/papers/**', 'scripts/**', '.github/workflows/citations.yml']
   pull_request:
-    paths: ['research/bibliography.bib', 'docs/bibliography.html', 'scripts/**']
+    paths: ['research/bibliography.bib', 'docs/bibliography.html', 'papers/**', 'docs/papers/**', 'scripts/**']
   schedule:
     - cron: '0 7 * * 1'      # Mondays 07:00 UTC: verify against primary sources
   workflow_dispatch:
@@ -25,6 +25,8 @@ jobs:
         run: python scripts/check_citations.py
       - name: docs/bibliography.html is generated from the .bib (not stale)
         run: python scripts/build_bibliography.py --check
+      - name: docs/papers/*.html are generated from papers/*.md (not stale)
+        run: python scripts/build_papers.py --check
       - name: Bibliography .bib <-> .html drift (belt and braces)
         run: python scripts/check_bib_html_sync.py
       - name: Online verification against Crossref / arXiv

@@ -1,6 +1,6 @@
 # Bibliography integrity scripts
 
-Tooling that keeps the bibliography honest. Standard-library Python only — no
+Tooling that keeps the bibliography correct. Standard-library Python only — no
 `pip install`, no dependencies. Born out of a session where hand-entered
 citations had a wrong DOI, an unverified venue, a stale year, and `.bib`/`.html`
 drift; these scripts make that whole class of error cheap to catch automatically.
@@ -10,6 +10,7 @@ drift; these scripts make that whole class of error cheap to catch automatically
 | [`bibtools.py`](bibtools.py) | Minimal BibTeX reader: entries, section comments, DOI/arXiv extraction, LaTeX-accent folding (ASCII for matching, Unicode for display). Shared by the others. | no |
 | [`check_citations.py`](check_citations.py) | Validates `research/bibliography.bib`. | optional |
 | [`build_bibliography.py`](build_bibliography.py) | **Generates `docs/bibliography.html` from the `.bib`** — the `.bib` is the single source of truth. `--check` fails if the committed HTML is stale. | no |
+| [`build_papers.py`](build_papers.py) | **Renders `papers/*.md` into readable KaTeX pages** under `docs/papers/` (math-protected markdown converter; repo links rewritten). `--check` fails if a rendered page is stale. | no |
 | [`check_bib_html_sync.py`](check_bib_html_sync.py) | Drift detector between `.bib` and `.html`. Now belt-and-braces behind the generator. | no |
 
 ## Usage

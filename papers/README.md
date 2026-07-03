@@ -1,7 +1,11 @@
 # Papers
 
 Original write-ups developed in this repository (as opposed to the literature
-[`research/`](../research) notes, which survey existing work).
+[`research/`](../research) notes, which survey existing work). Rendered,
+readable versions live on the site under
+[mechanisms.microprediction.org/papers.html](https://mechanisms.microprediction.org/papers.html)
+(generated from these markdown sources by `scripts/build_papers.py` — edit the
+markdown, run the script, commit both).
 
 | Paper | Status | Topic |
 |-------|--------|-------|

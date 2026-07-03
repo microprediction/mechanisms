@@ -126,21 +126,26 @@ def gaussian_expected_raw_kde_log_score(v: float, h: float, tau: float = 1.0) ->
     return float(-0.5 * math.log(2 * math.pi * s) - float(tau) ** 2 / (2 * s))
 
 
-def gaussian_expected_mollified_log_score(v: float, h: float, tau: float = 1.0) -> float:
+def gaussian_expected_mollified_log_score(v: float, h: float, tau: float = 1.0,
+                                          jitter: float = None) -> float:
     r"""Expected **mollified** ("jitter the pin") log score, closed form.
 
-    Same setting, but the outcome is jittered by the KDE kernel, so the score
-    pairs the smoothed report ``N(0, v + h²)`` with the smoothed truth
-    ``N(0, τ² + h²)``:
+    Same setting, but the outcome is jittered with s.d. ``j`` (default: ``j = h``,
+    the theorem's prescription — jitter exactly as much as you smooth), pairing
+    the smoothed report ``N(0, v + h²)`` with the jittered truth ``N(0, τ² + j²)``:
 
-    .. math:: f(v) = -\tfrac12\log(2\pi(v+h^2)) - \frac{\tau^2 + h^2}{2(v+h^2)},
+    .. math:: f(v) = -\tfrac12\log(2\pi(v+h^2)) - \frac{\tau^2 + j^2}{2(v+h^2)},
 
-    maximised at ``v = τ²`` — truthful submission (Theorem 2: strict properness
-    via injectivity of Gaussian convolution).
+    maximised at ``v = τ² + j² − h²``. **Jitter calibration**: ``j = 0`` recovers
+    the raw score (optimal shave ``h²``); ``j = h`` and only ``j = h`` puts the
+    optimum at the truth ``v = τ²`` (Theorem 2); ``j > h`` pays *padding* by
+    ``j² − h²``. Under-jitter rewards sharpening, over-jitter rewards blurring;
+    matching the bandwidth is the unique fixed point.
     """
+    j = float(h) if jitter is None else float(jitter)
     s = float(v) + float(h) ** 2
     return float(-0.5 * math.log(2 * math.pi * s)
-                 - (float(tau) ** 2 + float(h) ** 2) / (2 * s))
+                 - (float(tau) ** 2 + j ** 2) / (2 * s))
 
 
 def pot_split(densities, stakes, b: float = 0.1):
