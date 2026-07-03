@@ -538,13 +538,13 @@ composed forecast of Proposition 7 built from the entrant's rank report
 $g(u\mid x)=p_{R\mid X}(G^{-}(u))/p_R(G^{-}(u))$ recovers the conditional
 law exactly: $p_R(r)\,g(G(r)\mid x)=p_{R\mid X}(r)$.
 
-**The mechanism is deployed.** The microprediction platform's
-nearest-the-pin pool [@cotton2022microprediction] pays each entry its sample
+**The mechanism has run in production.** The microprediction platform's
+nearest-the-pin pool [@cotton2022microprediction] paid each entry its sample
 density at the realised value relative to the field's, the payoff of Lemma 1
 with densities estimated from submitted samples; the MidOne contest
-[@crunchdao_midone] prices an explicit density [@cotton_density] the same
-way, and its priced object is a residual stream. A conformal predictor
-entering either pool is the participant that prices flat in $X$, and Theorem
+[@crunchdao_midone] priced an explicit density [@cotton_density] the same
+way, and its priced object was a residual stream. A conformal predictor
+entering such a pool is the participant that prices flat in $X$, and Theorem
 9 is the bankroll of its better-informed competitor.
 
 **Measuring the rent.** The rent is defined through a log score, so it is
