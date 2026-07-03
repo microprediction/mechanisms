@@ -158,7 +158,7 @@ $\leftrightarrow$ convex function $\leftrightarrow$ Bregman divergence*
 choices of $G$, with the divergences computed directly from the definition:
 
 | Score | Generator $G(p)=S(p;p)$ | Bregman divergence $D_G(q,p)$ |
-|-------|--------------------------|-------------------------------|
+|--------------------|--------------------------|-------------------------------|
 | logarithmic | $\sum_i p_i\log p_i$ | $\mathrm{KL}(q\Vert p)$ |
 | Brier (quadratic) | $\lVert p\rVert_2^2$ | $\lVert q-p\rVert_2^2$ |
 | spherical | $\lVert p\rVert_2$ | $\lVert q\rVert_2\,(1-\cos\theta_{p,q})$ |

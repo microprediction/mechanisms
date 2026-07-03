@@ -29,6 +29,40 @@ PAPERS = [
     "composition-and-the-algebra-of-mechanisms.md",
 ]
 
+# The markdown master opens with title / subtitle / byline / hr / Abstract /
+# hr; sections are manually numbered "## N. Title" so the site HTML can render
+# them verbatim. For the PDF this block becomes real pandoc metadata (yielding
+# \maketitle and an abstract environment) and the manual numbers give way to
+# --number-sections, which reproduces them one for one.
+HEADER = re.compile(
+    r"\A# (?P<title>.+)\n+"
+    r"### (?P<subtitle>.+)\n+"
+    r"(?P<author>[^·\n]+?) · \*(?P<version>[^*\n]+)\* · (?P<year>\d{4})\n+"
+    r"---\n+"
+    r"## Abstract\n+"
+    r"(?P<abstract>[\s\S]+?)\n+---\n+")
+
+
+def paperize(md: str) -> str:
+    m = HEADER.match(md)
+    if not m:
+        raise ValueError("paper header block not in the expected form")
+    body = md[m.end():]
+    body = re.sub(r"(?m)^## \d+\.\s+", "## ", body)
+    body = re.sub(r"(?m)^## References$", "## References {-}", body)
+    abstract = "\n".join("  " + ln for ln in m["abstract"].splitlines())
+    meta = (
+        "---\n"
+        f'title: "{m["title"]}"\n'
+        f'subtitle: "{m["subtitle"]}"\n'
+        f'author: "{m["author"].strip()}"\n'
+        f'date: "{m["version"]} · {m["year"]}"\n'
+        f"abstract: |\n{abstract}\n"
+        "numbersections: true\n"
+        "indent: true\n"
+        "---\n\n")
+    return meta + body
+
 
 def absolutize(md: str) -> str:
     def repl(m: "re.Match") -> str:
@@ -45,7 +79,7 @@ def absolutize(md: str) -> str:
 
 
 def build_one(name: str) -> Path:
-    md = absolutize((SRC / name).read_text(encoding="utf-8"))
+    md = paperize(absolutize((SRC / name).read_text(encoding="utf-8")))
     pdf = OUT / (name[:-3] + ".pdf")
     with tempfile.NamedTemporaryFile("w", suffix=".md", delete=False,
                                      encoding="utf-8") as fh:
@@ -54,6 +88,7 @@ def build_one(name: str) -> Path:
     cmd = [
         "pandoc", tmp, "-o", str(pdf),
         "-f", "markdown+tex_math_dollars",
+        "--shift-heading-level-by=-1",
         "--citeproc",
         "--bibliography", str(ROOT / "research" / "bibliography.bib"),
         "--metadata", "link-citations=true",
