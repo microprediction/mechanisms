@@ -2,15 +2,23 @@
 
 ### The deconvolution incentive, jittered outcomes, and the heat ladder
 
-**Peter Cotton** · *Working draft v0.1* · 2026
+**Peter Cotton** · *Working draft v0.2* · 2026
 
 > **Status.** An evolving working note, not a finished paper. Theorems 1–3 are
-> proved below at working-draft rigor; the mechanism and the closed forms are
+> proved below at working-draft rigor **in the population-law setting**: the
+> cloud is idealised by its sampling law, and the smoothing/jitter kernel is
+> fixed in advance. Finite clouds and participant-endogenous bandwidths are
+> outside the proved results (§7). The mechanism and the closed forms are
 > implemented and unit-tested in
 > [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py)
 > (`mollified_log_score`, and tests that verify Theorem 1 numerically in both
 > directions). The prior-art audit lives in
 > [`research/mollified-scoring-and-the-heat-ladder.md`](../research/mollified-scoring-and-the-heat-ladder.md).
+> *v0.2:* sharpened hypotheses following referee feedback — conditional
+> truthfulness gap (Thm. 1), integrability assumptions (Thm. 2), exogenous
+> bandwidth requirement, standard de Bruijn regularity in place of a tail
+> overclaim (Thm. 3), and an explicit level-vs-difference payment analysis
+> with a new proposition that band scores are strictly proper.
 > Drafted with AI assistance; errors are mine.
 
 ---
@@ -25,7 +33,8 @@ submission, the optimal cloud is drawn not from the forecaster's belief but
 from its **deconvolution** by the smoothing kernel (Theorem 1; for a Gaussian
 belief $N(\mu,\tau^2)$ and bandwidth $h$, the optimal submission is
 $N(\mu,\tau^2-h^2)$ — shave exactly the bandwidth off your variance), with a
-truthfulness gap equal to $\mathrm{KL}(p^*\Vert p^**\varphi_h)>0$. The repair is
+truthfulness gap of $\mathrm{KL}(p^*\Vert p^**\varphi_h)$ when the
+deconvolution is admissible. The repair is
 symmetric and one line: **if you smooth the forecasts, smooth the outcome
 too**. Jittering the outcome by the same kernel — equivalently, the *mollified
 log score* $S_h(\rho,z)=(\varphi_h*\log\rho_h)(z)$ — is strictly proper for the
@@ -35,8 +44,10 @@ Theorem 2). Running the proper rung at every smoothing scale then turns de
 Bruijn's identity into a payment schedule (Theorem 3): rung differences pay the
 Fisher divergence — normalization-free elicitation of *shape* — while the
 coarse rung pays for between-mode *mass*, and the telescoped total is the full
-log-score edge. The resulting **heat-ladder pool** is budget-balanced and
-strictly proper rung by rung. A historical note records that the
+log-score edge. The resulting **heat-ladder pool** is budget-balanced, and in
+its additive stake-weighted form strictly proper rung by rung in the
+risk-neutral small-stake limit; all results are population-level, with the
+kernel fixed in advance. A historical note records that the
 microprediction platform jittered submissions and ground truth from its launch
 — a purely intuitive choice at the time, with no theorem behind it; Theorem 2
 is that theorem, and it sharpens the intuition into kernel guidance.
@@ -78,18 +89,23 @@ $$\mathbb E_{z\sim p^*}\,S_{\mathrm{raw}}(\rho,z)
 $\mathcal P$ is the set of probability laws. Consequently:*
 
 *(i) If the deconvolution $\rho^\dagger := T_h^{-1}p^*$ exists in
-$\mathcal P$, it is the unique optimal report (uniqueness by Lemma 1), and it
-differs from the truth.*
+$\mathcal P$, it is the unique optimal report (uniqueness by the injectivity
+of $T_h$, Lemma 1), it differs from the truth, and truthful reporting is
+strictly suboptimal with truthfulness gap*
 
-*(ii) Truthful reporting $\rho=p^*$ is strictly suboptimal, with truthfulness gap*
+$$\Delta \;=\; \mathrm{KL}\!\big(p^*\Vert p^**\varphi_h\big)\;>\;0.$$
 
-$$\Delta \;=\; \mathrm{KL}\!\big(p^*\Vert p^**\varphi_h\big)\;>\;0
-   \qquad\text{for every } h>0.$$
+*(ii) If $p^*\notin T_h\mathcal P$, the optimum is the KL projection of $p^*$
+onto the convex class $T_h\mathcal P$, and $\Delta$ above is only the loss of
+the truthful report relative to the unattainable ideal $q=p^*$; the gap to the
+attainable optimum is $\Delta-\inf_{\rho\in\mathcal P}
+\mathrm{KL}(p^*\Vert T_h\rho)$, which can vanish in degenerate cases (for a
+point-mass belief the truthful cloud is optimal).*
 
 *(iii) Gaussian closed form: $p^*=N(\mu,\Sigma)$, $\varphi_h=N(0,h^2I)$. The
 deconvolution exists iff $\Sigma-h^2I\succeq 0$, and then
-$\rho^\dagger=N(\mu,\Sigma-h^2I)$. In one dimension: shave $h^2$ off the
-variance, with gap
+$\rho^\dagger=N(\mu,\Sigma-h^2I)$. In one dimension with $\tau^2>h^2$: shave
+$h^2$ off the variance, with gap
 $\Delta=\tfrac12[\log(1+h^2/\tau^2)-h^2/(\tau^2+h^2)]\approx h^4/(4\tau^4)$.*
 
 **Proof.** The identity is the standard cross-entropy decomposition,
@@ -97,13 +113,18 @@ $\int p^*\log q = -H(p^*)-\mathrm{KL}(p^*\Vert q)$, applied to $q=T_h\rho$;
 maximizing over $\rho$ is minimizing KL over the convex image class
 $T_h\mathcal P$. (i) If $p^*\in T_h\mathcal P$ the KL term can be driven to
 zero, its unique minimum, and only by $q=p^*$; Lemma 1 lifts uniqueness of $q$
-to uniqueness of $\rho$. (ii) The truthful report attains
-$\mathrm{KL}(p^*\Vert p^*_h)$ where $p^*_h:=p^**\varphi_h$; this is strictly
-positive unless $p^*_h=p^*$. Taking characteristic functions,
+to uniqueness of $\rho$; the truthful report attains
+$\mathrm{KL}(p^*\Vert p^*_h)$ where $p^*_h:=p^**\varphi_h$, and $p^*_h\neq p^*$
+always: taking characteristic functions,
 $\hat p^*(\omega)\,(1-\hat\varphi_h(\omega))=0$ for all $\omega$; for the
 Gaussian kernel $\hat\varphi_h(\omega)=e^{-h^2|\omega|^2/2}<1$ off
 $\omega=0$, so $\hat p^*$ would have to vanish off the origin, impossible for
-a characteristic function (continuity and $\hat p^*(0)=1$). (iii) Gaussians:
+a characteristic function (continuity and $\hat p^*(0)=1$). (ii) KL is jointly
+lower semicontinuous and strictly convex in its second argument where finite,
+and $T_h\mathcal P$ is convex, so the attainable optimum is the KL projection
+when attained; the point-mass example ($p^*=\delta_\mu$: the truthful cloud
+maximises $(T_h\rho)(\mu)$) shows the gap to the attainable optimum can be
+zero. (iii) Gaussians:
 convolution adds covariances; the KL between $N(0,\tau^2)$ and
 $N(0,\tau^2+h^2)$ is the stated expression; Taylor expansion gives
 $h^4/(4\tau^4)$. $\blacksquare$
@@ -132,19 +153,28 @@ deterministic. The two have the same expectation, hence identical incentive
 properties.
 
 **Lemma 1 (injectivity criterion).** *Convolution $T_\varphi$ is injective on
-probability measures iff $\{\hat\varphi\neq 0\}$ is dense in $\mathbb R^d$.*
+probability measures iff the zero set of the characteristic function has empty
+interior,*
+
+$$\operatorname{int}\{\omega : \hat\varphi(\omega)=0\} \;=\; \emptyset$$
+
+*(equivalently, $\{\hat\varphi\neq 0\}$ is dense in $\mathbb R^d$).*
 
 **Proof.** ($\Leftarrow$) $T_\varphi\rho=T_\varphi\rho'$ gives
 $(\hat\rho-\hat\rho')\hat\varphi\equiv0$, so $\hat\rho=\hat\rho'$ on a dense
 set, hence everywhere by continuity of characteristic functions, hence
 $\rho=\rho'$ by the uniqueness theorem. ($\Rightarrow$) If $\hat\varphi$
-vanishes on an open ball $B$, take a real, even, nonzero $g$ with
-$\hat g\in C_c^\infty(B\cup(-B))$ (so $g$ is Schwartz, $\int g=0$) and a base
-density $p$ with tails heavier than Schwartz decay (Cauchy). Then
-$q=p+\epsilon g$ is a probability density distinct from $p$ for small
-$\epsilon>0$, and $\widehat{T_\varphi q}=\hat\varphi\,(\hat p+\epsilon\hat g)
-=\hat\varphi\,\hat p$ since $\hat g$ lives where $\hat\varphi=0$: two distinct
-laws with identical smoothings. $\blacksquare$
+vanishes on an open ball $B$ (with $0\notin B$, since $\hat\varphi(0)=1$),
+take $\psi\in C_c^\infty(B)$, $\psi\neq0$, and set
+$\hat g(\omega)=\psi(\omega)+\overline{\psi(-\omega)}$, so that $g$ is a real
+Schwartz function — a finite signed density — with total mass
+$\int g=\hat g(0)=0$ and $\hat g$ supported where $\hat\varphi=0$. Choose a
+base density $p$ with tails heavier than Schwartz decay (Cauchy), so
+$|\epsilon g|\le p$ pointwise for small $\epsilon>0$. Then
+$q=p+\epsilon g$ is a probability density distinct from $p$, and
+$\widehat{T_\varphi q}=\hat\varphi\,(\hat p+\epsilon\hat g)
+=\hat\varphi\,\hat p$: two distinct laws with identical smoothings.
+$\blacksquare$
 
 This is Wiener-flavoured (Wiener's Tauberian theorem is the $L^1$ statement);
 for probability measures the continuity of characteristic functions buys the
@@ -160,11 +190,14 @@ Markov kernel with push-forward $T_K$ on laws, and define*
 
 $$S_K(\rho,z)\;=\;\mathbb E_{z'\sim K(z,\cdot)}\big[S(T_K\rho,\,z')\big].$$
 
-*If $S$ is proper, $S_K$ is proper. If $S$ is strictly proper on the image
-class $T_K\mathcal P$, then $S_K$ is strictly proper on $\mathcal P$ **iff**
+*Assume (a) $\mathbb E_{w\sim T_K p}\,|S(T_K\rho, w)|<\infty$ for the laws
+$p,\rho$ under comparison (or adopt an extended-expectation convention), and
+(b) $T_K\mathcal P$ lies within the report class on which $S$ is defined. If
+$S$ is proper, $S_K$ is proper. If $S$ is strictly proper on
+$T_K\mathcal P$, then $S_K$ is strictly proper on $\mathcal P$ **iff**
 $T_K$ is injective on $\mathcal P$. In particular the mollified log score
-$S_h$ is strictly proper for the pre-smoothing law whenever
-$\{\hat\varphi\neq0\}$ is dense — for Gaussian jitter, always.*
+$S_h$ is strictly proper for the pre-smoothing law whenever the zero set of
+$\hat\varphi$ has empty interior — for Gaussian jitter, always.*
 
 **Proof.** By Fubini,
 $\mathbb E_{z\sim p^*}S_K(\rho,z)=\mathbb E_{w\sim T_Kp^*}S(T_K\rho,w)$: the
@@ -186,13 +219,25 @@ in the all-Gaussian setting the optimal report variance is
 $$v^\ast \;=\; \tau^2 + j^2 - h^2 .$$
 
 At $j=0$ this is Theorem 1's shave; at $j=h$ — and only at $j=h$ — the optimum
-is the truth; at $j>h$ the mechanism pays *padding* by $j^2-h^2$. Under-jitter
+is the truth; at $j>h$ the mechanism pays *padding* by $j^2-h^2$. The formula
+holds where admissible ($v^\ast\ge0$); otherwise the Gaussian-family optimum
+sits on the boundary (the KL-projection case of Theorem 1(ii)). Under-jitter
 rewards sharpening, over-jitter rewards blurring, and matching the bandwidth is
 the unique fixed point (the general statement is Theorem 2 with the *same*
 kernel on both sides; a mismatched pair elicits
 $\arg\min_\rho \mathrm{KL}(p^**\varphi_j\,\Vert\,\rho*\varphi_h)$, the
-$j$-blurred belief deconvolved by $h$). If the KDE bandwidth is data-driven
-(Scott's rule, say), the pin is jittered with that same realised bandwidth.
+$j$-blurred belief deconvolved by $h$).
+
+**The bandwidth must be exogenous.** Theorem 2 assumes a *fixed* channel: the
+smoothing/jitter kernel must not depend on the submission being scored. A
+data-driven bandwidth computed *from the participant's own cloud* (Scott's
+rule on the submission, as reference KDE implementations default to) puts
+$h(\rho)$ under the participant's control, the score becomes
+$\mathbb E_\varepsilon\log(T_{h(\rho)}\rho)(z+h(\rho)\varepsilon)$, and strict
+properness no longer follows from Theorem 2. In a contest, freeze the
+bandwidth before submissions are observed — from the outcome history, a
+reference climatology, or a posted rule — and jitter with that frozen kernel.
+The incentives of participant-endogenous bandwidths are an open problem (§7).
 
 **Attribution, precisely.** The *properness* of the convolved score against a
 noised outcome is not new: Bröcker & Smith (2007, §5) prove it for a general
@@ -212,14 +257,19 @@ own smoothing is what makes the point-cloud game strictly proper.
 ## 4. The heat ladder
 
 Let $p_t := p * N(0,tI)$, the heat flow ($\partial_t p_t=\tfrac12\Delta p_t$).
-For clouds this is free to compute: the rung at scale $t$ is *the same cloud*
-scored with bandwidth $\sqrt{h^2+t}$ against a correspondingly jittered pin,
-i.e. the §3 score with kernel $\varphi_{\sqrt{h^2+t}}$.
+To keep one time variable, write $u = h^2 + t$ for the *total* smoothing scale:
+the rung at flow time $t$ is the §3 score with kernel
+$\varphi_{\sqrt u}$ — for clouds this is free to compute, since it is *the
+same cloud* scored with bandwidth $\sqrt u$ against a pin jittered by the same
+kernel. Below, subscripts $t$ refer to the flow started from the already
+$h$-smoothed laws, so every rung the mechanism runs has $u \ge h^2 > 0$.
 
 **Theorem 3 (scale decomposition of the log-score edge).** *Let $p^*,\rho$
-have finite second moments and densities that are positive and smooth after
-any positive smoothing (automatic here, since every rung applies $t\ge h^2>0$
-of Gaussian smoothing to both). Then for $0\le s<T$,*
+have finite second moments, and suppose the standard relative de Bruijn
+regularity conditions hold on $[s,T]$: $\mathrm{KL}(p^*_t\Vert\rho_t)$ finite
+along the flow, the relative Fisher divergence integrable on the interval, and
+enough decay to justify the integrations by parts below. Then for
+$0\le s<T$,*
 
 $$\frac{d}{dt}\,\mathrm{KL}\!\big(p^*_t\Vert\rho_t\big)
    \;=\;-\tfrac12\,D_F\!\big(p^*_t\Vert\rho_t\big),
@@ -250,10 +300,12 @@ $$\frac{d}{dt}\,\mathrm{KL}
  = -\tfrac12\int p\,\lVert\nabla\log p-\nabla\log q\rVert^2
  = -\tfrac12 D_F(p\Vert q),$$
 
-and integrating over $[s,T]$ gives the display. The integrations by parts are
-justified because after smoothing by $t\ge h^2>0$ both densities are positive,
-smooth, with Gaussian-dominated tails and integrable score functions; boundary
-terms vanish. $\blacksquare$
+and integrating over $[s,T]$ gives the display. After smoothing by
+$u\ge h^2>0$ both densities are positive and smooth, which is necessary but
+not by itself sufficient: Gaussian convolution does *not* replace heavy tails
+by Gaussian tails, so the vanishing of boundary terms is an assumption (the
+stated regularity), automatic for the Gaussian and compactly supported cases
+used in the examples. $\blacksquare$
 
 The differential identity is de Bruijn's, in relative form (Stam 1959; Barron
 1986; Lyu 2009); its integral form prices the likelihood of diffusion models
@@ -263,23 +315,55 @@ cloud has no density and the identity is vacuous; every rung the mechanism
 actually runs starts at $t\ge h^2$, where everything is smooth.
 
 **The heat-ladder pool.** Fix scales $0=t_0<t_1<\dots<t_K=T$ and weights
-$w_k\ge0$. Participant $i$ stakes $s_i$ and submits one cloud. At settlement,
-rung $k$ splits $w_k\sum_i s_i$ by any budget-balanced rule driven by the rung
-score $S_{\sqrt{h^2+t_k}}(\rho_i,z)$ — the stake-weighted additive form
-$\Delta W_i^{(k)}=w_k\,s_i\,(S_i^{(k)}-\bar S^{(k)})$ with $\bar S^{(k)}$ the
-stake-weighted mean (Lambert et al. 2008), or the multiplicative pot split at
-full Kelly.
+$w_k\ge0$. Participant $i$ stakes $s_i$ and submits one cloud. Two payment
+schedules must be distinguished, because they buy different things.
 
-**Corollary.** *(i) Each rung, hence the tower, is budget-balanced. (ii) Each
-rung is strictly proper for the cloud law (Theorem 2), so truthful submission
-is optimal rung-wise in the small-stake, risk-neutral limit. (iii) By Theorem
-3 a truthful participant's edge decomposes across rungs: differences of adjacent rungs pay
-(integrated) Fisher divergence — Hyvärinen-scored* shape*, invariant to the
-normalization of the submission — while the top rung pays
-$\mathrm{KL}(p^*_T\Vert\rho_T)$, which at mode-connecting scales carries the
-between-mode* mass *that score matching is blind to (Wenliang & Kanagawa 2020;
-Zhang et al. 2022; Koehler, Heckett & Risteski 2023). The weights $w_k$ are an
-explicit dial over what is being purchased.*
+*Level schedule.* Rung $k$ splits $w_k\sum_i s_i$ by a budget-balanced rule
+driven by the rung score $S^{(k)}_i := S_{\sqrt{h^2+t_k}}(\rho_i,z)$ — the
+stake-weighted additive form
+$\Delta W_i^{(k)}=w_k\,s_i\,(S_i^{(k)}-\bar S^{(k)})$ with $\bar S^{(k)}$ the
+stake-weighted mean (Lambert et al. 2008). Each rung is strictly proper
+(Theorem 2), so any nonnegative-weighted sum is. But the expected-regret
+decomposition carries *cumulative* weights on the Fisher bands, not the rung
+weights themselves: writing $\mathrm{KL}_k := \mathrm{KL}(p^*_{t_k}\Vert
+\rho_{t_k})$,
+
+$$\sum_{k=0}^{K} w_k\,\mathrm{KL}_k
+ \;=\; \Big(\sum_{k=0}^{K} w_k\Big)\mathrm{KL}_K
+ \;+\; \tfrac12\sum_{\ell=0}^{K-1}\Big(\sum_{k=0}^{\ell} w_k\Big)
+   \int_{t_\ell}^{t_{\ell+1}} D_F(p^*_t\Vert\rho_t)\,dt .$$
+
+*Difference schedule.* To pay a Fisher band directly, use the score
+*differences* as the payment driver.
+
+**Proposition (band scores are strictly proper).** *The difference score
+$S^{(k)} - S^{(k+1)}$ has expected regret
+$\mathrm{KL}_k - \mathrm{KL}_{k+1}
+= \tfrac12\int_{t_k}^{t_{k+1}} D_F(p^*_t\Vert\rho_t)\,dt \ge 0$, with equality
+iff $\rho = p^*$. It is therefore itself a strictly proper score, even though
+a difference of proper scores is not proper in general.*
+
+**Proof.** The expected value of $S^{(k)}$ under $p^*$ is
+$-H(p^*_{t_k}) - \mathrm{KL}_k$; the entropy terms are report-independent, so
+the regret of the difference is $\mathrm{KL}_k - \mathrm{KL}_{k+1}$, which is
+the band integral by Theorem 3. It vanishes iff $D_F(p^*_t\Vert\rho_t)=0$ on
+the band, i.e. $\nabla\log\rho_t=\nabla\log p^*_t$ $p^*_t$-a.e.; after Gaussian
+smoothing both densities are everywhere positive, so the log-ratio is constant,
+and both integrating to one forces $\rho_t=p^*_t$, hence $\rho=p^*$ by
+Lemma 1. $\blacksquare$
+
+**Corollary.** *(i) Each rung (or band), hence the tower, is budget-balanced
+in the additive stake-weighted form. (ii) Each level score is strictly proper
+for the cloud law (Theorem 2) and each band score is strictly proper (the
+Proposition), so truthful submission is optimal in the small-stake,
+risk-neutral limit; the multiplicative pot split requires a log-wealth (Kelly)
+model stated separately. (iii) Band payments purchase (integrated) Fisher
+divergence — Hyvärinen-scored* shape*, invariant to the normalization of the
+submission — while the top level pays $\mathrm{KL}(p^*_T\Vert\rho_T)$, which
+at mode-connecting scales carries the between-mode* mass *that score matching
+is blind to (Wenliang & Kanagawa 2020; Zhang et al. 2022; Koehler, Heckett &
+Risteski 2023). Under the level schedule the band weights are the cumulative
+sums above.*
 
 Practicalities: rung scores are positively correlated (one cloud,
 re-smoothed), so discriminative value concentrates in a few well-separated
@@ -332,14 +416,20 @@ single scale. A full audit with verdicts is in the companion
 
 1. **Fair rungs.** The finite-$m$ correction making each rung's expected score
    optimized by *sampling* from the belief (the log-score/KDE analog of
-   Ferro's fair CRPS), and its interaction with the jitter.
-2. **Optimal scale weights.** For wealth-concentration objectives, is there a
+   Ferro's fair CRPS), and its interaction with the jitter. All results here
+   are population-level; the finite-cloud game is not covered by the theorems.
+2. **Endogenous bandwidth.** If the bandwidth is computed from the
+   participant's own submission (Scott's rule on the cloud), the channel is no
+   longer fixed and Theorem 2 does not apply; the participant controls both
+   $\rho$ and $h(\rho)$. Characterize the optimal joint deviation, and whether
+   any self-referential bandwidth rule preserves truthfulness.
+3. **Optimal scale weights.** For wealth-concentration objectives, is there a
    closed-form optimal $w(t)$ — and does it recover the likelihood weighting
    of Song et al. (2021)?
-3. **Anisotropic rungs.** Reference-covariance flows in place of isotropic
+4. **Anisotropic rungs.** Reference-covariance flows in place of isotropic
    heat, preserving rung-wise strict properness (cf. the
    [anisotropic sliced scores note](../research/anisotropic-sliced-scores.md)).
-4. **The Kelly interpolation.** Between $b\to0$ (linear pot split,
+5. **The Kelly interpolation.** Between $b\to0$ (linear pot split,
    mode-seeking) and $b=1$ (log score, truthful), characterize the rung-wise
    optimal misreport as a function of the stake fraction.
 

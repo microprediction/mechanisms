@@ -35,7 +35,10 @@ the improperness; the closed form is in
 scores ``E_ε[log q̂(z + hε)]`` — equivalently, jitter the pin by the KDE
 bandwidth — which is strictly proper for the pre-smoothing density because
 Gaussian convolution is injective (properness: Bröcker & Smith 2007 §5, Ferro
-2017; strictness via the nonvanishing Gaussian characteristic function).
+2017; strictness via the nonvanishing Gaussian characteristic function). The
+theorem requires the bandwidth to be **fixed before submissions are seen**: a
+bandwidth computed from the participant's own cloud (Scott's rule on the
+submission) is endogenous and outside the guarantee.
 """
 
 from __future__ import annotations
@@ -86,9 +89,16 @@ def mollified_log_score(samples, z, bandwidth: float = None, n_nodes: int = 40,
     ``S_h = E_ε[ log q̂_h(z + hε) ]`` with ``ε ~ N(0, I)`` and ``q̂_h`` the
     Gaussian KDE of the cloud. Whereas ``log kde_density(cloud, z)`` is improper
     (its optimum is the belief *deconvolved* by the kernel — see the module
-    docstring), this score is **strictly proper for the pre-smoothing density**:
-    its expectation is ``∫ p*_h log q̂_h``, maximised iff ``q̂_h = p*_h`` iff the
-    cloud is drawn from the belief, since Gaussian convolution is injective.
+    docstring), this score is **strictly proper for the pre-smoothing density**
+    *provided the bandwidth is fixed in advance*: its expectation is
+    ``∫ p*_h log q̂_h``, maximised iff ``q̂_h = p*_h`` iff the cloud is drawn from
+    the belief, since Gaussian convolution is injective.
+
+    .. warning:: The ``bandwidth=None`` default applies Scott's rule **to the
+       submitted cloud**, making the channel participant-endogenous; the
+       strict-propriety theorem does not cover that case. In a contest, pass a
+       ``bandwidth`` frozen before submissions are observed (from the outcome
+       history or a posted rule).
 
     In one dimension the jitter integral is computed by Gauss–Hermite quadrature
     (deterministic); in higher dimensions by seeded Monte Carlo with ``n_nodes``

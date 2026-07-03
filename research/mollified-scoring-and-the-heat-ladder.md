@@ -96,6 +96,12 @@ observations). Read as *mechanism design*, deliberately injecting jitter
 matched to the mechanism's own smoothing is what makes the sample-cloud game
 strictly proper. One line of code: **jitter the pin by the KDE bandwidth.**
 
+Two qualifications (paper v0.2, after referee feedback): the guarantee is
+population-level (the cloud idealised by its law; finite `m` open), and the
+bandwidth must be **exogenous** — frozen before submissions are observed. A
+bandwidth computed from the participant's own cloud puts the channel under the
+participant's control and is outside the theorem.
+
 Disclosure: the microprediction platform (Cotton 2022, and the platform paper)
 added a small amount of noise to submissions and ground truth — a merely
 intuitive implementation detail at the time, without incentive analysis. This
@@ -140,8 +146,12 @@ Each of `n` participants stakes `sᵢ` and submits one cloud. Fix scales
 splits `w_k · Σsᵢ` by any budget-balanced rule driven by the rung score
 `S_{√(h²+t_k)}(ρᵢ, z)` (additive WSWM form, or the multiplicative pot-split at
 full Kelly). Every rung is self-funding, so the tower is; every rung is
-strictly proper for the cloud by §2; and by §3 the weights `w_k` are an
-explicit, interpretable dial over *what is being paid for* — fine rungs buy
+strictly proper for the cloud by §2. One precision from the paper (v0.2):
+paying rung *levels* with weights `w_k` puts *cumulative* weights on the
+Fisher bands; to pay a band directly, use rung *differences*
+`S_k − S_{k+1}`, which are themselves strictly proper (regret = the band's
+Fisher integral, zero iff truthful). Either way the weights are an explicit,
+interpretable dial over *what is being paid for* — fine rungs buy
 local shape (gradients), coarse rungs buy global mass placement. The two
 failure modes of the repo's existing pools annihilate pairwise: the
 [local-score pool](local-score-wagering-pool.md)'s mode-mass blindness is
