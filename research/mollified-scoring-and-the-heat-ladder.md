@@ -103,8 +103,8 @@ bandwidth computed from the participant's own cloud puts the channel under the
 participant's control and is outside the theorem.
 
 Disclosure: the microprediction platform (Cotton 2022, and the platform paper)
-added a small amount of noise to submissions and ground truth, a merely
-intuitive implementation detail at the time, without incentive analysis. This
+added a small amount of noise to submissions and ground truth, a *merely
+intuitive* implementation detail at the time, without incentive analysis. This
 section is, retroactively, the theory of that detail.
 
 ## 3. The ladder: run the proper rung at every scale and the edge decomposes

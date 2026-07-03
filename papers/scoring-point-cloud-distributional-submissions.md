@@ -52,7 +52,7 @@ monteprediction-style contests, and the standard evaluation protocol for
 sample-based generative models.
 
 The question this paper answers: *what cloud should a rational participant
-submit?* The answer is not "samples from your belief," and the failure has
+submit?* The answer is *not* "samples from your belief," and the failure has
 a closed form, a one-line repair, and, once repaired, a multi-scale
 structure with its own uses.
 
@@ -359,7 +359,7 @@ annealed score matching (Song & Ermon 2019).
 
 The microprediction platform (Cotton 2022; launched 2019) added a small amount
 of noise to submissions and to the ground truth before settling its cloud-based
-lotteries. This was merely intuitive, a fairness-and-anti-gaming instinct
+lotteries. This was *merely intuitive*, a fairness-and-anti-gaming instinct
 about discreteness and ties, with no incentive theorem attached; the platform
 paper recorded the practice in one line and moved on. The verification literature, meanwhile, treated outcome
 noise as a defect: something to be modelled away (Saetra et al. 2004; Candille
