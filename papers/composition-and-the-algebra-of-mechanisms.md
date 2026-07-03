@@ -30,21 +30,26 @@ gap $I(R;X)$ as bankroll growth while its marginal coverage stays exact.
 Mechanisms for eliciting and aggregating forecasts are usually studied one at
 a time. A proper scoring rule is analysed as a one-shot contract; a market
 maker as a sequential trading venue; an opinion pool as an estimator; a
-calibration test as a diagnostic. Deployed systems chain them, though rarely
-all the way round. Staked tournaments chain elicitation into a traded
-meta-model, and Numerai's meta-model-contribution payout is an
-aggregation-aware reward, paying the marginal value of a forecast to the
-pool [@craib2017numeraire]; the prediction polls of the IARPA tournaments
-chained elicitation into track-record-weighted aggregation, and compared
-favourably with head-to-head markets [@atanasov2017distilling], with
-reputation rather than wealth as the threaded state. The microprediction
-platform ran the full loop, elicitation, consensus, calibration testing, and
-reward routing, at scale [@cotton2022microprediction], and the
-stacked-lottery design behind it was presented at MIT CSAIL in 2020
-[@cotton2020lottery, slides 29-31]: market-implied percentiles are
-themselves the subject of further games, and calibration is achieved by
-composing monotone transformations, each contributed by one or more
-algorithms.
+calibration test as a diagnostic. Deployed systems are thinner than the
+theory allows: with few exceptions they run one level of competition against
+one internal model. Numerai pools staked submissions into a single
+stake-weighted meta-model and pays each forecast its marginal contribution
+to it [@craib2017numeraire]; CrunchDAO blends each contest into one
+ensemble; the IARPA prediction polls aggregated forecasts by track record,
+comparing favourably with head-to-head markets [@atanasov2017distilling],
+with reputation rather than wealth as the threaded state. In every case,
+one pool and one internal aggregate. The only live, long-running platform we
+are aware of that composes further is monteprediction, a weekly
+self-funding pool over million-scenario joint submissions in eleven
+dimensions, with wealth threaded across rounds since January 2024
+[@cotton2024monteprediction]. The full chain ran on the microprediction
+platform [@cotton2022microprediction]: streams spawned z-streams of
+community percentiles, and bivariate and trivariate dependence streams
+priced copulas, so calibration and dependence were themselves the subject of
+further games. The stacked-lottery design behind it was presented at MIT
+CSAIL in 2020 [@cotton2020lottery, slides 29-31]; that platform is retired,
+and the composed design currently has no live instance beyond the wealth
+threading of the weekly pool.
 
 Chaining stages raises the question of what each stage elicits, and the
 answer moves under transformation of the message or the outcome. Scoring a
