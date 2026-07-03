@@ -4,17 +4,6 @@
 
 Peter Cotton · *Working draft v0.3* · 2026
 
-> **Status.** An evolving working note, not a finished paper. Theorems 1–3
-> are proved at working-draft rigor in the population-law setting:
-> the cloud is idealised by its sampling law, and the smoothing/jitter kernel
-> is fixed in advance. Finite clouds and participant-endogenous bandwidths are
-> outside the proved results (§10). The mechanism, the projection identity, and
-> the closed forms are implemented and unit-tested in
-> [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py); the
-> prior-art audit lives in
-> [`research/mollified-scoring-and-the-heat-ladder.md`](../research/mollified-scoring-and-the-heat-ladder.md).
-> Drafted with AI assistance; errors are mine.
-
 ---
 
 ## Abstract

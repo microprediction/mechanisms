@@ -35,21 +35,6 @@
     <h1 id="scoring-point-cloud-distributional-submissions">Scoring Point-Cloud Distributional Submissions</h1>
     <h3 id="the-nearest-the-pin-parimutuel-jittered-outcomes-and-the-heat-ladder">The nearest-the-pin parimutuel, jittered outcomes, and the heat ladder</h3>
     <p>Peter Cotton · <em>Working draft v0.3</em> · 2026</p>
-        <details class="status-note">
-      <summary>Status: working draft — scope, assumptions, changelog</summary>
-<blockquote>
-    <p><strong>Status.</strong> An evolving working note, not a finished paper. Theorems 1–3</p>
-    <p>are proved at working-draft rigor in the population-law setting:</p>
-    <p>the cloud is idealised by its sampling law, and the smoothing/jitter kernel</p>
-    <p>is fixed in advance. Finite clouds and participant-endogenous bandwidths are</p>
-    <p>outside the proved results (§10). The mechanism, the projection identity, and</p>
-    <p>the closed forms are implemented and unit-tested in</p>
-    <p><a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py"><code>mechanisms/nearest_the_pin.py</code></a>; the</p>
-    <p>prior-art audit lives in</p>
-    <p><a href="https://github.com/microprediction/mechanisms/blob/main/research/mollified-scoring-and-the-heat-ladder.md"><code>research/mollified-scoring-and-the-heat-ladder.md</code></a>.</p>
-    <p>Drafted with AI assistance; errors are mine.</p>
-    </blockquote>
-    </details>
     <hr />
     <h2 id="abstract">Abstract</h2>
     <p>A parimutuel over a continuum splits the pot in proportion to the probability density each participant placed at the realised outcome. In practice the submission is a cloud of Monte-Carlo samples, smoothed into a kernel density estimate and scored at the pin. We give the mechanism and its incentive theory, and show that the smoothing step is where the theory bites: scoring a KDE at the raw outcome is improper, with the optimal cloud drawn from the deconvolution of the forecaster's belief by the kernel (Theorem 1). Jittering the outcome with the same kernel restores strict propriety, because convolution by a kernel whose characteristic function has dense support is injective on probability measures (Theorem 2). Repeating the repaired score across smoothing scales decomposes the log-score edge, via de Bruijn's identity, into Fisher-divergence payments for shape plus a coarse-scale payment for mass (Theorem 3). In high dimensions the pool runs instead on random one-dimensional projections, which recover the multivariate energy score exactly. All incentive results are population-level, with the kernel fixed in advance.</p>
