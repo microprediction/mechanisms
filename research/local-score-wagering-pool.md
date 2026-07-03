@@ -120,10 +120,11 @@ in [mollified-scoring-and-the-heat-ladder.md](mollified-scoring-and-the-heat-lad
   `‖∇log p‖²` can be arbitrarily large), so the *additive* WSWM payout can in
   principle charge a participant more than their stake. The *multiplicative* form
   bounds every share to `[0, S]` regardless of score magnitude and is the safer
-  default — at the cost that its truthfulness needs its own argument (the
-  nearest-the-pin small-stake Gibbs argument gives it for the log score; the
-  general `e^{βR}` pot-split is only truthful in the `b → 0` limit and should be
-  stated as such).
+  default — at the cost that its truthfulness needs its own argument. Per §2 of
+  the point-cloud paper, proportional splits are truthful all-in (`b = 1`) and
+  as a symmetric equilibrium at fractional stakes, and the `b → 0` limit
+  *degenerates* (the objective becomes linear in the report); the additive form
+  is the one properness transfers to directly.
 - **Smoothness / boundary terms.** The `m = 2` rule needs a twice-differentiable
   density on (an open subset of) `ℝ^d`; point masses and hard support boundaries
   require the boundary-corrected local rules of Parry–Dawid–Lauritzen.
