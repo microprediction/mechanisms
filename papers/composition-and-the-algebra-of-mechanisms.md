@@ -9,16 +9,16 @@ Peter Cotton · *Working draft v0.3* · 2026
 ## Abstract
 
 Scoring rules, market makers, parimutuels, and opinion pools compose when
-each stage is a stateful transducer whose message type is a distributional
-belief. Convex potentials generate the incentive-bearing core: proper scores
-from convex entropies, cost-function market makers by Fenchel conjugacy,
-CFMMs by convex level-set duality. The pooling and merging operators are
-classical: the linear and logarithmic pools are the two Kullback-Leibler
-barycenters, and merging market makers is the infimal convolution of risk
-sharing, under which liquidity adds. The message type extends to finite
-sample clouds, with propriety preserved by jittered settlement, and joint
-laws factor into margin stages plus a copula stage settled on the rank
-vector. The benefit is illustrated by the
+each stage is a stateful transducer over one message type, and the message
+deployed contests actually collect is a finite cloud of samples. This note
+provides sample-based elicitation inside that algebra: jittered settlement
+makes cloud submission strictly proper, the composition operators act on
+clouds pointwise, and joint laws factor into margin stages plus a copula
+stage settled on the rank vector. The single-stage theory underneath is
+classical convex duality: proper scores from convex entropies, cost-function
+market makers by Fenchel conjugacy, the two opinion pools as the two
+Kullback-Leibler barycenters, merged market makers as the infimal
+convolution of risk sharing. The benefit of composing is illustrated by the
 simplest two-stage example, where stagewise equilibrium dominates conformal
 prediction: a residual market collects the conformal predictor's information
 gap $I(R;X)$ as bankroll growth while its marginal coverage stays exact.
@@ -74,13 +74,15 @@ blurred together:
    outcomes, does strict propriety survive?
 
 The first is an engineering convention (§2, §8). The second and third admit
-theorems, which are stated with complete proofs in §3 and §4; none of the
-mathematics is new, but the proofs are collected in one place and one
-convention. Play is stagewise throughout: no participant deviates across
-stages (§4). Cross-stage strategy is outside the note's scope. Section 5
-prices the conformal residual; §6 extends the message type to sample clouds;
-§7 factors multivariate elicitation into margin stages and a copula stage
-settled on the rank vector.
+theorems, which are stated with complete proofs in §3 and §4; that
+mathematics is classical, collected in one place and one convention. The
+contributions are the parts built on it: sample-based elicitation, running
+the algebra on clouds rather than exact densities (§6); the factoring of
+multivariate elicitation into margin stages and a rank-settled copula stage
+(§7); and the priced conformal example (§5), where the residual market's
+bankroll growth is the conformal predictor's information gap. Play is
+stagewise throughout: no participant deviates across stages (§4).
+Cross-stage strategy is outside the note's scope.
 
 ## 2. Preliminaries
 
