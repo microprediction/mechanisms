@@ -4,9 +4,8 @@
 
 Peter Cotton · *Working draft v0.3* · 2026
 
-> **Status.** An evolving working note, not a finished paper. It absorbs the
-> earlier nearest-the-pin working note, whose mechanism is now §2 and §6.
-> Theorems 1–3 are proved at working-draft rigor in the population-law setting:
+> **Status.** An evolving working note, not a finished paper. Theorems 1–3
+> are proved at working-draft rigor in the population-law setting:
 > the cloud is idealised by its sampling law, and the smoothing/jitter kernel
 > is fixed in advance. Finite clouds and participant-endogenous bandwidths are
 > outside the proved results (§10). The mechanism, the projection identity, and
