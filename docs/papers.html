@@ -36,87 +36,66 @@
     these are new work.</p>
 
     <span id="nearest-the-pin"></span>
-    <h2 id="point-cloud-scoring">Scoring Point-Cloud Distributional Submissions</h2>
+    <h2 id="point-cloud-scoring">
+      <a href="./papers/scoring-point-cloud-distributional-submissions.html">Scoring
+      Point-Cloud Distributional Submissions</a></h2>
+    <p class="subtitle">Nearest-the-pin parimutuels, the KDE seam, and
+      mollified scoring</p>
+    <p>
+      A parimutuel over a continuum splits the pot in proportion to the
+      density each participant placed at the realised outcome: the
+      nearest-the-pin reward behind
+      <a href="https://monteprediction.com">monteprediction.com</a>. When the
+      submission is a cloud of samples smoothed into a KDE, scoring at the raw
+      outcome pays the <em>deconvolution</em> of the belief; jittering the pin
+      with the same kernel restores strict propriety, and repeating the
+      repaired score across smoothing scales splits the edge into
+      Fisher-divergence payments.
+    </p>
     <p class="muted">Peter Cotton · working draft v0.3 ·
       <a href="./papers/scoring-point-cloud-distributional-submissions.html">full draft</a> ·
       <a href="./papers/scoring-point-cloud-distributional-submissions.pdf">pdf</a> ·
+      <a href="./mechanisms/point-cloud-scoring.html#demo">interactive demo</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/nearest_the_pin.py">implementation</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/research/mollified-scoring-and-the-heat-ladder.md">prior-art audit</a></p>
-    <p class="lead">
-      A parimutuel over a continuum splits the pot in proportion to the density
-      each participant placed at the realised outcome $z$: the
-      <em>nearest-the-pin</em> reward behind
-      <a href="https://monteprediction.com">monteprediction.com</a>. The pool is
-      self-funding; a log-optimal participant's total exposure is their belief,
-      so truthful submission is exact all-in and a symmetric equilibrium at
-      fractional stakes. In practice the submission is a cloud of samples smoothed into
-      a KDE, and that is where the theory bites: scoring the KDE at the raw
-      outcome pays the <em>deconvolution</em> of the belief (shave the squared
-      bandwidth off your variance). Jittering the outcome with the same kernel
-      restores strict propriety, since Gaussian convolution is injective.
-      Repeating the repaired score across smoothing scales splits the log-score
-      edge into Fisher-divergence payments for shape plus a coarse-scale
-      payment for mass; in high dimensions the pool runs instead on random 1-D
-      projections, which recover the multivariate energy score exactly.
-    </p>
-    <div class="equation-card">
-      $\Delta W_i = S\,\dfrac{s_i\,q_i(z)}{\sum_j s_j\,q_j(z)} - s_i,
-       \qquad v^\ast = \tau^2 + j^2 - h^2$
-    </div>
 
-    <h3 id="pin-demo">Try it</h3>
+    <hr />
+
+    <h2 id="composition">
+      <a href="./papers/composition-and-the-algebra-of-mechanisms.html">Composition
+      and the Algebra of Mechanisms</a></h2>
+    <p class="subtitle">Mechanisms as stateful transducers over distributional
+      beliefs</p>
     <p>
-      The interactive version — sliders for your cloud variance $v$, the KDE
-      bandwidth $h$, and the pin jitter $j$, with the exact expected-score
-      curves peaking at $v^\ast = 1 + j^2 - h^2$ — lives on the
-      <a href="./mechanisms/point-cloud-scoring.html#demo">point-cloud scoring
-      page</a>. Only $j = h$ puts the peak at the truth: <em>jitter exactly as
-      much as you smooth</em>.
+      Scoring rules, market makers, parimutuels, and opinion pools compose
+      when every stage consumes and emits one object type, a distributional
+      belief, with wealth threaded as state. Convex potentials generate the
+      incentive-bearing core (Savage's characterisation, Hanson's conjugate
+      market maker, the CFMM level-set duality), the two opinion pools are
+      the two KL barycenters, and merging market makers is infimal
+      convolution. A worked pipeline chains an elicitation market into a
+      PIT-based calibration critic.
     </p>
-
-    <h2 id="composition">Composition &amp; the algebra of mechanisms</h2>
     <p class="muted">Peter Cotton · working draft v0.2 ·
       <a href="./papers/composition-and-the-algebra-of-mechanisms.html">full draft</a> ·
       <a href="./papers/composition-and-the-algebra-of-mechanisms.pdf">pdf</a> ·
       <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_pipeline.py">runnable demo</a></p>
-    <p class="lead">
-      The mechanisms in this repository are not a flat list; they
-      <em>compose</em>. Borrowing the operational discipline of
-      <a href="https://github.com/microprediction/skaters">microprediction/skaters</a>,
-      every stage speaks one object type (a distributional belief) and threads
-      its own state; the substitution that turns a skater into a market is that
-      a market threads <em>wealth</em>. A small operator set,
-      sequentialise, pool, conjugate, ensemble, residual, then closes over the
-      mechanisms, with convex potentials generating the incentive-bearing
-      core.
-    </p>
+
+    <hr />
+
+    <h2 id="conformal-parimutuel">
+      <a href="https://conformalprediction.net/papers/parimutuel/">Betting
+      Against a Conformal Predictor</a></h2>
+    <p class="subtitle">A parimutuel account of the information gap · hosted
+      at <a href="https://conformalprediction.net">conformalprediction.net</a></p>
     <p>
-      The note states the classic results with proofs. The keystone is
-      Savage's characterisation: a regular scoring rule is
-      strictly proper iff it is built from a strictly convex "generalised
-      entropy" $G(p)=S(p;p)$ via a supporting hyperplane,
-    </p>
-    <div class="equation-card">
-      $S(p,i)=G(p)+\langle\, G'(p),\; e_i-p\,\rangle,\qquad G'(p)\in\partial G(p),$
-    </div>
-    <p>
-      so that the elicitation regret is exactly the Bregman
-      divergence of $G$, non-negative by convexity:
-    </p>
-    <div class="equation-card">
-      $S(q;q)-S(p;q)=G(q)-G(p)-\langle\, G'(p),\; q-p\,\rangle = D_G(q,p)\ \ge\ 0.$
-    </div>
-    <p>
-      Hanson's market maker is then the Legendre conjugate of that generator,
-      $C=R^{\ast}$ with prices $\nabla C$ and worst-case loss equal to the range
-      of $R$ ($b\log n$ for LMSR); the CFMM is related to the cost-function
-      market by a convex level-set duality; and the probability-integral
-      transform $z=\Phi^{-1}\!\big(F(x)\big)\sim N(0,1)$ is the warrant for a
-      calibration critic. The worked pipeline, an elicitation market feeding
-      that critic, with wealth updated by proper-score increments, is the
-      z-stream loop of the microprediction vision (Cotton,
-      <em>Microprediction</em>, MIT Press, 2022), where z-streams ran on a
-      live platform.
+      The nearest-the-pin pool read against conformal prediction: a
+      single-shape conformal predictor is the entrant that prices the
+      residual pool flat in the input. It breaks even, which is marginal
+      coverage stated as wealth, while an entrant who conditions on the input
+      grows a bankroll at rate $I(R;X)$, the mutual information between
+      residual and input. The gap is measurable on a fitted predictor by a
+      distance-covariance bound or a sequential e-process.
     </p>
 
     <div class="next-steps">

@@ -51,6 +51,19 @@ kernel-density smoothing step between the submission and the score changes the
 optimal report from the forecaster's belief to its deconvolution. Seams
 matter, so it is worth being precise about what survives them.
 
+Conformal prediction supplies a second motivation, from the opposite
+direction. Split-conformal is itself a composition, a point predictor chained
+into a rank-based calibration stage, but a degenerate one: the pool step is
+skipped by fiat, all credit assigned to a single model in advance, and the
+calibration stage prices the residual flat in the input. The price of that
+degeneracy is quantifiable. The wasted log score of a single-shape conformal
+predictor is the mutual information $I(R;X)$ between residual and input, and
+an entrant to a parimutuel residual pool who conditions on the input collects
+it as bankroll growth at exactly that rate [@cotton2026conformalbetting].
+Running the residual stage as an actual pool, rather than assuming its winner,
+is what the operators below are for; Proposition 4 locates the gap in the
+theory of the probability integral transform.
+
 This note organizes the catalogue around four questions that are often
 blurred together:
 
@@ -258,7 +271,15 @@ Reporting the unconditional law $F$ of an iid sequence gives
 $F(X_t)\sim\mathrm{Uniform}(0,1)$ even if valuable covariates were ignored. A
 PIT critic therefore witnesses miscalibration relative to its test class; it
 complements, and does not replace, a proper score that rewards sharp
-conditional distributions. Second, for discrete forecasts the randomized PIT
+conditional distributions. Conformal prediction lives on exactly this
+distinction: a split-conformal predictor achieves marginal coverage by
+construction, the uniform-PIT guarantee, while free to ignore the
+conditional information in the input. The gap is not merely qualitative. For
+a single-shape conformal predictor the wasted log score equals the mutual
+information $I(R;X)$ between residual and input, and an entrant to the
+parimutuel pool of the companion paper who conditions on $X$ collects it as
+bankroll growth at exactly that rate; the flat-in-$X$ conformal report is the
+break-even crowd [@cotton2026conformalbetting]. Second, for discrete forecasts the randomized PIT
 preserves the exact uniform null, while the mid-PIT is a convenient
 deterministic diagnostic with a different null distribution; the demo of §5
 uses the mid-PIT and should be read accordingly.
@@ -442,7 +463,11 @@ construction (Theorem 2) is the skater move applied to a score.
    sufficient (injective) reduction.
 3. *Residual markets.* A chain of markets in which stage $t$ prices the
    residual of stage $t-1$, with wealth as credit routing, remains to be
-   constructed and analysed against the boosting literature.
+   constructed and analysed against the boosting literature. Split-conformal
+   prediction is the one-participant degenerate case, with its rent
+   $I(R;X)$ as the value left on the table
+   [@cotton2026conformalbetting]; the open question is the equilibrium of
+   the non-degenerate pool.
 
 ## References
 
