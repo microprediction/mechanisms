@@ -2,8 +2,8 @@
 
 *Status: three open questions from
 [composition-and-the-algebra-of-mechanisms.md](composition-and-the-algebra-of-mechanisms.md)
-(§5), worked up with calibrated novelty assessments. One is **retired** (it is a known
-theorem); two are **likely novel, narrow gap** and are stated here with the
+(§5), worked up with calibrated novelty assessments. One is retired (it is a known
+theorem); two are likely novel, narrow gap and are stated here with the
 specific non-trivial consequence each must deliver to be more than "composing
 known results." Prior art is deliberately exhaustive — that is the point.*
 
@@ -15,32 +15,32 @@ Three of its flagged open questions are addressed below.
 
 ---
 
-## Q1. Properness under transformation — **retired (known theorem)**
+## Q1. Properness under transformation — retired (known theorem)
 
 The composition note asks whether an arbitrary *conjugation* (reparametrize the
 outcome or the report by a map `T`, score in the new coordinates) preserves strict
 properness, noting that the probability integral transform does (Dawid) while a
-learned non-invertible map may not. **This is a published dichotomy, not an open
-question**, and the right move is to cite it and retire the novelty claim.
+learned non-invertible map may not. This is a published dichotomy, not an open
+question, and the right move is to cite it and retire the novelty claim.
 
-- **Allen, Ginsbourger & Ziegel (2023)**, "Evaluating Forecasts for High-Impact
+- Allen, Ginsbourger & Ziegel (2023), "Evaluating Forecasts for High-Impact
   Events Using Transformed Kernel Scores," *SIAM/ASA JUQ*, arXiv:2202.12732,
-  **Prop. 4**: a transformed kernel score is strictly proper **iff the transform
-  is injective**. Exactly "invertible preserves, non-invertible can fail."
-- **Pic, Dombry, Naveau & Taillardat (2025)**, "Proper Scoring Rules for
+  Prop. 4: a transformed kernel score is strictly proper iff the transform
+  is injective. Exactly "invertible preserves, non-invertible can fail."
+- Pic, Dombry, Naveau & Taillardat (2025), "Proper Scoring Rules for
   Multivariate Probabilistic Forecasts based on Aggregation and Transformation,"
-  *ASCMO* 11, arXiv:2407.00650, **Prop. 1**: properness preserved under any `T`;
+  *ASCMO* 11, arXiv:2407.00650, Prop. 1: properness preserved under any `T`;
   strict properness preserved iff `T` injective; dimension-reducing maps lose it.
   This is a full transformation-and-aggregation (i.e. composition) calculus.
-- **Parry, Dawid & Lauritzen (2012)**, "Proper Local Scoring Rules," *Ann.
+- Parry, Dawid & Lauritzen (2012), "Proper Local Scoring Rules," *Ann.
   Statist.* 40(1): the log score is the unique `0`-local rule invariant under smooth
   invertible reparametrization — the canonical "PIT preserves it" instance.
-- **Dawid (1984)**, "Statistical Theory: The Prequential Approach," *JRSS A*
+- Dawid (1984), "Statistical Theory: The Prequential Approach," *JRSS A*
   147(2): the prequential principle and the PIT origin.
-- **Diebold, Gunther & Tay (1998)**, "Evaluating Density Forecasts," *Int. Econ.
+- Diebold, Gunther & Tay (1998), "Evaluating Density Forecasts," *Int. Econ.
   Rev.* 39(4): PIT-based forecast evaluation in practice.
-- **Holzmann & Klar (2017)**, "Focusing on Regions of Interest with Weighted
-  Proper Scoring Rules"; **Gneiting & Ranjan (2011)**, *JBES* 29(3): the weighted
+- Holzmann & Klar (2017), "Focusing on Regions of Interest with Weighted
+  Proper Scoring Rules"; Gneiting & Ranjan (2011), *JBES* 29(3): the weighted
   scoring rules whose properness turns on the weight being a *fixed function of the
   outcome*, the same injectivity-flavoured condition from the other side.
 
@@ -53,7 +53,7 @@ before a proper score — is not done, and would be a defensible, narrow contrib
 
 ---
 
-## Q2. A conservation law for composed self-funding mechanisms — **likely novel, narrow gap**
+## Q2. A conservation law for composed self-funding mechanisms — likely novel, narrow gap
 
 The note conjectures that "a well-formed pipeline should conserve wealth
 stage-to-stage (zero-sum), the analogue of a skater faithfully passing its
@@ -69,15 +69,15 @@ functions). A pipeline of self-funding stages conserves wealth because it is a s
 of zeros. Stating that as the law would be vacuous.
 
 **The non-trivial invariant is conservation of *edge*, and it requires interface
-sufficiency.** A trader's value in a proper-scoring market is the Bregman
+sufficiency. A trader's value in a proper-scoring market is the Bregman
 divergence `D_G(q, π)` — the edge a truthful belief `q` holds over the price `π`
 (Savage 1971; Hanson 2003). Compose two stages through an interface map `T` that
 reduces the carried state (stage 2 sees only `T(·)` of stage 1's output). Then:
 
-> **Claim (conservation of edge).** The composite is truthful and loses no elicited
+> Claim (conservation of edge).** The composite is truthful and loses no elicited
 > information iff `T` is a *sufficient* reduction — equivalently (by Q1) injective
 > on the relevant statistic. If `T` is non-sufficient, wealth still balances at
-> every stage, but the Bregman edge does **not** telescope across the seam: edge
+> every stage, but the Bregman edge does not telescope across the seam: edge
 > (and hence elicited information) leaks, and the composite is no longer strictly
 > proper even though each stage is.
 
@@ -89,20 +89,20 @@ seam to leak across.
 
 Closest prior art (none states this):
 
-- **Lambert, Langford, Wortman Vaughan, Chen, Reeves, Shoham & Pennock (2015)**,
+- Lambert, Langford, Wortman Vaughan, Chen, Reeves, Shoham & Pennock (2015),
   "An Axiomatic Characterization of Wagering Mechanisms," *JET* 156: per-mechanism
   budget balance and anonymity; single stage.
-- **Hanson (2007)**, "Logarithmic Market Scoring Rules for Modular Combinatorial
+- Hanson (2007), "Logarithmic Market Scoring Rules for Modular Combinatorial
   Information Aggregation," *J. Prediction Markets* 1(1): sequentially-shared MSR,
   telescoping payments — *one* market over time / a combinatorial outcome space,
   not a chain of heterogeneous mechanisms.
-- **Abernethy, Chen & Wortman Vaughan (2013)**, "Efficient Market Making via Convex
+- Abernethy, Chen & Wortman Vaughan (2013), "Efficient Market Making via Convex
   Optimization," *ACM TEAC* 1(2): no-arbitrage, path-independence; single maker.
-- **Barrieu & El Karoui (2005)**; **Jouini, Schachermayer & Touzi (2008)**: optimal
+- Barrieu & El Karoui (2005); Jouini, Schachermayer & Touzi (2008): optimal
   risk sharing as infimal convolution — the *parallel* (one-shot) composition whose
   minimiser is the Pareto allocation; the conservation here is its *sequential*
   analogue.
-- **Frongillo, Della Penna & Reid (2012)**, "Interpreting Prediction Markets: A
+- Frongillo, Della Penna & Reid (2012), "Interpreting Prediction Markets: A
   Stochastic Approach," *NeurIPS*: wealth dynamics of Kelly traders as the
   conserved threaded state.
 
@@ -113,7 +113,7 @@ appears unoccupied; the gap is small because each ingredient is standard, so the
 
 ---
 
-## Q3. Residual / boosting markets — **likely novel, narrow gap**
+## Q3. Residual / boosting markets — likely novel, narrow gap
 
 The note names a "residual chaining" operator — "one stage models what the previous
 stage got wrong; a correction/boosting market on the residual stream" — with no
@@ -149,21 +149,21 @@ from the unbounded-liquidity cost-function maker.
 
 Closest prior art (none instantiates the three-part object):
 
-- **Storkey (2011)**, "Machine Learning Markets," *AISTATS*, PMLR 15; **Storkey,
-  Millin & Geras (2012)**, "Isoelastic Agents and Wealth Updates in Machine
+- Storkey (2011), "Machine Learning Markets," *AISTATS*, PMLR 15; Storkey,
+  Millin & Geras (2012), "Isoelastic Agents and Wealth Updates in Machine
   Learning Markets," *ICML*, arXiv:1206.6443: wealth-weighted equilibrium prices
   recover the weighted means "used in boosting and random forests" — but *parallel*
   ensembling at one market's equilibrium, not sequential residual correction.
-- **Hu & Storkey (2014)**, "Multi-period Trading Prediction Markets with Connections
+- Hu & Storkey (2014), "Multi-period Trading Prediction Markets with Connections
   to Machine Learning," *ICML*, arXiv:1403.0648: sequential, but one shared
   objective, not staged residuals.
-- **Barbu & Lay (2012)**, "An Introduction to Artificial Prediction Markets for
+- Barbu & Lay (2012), "An Introduction to Artificial Prediction Markets for
   Classification," *JMLR* 13: a market of classifiers betting on labels — ensemble
   pricing, again not residual-staged.
-- **Chen & Wortman Vaughan (2010)**; **Abernethy, Frongillo & Kutty (2015)**, "On
+- Chen & Wortman Vaughan (2010); Abernethy, Frongillo & Kutty (2015), "On
   Risk Measures, Market Making, and Exponential Families," *SIGecom Exchanges*
   13(2): the exponential-family / risk-measure backbone a residual market inherits.
-- **Mason et al. (1999)**; **Friedman (2001)**: the boosting side of the identity.
+- Mason et al. (1999); Friedman (2001): the boosting side of the identity.
 
 Verdict: **likely novel, narrow gap.** Both pillars are mature, so the value is the
 explicit `β_t`-equals-wealth-transfer identity and the budget-limited regret-to-
@@ -173,14 +173,14 @@ generalization translation.
 
 ## Open questions
 
-1. Prove (or refute) the **edge-conservation** claim (Q2): does the Bregman edge
+1. Prove (or refute) the edge-conservation claim (Q2): does the Bregman edge
    telescope across an injective/sufficient interface and leak across a
    non-sufficient one? Exhibit a natural-looking but ill-formed composition where
    wealth balances yet truthfulness fails.
-2. Prove (or refute) the **`β_t` = wealth-transfer** identity (Q3) for a Kelly
+2. Prove (or refute) the `β_t` = wealth-transfer identity (Q3) for a Kelly
    trader, and translate the market's regret bound into an ensemble generalization
    bound.
-3. The **quantitative** propriety gap for approximately-non-invertible learned `T`
+3. The quantitative propriety gap for approximately-non-invertible learned `T`
    (Q1 residual), framed against Allen et al. (2023) and Pic et al. (2025).
 
 ## References

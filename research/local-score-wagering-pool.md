@@ -7,16 +7,16 @@ as a combination; every ingredient is published. See §7.*
 
 Two pieces already live in this repository but have never been bolted together:
 
-- **Self-financing wagering mechanisms** (Lambert, Langford, Wortman Vaughan et
+- Self-financing wagering mechanisms (Lambert, Langford, Wortman Vaughan et
   al. 2008, 2015): a budget-balanced pool that pays each participant their
-  wager-weighted **proper score** minus the wager-weighted average score of the
+  wager-weighted proper score minus the wager-weighted average score of the
   field. Truthful for immutable, risk-neutral beliefs; the operator bears no
   risk. The construction works for *any* proper scoring rule.
-- **Local proper scoring rules** (Parry, Dawid & Lauritzen 2012), implemented in
+- Local proper scoring rules (Parry, Dawid & Lauritzen 2012), implemented in
   [`local_scoring.py`](../mechanisms/local_scoring.py): rules that depend on the
   quoted density only through `log p` and a finite number of its derivatives at
-  the outcome, the canonical case being the **Hyvärinen score**. Because they
-  see only derivatives of `log p`, they can score an **unnormalized** density —
+  the outcome, the canonical case being the Hyvärinen score. Because they
+  see only derivatives of `log p`, they can score an unnormalized density —
   the partition function `Z` cancels.
 
 The wagering literature always instantiates its mechanism with a *global* score
@@ -29,9 +29,9 @@ based models — and no one, ever, computes a partition function.** Call it the
 ## 2. The mechanism
 
 Each of `n` participants holds wealth `Wᵢ`, risks a stake `sᵢ = b·Wᵢ` for a fixed
-fraction `b ∈ (0,1)`, and submits an **unnormalized** log-density `log p̃ᵢ`
+fraction `b ∈ (0,1)`, and submits an unnormalized log-density `log p̃ᵢ`
 over `ℝ^d` (an energy function; a score network; an un-normalised mixture). The
-outcome `z` is revealed. Write the local score in **reward** form (higher is
+outcome `z` is revealed. Write the local score in reward form (higher is
 better),
 
 ```
@@ -53,7 +53,7 @@ no risk, exactly as in the racetrack tote.
 ## 3. Why an unnormalized submission cannot "hide mass"
 
 The obvious objection: if I can submit `p̃` without normalizing, can't I inflate
-my mass and steal the pot? For a **density-value** payout (the log score, which
+my mass and steal the pot? For a density-value payout (the log score, which
 is what nearest-the-pin uses, `pot ∝ qᵢ(z)`), yes — sending `q̃ = c·q` with
 `c → ∞` wins everything, which is *why* that mechanism must normalize.
 
@@ -64,19 +64,19 @@ log(c·p̃) = log c + log p̃   ⟹   ∇log(c·p̃) = ∇log p̃,   Δlog(c·p�
 ```
 
 so `R(z, c·p̃) = R(z, p̃)` for every `c > 0`. The normalizer is not concealed; it
-is **not an argument of the payout**. There is nothing to game by misreporting
+is not an argument of the payout. There is nothing to game by misreporting
 total mass, because total mass is never read.
 
 ## 4. What keeps reports truthful
 
-Truthful reporting is enforced not by a normalization constraint but by the **derivative
-penalty** `½‖∇log p‖²` (and the Laplacian `Δlog p`). This is the *local surrogate*
+Truthful reporting is enforced not by a normalization constraint but by the derivative
+penalty `½‖∇log p‖²` (and the Laplacian `Δlog p`). This is the *local surrogate*
 for "probability mass must come from somewhere": you cannot spike your log-density
 at the outcome for free, because a steep, peaked log-density is charged for its own
 slope and curvature.
 
-Formally, the Hyvärinen score is strictly proper **relative to the Fisher
-divergence** `½ ∫ p_true ‖∇log q − ∇log p_true‖²`, which vanishes iff
+Formally, the Hyvärinen score is strictly proper relative to the Fisher
+divergence `½ ∫ p_true ‖∇log q − ∇log p_true‖²`, which vanishes iff
 `∇log q = ∇log p_true`, i.e. `q ∝ p_true`. It pins the submitted density down *up
 to exactly the multiplicative constant the mechanism ignores.* Shape is elicited;
 level is free; the two are consistent.
@@ -96,8 +96,8 @@ the log score) never appearing.
 
 ## 5. The genuine limitation (and the hook)
 
-Fisher-divergence properness only pins the shape **on connected support**. If the
-truth is multimodal with **well-separated modes**, `∇log q = ∇log p` *within* each
+Fisher-divergence properness only pins the shape on connected support. If the
+truth is multimodal with well-separated modes, `∇log q = ∇log p` *within* each
 mode constrains nothing about the *relative mass between* modes — so a participant
 can shift probability from one mode to another and the local score will not see
 it. On disconnected support **you genuinely can hide mass between modes.**
@@ -105,7 +105,7 @@ it. On disconnected support **you genuinely can hide mass between modes.**
 This is not a flaw peculiar to this mechanism; it is the well-known blind spot of
 score matching (the reason annealed and diffusion-based score matching exist:
 Song & Ermon 2019). It transfers directly: the fix here is the same one —
-**anneal**. Score the submission at several noise scales (convolve the outcome,
+anneal. Score the submission at several noise scales (convolve the outcome,
 or the densities, with Gaussians of decreasing width) and pool the scores; the
 coarse scales connect the modes and restore identifiability of the mixing
 proportions. That makes the pool's failure mode a *parameter*, not a surprise —
@@ -148,7 +148,7 @@ thoroughly; the two literatures are disjoint. Closest neighbours:
   Markets* (AAAI 2017), and Freeman & Pennock, *An Axiomatic View of the Parimutuel
   Consensus Mechanism* (IJCAI 2018): proper-score-driven pools over finite
   outcomes, not continuous, not local, not unnormalized.
-- Kilgour & Gerchak (2004) and **Johnstone (2007)**, *The Parimutuel Kelly
+- Kilgour & Gerchak (2004) and Johnstone (2007), *The Parimutuel Kelly
   Probability Scoring Rule*: competitive/parimutuel scoring, with the warning that
   the parimutuel Kelly score is truthful only as a Nash equilibrium, not strictly
   proper — the relevant caution for §6's `b → 0` claim.

@@ -12,8 +12,8 @@ computation. **Full write-up with proofs:**
 
 The density pot-split of the [nearest-the-pin pool](../mechanisms/nearest_the_pin.py)
 (and the reward rule of monteprediction-style contests) scores a participant by
-the **kernel density estimate of their submitted cloud, evaluated at the raw
-outcome** `z`. Write `ρ` for the density the participant samples their cloud
+the kernel density estimate of their submitted cloud, evaluated at the raw
+outcome `z`. Write `ρ` for the density the participant samples their cloud
 from, `φ_h` for the KDE kernel, and `ρ_h = ρ * φ_h` for the smoothed submission.
 Under the log score the expected payoff is
 
@@ -21,8 +21,8 @@ Under the log score the expected payoff is
 E_{z~p*} [ log ρ_h(z) ]  =  ∫ p* log(ρ * φ_h),
 ```
 
-which is maximized not at `ρ = p*` but wherever `ρ * φ_h = p*` — i.e. by
-submitting the **deconvolution of your belief by the kernel**. Gaussian closed
+which is maximized not at `ρ = p*` but wherever `ρ * φ_h = p*`, i.e. by
+submitting the deconvolution of your belief by the kernel. Gaussian closed
 form: belief `N(0, τ²)`, bandwidth `h` ⇒ the optimal cloud is
 
 ```
@@ -30,15 +30,15 @@ N(0, τ² − h²)        (exists iff τ² > h²),
 ```
 
 *shave exactly `h²` off your variance.* When `τ² ≤ h²` the deconvolution is not
-a distribution and the optimum degenerates toward point masses — precisely the
+a distribution and the optimum degenerates toward point masses, precisely the
 regime of Theis, van den Oord & Bethge's (2016) exploit, where a cloud of
 k-means centroids out-scores the true distribution. The improperness *itself*
 is theirs (they name it: "an improper scoring function"); the fair-scores
 literature established the same genre for the ensemble CRPS (Fricker, Ferro &
 Stephenson 2013 derive the optimal cheat in closed form; Ferro 2014 quantifies
-the variance-shaving). What we add is the **characterization**: the optimal
+the variance-shaving). What we add is the characterization: the optimal
 misreport is the deconvolution, with the Gaussian `τ² − h²` formula, and the
-incentive gain is fourth-order, `≈ h⁴/4` for `h ≪ τ` — small, but a real slope,
+incentive gain is fourth-order, `≈ h⁴/4` for `h ≪ τ`: small, but a real slope,
 and any optimizing submitter (human or fitted) will walk down it.
 
 Scope note: this is exact for log-scored KDEs and for the `b = 1` (full-Kelly)
@@ -49,7 +49,7 @@ orthogonal to the smoothing issue treated here.
 
 ## 2. The repair: if you smooth the forecasts, smooth the outcome too
 
-Define the **mollified log score**
+Define the mollified log score
 
 ```
 S_h(ρ, z)  =  (φ_h * log ρ_h)(z)  =  E_ε [ log ρ_h(z + hε) ],   ε ~ N(0, I),
@@ -63,25 +63,25 @@ E_{z~p*} S_h(ρ, z) = ∫ p*_h log ρ_h,
 ```
 
 maximized iff `ρ_h = p*_h` iff `ρ = p*`, because Gaussian convolution is
-**injective** (its characteristic function never vanishes). The score is
+injective (its characteristic function never vanishes). The score is
 strictly proper for the *pre-smoothing* density.
 
 Attribution here is precise, because the pieces are older than they look:
 
-- **Properness** of the convolved score against a noised outcome is Bröcker &
+- Properness of the convolved score against a noised outcome is Bröcker &
   Smith (2007, §5) and, worked out for exactly this white-noise model, Ferro
   (2017, Prop. 3). Both treat the noise as *measurement error to be endured*.
-- **Strictness** is the part they left open. Bröcker & Smith, verbatim: "If S
+- Strictness is the part they left open. Bröcker & Smith, verbatim: "If S
   is strictly proper though, S̄ is not necessarily strictly proper, because if
   q̄(z) = p̄(z), this does not necessarily mean equality of p(x) and q(x)."
-  For kernels with nonvanishing characteristic function it *does* mean that —
-  the one-line closure above.
+  For kernels with nonvanishing characteristic function it *does* mean that;
+  the closure is one line.
 - The discrete-channel analog exists in the label-noise literature: composing
-  the prediction with an **invertible** noise-transition matrix restores the
+  the prediction with an invertible noise-transition matrix restores the
   clean minimizer (Patrini et al. 2017, Thm. 2; van Rooyen & Williamson 2018's
   "reconstructible" Markov operators; Liu, Wang & Chen's surrogate scoring
   rules for finite outcomes). §2 is the continuous, elicitation-side version.
-- The general lemma this instantiates — call it the **kernel-channel lemma** —
+- The general lemma this instantiates (the kernel-channel lemma)
   extends the deterministic injective-transform propositions of Allen,
   Ginsbourger & Ziegel (2023, Prop. 4 published / Prop. 3 in arXiv v1) and Pic
   et al. (2025, Prop. 1) to Markov kernels: *scoring forecast and outcome
@@ -98,19 +98,19 @@ strictly proper. One line of code: **jitter the pin by the KDE bandwidth.**
 
 Two qualifications (paper v0.2, after referee feedback): the guarantee is
 population-level (the cloud idealised by its law; finite `m` open), and the
-bandwidth must be **exogenous** — frozen before submissions are observed. A
+bandwidth must be exogenous, frozen before submissions are observed. A
 bandwidth computed from the participant's own cloud puts the channel under the
 participant's control and is outside the theorem.
 
 Disclosure: the microprediction platform (Cotton 2022, and the platform paper)
-added a small amount of noise to submissions and ground truth — a merely
+added a small amount of noise to submissions and ground truth, a merely
 intuitive implementation detail at the time, without incentive analysis. This
 section is, retroactively, the theory of that detail.
 
 ## 3. The ladder: run the proper rung at every scale and the edge decomposes
 
 Let `p_t = p * N(0, t)` denote the heat flow (`∂_t p = ½Δp`). Run the §2 rung
-at a ladder of scales `t ∈ [0, T]` — for sample clouds this is free: the rung
+at a ladder of scales `t ∈ [0, T]`; for sample clouds this is free: the rung
 at scale `t` is *the same cloud* scored with bandwidth `√(h² + t)` against a
 correspondingly jittered pin. A truthful participant's expected edge at scale
 `t` is `KL(p*_t ‖ ρ_t)`, and de Bruijn's identity in integral form gives the
@@ -127,11 +127,11 @@ al. 2021. The identity is not ours; the mechanism reading is.)
 
 Read as a payment schedule:
 
-- **Rung differences pay the Fisher divergence** — they are
+- Rung differences pay the Fisher divergence: they are
   [Hyvärinen-scored](../mechanisms/local_scoring.py) *shape* elicitation:
   scale-invariant, partition-function-free (the infinitesimal log score, per
   the de Bruijn edge on the [map](../docs/map.html)).
-- **The coarse top rung pays for between-mode mass** — `KL(p*_T ‖ ρ_T)` at a
+- The coarse top rung pays for between-mode mass: `KL(p*_T ‖ ρ_T)` at a
   scale `T` large enough to connect the modes retains exactly the mixing-
   proportion information that score matching is blind to (Wenliang & Kanagawa
   2020; Zhang et al. 2022; Koehler, Heckett & Risteski 2023).
@@ -151,7 +151,7 @@ paying rung *levels* with weights `w_k` puts *cumulative* weights on the
 Fisher bands; to pay a band directly, use rung *differences*
 `S_k − S_{k+1}`, which are themselves strictly proper (regret = the band's
 Fisher integral, zero iff truthful). Either way the weights are an explicit,
-interpretable dial over *what is being paid for* — fine rungs buy
+interpretable dial over *what is being paid for*: fine rungs buy
 local shape (gradients), coarse rungs buy global mass placement. The two
 failure modes of the repo's existing pools annihilate pairwise: the
 [local-score pool](local-score-wagering-pool.md)'s mode-mass blindness is
@@ -180,13 +180,13 @@ we have not derived; see §7.
 
 | Claim | Verdict |
 |---|---|
-| KDE + log score at the raw outcome is improper | **Known** — Theis, van den Oord & Bethge (2016); genre: Fricker–Ferro–Stephenson (2013), Ferro (2014), Bröcker (2012) for ensemble CRPS |
-| Optimal misreport = deconvolution; Gaussian `τ²−h²`; `h⁴/4` gain | **Likely novel, narrow gap** — not found; elementary once stated (shrink-to-compensate arithmetic appears in Bröcker & Smith 2008's dressing, as post-processing not strategy) |
-| Mollified score properness (per rung) | **Known** — Bröcker & Smith (2007, §5); Ferro (2017, Prop. 3) |
-| Strictness via injectivity; jitter as deliberate design | **Likely novel, narrow gap** — closes a gap Bröcker & Smith explicitly flagged; discrete analog in Patrini et al. (2017), van Rooyen & Williamson (2018) |
-| Kernel-channel lemma (Markov-kernel extension of AGZ Prop. 4 / Pic et al. Prop. 1) | **Likely novel, narrow gap** — unstated in the scoring-rule literature after diligent search |
-| Integral de Bruijn identity | **Known** — Stam (1959), Barron (1986), Lyu (2009), Song et al. (2021) |
-| The heat-ladder pool (assembly: budget-balanced pot across smoothing scales; rungs pay Fisher, top pays mass) | **Likely novel, narrow gap** — survived adversarial search. Nearest neighbours, each missing a leg: Ferro 2017 (one rung, no ladder, no mechanism); Lang–Leutbecher–Maciel 2025 (Gaussian scale-ladder of proper scores **as a training loss**, no properness of the composite, no payments); Dudík et al. 2021 (multi-resolution *market* over one outcome via partition refinement, subsidized not budget-balanced, no divergence decomposition); Lambert et al. 2008/2015 + the microprediction pool (self-funding cloud wagering at a single scale) |
+| KDE + log score at the raw outcome is improper | Known — Theis, van den Oord & Bethge (2016); genre: Fricker–Ferro–Stephenson (2013), Ferro (2014), Bröcker (2012) for ensemble CRPS |
+| Optimal misreport = deconvolution; Gaussian `τ²−h²`; `h⁴/4` gain | Likely novel, narrow gap — not found; elementary once stated (shrink-to-compensate arithmetic appears in Bröcker & Smith 2008's dressing, as post-processing not strategy) |
+| Mollified score properness (per rung) | Known — Bröcker & Smith (2007, §5); Ferro (2017, Prop. 3) |
+| Strictness via injectivity; jitter as deliberate design | Likely novel, narrow gap — closes a gap Bröcker & Smith explicitly flagged; discrete analog in Patrini et al. (2017), van Rooyen & Williamson (2018) |
+| Kernel-channel lemma (Markov-kernel extension of AGZ Prop. 4 / Pic et al. Prop. 1) | Likely novel, narrow gap — unstated in the scoring-rule literature after diligent search |
+| Integral de Bruijn identity | Known — Stam (1959), Barron (1986), Lyu (2009), Song et al. (2021) |
+| The heat-ladder pool (assembly: budget-balanced pot across smoothing scales; rungs pay Fisher, top pays mass) | Likely novel, narrow gap — survived adversarial search. Nearest neighbours, each missing a leg: Ferro 2017 (one rung, no ladder, no mechanism); Lang–Leutbecher–Maciel 2025 (Gaussian scale-ladder of proper scores as a training loss, no properness of the composite, no payments); Dudík et al. 2021 (multi-resolution *market* over one outcome via partition refinement, subsidized not budget-balanced, no divergence decomposition); Lambert et al. 2008/2015 + the microprediction pool (self-funding cloud wagering at a single scale) |
 
 Residual risk: Wenliang & Kanagawa is workshop-only (Zhang et al. 2022 and
 Koehler et al. 2023 are the archival support); Claim 1b is elementary enough

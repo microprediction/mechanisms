@@ -2,10 +2,10 @@
 
 ### The deconvolution incentive, jittered outcomes, and the heat ladder
 
-**Peter Cotton** · *Working draft v0.2* · 2026
+Peter Cotton · *Working draft v0.2* · 2026
 
 > **Status.** An evolving working note, not a finished paper. Theorems 1–3 are
-> proved below at working-draft rigor **in the population-law setting**: the
+> proved below at working-draft rigor in the population-law setting: the
 > cloud is idealised by its sampling law, and the smoothing/jitter kernel is
 > fixed in advance. Finite clouds and participant-endogenous bandwidths are
 > outside the proved results (§7). The mechanism and the closed forms are
@@ -25,32 +25,18 @@
 
 ## Abstract
 
-Forecasting contests increasingly accept **point clouds** — bags of Monte-Carlo
-samples standing in for a predictive density — and score them by smoothing the
-cloud into a density (a KDE) and evaluating at the realised outcome. We show
-this common design is **improper**: because the mechanism smooths the
-submission, the optimal cloud is drawn not from the forecaster's belief but
-from its **deconvolution** by the smoothing kernel (Theorem 1; for a Gaussian
-belief $N(\mu,\tau^2)$ and bandwidth $h$, the optimal submission is
-$N(\mu,\tau^2-h^2)$ — shave exactly the bandwidth off your variance), with a
-truthfulness gap of $\mathrm{KL}(p^*\Vert p^**\varphi_h)$ when the
-deconvolution is admissible. The repair is
-symmetric and one line: **if you smooth the forecasts, smooth the outcome
-too**. Jittering the outcome by the same kernel — equivalently, the *mollified
-log score* $S_h(\rho,z)=(\varphi_h*\log\rho_h)(z)$ — is strictly proper for the
-pre-smoothing law, because convolution by a kernel whose characteristic
-function has dense support is injective on probability measures (Lemma 1,
-Theorem 2). Running the proper rung at every smoothing scale then turns de
-Bruijn's identity into a payment schedule (Theorem 3): rung differences pay the
-Fisher divergence — normalization-free elicitation of *shape* — while the
-coarse rung pays for between-mode *mass*, and the telescoped total is the full
-log-score edge. The resulting **heat-ladder pool** is budget-balanced, and in
-its additive stake-weighted form strictly proper rung by rung in the
-risk-neutral small-stake limit; all results are population-level, with the
-kernel fixed in advance. A historical note records that the
-microprediction platform jittered submissions and ground truth from its launch
-— a purely intuitive choice at the time, with no theorem behind it; Theorem 2
-is that theorem, and it sharpens the intuition into kernel guidance.
+Forecasting contests often accept a cloud of Monte-Carlo samples, smooth it
+into a kernel density estimate, and score the result at the realised outcome.
+This design is improper: the optimal cloud is drawn from the deconvolution of
+the forecaster's belief by the smoothing kernel, which for a Gaussian belief
+means shaving the squared bandwidth off the variance (Theorem 1). Jittering
+the outcome with the same kernel restores strict propriety, because
+convolution by a kernel whose characteristic function has dense support is
+injective on probability measures (Theorem 2). Repeating the repaired score
+across smoothing scales decomposes the log-score edge, via de Bruijn's
+identity, into Fisher-divergence payments for shape plus a coarse-scale
+payment for mass (Theorem 3), yielding a budget-balanced multiscale pool. All
+results are population-level, with the kernel fixed in advance.
 
 ---
 
@@ -66,9 +52,9 @@ monteprediction-style contests, and the standard evaluation protocol for
 sample-based generative models.
 
 The question this paper answers: *what cloud should a rational participant
-submit?* The answer is **not** "samples from your belief," and the failure has
-a clean closed form, a one-line repair, and — once repaired — a multi-scale
-structure worth wanting for its own sake.
+submit?* The answer is not "samples from your belief," and the failure has
+a clean closed form, a one-line repair, and, once repaired, a multi-scale
+structure with its own uses.
 
 Throughout, we idealise the cloud by its sampling law $\rho$ ($m\to\infty$;
 finite $m$ is Open Problem 1), so the mechanism observes $T_h\rho := \rho*\varphi_h$,
@@ -167,7 +153,7 @@ $\rho=\rho'$ by the uniqueness theorem. ($\Rightarrow$) If $\hat\varphi$
 vanishes on an open ball $B$ (with $0\notin B$, since $\hat\varphi(0)=1$),
 take $\psi\in C_c^\infty(B)$, $\psi\neq0$, and set
 $\hat g(\omega)=\psi(\omega)+\overline{\psi(-\omega)}$, so that $g$ is a real
-Schwartz function — a finite signed density — with total mass
+Schwartz function (a finite signed density) with total mass
 $\int g=\hat g(0)=0$ and $\hat g$ supported where $\hat\varphi=0$. Choose a
 base density $p$ with tails heavier than Schwartz decay (Cauchy), so
 $|\epsilon g|\le p$ pointwise for small $\epsilon>0$. Then
@@ -178,10 +164,10 @@ $\blacksquare$
 
 This is Wiener-flavoured (Wiener's Tauberian theorem is the $L^1$ statement);
 for probability measures the continuity of characteristic functions buys the
-dense-support version. Practical reading: **Gaussian and Laplace jitter are
-injective** (nonvanishing characteristic functions); the **uniform kernel is
-also fine** (sinc zeros are isolated, hence the nonvanishing set is dense);
-**band-limited kernels fail** (e.g. Fejér-type kernels, whose characteristic
+dense-support version. Practical reading: Gaussian and Laplace jitter are
+injective (nonvanishing characteristic functions); the uniform kernel is
+also fine (sinc zeros are isolated, hence the nonvanishing set is dense);
+band-limited kernels fail (e.g. Fejér-type kernels, whose characteristic
 function vanishes on a half-line — two beliefs agreeing on low frequencies
 become indistinguishable).
 
@@ -194,7 +180,7 @@ $$S_K(\rho,z)\;=\;\mathbb E_{z'\sim K(z,\cdot)}\big[S(T_K\rho,\,z')\big].$$
 $p,\rho$ under comparison (or adopt an extended-expectation convention), and
 (b) $T_K\mathcal P$ lies within the report class on which $S$ is defined. If
 $S$ is proper, $S_K$ is proper. If $S$ is strictly proper on
-$T_K\mathcal P$, then $S_K$ is strictly proper on $\mathcal P$ **iff**
+$T_K\mathcal P$, then $S_K$ is strictly proper on $\mathcal P$ iff
 $T_K$ is injective on $\mathcal P$. In particular the mollified log score
 $S_h$ is strictly proper for the pre-smoothing law whenever the zero set of
 $\hat\varphi$ has empty interior — for Gaussian jitter, always.*
@@ -211,15 +197,15 @@ proper on densities, $T_K\rho=\rho*\varphi_h$ is a density, and Lemma 1 gives
 injectivity. $\blacksquare$
 
 **How much to jitter? Exactly as much as you smooth.** The jitter is not a
-free parameter: it is pinned, kernel for kernel, to the mechanism's own
+free parameter; it is pinned, kernel for kernel, to the mechanism's own
 smoothing. Jittering with s.d. $j$ while smoothing with bandwidth $h$ pairs the
 jittered truth $p^**\varphi_j$ with the smoothed report $\rho*\varphi_h$, and
 in the all-Gaussian setting the optimal report variance is
 
 $$v^\ast \;=\; \tau^2 + j^2 - h^2 .$$
 
-At $j=0$ this is Theorem 1's shave; at $j=h$ — and only at $j=h$ — the optimum
-is the truth; at $j>h$ the mechanism pays *padding* by $j^2-h^2$. The formula
+At $j=0$ this is Theorem 1's shave. At $j=h$, and only at $j=h$, the optimum
+is the truth. At $j>h$ the mechanism pays padding by $j^2-h^2$. The formula
 holds where admissible ($v^\ast\ge0$); otherwise the Gaussian-family optimum
 sits on the boundary (the KL-projection case of Theorem 1(ii)). Under-jitter
 rewards sharpening, over-jitter rewards blurring, and matching the bandwidth is
@@ -235,14 +221,14 @@ rule on the submission, as reference KDE implementations default to) puts
 $h(\rho)$ under the participant's control, the score becomes
 $\mathbb E_\varepsilon\log(T_{h(\rho)}\rho)(z+h(\rho)\varepsilon)$, and strict
 properness no longer follows from Theorem 2. In a contest, freeze the
-bandwidth before submissions are observed — from the outcome history, a
-reference climatology, or a posted rule — and jitter with that frozen kernel.
+bandwidth before submissions are observed (from the outcome history, a
+reference climatology, or a posted rule) and jitter with that frozen kernel.
 The incentives of participant-endogenous bandwidths are an open problem (§7).
 
 **Attribution, precisely.** The *properness* of the convolved score against a
 noised outcome is not new: Bröcker & Smith (2007, §5) prove it for a general
 observation-noise channel, and Ferro (2017, Prop. 3) works out exactly the
-white-noise/Gaussian case. What both left open is *strictness* — Bröcker &
+white-noise/Gaussian case. What both left open is strictness. Bröcker &
 Smith, verbatim: "If $S$ is strictly proper though, $\bar S$ is not
 necessarily strictly proper, because if $\bar q(z)=\bar p(z)$, this does not
 necessarily mean equality of $p(x)$ and $q(x)$." Lemma 1 closes exactly that
@@ -358,8 +344,8 @@ for the cloud law (Theorem 2) and each band score is strictly proper (the
 Proposition), so truthful submission is optimal in the small-stake,
 risk-neutral limit; the multiplicative pot split requires a log-wealth (Kelly)
 model stated separately. (iii) Band payments purchase (integrated) Fisher
-divergence — Hyvärinen-scored* shape*, invariant to the normalization of the
-submission — while the top level pays $\mathrm{KL}(p^*_T\Vert\rho_T)$, which
+divergence, which is Hyvärinen-scored shape, invariant to the normalization
+of the submission; the top level pays $\mathrm{KL}(p^*_T\Vert\rho_T)$, which
 at mode-connecting scales carries the between-mode* mass *that score matching
 is blind to (Wenliang & Kanagawa 2020; Zhang et al. 2022; Koehler, Heckett &
 Risteski 2023). Under the level schedule the band weights are the cumulative
@@ -374,17 +360,17 @@ annealed score matching (Song & Ermon 2019).
 
 The microprediction platform (Cotton 2022; launched 2019) added a small amount
 of noise to submissions and to the ground truth before settling its cloud-based
-lotteries. **This was merely intuitive** — a fairness-and-anti-gaming instinct
+lotteries. This was merely intuitive, a fairness-and-anti-gaming instinct
 about discreteness and ties, with no incentive theorem attached; the platform
 paper recorded the practice in one line and moved on. The verification literature, meanwhile, treated outcome
 noise as a defect: something to be modelled away (Saetra et al. 2004; Candille
 & Talagrand 2008), with Ferro (2017) explicitly doubting the value of
 perturbing observations.
 
-Theorem 2 is the missing theorem: symmetrized jitter is precisely what makes a
-smoothed-submission game strictly proper for the submitted law. And the theory
-returns the favour by *sharpening* the intuition into design guidance the
-intuition could not supply: the jitter distribution matters. Kernels whose
+Theorem 2 is the missing theorem: symmetrized jitter is what makes a
+smoothed-submission game strictly proper for the submitted law. The theory
+also sharpens the intuition into design guidance it could not supply on its
+own: the jitter distribution matters. Kernels whose
 characteristic function has dense support (Gaussian, Laplace, even uniform)
 preserve strict properness; band-limited kernels do not (Lemma 1). Intuition
 chose jitter; the theorem chooses *which* jitter.

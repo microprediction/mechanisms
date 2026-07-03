@@ -34,8 +34,8 @@
     <h1>Scoring point-cloud submissions</h1>
 
     <p class="lead">
-      Many contests elicit a forecast as a <strong>cloud of Monte-Carlo
-      samples</strong> rather than a formula: monteprediction's
+      Many contests elicit a forecast as a cloud of Monte-Carlo
+      samples rather than a formula: monteprediction's
       eleven-dimensional clouds, the
       <a href="../papers.html#nearest-the-pin">nearest-the-pin parimutuel</a>,
       generative-model evaluation. The cloud must be turned into a score at the
@@ -77,8 +77,8 @@
     <p>
       If you smooth the forecasts, smooth the outcome too. Settling at
       $z' = z + j\varepsilon$ with jitter matched to the bandwidth ($j = h$,
-      same kernel) makes the score <strong>strictly proper for the
-      pre-smoothing cloud</strong>, because Gaussian convolution is injective —
+      same kernel) makes the score strictly proper for the
+      pre-smoothing cloud, because Gaussian convolution is injective —
       its characteristic function never vanishes. The calibration is a single
       formula: the score peaks at
     </p>
@@ -87,8 +87,8 @@
     </div>
     <p>
       so $j=0$ pays shaving, $j&gt;h$ pays padding, and $j=h$ — alone — pays
-      the truth. One requirement: the bandwidth must be <strong>fixed in
-      advance</strong> — a bandwidth computed from the participant's own cloud
+      the truth. One requirement: the bandwidth must be fixed in
+      advance — a bandwidth computed from the participant's own cloud
       puts the smoothing channel under the participant's control and voids the
       guarantee. Run the repaired rung at several smoothing scales and de
       Bruijn's identity splits the total log-score edge into Fisher-divergence
@@ -118,8 +118,8 @@
       expected scores; the score peaks at $v^\ast = 1 + j^2 - h^2$. With $j=0$
       (<span style="color:#c0392b">red</span>) the mechanism pays you to
       <em>shave</em> $h^2$ off your variance; with $j&gt;h$ it pays you to
-      <em>pad</em>. Truth-telling sits at $v^\ast=1$ <strong>iff
-      $j=h$</strong>: <em>jitter exactly as much as you smooth</em>. Slide $j$
+      <em>pad</em>. Truth-telling sits at $v^\ast=1$ iff
+      $j=h$: <em>jitter exactly as much as you smooth</em>. Slide $j$
       and watch the <span style="color:#1e8449">green</span> peak cross the
       truth line.
     </p>

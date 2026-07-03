@@ -2,15 +2,15 @@
 
 ### A continuous, projection-scored pool for distributional forecasts
 
-**Peter Cotton** · *Working draft v0.2* · 2026
+Peter Cotton · *Working draft v0.2* · 2026
 
 > **Status.** This is an evolving working note, not a finished paper. The core
 > mechanism and the projection identity (§4) are implemented and unit-tested in
 > [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py); the
 > connections to the random-projections literature (§4) and the Schur
 > pseudo-likelihood (§5) are sketched and flagged where conjectural.
-> *v0.2:* added the §3 caveat that truthful reporting concerns the **density**,
-> not the **cloud** — under KDE settlement at the raw outcome the optimal cloud
+> *v0.2:* added the §3 caveat that truthful reporting concerns the density,
+> not the cloud — under KDE settlement at the raw outcome the optimal cloud
 > is the belief deconvolved by the bandwidth; see the companion paper
 > [*Scoring Point-Cloud Distributional Submissions*](scoring-point-cloud-distributional-submissions.md).
 
@@ -23,18 +23,18 @@ stakes on a finite set of outcomes and winners split the pot pro rata. We study
 its limit when the outcome is a point $z \in \mathbb{R}^d$ and each participant
 submits a *predictive density* — in practice a cloud of Monte-Carlo samples. The
 pot is split in proportion to the density a participant placed at the realised
-$z$, relative to the crowd: a **nearest-the-pin** reward. We make three points.
+$z$, relative to the crowd: a nearest-the-pin reward. We make three points.
 (i) The mechanism is self-funding and, for a log-wealth (Kelly) maximiser,
 strictly incentive-compatible: the unique optimal report is one's true density,
 which connects the pool's growth-optimal strategy to the logarithmic scoring
 rule. (ii) In high dimensions the joint density is hard to estimate; the
-**projection version** — used at [monteprediction.com](https://monteprediction.com)
+projection version — used at [monteprediction.com](https://monteprediction.com)
 for eleven-dimensional forecasts — replaces it with random one-dimensional
 projections, and by the energy-distance projection identity the average sliced
 CRPS recovers the multivariate energy score exactly (up to a dimension constant).
 This places the mechanism inside the *random-projections* literature. (iii) The
 high-dimensional scoring problem is the same one solved, from the density side, by
-the **Schur pseudo-likelihood**: nearest-the-pin sits between two strategies for
+the Schur pseudo-likelihood: nearest-the-pin sits between two strategies for
 scoring a joint forecast when $d$ is large relative to the data — structured
 density estimation (Schur/Vecchia) and random projection (energy/sliced scores).
 
@@ -53,7 +53,7 @@ predictive distribution* over a continuous, often multivariate, quantity:
 next week's joint returns of eleven sector ETFs, a spatial field, a vector of
 demands. The natural generalisation of the parimutuel replaces "a ticket on
 outcome $j$" with "probability mass placed near the point $z$", and the
-pro-rata split with a split proportional to the **density** each participant
+pro-rata split with a split proportional to the density each participant
 ascribed to the realised $z$. This is the reward rule of
 [monteprediction.com](https://monteprediction.com), described there as
 
@@ -61,7 +61,7 @@ ascribed to the realised $z$. This is the reward rule of
 > truth $z$, [which] also depends on the density that others ascribe to $z$,"
 
 with participants risking a fixed fraction (≈ 0.1) of their wealth each round.
-We call it the **nearest-the-pin parimutuel**: the closer your mass lands to the
+We call it the nearest-the-pin parimutuel: the closer your mass lands to the
 pin, relative to the field, the larger your share of the pot.
 
 ## 2. The discrete parimutuel is log-optimally truthful
@@ -74,7 +74,7 @@ Consider $n$ outcomes with true probabilities $p_k$, and a parimutuel in which a
 player allocates a unit stake as a distribution $b = (b_1, \dots, b_n)$ over
 outcomes. If the rest of the pool's stake fractions are $r_k$ and the player is
 small, a unit bet on $k$ returns $1/r_k$ when $k$ occurs. A player maximising the
-expected **log** growth of wealth solves
+expected log growth of wealth solves
 
 $$\max_{b \in \Delta}\; \sum_k p_k \log\frac{b_k}{r_k},$$
 
@@ -82,12 +82,12 @@ whose unique maximiser is $b_k = p_k$ — *bet your beliefs* (Kelly 1956; Breima
 1961). The growth rate at the optimum is the Kullback–Leibler divergence
 $D(p \,\|\, r)$, i.e. the player profits exactly to the extent their (true)
 belief beats the crowd's implied distribution. Log-wealth maximisation and truthful
-reporting coincide, and the quantity being maximised is the **logarithmic
-score** of the player's report against the realised outcome, net of the crowd.
+reporting coincide, and the quantity being maximised is the logarithmic
+score of the player's report against the realised outcome, net of the crowd.
 
 This is the discrete shadow of the continuous mechanism, and it tells us the
-continuous split should be proportional to **density** (the continuous analogue
-of $b_k$) and the natural objective is **log-wealth growth**.
+continuous split should be proportional to density (the continuous analogue
+of $b_k$) and the natural objective is log-wealth growth.
 
 ## 3. The nearest-the-pin parimutuel
 
@@ -115,7 +115,7 @@ $$\mathbb{E}_{z \sim p}\!\left[\log\!\Big(1 + b\big(\tfrac{S}{s_i}\tfrac{s_i q(z
  \;\approx\; b\,\Big(\mathbb{E}_{z\sim p}\!\big[\tfrac{S\,q(z)}{Q(z)}\big] - 1\Big),$$
 
 and the report $q$ maximising $\mathbb{E}_{z\sim p}[\,q(z)/Q(z)\,]$ subject to
-$\int q = 1$ is, by the same Gibbs argument as §2, $q = p$: the **true** density.
+$\int q = 1$ is, by the same Gibbs argument as §2, $q = p$: the true density.
 As in the discrete case the growth rate is governed by a logarithmic comparison
 of the player's density to the crowd's. We verify the incentive numerically in
 [`test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py): a truthful
@@ -125,29 +125,29 @@ reporter out-grows a biased one against a truthful field.
 > The claim above concerns the reported density $q$. When $q$ is *constructed
 > from a sample cloud by KDE* — the parenthetical in the Mechanism paragraph,
 > and what `pot_split` actually does — the report space is the cloud, the
-> mechanism applies $q = \rho * \varphi_h$, and the optimal **cloud** is *not*
-> drawn from one's belief: it is the belief **deconvolved by the bandwidth**
+> mechanism applies $q = \rho * \varphi_h$, and the optimal cloud is *not*
+> drawn from one's belief: it is the belief deconvolved by the bandwidth
 > (Gaussian belief $N(\mu,\tau^2)$, bandwidth $h$ ⇒ optimal cloud
 > $N(\mu,\tau^2-h^2)$). The two statements are consistent — the optimal
 > *smoothed* cloud still equals the true density, so the density-level optimum
-> stands — but "submit samples from your belief" is **not** optimal under
+> stands — but "submit samples from your belief" is not optimal under
 > raw-outcome settlement. Truthfulness of the cloud itself is restored by
-> **jittering the pin** by the KDE kernel, strictly proper via injectivity of
+> jittering the pin by the KDE kernel, strictly proper via injectivity of
 > Gaussian convolution. See the companion paper,
 > [*Scoring Point-Cloud Distributional Submissions*](scoring-point-cloud-distributional-submissions.md),
 > and `mollified_log_score` in
 > [`nearest_the_pin.py`](../mechanisms/nearest_the_pin.py).
 
 **Relationship to other mechanisms.**
-- It is the **continuous, density-weighted limit of the parimutuel** (§2), and a
-  **density-pot-split generalisation of Pennock's dynamic parimutuel market**
+- It is the continuous, density-weighted limit of the parimutuel (§2), and a
+  density-pot-split generalisation of Pennock's dynamic parimutuel market
   (DPM): the DPM prices shares on discrete outcomes via a cost function; NTP
   prices density mass on a continuum.
-- Its truthfulness rests on the **logarithmic score** / log-wealth growth, the same
+- Its truthfulness rests on the logarithmic score / log-wealth growth, the same
   object that, applied *sequentially*, gives Hanson's LMSR. NTP is the *pooled*
   reading; LMSR is the *sequential* reading.
-- The score it implicitly applies to a sample cloud is a **strictly proper
-  scoring rule** for the predictive density; §4 makes this precise and connects
+- The score it implicitly applies to a sample cloud is a strictly proper
+  scoring rule for the predictive density; §4 makes this precise and connects
   it to the energy score.
 
 ## 4. The projection version
@@ -172,7 +172,7 @@ $$\mathbb{E}_u\,|\langle u, x\rangle| \;=\; c_d\,\|x\|,
 
 so $\|x\| = c_d^{-1}\,\mathbb{E}_u|\langle u, x\rangle|$. Substituting into the
 energy score $\mathrm{ES}(P, y) = \mathbb{E}\|X - y\| - \tfrac12\mathbb{E}\|X-X'\|$
-gives the **projection identity**
+gives the projection identity
 
 $$\boxed{\;\mathrm{ES}(P, y) \;=\; c_d^{-1}\;\mathbb{E}_u\big[\,\mathrm{CRPS}(P_u,\ \langle u, y\rangle)\,\big]\;}
 \tag{PROJ}$$
@@ -204,13 +204,13 @@ into random 1-D projections is a recurring, theoretically-backed device:
   pairwise Euclidean distances — which is precisely the quantity the energy
   score / energy distance is built from, so a modest number of directions
   preserves the score.
-- **Sliced Wasserstein distances** (Rabin et al. 2011; Bonneel et al. 2015):
+- Sliced Wasserstein distances (Rabin et al. 2011; Bonneel et al. 2015):
   average 1-D optimal-transport costs over random projections, a now-standard,
   cheap surrogate for the multivariate Wasserstein distance — the optimal-transport
   cousin of (PROJ).
-- **Sliced score matching** (Song et al. 2019): estimate high-dimensional score
+- Sliced score matching (Song et al. 2019): estimate high-dimensional score
   functions through random projections, for the same computational reasons.
-- **Energy distance** (Székely & Rizzo 2013) is itself an integral of squared
+- Energy distance (Székely & Rizzo 2013) is itself an integral of squared
   characteristic-function differences and, via the identity above, of absolute
   projected differences — the projection representation is intrinsic, not a
   heuristic.
@@ -229,13 +229,13 @@ naïve held-out Gaussian likelihood — the density-based score — becomes
 unreliable, because the estimated covariance is rank-deficient and its inverse is
 nonsense.
 
-The portfolio/spatial-statistics literature answers this from the **density
-side**. Cotton's *Two Sides of Schur Damping* (2025) and the underlying Schur
+The portfolio/spatial-statistics literature answers this from the density
+side. Cotton's *Two Sides of Schur Damping* (2025) and the underlying Schur
 complementary allocation (Cotton 2024, arXiv:2411.05807) observe that a Gaussian
-density factorises through a **Vecchia / conditional** pseudo-likelihood
+density factorises through a Vecchia / conditional pseudo-likelihood
 $\prod_k \mathcal{N}(y_k; b_k^\top y_c, S_k)$ whose conditional covariances $S_k$
 are *Schur complements*, and that the reliable score in the undersampled regime
-is a **damped** version of this factorisation — the Schur pseudo-likelihood — with
+is a damped version of this factorisation — the Schur pseudo-likelihood — with
 a closed-form James–Stein reliability damping $\gamma^\star$. In other words, when
 the raw joint density is untrustworthy, score it through a structured,
 positive-definiteness-preserving factorisation rather than the full inverse
@@ -243,13 +243,13 @@ covariance. (This is the basis of the `precise` library's covariance assessors;
 see the [schur](https://github.com/microprediction/schur) project.)
 
 The nearest-the-pin parimutuel needs precisely such a score: it must turn each
-participant's joint forecast into a number at $z$. There are then **two routes**,
+participant's joint forecast into a number at $z$. There are then two routes,
 and they are the two sides of the same coin:
 
 | route | how the joint forecast is scored | regime it suits |
 |-------|----------------------------------|-----------------|
-| **density** | structured / damped joint density — Schur pseudo-likelihood, Vecchia factorisation | a parametric or covariance-shaped forecast; $p > n$ handled by damping |
-| **projection** | average 1-D CRPS over random directions — the sliced energy score (PROJ) | a free-form sample cloud; high $d$ handled by slicing |
+| density | structured / damped joint density — Schur pseudo-likelihood, Vecchia factorisation | a parametric or covariance-shaped forecast; $p > n$ handled by damping |
+| projection | average 1-D CRPS over random directions — the sliced energy score (PROJ) | a free-form sample cloud; high $d$ handled by slicing |
 
 This is the paper's organising claim: **the density route (Schur/Vecchia) and the
 projection route (energy/sliced) are alternative ways to make a joint forecast
@@ -264,7 +264,7 @@ analysis open.
 ## 6. Why this matters: microprediction
 
 The nearest-the-pin parimutuel is one of the mechanisms in the spirit of the
-**microprediction** vision (Cotton 2022): a web-scale network of autonomous
+microprediction vision (Cotton 2022): a web-scale network of autonomous
 forecasters continuously submitting *distributional* predictions and being paid
 by self-funding, truth-eliciting pools. The book surveys a range of such
 reward mechanisms; the nearest-the-pin pool is one concrete instance. Two
