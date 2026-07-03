@@ -11,9 +11,12 @@ Peter Cotton · *Working draft v0.3* · 2026
 A parimutuel over a continuum splits the pot in proportion to the probability
 density each participant placed at the realised outcome. In practice the
 submission is a cloud of Monte-Carlo samples, smoothed into a kernel density
-estimate and scored at the pin. We give the mechanism and its incentive
-theory, and show that the smoothing step is where the theory bites: scoring a
-KDE at the raw outcome is improper, with the optimal cloud drawn from the
+estimate and scored at the pin. The pot split is self-funding; a log-optimal
+participant's total exposure is their belief, so truthful submission is exact
+all-in and a symmetric equilibrium at fractional stakes, while the small-stake
+limit degenerates. Proper-score payments transfer cleanly to additive
+stake-weighted transfers. The smoothing step is where the sharpest theory
+bites: scoring a KDE at the raw outcome is improper, with the optimal cloud drawn from the
 deconvolution of the forecaster's belief by the kernel (Theorem 1). Jittering
 the outcome with the same kernel restores strict propriety, because
 convolution by a kernel whose characteristic function has dense support is
@@ -55,7 +58,7 @@ incentive analysed in §3 does not arise. This paper concerns cloud
 submissions.
 
 Two questions organise what follows. What does the pool built on this rule
-look like, and is it truthful (§2)? And, more delicately: *what cloud should a
+look like, and in what sense is it truthful (§2)? And, more delicately: *what cloud should a
 rational participant submit?* The answer to the second is *not* "samples from
 your belief," and the failure has a closed form (§3), a one-line repair (§4),
 and, once repaired, a multi-scale structure (§5).
@@ -64,9 +67,11 @@ Throughout, we idealise the cloud by its sampling law $\rho$ ($m\to\infty$;
 finite $m$ is Open Problem 1), so the mechanism observes
 $T_h\rho := \rho*\varphi_h$, where $\varphi_h$ is a density on $\mathbb R^d$,
 symmetric, strictly positive (the Gaussian $N(0,h^2 I)$ is canonical). The
-truth is $p^*$; all expectations below are assumed finite (for Gaussian
-kernels and beliefs with finite second moments, $\log T_h\rho$ has
-at-worst-quadratic tails, so this is mild).
+truth $p^*$ is absolutely continuous with finite differential entropy, and all
+expectations below are assumed finite (for Gaussian kernels and beliefs with
+finite second moments, $\log T_h\rho$ has at-worst-quadratic tails, so this is
+mild). Point-mass examples are understood in the obvious measure-theoretic
+extension.
 
 ## 2. The pool: a nearest-the-pin parimutuel
 
@@ -101,19 +106,42 @@ $$\boxed{\;\Delta W_i \;=\; S\,\frac{s_i\,q_i(z)}{\sum_j s_j\,q_j(z)} \;-\; s_i\
 the operator bears no risk, exactly as in the racetrack tote. (Implemented and
 tested in [`pot_split`](../mechanisms/nearest_the_pin.py).)
 
-**Truthfulness, at the density level.** Fixing the field's reports and stakes,
-the aggregate density at $z$ is $Q(z) = \sum_j s_j q_j(z)$. A small
-participant's expected log-wealth growth from reporting $q$ is, to first order
-in $b$,
+**Incentives of the pot split.** Fix the field and write $r$ for the crowd's
+aggregate density, so the pool pays density bets at odds $1/r$: a unit staked
+as $q$ returns $q(z)/r(z)$ at the pin. One accounting identity organises
+everything: *in a parimutuel, cash is a bet on the crowd.* Staking the crowd
+density $r$ returns exactly one whatever $z$ realises, so a participant
+holding fraction $1-b$ in cash and $b$ on submission $q$ holds total exposure
+$\tilde q = (1-b)\,r + b\,q$, and the classical argument applies to
+$\tilde q$: the log-optimal investor's total exposure is $p$, whatever the
+odds. Inverting the accounting, the optimal submission is
 
-$$\mathbb{E}_{z \sim p}\!\left[\log\!\Big(1 + b\big(\tfrac{S}{s_i}\tfrac{s_i q(z)}{Q(z)} - 1\big)\Big)\right]
- \;\approx\; b\,\Big(\mathbb{E}_{z\sim p}\!\big[\tfrac{S\,q(z)}{Q(z)}\big] - 1\Big),$$
+$$q^\ast \;=\; r + \frac{p - r}{b}\,,$$
 
-and the report $q$ maximising $\mathbb{E}_{z\sim p}[\,q(z)/Q(z)\,]$ subject to
-$\int q = 1$ is, by the same Gibbs argument as the discrete case, $q = p$: the
-true density. We verify the incentive numerically in
-[`test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py): a truthful
-reporter out-grows a biased one against a truthful field.
+truncated at zero and renormalised where the right side goes negative
+(equivalently, maximising $\int p \log((1-b) + b\,q/r)$ over densities gives
+$q \propto (p/\lambda - \tfrac{1-b}{b}\,r)_+$): the crowd plus the
+participant's disagreement, levered by $1/b$. Three regimes follow.
+
+- At $b = 1$ the submission is $p$ itself: all-in, bet your beliefs, whatever
+  the crowd does.
+- For $0 < b < 1$, truth-telling $q = p$ is optimal iff $r = p$: truthful
+  reporting is the symmetric-equilibrium report, not a dominant strategy. The
+  numerical check in
+  [`test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py), a truthful
+  reporter out-growing a biased one against a truthful field, is an
+  equilibrium statement.
+- As $b \to 0$ the lever blows up, the truncation binds, and the best
+  response degenerates toward a spike at the argmax of $p/r$: a small-stake
+  participant is paid to hunt the crowd's most underpriced point, not to
+  report a density. (The objective becomes linear in $q$; there is no Gibbs
+  argument in this limit.)
+
+Proper-score payments do transfer cleanly to the *additive* stake-weighted
+transfer $\Delta W_i = s_i\,(S_i - \bar S)$ of §5, which is the
+incentive-compatible form for fractional stakes; a pot split *proportional* to
+a score value is not an affine function of the score, and properness alone
+does not make it truthful.
 
 **Relationship to other mechanisms.**
 
@@ -130,7 +158,7 @@ reporter out-grows a biased one against a truthful field.
   scoring rule for the predictive density; §6 makes this precise and connects
   it to the energy score.
 
-The truthfulness claim above concerns the reported *density* $q$. In practice
+These incentive statements concern the reported *density* $q$. In practice
 $q$ is constructed from a sample cloud by KDE, so the report space is the
 cloud and the mechanism applies $q = \rho * \varphi_h$. The truthful object
 and the submitted object come apart, and the next two sections are about the
@@ -154,8 +182,9 @@ strictly suboptimal with truthfulness gap*
 
 $$\Delta \;=\; \mathrm{KL}\!\big(p^*\Vert p^**\varphi_h\big)\;>\;0.$$
 
-*(ii) If $p^*\notin T_h\mathcal P$, the optimum is the KL projection of $p^*$
-onto the convex class $T_h\mathcal P$, and $\Delta$ above is only the loss of
+*(ii) If $p^*\notin T_h\mathcal P$, any attained optimum is a KL projection of
+$p^*$ onto the convex class $T_h\mathcal P$ (the infimum need not be
+attained), and $\Delta$ above is only the loss of
 the truthful report relative to the unattainable ideal $q=p^*$; the gap to the
 attainable optimum is $\Delta-\inf_{\rho\in\mathcal P}
 \mathrm{KL}(p^*\Vert T_h\rho)$, which can vanish in degenerate cases (for a
@@ -315,12 +344,16 @@ proper.
 ## 5. The heat ladder
 
 Let $p_t := p * N(0,tI)$, the heat flow ($\partial_t p_t=\tfrac12\Delta p_t$).
-To keep one time variable, write $u = h^2 + t$ for the *total* smoothing scale:
-the rung at flow time $t$ is the §4 score with kernel
-$\varphi_{\sqrt u}$ — for clouds this is free to compute, since it is *the
-same cloud* scored with bandwidth $\sqrt u$ against a pin jittered by the same
-kernel. Below, subscripts $t$ refer to the flow started from the already
-$h$-smoothed laws, so every rung the mechanism runs has $u \ge h^2 > 0$.
+To keep the bookkeeping explicit, define the totally smoothed laws
+
+$$p^{(h)}_t := p^* * N(0,(h^2+t)I), \qquad
+  \rho^{(h)}_t := \rho * N(0,(h^2+t)I),$$
+
+so the rung at flow time $t$ is the §4 score with kernel
+$\varphi_{\sqrt{h^2+t}}$ — for clouds this is free to compute, since it is
+*the same cloud* scored with bandwidth $\sqrt{h^2+t}$ against a pin jittered
+by the same kernel. Every rung the mechanism runs has total scale
+$h^2 + t \ge h^2 > 0$; where unambiguous we abbreviate $p^{(h)}_t$ to $p_t$.
 
 **Theorem 3 (scale decomposition of the log-score edge).** *Let $p^*,\rho$
 have finite second moments, and suppose the standard relative de Bruijn
@@ -382,7 +415,7 @@ stake-weighted mean [@lambert2008selffinanced; @lambert2015axiomatic]. Each
 rung is strictly proper (Theorem 2), so any nonnegative-weighted sum is. But
 the expected-regret decomposition carries *cumulative* weights on the Fisher
 bands, not the rung weights themselves: writing
-$\mathrm{KL}_k := \mathrm{KL}(p^*_{t_k}\Vert \rho_{t_k})$,
+$\mathrm{KL}_k := \mathrm{KL}(p^{(h)}_{t_k}\Vert \rho^{(h)}_{t_k})$,
 
 $$\sum_{k=0}^{K} w_k\,\mathrm{KL}_k
  \;=\; \Big(\sum_{k=0}^{K} w_k\Big)\mathrm{KL}_K
@@ -465,27 +498,32 @@ estimate matches the exact multivariate energy score within a few percent at a
 few thousand directions, and equals the CRPS exactly in 1-D
 ([`test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py)).
 
-**The projection-scored nearest-the-pin.** Replace $q_i(z)$ in (NTP) by a
-projection-based skill score: for each direction $u$, the 1-D CRPS (or 1-D
-density) of participant $i$'s projected cloud at $\langle u, z\rangle$; average
-over $u$ to get a per-participant score; split the pot in proportion to it. The
-pool keeps its self-funding and truthfulness properties (the energy score is
-proper, so truthful reporting is still optimal) while becoming computable and
-stable in high dimensions. This is, in spirit, the projection version at
-[monteprediction](https://www.monteprediction.com): score the
-eleven-dimensional cloud through its one-dimensional shadows. Because no
-kernel smoothing is applied, the deconvolution incentive of §3 does not arise;
-the finite-$m$ analog is the fairness correction of @ferro2014fair, applied
-slice-wise in one dimension.
+**The projection-scored pool.** For each direction $u$, compute the 1-D CRPS
+of participant $i$'s projected cloud at $\langle u, z\rangle$ and average over
+$u$: the sliced energy score $\mathrm{ES}_i$. The score is negatively
+oriented (smaller is better), so the incentive-compatible wager is the
+additive stake-weighted transfer of §5 driven by its negation,
+$\Delta W_i = s_i\big((-\mathrm{ES}_i) - \overline{(-\mathrm{ES})}\big)$:
+self-funding, and properness transfers cleanly because the payoff is affine in
+a proper score. A pot split *proportional* to a transformed score value is a
+different mechanism and is not covered by the properness theorem (§2). Two
+further cautions. The directions must be drawn from a full-support
+distribution after submissions are in: a fixed, pre-announced finite set of
+directions elicits only those one-dimensional marginals, not the joint law.
+And because no kernel smoothing is applied, the deconvolution incentive of §3
+does not arise; the finite-$m$ analog is the fairness correction of
+@ferro2014fair, applied slice-wise in one dimension. This is, in spirit, the
+projection version at [monteprediction](https://www.monteprediction.com):
+score the eleven-dimensional cloud through its one-dimensional shadows.
 
 **Link to the random-projections literature.** Slicing a high-dimensional
 problem into random 1-D projections is a recurring, theoretically-backed
 device:
 
-- Johnson–Lindenstrauss [@johnson1984extensions]: random projections
-  approximately preserve pairwise Euclidean distances, which is precisely the
-  quantity the energy score / energy distance is built from, so a modest
-  number of directions preserves the score.
+- Johnson–Lindenstrauss [@johnson1984extensions]: for a *fixed finite* cloud,
+  random projections approximately preserve the pairwise Euclidean distances
+  entering the empirical energy score. Population-level and participant-ranking
+  guarantees need separate concentration arguments (Open Problem 7).
 - Sliced Wasserstein distances [@rabin2012wasserstein; @bonneel2015sliced]:
   average 1-D optimal-transport costs over random projections, a now-standard,
   cheap surrogate for the multivariate Wasserstein distance — the
@@ -545,7 +583,13 @@ with a single reliability dial $\gamma$ exactly as in the Schur work. Its
 analysis is open, and a properness boundary is worked out in the
 [anisotropic sliced scores note](../research/anisotropic-sliced-scores.md):
 strict properness survives only if the anisotropy comes from a reference
-covariance fixed in advance, not from the forecast under test.
+covariance fixed in advance, not from the forecast under test. The same
+caution applies to the density column: a pseudo-likelihood score is proper
+only if the map from submitted forecast to scored factorisation — ordering,
+conditioning sets, damping, reference covariance — is fixed ex ante and
+sufficiently identifying. Letting any of them depend on the forecast under
+test reopens the endogenous-channel failure of §4, so the density route is a
+design direction here, not an established properness theorem.
 
 ## 8. Microprediction, and a historical note
 
@@ -618,9 +662,13 @@ self-funding cloud wagering at a single scale [@lambert2008selffinanced;
    longer fixed and Theorem 2 does not apply; the participant controls both
    $\rho$ and $h(\rho)$. Characterize the optimal joint deviation, and whether
    any self-referential bandwidth rule preserves truthfulness.
-3. **Finite-$b$ and finite-$n$ truthfulness.** §2's argument is first-order in
-   the wealth fraction $b$ and assumes a small participant. What is the exact
-   equilibrium for finite $b$ and finitely many strategic participants?
+3. **Equilibrium of the proportional split.** For stake fraction $b<1$ the
+   best response to crowd $r$ is $q = r + (p-r)/b$ truncated at zero (§2);
+   truth is the symmetric equilibrium and the $b\to0$ limit degenerates.
+   Characterise the equilibrium with finitely many strategic participants,
+   and, more generally, the incentives of pot splits proportional to
+   (transformed) score values, which are not affine in the score and are not
+   covered by Theorem 2.
 4. **Choice of score.** Density pot-split (jittered, §4) vs. projection
    (sliced energy, §6) are both proper but reward different aspects of a
    forecast. Which yields better calibration and faster wealth concentration

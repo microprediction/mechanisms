@@ -47,8 +47,9 @@
       each participant placed at the realised outcome $z$: the
       <em>nearest-the-pin</em> reward behind
       <a href="https://monteprediction.com">monteprediction.com</a>. The pool is
-      self-funding and, at the density level, truthful for a log-wealth (Kelly)
-      maximiser. In practice the submission is a cloud of samples smoothed into
+      self-funding; a log-optimal participant's total exposure is their belief,
+      so truthful submission is exact all-in and a symmetric equilibrium at
+      fractional stakes. In practice the submission is a cloud of samples smoothed into
       a KDE, and that is where the theory bites: scoring the KDE at the raw
       outcome pays the <em>deconvolution</em> of the belief (shave the squared
       bandwidth off your variance). Jittering the outcome with the same kernel
