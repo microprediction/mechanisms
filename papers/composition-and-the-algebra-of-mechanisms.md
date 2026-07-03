@@ -15,7 +15,10 @@ from convex entropies, cost-function market makers by Fenchel conjugacy,
 CFMMs by convex level-set duality. The pooling and merging operators are
 classical: the linear and logarithmic pools are the two Kullback-Leibler
 barycenters, and merging market makers is the infimal convolution of risk
-sharing, under which liquidity adds.
+sharing, under which liquidity adds. The benefit is illustrated by the
+simplest two-stage example, where stagewise equilibrium dominates conformal
+prediction: a residual market collects the conformal predictor's information
+gap $I(R;X)$ as bankroll growth while its marginal coverage stays exact.
 
 ---
 
@@ -52,7 +55,8 @@ an entrant to a parimutuel residual pool who conditions on the input collects
 it as bankroll growth at exactly that rate [@cotton2026conformalbetting].
 Running the residual stage as an actual pool, rather than assuming its winner,
 is what the operators below are for; Proposition 4 locates the gap in the
-theory of the probability integral transform.
+theory of the probability integral transform, and §5 works the example in
+closed form.
 
 This note organizes the catalogue around four questions that are often
 blurred together:
@@ -267,8 +271,7 @@ parimutuel pool of the companion paper who conditions on $X$ collects it as
 bankroll growth at exactly that rate; the flat-in-$X$ conformal report is the
 break-even crowd [@cotton2026conformalbetting]. Second, for discrete forecasts the randomized PIT
 preserves the exact uniform null, while the mid-PIT is a convenient
-deterministic diagnostic with a different null distribution; the simulation
-of §5 uses the mid-PIT and should be read accordingly.
+deterministic diagnostic with a different null distribution.
 
 ## 4. Operators on mechanisms
 
@@ -424,37 +427,60 @@ the truthful report a best response. $\blacksquare$
 What the concept excludes is cross-stage deviation, the derivative-on-the-
 underlying play of §7.
 
-## 5. Worked composition: an elicitation market feeding a calibration critic
+## 5. Worked composition: pricing the conformal residual
 
-The simplest non-trivial pipeline chains two stages through a feedback loop:
+The introduction claimed that split-conformal prediction is a degenerate
+composition and that running the residual stage as a market collects what
+the degeneracy wastes. This section proves it in the simplest setting that
+carries the full structure.
 
-1. *Elicitation market.* A pool of forecasters each report a predictive
-   distribution; the wealth-weighted linear opinion pool is a single
-   predictive distribution $F_t$, the transformation that should turn
-   outcomes into noise.
-2. *Calibration critic.* Apply the PIT, $u_t=F_t(x_t)$; if $F_t$ is the true
-   conditional law the $u_t$ are iid uniform (Proposition 4). The critic
-   measures the departure of the PIT stream from uniformity; its detectable
-   edge is a witness to miscalibration relative to its test class.
-3. *Feedback.* Each forecaster's wealth is updated by its log score. Wealth
-   is the score-driven credit state: score increments provide the update
-   signal, wealth the multiplicative credit variable, and the aggregate
-   $F_t$ sharpens as credit flows to calibrated reports.
+Let the residual left by a fixed point predictor remain correlated with the
+input: $(R,X)$ jointly Gaussian with correlation $\rho$, marginally
+$R\sim N(0,\sigma_R^2)$ and $X\sim N(0,\sigma_X^2)$. Any misspecified linear
+predictor produces this. The split-conformal wrapper reports the marginal
+law of $R$ at every $x$; its coverage is exact at every level, since the
+marginal PIT $F_R(R)$ is uniform (Proposition 4). The wrapper passes the
+only test it runs.
 
-The organisation parallels adversarial training, with the elicitation market
-as generator, the uniformity critic as discriminator, and a proper score as
-the loss; the parallel is organisational, not an equivalence.
+Now run the residual stage as a market of the Residual operator: reports are
+densities for $R$, settled by the logarithmic score. The wrapper's report is
+$N(0,\sigma_R^2)$, flat in $x$; an entrant who conditions reports the
+conditional law
+$R\mid X=x\sim N\!\big(\rho(\sigma_R/\sigma_X)\,x,\ (1-\rho^2)\sigma_R^2\big)$.
 
-In simulation, five forecasters (two calibrated, together with a bullish, a
-bearish, and an overconfident report) face an iid $N(0,1)$ stream. The
-total-variation distance of the PIT stream from uniform falls from $0.165$
-under the equal-weighted aggregate to $0.068$ after wealth converges, while
-the wealth share of the two calibrated forecasters rises from $0.41$ to
-$1.00$. The mean of $z_t=\Phi^{-1}(u_t)$ remains near zero throughout: the
-bullish and bearish reports are symmetric and cancel in location, so no
-moment test of low order detects the defect, and the critic must test the
-distribution of the stream. The simulation uses the mid-PIT on a discrete
-grid, so its uniformity figures are approximations in the sense of §3.
+**Proposition 9 (the rent).** *Per observation, the conditioning entrant's
+expected log-score edge over the flat report is*
+
+$$\mathbb E\,\big[\mathrm{KL}\big(\,p_{R\mid X}\ \Vert\ p_R\,\big)\big]
+\;=\; -\tfrac12\log(1-\rho^2)\;=\;I(R;X),$$
+
+*a Kelly-staked entrant's bankroll grows at exactly this rate against the
+flat crowd, and the composed forecast of Proposition 7 built from the
+entrant's report recovers the conditional law exactly.*
+
+**Proof.** With $m(x)=\rho(\sigma_R/\sigma_X)x$ and
+$s^2=(1-\rho^2)\sigma_R^2$,
+
+$$\mathrm{KL}\big(N(m,s^2)\,\Vert\,N(0,\sigma_R^2)\big)
+=\log\frac{\sigma_R}{s}+\frac{s^2+m^2}{2\sigma_R^2}-\frac12,$$
+
+and $\mathbb E[m(X)^2]=\rho^2\sigma_R^2$, so the expectation is
+$-\tfrac12\log(1-\rho^2)$, the mutual information of a bivariate Gaussian
+pair. The Kelly growth rate is
+$\mathbb E[\log p_{R\mid X}(R)-\log p_R(R)]$, the same expectation. For the
+recovery, the entrant's report on the residual rank $U=F_R(R)$ has
+conditional density $g(u\mid x)=p_{R\mid X}(F_R^{-}(u))/p_R(F_R^{-}(u))$,
+and Proposition 7 composes to
+$p_R(r)\,g(F_R(r)\mid x)=p_{R\mid X}(r)$. $\blacksquare$
+
+At $\rho=\tfrac12$ the rent is $0.144$ nats per observation and the
+entrant's bankroll doubles every five observations; at $\rho=0.3$, every
+fifteen. Throughout, the conformal band's marginal coverage remains exact:
+the wrapper's own diagnostic is uniform while the transfer runs, which is
+the sense in which marginal coverage is the wrong audit for a composed
+system. The wealth flow is the mechanism's estimator of $I(R;X)$, the
+sequential counterpart of the static bounds in
+[@cotton2026conformalbetting].
 
 ## 6. Implementation notes
 
