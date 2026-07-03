@@ -20,11 +20,17 @@ from __future__ import annotations
 import argparse
 import html as html_mod
 import re
+import sys
 from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from bibtools import parse_bib, latex_to_unicode  # noqa: E402
+from build_bibliography import render_li  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "papers"
 OUT = ROOT / "docs" / "papers"
+BIB = ROOT / "research" / "bibliography.bib"
 
 PAPERS = [
     "nearest-the-pin-parimutuel.md",
@@ -214,6 +220,81 @@ def md_to_html(md: str) -> tuple[str, str]:
     return title, body
 
 
+_BIB_ENTRIES = None
+
+
+def bib_entries() -> dict:
+    global _BIB_ENTRIES
+    if _BIB_ENTRIES is None:
+        _BIB_ENTRIES = {e.key: e
+                        for e in parse_bib(BIB.read_text(encoding="utf-8"))}
+    return _BIB_ENTRIES
+
+
+def _cite_label(e) -> str:
+    """Author-year label: Surname / Surname & Surname / Surname et al."""
+    field = e.fields.get("author") or e.fields.get("editor", "")
+    people = [p.strip() for p in field.split(" and ") if p.strip()]
+    def surname(p):
+        return latex_to_unicode(p.split(",")[0] if "," in p else p.split()[-1]).strip()
+    if len(people) == 1:
+        return surname(people[0])
+    if len(people) == 2:
+        return f"{surname(people[0])} & {surname(people[1])}"
+    return f"{surname(people[0])} et al."
+
+
+def resolve_citations(md: str) -> tuple[str, list]:
+    """Replace pandoc-style citations with author-year links to #ref-<key>.
+
+    Supported forms: parenthetical groups ``[@a; @b, loc]`` and narrative
+    ``@key`` / ``@key [loc]``. Unknown keys raise, mirroring --citeproc.
+    """
+    entries = bib_entries()
+    cited: list = []
+
+    def entry(key: str):
+        if key not in entries:
+            raise KeyError(f"citation key not in bibliography.bib: @{key}")
+        if key not in cited:
+            cited.append(key)
+        return entries[key]
+
+    def one(key: str, loc: str | None, parenthetical: bool) -> str:
+        e = entry(key)
+        label, year = _cite_label(e), e.year or "n.d."
+        suffix = f", {loc}" if loc else ""
+        if parenthetical:
+            return f"[{label} {year}{suffix}](#ref-{key})"
+        return f"{label} ([{year}{suffix}](#ref-{key}))"
+
+    def group(m: "re.Match") -> str:
+        items = []
+        for part in m.group(1).split(";"):
+            part = part.strip()
+            km = re.match(r"@([\w-]+)\s*(?:,\s*(.+))?$", part)
+            if not km:
+                raise ValueError(f"unparseable citation item: {part!r}")
+            items.append(one(km.group(1), km.group(2), parenthetical=True))
+        return "(" + "; ".join(items) + ")"
+
+    md = re.sub(r"\[(@[^\]]+)\]", group, md)
+    md = re.sub(r"(?<![\w\[@])@([\w-]+)(?:\s*\[([^\]]+)\])?",
+                lambda m: one(m.group(1), m.group(2), parenthetical=False), md)
+    return md, cited
+
+
+def references_html(cited: list) -> str:
+    entries = bib_entries()
+    ordered = sorted(cited, key=lambda k: (_cite_label(entries[k]).lower(),
+                                           entries[k].year or ""))
+    lis = "\n".join(render_li(entries[k], anchor=True) for k in ordered)
+    return f'    <ul class="bib">\n{lis}\n    </ul>'
+
+
+REFS_MARK = "REFSGOHERE7f3a"
+
+
 def fold_status(body: str) -> str:
     """Collapse the Status blockquote into a <details> so readers can skip it."""
     return re.sub(
@@ -226,7 +307,11 @@ def fold_status(body: str) -> str:
 
 def build_one(name: str) -> tuple[Path, str]:
     md = (SRC / name).read_text(encoding="utf-8")
+    md, cited = resolve_citations(md)
+    md = re.sub(r"^::: *\{#refs\}[ \t]*\n:::[ \t]*$", REFS_MARK, md, flags=re.M)
     title, body = md_to_html(md)
+    if cited:
+        body = body.replace(f"<p>{REFS_MARK}</p>", references_html(cited))
     body = fold_status(body)
     page = PAGE.format(title=html_mod.escape(title), src=name,
                        slug=name[:-3], body=body)

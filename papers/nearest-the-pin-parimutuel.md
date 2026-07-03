@@ -78,8 +78,8 @@ expected log growth of wealth solves
 
 $$\max_{b \in \Delta}\; \sum_k p_k \log\frac{b_k}{r_k},$$
 
-whose unique maximiser is $b_k = p_k$ — *bet your beliefs* (Kelly 1956; Breiman
-1961). The growth rate at the optimum is the Kullback–Leibler divergence
+whose unique maximiser is $b_k = p_k$ — *bet your beliefs* [@kelly1956newinterpretation; @breiman1961optimal
+]. The growth rate at the optimum is the Kullback–Leibler divergence
 $D(p \,\|\, r)$, i.e. the player profits exactly to the extent their (true)
 belief beats the crowd's implied distribution. Log-wealth maximisation and truthful
 reporting coincide, and the quantity being maximised is the logarithmic
@@ -121,7 +121,7 @@ of the player's density to the crowd's. We verify the incentive numerically in
 [`test_nearest_the_pin.py`](../tests/test_nearest_the_pin.py): a truthful
 reporter out-grows a biased one against a truthful field.
 
-> **Caveat (added v0.2): the truthful object is the *density*, not the *cloud*.**
+> **Caveat: the truthful object is the *density*, not the *cloud*.**
 > The claim above concerns the reported density $q$. When $q$ is *constructed
 > from a sample cloud by KDE* — the parenthetical in the Mechanism paragraph,
 > and what `pot_split` actually does — the report space is the cloud, the
@@ -141,10 +141,11 @@ reporter out-grows a biased one against a truthful field.
 **Relationship to other mechanisms.**
 - It is the continuous, density-weighted limit of the parimutuel (§2), and a
   density-pot-split generalisation of Pennock's dynamic parimutuel market
-  (DPM): the DPM prices shares on discrete outcomes via a cost function; NTP
+  (DPM) [@pennock2004dynamic]: the DPM prices shares on discrete outcomes via a cost function; NTP
   prices density mass on a continuum.
 - Its truthfulness rests on the logarithmic score / log-wealth growth, the same
-  object that, applied *sequentially*, gives Hanson's LMSR. NTP is the *pooled*
+  object that, applied *sequentially*, gives Hanson's LMSR
+  [@hanson2007logarithmic]. NTP is the *pooled*
   reading; LMSR is the *sequential* reading.
 - The score it implicitly applies to a sample cloud is a strictly proper
   scoring rule for the predictive density; §4 makes this precise and connects
@@ -180,7 +181,7 @@ $$\boxed{\;\mathrm{ES}(P, y) \;=\; c_d^{-1}\;\mathbb{E}_u\big[\,\mathrm{CRPS}(P_
 where $P_u$ is the law of the projected sample $\langle u, X\rangle$. The
 multivariate energy score *is* the average over random directions of the
 one-dimensional CRPS — and the energy score is strictly proper for the full
-distribution (Gneiting & Raftery 2007). The sliced quantity is therefore a proper
+distribution [@gneiting2007strictly]. The sliced quantity is therefore a proper
 score that needs only 1-D evaluations. We verify (PROJ) numerically: in
 [`energy_score_via_projection`](../mechanisms/nearest_the_pin.py) the sliced
 estimate matches the exact multivariate energy score within a few percent at a
@@ -200,17 +201,17 @@ eleven-dimensional cloud through its one-dimensional shadows.
 **Link to the random-projections literature.** Slicing a high-dimensional problem
 into random 1-D projections is a recurring, theoretically-backed device:
 
-- **Johnson–Lindenstrauss (1984):** random projections approximately preserve
+- **Johnson–Lindenstrauss [@johnson1984extensions]:** random projections approximately preserve
   pairwise Euclidean distances — which is precisely the quantity the energy
   score / energy distance is built from, so a modest number of directions
   preserves the score.
-- Sliced Wasserstein distances (Rabin et al. 2011; Bonneel et al. 2015):
+- Sliced Wasserstein distances [@rabin2012wasserstein; @bonneel2015sliced]:
   average 1-D optimal-transport costs over random projections, a now-standard,
   cheap surrogate for the multivariate Wasserstein distance — the optimal-transport
   cousin of (PROJ).
-- Sliced score matching (Song et al. 2019): estimate high-dimensional score
+- Sliced score matching [@song2020sliced]: estimate high-dimensional score
   functions through random projections, for the same computational reasons.
-- Energy distance (Székely & Rizzo 2013) is itself an integral of squared
+- Energy distance [@szekely2013energy] is itself an integral of squared
   characteristic-function differences and, via the identity above, of absolute
   projected differences — the projection representation is intrinsic, not a
   heuristic.
@@ -230,9 +231,10 @@ unreliable, because the estimated covariance is rank-deficient and its inverse i
 nonsense.
 
 The portfolio/spatial-statistics literature answers this from the density
-side. Cotton's *Two Sides of Schur Damping* (2025) and the underlying Schur
-complementary allocation (Cotton 2024, arXiv:2411.05807) observe that a Gaussian
+side. *Two Sides of Schur Damping* [@cotton2026schur] and the underlying Schur
+complementary allocation [@cotton2024schur] observe that a Gaussian
 density factorises through a Vecchia / conditional pseudo-likelihood
+[@vecchia1988estimation]
 $\prod_k \mathcal{N}(y_k; b_k^\top y_c, S_k)$ whose conditional covariances $S_k$
 are *Schur complements*, and that the reliable score in the undersampled regime
 is a damped version of this factorisation — the Schur pseudo-likelihood — with
@@ -264,7 +266,7 @@ analysis open.
 ## 6. Why this matters: microprediction
 
 The nearest-the-pin parimutuel is one of the mechanisms in the spirit of the
-microprediction vision (Cotton 2022): a web-scale network of autonomous
+microprediction vision [@cotton2022microprediction]: a web-scale network of autonomous
 forecasters continuously submitting *distributional* predictions and being paid
 by self-funding, truth-eliciting pools. The book surveys a range of such
 reward mechanisms; the nearest-the-pin pool is one concrete instance. Two
@@ -304,20 +306,8 @@ the scoring-rule, parimutuel, and aggregation families mapped in the
 
 ## References
 
-- Breiman, L. (1961). "Optimal Gambling Systems for Favorable Games." *4th Berkeley Symposium*.
-- Bonneel, N., Rabin, J., Peyré, G. & Pfister, H. (2015). "Sliced and Radon Wasserstein Barycenters of Measures." *J. Math. Imaging Vis.* 51(1).
-- Cotton, P. (2022). *Microprediction: Building an Open AI Network.* MIT Press.
-- Cotton, P. (2024). "Schur Complementary Allocation." arXiv:2411.05807.
-- Cotton, P. (2025). "Two Sides of Schur Damping: High-Dimensional Pseudo-Likelihoods and Portfolio Allocation." precise.microprediction.org.
-- Gneiting, T. & Raftery, A. E. (2007). "Strictly Proper Scoring Rules, Prediction, and Estimation." *JASA* 102(477).
-- Hanson, R. (2007). "Logarithmic Market Scoring Rules for Modular Combinatorial Information Aggregation." *J. Prediction Markets* 1(1).
-- Johnson, W. B. & Lindenstrauss, J. (1984). "Extensions of Lipschitz mappings into a Hilbert space." *Contemp. Math.* 26.
-- Kelly, J. L. (1956). "A New Interpretation of Information Rate." *Bell System Technical Journal* 35(4).
-- Pennock, D. (2004). "A Dynamic Pari-Mutuel Market for Hedging, Wagering, and Information Aggregation." *ACM EC'04*.
-- Rabin, J., Peyré, G., Delon, J. & Bernot, M. (2011). "Wasserstein Barycenter and its Application to Texture Mixing." *SSVM*.
-- Song, Y., Garg, S., Shi, J. & Ermon, S. (2019). "Sliced Score Matching." *UAI*.
-- Székely, G. & Rizzo, M. (2013). "Energy Statistics: A Class of Statistics Based on Distances." *J. Stat. Plan. Inf.* 143(8).
-- Vecchia, A. V. (1988). "Estimation and Model Identification for Continuous Spatial Processes." *JRSS-B* 50(2).
+::: {#refs}
+:::
 
 *Implementation: [`mechanisms/nearest_the_pin.py`](../mechanisms/nearest_the_pin.py).
 Tests (self-funding, truthfulness, projection identity):

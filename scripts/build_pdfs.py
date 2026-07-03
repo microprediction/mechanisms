@@ -54,6 +54,9 @@ def build_one(name: str) -> Path:
     cmd = [
         "pandoc", tmp, "-o", str(pdf),
         "-f", "markdown+tex_math_dollars",
+        "--citeproc",
+        "--bibliography", str(ROOT / "research" / "bibliography.bib"),
+        "--metadata", "link-citations=true",
         "--pdf-engine=xelatex",
         "-V", "geometry:margin=1.1in",
         "-V", "fontsize=11pt",

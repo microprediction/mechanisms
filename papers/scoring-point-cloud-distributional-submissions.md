@@ -14,11 +14,6 @@ Peter Cotton · *Working draft v0.2* · 2026
 > (`mollified_log_score`, and tests that verify Theorem 1 numerically in both
 > directions). The prior-art audit lives in
 > [`research/mollified-scoring-and-the-heat-ladder.md`](../research/mollified-scoring-and-the-heat-ladder.md).
-> *v0.2:* sharpened hypotheses following referee feedback — conditional
-> truthfulness gap (Thm. 1), integrability assumptions (Thm. 2), exogenous
-> bandwidth requirement, standard de Bruijn regularity in place of a tail
-> overclaim (Thm. 3), and an explicit level-vs-difference payment analysis
-> with a new proposition that band scores are strictly proper.
 > Drafted with AI assistance; errors are mine.
 
 ---
@@ -49,7 +44,11 @@ $z$ is revealed — rewards $\log \hat q_i(z)$ (or splits a pot in proportion to
 $\hat q_i(z)$, the exponentiated form). This is the reward rule of the
 [nearest-the-pin parimutuel](nearest-the-pin-parimutuel.md) and of
 monteprediction-style contests, and the standard evaluation protocol for
-sample-based generative models.
+sample-based generative models. Not every contest smooths: in the MidOne
+contests at CrunchDAO [@crunchdao_midone], participants supplied densities
+directly, through a shared convention for density specifications
+[@cotton_density], and the incentive analysed below does not arise. This paper
+concerns cloud submissions.
 
 The question this paper answers: *what cloud should a rational participant
 submit?* The answer is *not* "samples from your belief," and the failure has
@@ -118,12 +117,12 @@ $h^4/(4\tau^4)$. $\blacksquare$
 **Remarks.** (a) When the deconvolution fails to exist ($\Sigma-h^2I\not\succeq
 0$, or a rough $p^*$), the optimum is the KL projection of $p^*$ onto
 $T_h\mathcal P$ and can degenerate toward atomic clouds — exactly the
-point-mass exploit of Theis, van den Oord & Bethge (2016), who observed the
+point-mass exploit of @theis2016note, who observed the
 improperness (without the deconvolution characterization). (b) The gap is
 fourth order in $h$, which is why the flaw survives casual inspection — but it
 is a *slope*, and any optimising submitter, human or fitted, walks down it.
 (c) The phenomenon is the log-score/bandwidth sibling of the "fair scores"
-findings for the ensemble CRPS (Fricker, Ferro & Stephenson 2013; Ferro 2014),
+findings for the ensemble CRPS [@fricker2013three; @ferro2014fair],
 where the analogous cheat is derived along the ensemble-size axis.
 
 ## 3. The repair: jitter the pin
@@ -226,15 +225,14 @@ reference climatology, or a posted rule) and jitter with that frozen kernel.
 The incentives of participant-endogenous bandwidths are an open problem (§7).
 
 **Attribution.** The properness of the convolved score against a
-noised outcome is not new: Bröcker & Smith (2007, §5) prove it for a general
-observation-noise channel, and Ferro (2017, Prop. 3) works out exactly the
+noised outcome is not new: @brocker2007proper [§5] prove it for a general
+observation-noise channel, and @ferro2017observation [Prop. 3] works out exactly the
 white-noise/Gaussian case. What both left open is strictness. Bröcker &
 Smith, verbatim: "If $S$ is strictly proper though, $\bar S$ is not
 necessarily strictly proper, because if $\bar q(z)=\bar p(z)$, this does not
 necessarily mean equality of $p(x)$ and $q(x)$." Lemma 1 closes exactly that
 gap. The discrete-outcome analog is the label-noise literature's forward loss
-correction with an invertible transition matrix (Patrini et al. 2017, Thm. 2;
-van Rooyen & Williamson 2018). Verification treats outcome noise as a
+correction with an invertible transition matrix [@patrini2017making, Thm. 2; @vanrooyen2018theory]. Verification treats outcome noise as a
 nuisance to be endured, and Ferro explicitly doubts the "efficacy" of
 perturbing observations; read as mechanism design, jitter matched to the
 mechanism's own smoothing is what makes the point-cloud game strictly
@@ -293,9 +291,8 @@ by Gaussian tails, so the vanishing of boundary terms is an assumption (the
 stated regularity), automatic for the Gaussian and compactly supported cases
 used in the examples. $\blacksquare$
 
-The differential identity is de Bruijn's, in relative form (Stam 1959; Barron
-1986; Lyu 2009); its integral form prices the likelihood of diffusion models
-(Song, Durkan, Murray & Ermon 2021). Note the bandwidth floor does real work: at $t=0$ an empirical
+The differential identity is de Bruijn's, in relative form [@stam1959some; @barron1986entropy; @lyu2009interpretation]; its integral form prices the likelihood of diffusion models
+[@song2021maximum]. Note the bandwidth floor does real work: at $t=0$ an empirical
 cloud has no density and the identity is vacuous; every rung the mechanism
 actually runs starts at $t\ge h^2$, where everything is smooth.
 
@@ -307,7 +304,7 @@ schedules must be distinguished, because they buy different things.
 driven by the rung score $S^{(k)}_i := S_{\sqrt{h^2+t_k}}(\rho_i,z)$ — the
 stake-weighted additive form
 $\Delta W_i^{(k)}=w_k\,s_i\,(S_i^{(k)}-\bar S^{(k)})$ with $\bar S^{(k)}$ the
-stake-weighted mean (Lambert et al. 2008). Each rung is strictly proper
+stake-weighted mean [@lambert2008selffinanced; @lambert2015axiomatic]. Each rung is strictly proper
 (Theorem 2), so any nonnegative-weighted sum is. But the expected-regret
 decomposition carries *cumulative* weights on the Fisher bands, not the rung
 weights themselves: writing $\mathrm{KL}_k := \mathrm{KL}(p^*_{t_k}\Vert
@@ -346,24 +343,22 @@ model stated separately. (iii) Band payments purchase (integrated) Fisher
 divergence, which is Hyvärinen-scored shape, invariant to the normalization
 of the submission; the top level pays $\mathrm{KL}(p^*_T\Vert\rho_T)$, which
 at mode-connecting scales carries the between-mode* mass *that score matching
-is blind to (Wenliang & Kanagawa 2020; Zhang et al. 2022; Koehler, Heckett &
-Risteski 2023). Under the level schedule the band weights are the cumulative
+is blind to [@wenliang2020blindness; @zhang2022healing; @koehler2023statistical]. Under the level schedule the band weights are the cumulative
 sums above.*
 
 Practicalities: rung scores are positively correlated (one cloud,
 re-smoothed), so discriminative value concentrates in a few well-separated
 scales; $K$ of order 3–5, geometrically spaced, mirrors the noise ladders of
-annealed score matching (Song & Ermon 2019).
+annealed score matching [@song2019generative].
 
 ## 5. Historical note: the jitter was intuition first
 
-The microprediction platform (Cotton 2022; launched 2019) added a small amount
+The microprediction platform [@cotton2022microprediction], launched in 2019, added a small amount
 of noise to submissions and to the ground truth before settling its cloud-based
 lotteries. This was *merely intuitive*, a fairness-and-anti-gaming instinct
 about discreteness and ties, with no incentive theorem attached; the platform
 paper recorded the practice in one line and moved on. The verification literature, meanwhile, treated outcome
-noise as a defect: something to be modelled away (Saetra et al. 2004; Candille
-& Talagrand 2008), with Ferro (2017) explicitly doubting the value of
+noise as a defect: something to be modelled away [@saetra2004effects; @candille2008impact], with @ferro2017observation doubting the value of
 perturbing observations.
 
 Theorem 2 is the missing theorem: symmetrized jitter is what makes a
@@ -376,32 +371,34 @@ chose jitter; the theorem chooses *which* jitter.
 
 ## 6. Related work
 
-Improperness of sample-based scoring: Theis, van den Oord & Bethge (2016)
+Improperness of sample-based scoring: @theis2016note
 (KDE log-likelihood "an improper scoring function"); the fair-scores line for
-the ensemble CRPS (Bröcker 2012; Fricker, Ferro & Stephenson 2013; Ferro
-2014); the estimator view of KDE log scores (Krüger, Lerch, Thorarinsdottir &
-Gneiting 2021); discrete impossibility and randomized repair (Kimpara,
-Frongillo & Waggoner 2023). Convolved scores under observation error: Bröcker
-& Smith (2007); Ferro (2017); Bessac & Naveau (2021). Noisy-channel learning:
-Patrini et al. (2017); van Rooyen & Williamson (2018); surrogate scoring rules
-(Liu, Wang & Chen 2022). Transform-properness: Allen, Ginsbourger & Ziegel
-(2023, Prop. 4 published / Prop. 3 arXiv v1); Pic, Dombry, Naveau & Taillardat
-(2025, Prop. 1) — deterministic injective transforms; Theorem 2 is the
-Markov-kernel extension. The identity: Stam (1959); Barron (1986); Lyu (2009);
-Song et al. (2021). Local scores: Hyvärinen (2005); Parry, Dawid & Lauritzen
-(2012). Nearest mechanism neighbours, each missing a leg: Lang, Leutbecher &
-Maciel (2025) — a Gaussian scale-ladder of proper scores as a *training loss*;
-Dudík, Wang, Pennock & Rothschild (2021) — a multi-resolution *market* by
-partition refinement, subsidized rather than budget-balanced; Lambert et al.
-(2008, 2015) and the microprediction pool — self-funding cloud wagering at a
-single scale. A full audit with verdicts is in the companion
+the ensemble CRPS [@brocker2012raw; @fricker2013three; @ferro2014fair], with
+the over-dispersion direction for fitted ensembles in @siegert2019ensemble;
+the estimator view of KDE log scores [@kruger2021predictive]; ensemble
+dressing [@brocker2008dressing]; discrete impossibility and randomized repair
+[@kimpara2023proper]; sample elicitation via variational divergences
+[@wei2021sample]. Convolved scores under observation error:
+[@brocker2007proper; @ferro2017observation; @bessac2021forecast].
+Noisy-channel learning: [@patrini2017making; @vanrooyen2018theory]; surrogate
+scoring rules [@liu2022surrogate]. Transform-properness: @allen2023transformed
+[Prop. 4 published, Prop. 3 in arXiv v1] and @pic2025proper [Prop. 1] cover
+deterministic injective transforms; Theorem 2 is the Markov-kernel extension.
+The identity: [@stam1959some; @barron1986entropy; @lyu2009interpretation;
+@song2021maximum], with the denoising connection in @vincent2011connection.
+Local scores: [@hyvarinen2005score; @parry2012proper]. Nearest mechanism
+neighbours, each missing a leg: @lang2025multiscale, a Gaussian scale-ladder
+of proper scores as a training loss; @dudik2021logtime, a multi-resolution
+market by partition refinement, subsidized rather than budget-balanced; and
+self-funding cloud wagering at a single scale [@lambert2008selffinanced;
+@lambert2015axiomatic]. A full audit with verdicts is in the companion
 [research note](../research/mollified-scoring-and-the-heat-ladder.md).
 
 ## 7. Open problems
 
 1. **Fair rungs.** The finite-$m$ correction making each rung's expected score
    optimized by *sampling* from the belief (the log-score/KDE analog of
-   Ferro's fair CRPS), and its interaction with the jitter. All results here
+   the fair CRPS of @ferro2014fair), and its interaction with the jitter. All results here
    are population-level; the finite-cloud game is not covered by the theorems.
 2. **Endogenous bandwidth.** If the bandwidth is computed from the
    participant's own submission (Scott's rule on the cloud), the channel is no
@@ -410,7 +407,7 @@ single scale. A full audit with verdicts is in the companion
    any self-referential bandwidth rule preserves truthfulness.
 3. **Optimal scale weights.** For wealth-concentration objectives, is there a
    closed-form optimal $w(t)$ — and does it recover the likelihood weighting
-   of Song et al. (2021)?
+   of @song2021maximum?
 4. **Anisotropic rungs.** Reference-covariance flows in place of isotropic
    heat, preserving rung-wise strict properness (cf. the
    [anisotropic sliced scores note](../research/anisotropic-sliced-scores.md)).
@@ -420,68 +417,5 @@ single scale. A full audit with verdicts is in the companion
 
 ## References
 
-- Allen, S., Ginsbourger, D. & Ziegel, J. (2023). "Evaluating Forecasts for
-  High-Impact Events Using Transformed Kernel Scores." *SIAM/ASA JUQ* 11(3),
-  906–940.
-- Barron, A. R. (1986). "Entropy and the Central Limit Theorem." *Ann. Probab.*
-  14(1), 336–342.
-- Bessac, J. & Naveau, P. (2021). "Forecast Score Distributions with Imperfect
-  Observations." *ASCMO* 7, 53–71.
-- Bröcker, J. (2012). "Evaluating Raw Ensembles with the Continuous Ranked
-  Probability Score." *QJRMS* 138(667), 1611–1617.
-- Bröcker, J. & Smith, L. A. (2007). "Scoring Probabilistic Forecasts: The
-  Importance of Being Proper." *Weather and Forecasting* 22(2), 382–388.
-- Candille, G. & Talagrand, O. (2008). "Impact of Observational Error on the
-  Validation of Ensemble Prediction Systems." *QJRMS* 134(633), 959–971.
-- Cotton, P. (2022). *Microprediction: Building an Open AI Network.* MIT Press.
-- Dudík, M., Wang, X., Pennock, D. M. & Rothschild, D. M. (2021). "Log-time
-  Prediction Markets for Interval Securities." *AAMAS*.
-- Ferro, C. A. T. (2014). "Fair Scores for Ensemble Forecasts." *QJRMS*
-  140(683), 1917–1923.
-- Ferro, C. A. T. (2017). "Measuring Forecast Performance in the Presence of
-  Observation Error." *QJRMS* 143(708), 2665–2676.
-- Fricker, T. E., Ferro, C. A. T. & Stephenson, D. B. (2013). "Three
-  Recommendations for Evaluating Climate Predictions." *Meteorol. Appl.*
-  20(2), 246–255.
-- Hyvärinen, A. (2005). "Estimation of Non-Normalized Statistical Models by
-  Score Matching." *JMLR* 6, 695–709.
-- Kimpara, D., Frongillo, R. & Waggoner, B. (2023). "Proper Losses for Discrete
-  Generative Models." *ICML*, PMLR 202.
-- Koehler, F., Heckett, A. & Risteski, A. (2023). "Statistical Efficiency of
-  Score Matching: The View from Isoperimetry." *ICLR*.
-- Krüger, F., Lerch, S., Thorarinsdottir, T. & Gneiting, T. (2021). "Predictive
-  Inference Based on Markov Chain Monte Carlo Output." *Int. Stat. Rev.* 89(2),
-  274–301.
-- Lambert, N. S., Langford, J., Wortman, J., Chen, Y., Reeves, D. M., Shoham,
-  Y. & Pennock, D. M. (2008). "Self-Financed Wagering Mechanisms for
-  Forecasting." *EC*, 170–179; (2015) *J. Econ. Theory* 156, 389–416.
-- Lang, S., Leutbecher, M. & Maciel, P. (2025). "A Multi-Scale Loss Formulation
-  for Learning a Probabilistic Model with Proper Score Optimisation."
-  arXiv:2506.10868.
-- Liu, Y., Wang, J. & Chen, Y. (2022). "Surrogate Scoring Rules." *ACM TEAC*
-  10(3).
-- Lyu, S. (2009). "Interpretation and Generalization of Score Matching." *UAI*.
-- Parry, M., Dawid, A. P. & Lauritzen, S. (2012). "Proper Local Scoring Rules."
-  *Ann. Statist.* 40(1), 561–592.
-- Patrini, G., Rozza, A., Menon, A. K., Nock, R. & Qu, L. (2017). "Making Deep
-  Neural Networks Robust to Label Noise: A Loss Correction Approach." *CVPR*.
-- Pic, R., Dombry, C., Naveau, P. & Taillardat, M. (2025). "Proper Scoring
-  Rules for Multivariate Probabilistic Forecasts based on Aggregation and
-  Transformation." *ASCMO* 11, 23–58.
-- Saetra, Ø., Hersbach, H., Bidlot, J.-R. & Richardson, D. S. (2004). "Effects
-  of Observation Errors on the Statistics for Ensemble Spread and Reliability."
-  *Mon. Wea. Rev.* 132(6), 1487–1501.
-- Song, Y., Durkan, C., Murray, I. & Ermon, S. (2021). "Maximum Likelihood
-  Training of Score-Based Diffusion Models." *NeurIPS*.
-- Song, Y. & Ermon, S. (2019). "Generative Modeling by Estimating Gradients of
-  the Data Distribution." *NeurIPS*.
-- Stam, A. J. (1959). "Some Inequalities Satisfied by the Quantities of
-  Information of Fisher and Shannon." *Information and Control* 2(2), 101–112.
-- Theis, L., van den Oord, A. & Bethge, M. (2016). "A Note on the Evaluation of
-  Generative Models." *ICLR*.
-- van Rooyen, B. & Williamson, R. C. (2018). "A Theory of Learning with
-  Corrupted Labels." *JMLR* 18(228), 1–50.
-- Wenliang, L. K. & Kanagawa, H. (2020). "Blindness of Score-Based Methods to
-  Isolated Components and Mixing Proportions." arXiv:2008.10087.
-- Zhang, M., Key, O., Hayes, P., Barber, D., Paige, B. & Briol, F.-X. (2022).
-  "Towards Healing the Blindness of Score Matching." arXiv:2209.07396.
+::: {#refs}
+:::

@@ -86,7 +86,7 @@ def venue(e) -> str:
     return ""
 
 
-def render_li(e) -> str:
+def render_li(e, anchor: bool = False) -> str:
     authors = html.escape(format_authors(e.fields.get("author") or e.fields.get("editor", "")))
     year = e.year or "n.d."
     title = "&ldquo;" + html.escape(latex_to_unicode(e.title).rstrip(".")) + ".&rdquo;"
@@ -101,7 +101,8 @@ def render_li(e) -> str:
     li = " ".join(bits)
     if e.fields.get("note"):
         li += f' <span class="muted">{html.escape(latex_to_unicode(e.fields["note"]))}</span>'
-    return f"      <li>{li}</li>"
+    ident = f' id="ref-{e.key}"' if anchor else ""
+    return f"      <li{ident}>{li}</li>"
 
 
 def section_title(name: str) -> str:
