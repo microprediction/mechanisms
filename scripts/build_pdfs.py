@@ -26,6 +26,7 @@ GITHUB = "https://github.com/microprediction/mechanisms/blob/main"
 
 PAPERS = [
     "scoring-point-cloud-distributional-submissions.md",
+    "composition-and-the-algebra-of-mechanisms.md",
 ]
 
 

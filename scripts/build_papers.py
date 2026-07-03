@@ -35,6 +35,7 @@ BIB = ROOT / "research" / "bibliography.bib"
 PAPERS = [
     "nearest-the-pin-parimutuel.md",
     "scoring-point-cloud-distributional-submissions.md",
+    "composition-and-the-algebra-of-mechanisms.md",
 ]
 
 PAGE = """<!doctype html>
