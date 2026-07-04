@@ -2,7 +2,7 @@
 
 ### The nearest-the-pin parimutuel, jittered outcomes, and the heat ladder
 
-Peter Cotton · *Working draft v0.3* · 2026
+Peter Cotton · *Working draft v0.4* · 2026
 
 ---
 
@@ -17,7 +17,8 @@ than from the belief itself. For Gaussian beliefs and Gaussian kernels this
 incentive has the simple form "shave $h^2$ from the covariance." We show that
 the defect is repaired by adding outcome noise from the same kernel used to
 smooth the submission. More generally, composing a proper score with a fixed
-Markov kernel preserves propriety, and strict propriety is recovered exactly
+Markov kernel preserves propriety, and strict propriety for the original
+report is recovered exactly
 when the induced channel is injective; for convolution kernels this is
 equivalent to the characteristic function having dense nonzero support. For
 Gaussian kernels, repeating the repaired score over a ladder of smoothing
@@ -62,6 +63,15 @@ look like, and in what sense is it truthful (§2)? And, more delicately: *what c
 rational participant submit?* The answer to the second is *not* "samples from
 your belief," and the failure has a closed form (§3), a one-line repair (§4),
 and, once repaired, a multi-scale structure (§5).
+
+Two payout layers appear, and they are different mechanisms. The
+proportional pot split (NTP) of §2 is the parimutuel object: self-funding,
+limited by the pot, and truthful only in the Kelly, price-taking,
+symmetric-equilibrium sense of §2. The strict-propriety theorems of §4-§6
+apply directly to additive stake-weighted score transfers, which preserve
+properness cleanly but are not automatically limited-liability for unbounded
+scores; applying them to a proportional pot split requires the separate §2
+analysis.
 
 Throughout, we idealise the cloud by its sampling law $\rho$ ($m\to\infty$;
 finite $m$ is Open Problem 1), so the mechanism observes
@@ -126,7 +136,8 @@ odds. Inverting the accounting, the optimal submission is
 $$q^\ast_b(z) \;=\; \Big[\frac{p(z)}{\lambda} - \frac{1-b}{b}\,r(z)\Big]_+,$$
 
 the KKT solution of maximising $\int p \log((1-b) + b\,q/r)$ over densities,
-with $\lambda>0$ chosen so that $\int q^\ast_b = 1$. When the bracket is
+with $\lambda>0$ chosen so that $\int q^\ast_b = 1$ (assume throughout that
+$r>0$ wherever $p>0$ and that the log objective is integrable). When the bracket is
 nonnegative everywhere the multiplier is $\lambda = b$ and the solution is the
 affine formula
 
@@ -189,10 +200,13 @@ $$\mathbb E_{z\sim p^*}\,S_{\mathrm{raw}}(\rho,z)
 *so the report solves $\min_{q\in T_h\mathcal P}\mathrm{KL}(p^*\Vert q)$, where
 $\mathcal P$ is the set of probability laws. Consequently:*
 
-*(i) If the deconvolution $\rho^\dagger := T_h^{-1}p^*$ exists in
-$\mathcal P$, it is the unique optimal report (uniqueness by the injectivity
-of $T_h$, Lemma 1), it differs from the truth, and truthful reporting is
-strictly suboptimal with truthfulness gap*
+*(i) If $p^*\in T_h\mathcal P$, every $\rho$ with $T_h\rho=p^*$ is optimal.
+If in addition $T_h$ is injective — for the Gaussian kernel always, and in
+general whenever the characteristic function of $\varphi_h$ is nonvanishing
+on a dense set (Lemma 1) — the optimal pre-smoothing law
+$\rho^\dagger := T_h^{-1}p^*$ is unique. For any non-degenerate kernel it
+differs from the truth, and truthful reporting is strictly suboptimal with
+truthfulness gap*
 
 $$\Delta \;=\; \mathrm{KL}\!\big(p^*\Vert p^**\varphi_h\big)\;>\;0.$$
 
@@ -214,14 +228,18 @@ $\Delta=\tfrac12[\log(1+h^2/\tau^2)-h^2/(\tau^2+h^2)]\approx h^4/(4\tau^4)$.*
 $\int p^*\log q = -H(p^*)-\mathrm{KL}(p^*\Vert q)$, applied to $q=T_h\rho$;
 maximizing over $\rho$ is minimizing KL over the convex image class
 $T_h\mathcal P$. (i) If $p^*\in T_h\mathcal P$ the KL term can be driven to
-zero, its unique minimum, and only by $q=p^*$; Lemma 1 lifts uniqueness of $q$
-to uniqueness of $\rho$; the truthful report attains
-$\mathrm{KL}(p^*\Vert p^*_h)$ where $p^*_h:=p^**\varphi_h$, and $p^*_h\neq p^*$
-always: taking characteristic functions,
-$\hat p^*(\omega)\,(1-\hat\varphi_h(\omega))=0$ for all $\omega$; for the
-Gaussian kernel $\hat\varphi_h(\omega)=e^{-h^2|\omega|^2/2}<1$ off
-$\omega=0$, so $\hat p^*$ would have to vanish off the origin, impossible for
-a characteristic function (continuity and $\hat p^*(0)=1$). (ii) KL is jointly
+zero, its unique minimum, and only by $q=p^*$; under the injectivity
+hypothesis, Lemma 1 lifts uniqueness of $q$ to uniqueness of $\rho$. The
+truthful report attains $\mathrm{KL}(p^*\Vert p^*_h)$ where
+$p^*_h:=p^**\varphi_h$, and $p^*_h\neq p^*$ for any non-degenerate kernel:
+if $p^*=p^**\varphi_h$ then
+$\hat p^*(\omega)\,(1-\hat\varphi_h(\omega))=0$ for all $\omega$; since
+$\hat p^*$ is continuous with $\hat p^*(0)=1$ it is nonzero on a
+neighbourhood of the origin, so $\hat\varphi_h=1$ there, and a
+characteristic function equal to one on a neighbourhood of the origin is
+identically one (the standard inequality
+$1-\mathrm{Re}\,\hat\varphi(2\omega)\le4\,(1-\mathrm{Re}\,\hat\varphi(\omega))$
+propagates the equality outward), so $\varphi_h$ is the point mass at zero. (ii) KL is jointly
 lower semicontinuous and strictly convex in its second argument where finite,
 and $T_h\mathcal P$ is convex, so the attainable optimum is the KL projection
 when attained; the point-mass example ($p^*=\delta_\mu$: the truthful cloud
@@ -250,8 +268,10 @@ $$S_h(\rho,z)\;=\;\mathbb E_\varepsilon\big[\log (T_h\rho)(z+h\varepsilon)\big]
 
 Operationally: *settle at a jittered outcome* $z'=z+h\varepsilon$ — or use the
 right-hand form, which integrates the jitter analytically and makes settlement
-deterministic. The two have the same expectation, hence identical incentive
-properties.
+deterministic. The two have the same expectation, hence the same
+risk-neutral proper-score incentives; for risk-sensitive wealth dynamics
+(Kelly staking, the pot split of §2) the realized-jitter and
+integrated-jitter implementations differ in payoff variance.
 
 **Lemma 1 (injectivity criterion).** *Convolution $T_\varphi$ is injective on
 probability measures iff the zero set of the characteristic function has empty
@@ -268,14 +288,14 @@ $\rho=\rho'$ by the uniqueness theorem. ($\Rightarrow$) If $\hat\varphi$
 vanishes on an open ball $B$ (with $0\notin B$, since $\hat\varphi(0)=1$),
 take $\psi\in C_c^\infty(B)$, $\psi\neq0$, and set
 $\hat g(\omega)=\psi(\omega)+\overline{\psi(-\omega)}$, so that $g$ is a real
-Schwartz function (a finite signed density) with total mass
-$\int g=\hat g(0)=0$ and $\hat g$ supported where $\hat\varphi=0$. Choose a
+Schwartz function (a signed integrable function with zero integral,
+$\int g=\hat g(0)=0$) with $\hat g$ supported where $\hat\varphi=0$. Choose a
 base density $p$ with tails heavier than Schwartz decay (Cauchy), so
 $|\epsilon g|\le p$ pointwise for small $\epsilon>0$. Then
-$q=p+\epsilon g$ is a probability density distinct from $p$, and
-$\widehat{T_\varphi q}=\hat\varphi\,(\hat p+\epsilon\hat g)
-=\hat\varphi\,\hat p$: two distinct laws with identical smoothings.
-$\blacksquare$
+$q=p+\epsilon g$ is a probability density distinct from $p$, and the
+characteristic function of $T_\varphi q$ is
+$\hat\varphi\,(\hat p+\epsilon\hat g)=\hat\varphi\,\hat p$: two distinct laws
+with identical smoothings. $\blacksquare$
 
 This is Wiener-flavoured (Wiener's Tauberian theorem is the $L^1$ statement);
 for probability measures the continuity of characteristic functions buys the
@@ -367,7 +387,9 @@ so the rung at flow time $t$ is the §4 score with kernel
 $\varphi_{\sqrt{h^2+t}}$ — for clouds this is free to compute, since it is
 *the same cloud* scored with bandwidth $\sqrt{h^2+t}$ against a pin jittered
 by the same kernel. Every rung the mechanism runs has total scale
-$h^2 + t \ge h^2 > 0$; where unambiguous we abbreviate $p^{(h)}_t$ to $p_t$.
+$h^2 + t \ge h^2 > 0$; below, $p^*_t$ and $\rho_t$ always abbreviate
+$p^{(h)}_t$ and $\rho^{(h)}_t$, the flow started from the already-smoothed
+laws.
 
 **Theorem 3 (scale decomposition of the log-score edge).** *Let $p^*,\rho$
 have finite second moments, and suppose the standard relative de Bruijn
@@ -445,7 +467,9 @@ $$\sum_{k=0}^{K} w_k\,\mathrm{KL}_k
 *Difference schedule.* To pay a Fisher band directly, use the score
 *differences* as the payment driver.
 
-**Proposition (band scores are strictly proper).** *The difference score
+**Proposition (band scores are strictly proper).** *For a positive-width
+band $t_{k+1}>t_k$, Gaussian smoothing, and the regularity of Theorem 3, the
+difference score
 $S^{(k)} - S^{(k+1)}$ has expected regret
 $\mathrm{KL}_k - \mathrm{KL}_{k+1}
 = \tfrac12\int_{t_k}^{t_{k+1}} D_F(p^*_t\Vert\rho_t)\,dt \ge 0$, with equality
@@ -526,10 +550,16 @@ additive stake-weighted transfer of §5 driven by its negation,
 $\Delta W_i = s_i\big((-\mathrm{ES}_i) - \overline{(-\mathrm{ES})}\big)$:
 self-funding, and properness transfers cleanly because the payoff is affine in
 a proper score. A pot split *proportional* to a transformed score value is a
-different mechanism and is not covered by the properness theorem (§2). Two
-further cautions. The directions must be drawn from a full-support
-distribution after submissions are in: a fixed, pre-announced finite set of
-directions elicits only those one-dimensional marginals, not the joint law.
+different mechanism and is not covered by the properness theorem (§2). Three
+further cautions. Uniform directions give the exact identity (PROJ); a
+non-uniform full-support direction law still yields a strictly proper sliced
+score in expectation, but it is an anisotropic projection score, no longer
+the Euclidean energy score. The directions must be drawn after submissions
+are in, from a full-support law: a fixed, pre-announced finite set elicits
+only those one-dimensional marginals, not the joint law, and with finitely
+many realized directions strict propriety is ex ante over the mechanism's
+randomization, while conditional on the realized set only the projected
+marginals are scored.
 And because no kernel smoothing is applied, the deconvolution incentive of §3
 does not arise; the finite-$m$ analog is the fairness correction of
 @ferro2014fair, applied slice-wise in one dimension. This is, in spirit, the
