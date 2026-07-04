@@ -82,6 +82,10 @@ def venue(e) -> str:
                                     f.get("number", "")) if x) + "."
     if t == "misc":
         hp = f.get("howpublished", "")
+        m = re.match(r"\s*\\url\{([^}]*)\}\s*$", hp)
+        if m:
+            u = m.group(1)
+            return f'<a href="{html.escape(u)}">{html.escape(u)}</a>.'
         return html.escape(latex_to_unicode(hp)) + "." if hp else ""
     return ""
 

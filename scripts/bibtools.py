@@ -189,8 +189,10 @@ def latex_to_unicode(s: str) -> str:
         comb = _ACCENTS.get(m.group(1))
         return __import__("unicodedata").normalize("NFC", m.group(2) + comb) if comb else m.group(2)
 
+    s = re.sub(r"\\url\{([^}]*)\}", r"\1", s)                 # \url{X} -> X (a command, not an accent)
     s = re.sub(r"\\([\"'`^~=.cvuHrk])\s*\{(\w)\}", _acc, s)   # \"{a}  \c{c}
-    s = re.sub(r"\\([\"'`^~=.cvuHrk])\s*(\w)", _acc, s)       # \"a   \'e
+    s = re.sub(r"\\([\"'`^~=.])\s*(\w)", _acc, s)             # \"a   \'e  (symbol accents bind directly)
+    s = re.sub(r"\\([cvuHrk])\s+(\w)", _acc, s)               # \c c  \u a  (letter accents need a space)
     return s.replace("{", "").replace("}", "").replace("\\", "").strip()
 
 

@@ -37,10 +37,35 @@ PAPERS = [
 HEADER = re.compile(
     r"\A# (?P<title>.+)\n+"
     r"### (?P<subtitle>.+)\n+"
-    r"(?P<author>[^·\n]+?) · \*(?P<version>[^*\n]+)\* · (?P<year>\d{4})\n+"
+    r"(?P<byline>.+)\n+"
     r"---\n+"
     r"## Abstract\n+"
     r"(?P<abstract>[\s\S]+?)\n+---\n+")
+
+
+def parse_byline(byline: str) -> tuple[str, str, str, str]:
+    """Split a `·`-separated byline into (author, affiliation, email, date).
+
+    The author is the first segment. A segment with an `@` and no space is an
+    email; an italic `*...*` segment or a bare year is date; the remaining free
+    segment (if any) is the affiliation. Both papers parse: composition's
+    ``Peter Cotton · *Working draft v0.4* · 2026`` yields no affiliation/email
+    and date ``Working draft v0.4 · 2026``; the SSRN byline adds the two.
+    """
+    segs = [s.strip() for s in byline.split("·")]
+    author, affiliation, email, date_parts = segs[0], "", "", []
+    for s in segs[1:]:
+        if "@" in s and " " not in s:
+            email = s
+        elif s.startswith("*") and s.endswith("*"):
+            date_parts.append(s.strip("*").strip())
+        elif re.fullmatch(r"\d{4}", s):
+            date_parts.append(s)
+        elif not affiliation and not date_parts:
+            affiliation = s
+        else:
+            date_parts.append(s)
+    return author, affiliation, email, " · ".join(date_parts)
 
 
 def paperize(md: str) -> str:
@@ -50,13 +75,18 @@ def paperize(md: str) -> str:
     body = md[m.end():]
     body = re.sub(r"(?m)^## \d+\.\s+", "## ", body)
     body = re.sub(r"(?m)^## References$", "## References {-}", body)
+    author, affiliation, email, date = parse_byline(m["byline"])
+    if affiliation or email:            # SSRN title page: name carries a footnote
+        note = " ".join(x for x in (affiliation + "." if affiliation else "",
+                                    f"Email: <{email}>." if email else "") if x)
+        author = f"{author}^[{note}]"
     abstract = "\n".join("  " + ln for ln in m["abstract"].splitlines())
     meta = (
         "---\n"
         f'title: "{m["title"]}"\n'
         f'subtitle: "{m["subtitle"]}"\n'
-        f'author: "{m["author"].strip()}"\n'
-        f'date: "{m["version"]} · {m["year"]}"\n'
+        f'author: "{author}"\n'
+        f'date: "{date}"\n'
         f"abstract: |\n{abstract}\n"
         "numbersections: true\n"
         "indent: true\n"

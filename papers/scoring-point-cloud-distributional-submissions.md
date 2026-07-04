@@ -2,7 +2,7 @@
 
 ### The nearest-the-pin parimutuel, jittered outcomes, and the heat ladder
 
-Peter Cotton · *Working draft v0.5* · 2026
+Peter Cotton · Microprediction · peter.cotton@microprediction.com · *July 2026*
 
 ---
 
@@ -30,6 +30,10 @@ whose average CRPS is, up to an explicit dimension constant, the multivariate
 energy score. The results are population-level: finite clouds, endogenous
 bandwidths, and finite-player equilibria are left open.
 
+**Keywords:** proper scoring rules; continuous ranked probability score; energy
+score; kernel density estimation; distributional forecasting contests; score
+matching; sliced scores
+
 ---
 
 ## 1. The problem
@@ -47,7 +51,8 @@ $x^{(i)}_1,\dots,x^{(i)}_m\in\mathbb R^d$, smooths it into a density
 $\hat q_i = \tfrac1m\sum_j \varphi_h(\cdot-x^{(i)}_j)$, and, when the outcome
 $z$ is revealed, rewards $\log \hat q_i(z)$ or splits a pot in proportion to
 $\hat q_i(z)$. This is the reward rule of
-[monteprediction.com](https://monteprediction.com), described there as
+[monteprediction.com](https://monteprediction.com); its launch note
+[@cotton2024eleven] describes the pot as
 
 > "a splitting of the pot in proportion to the density that you ascribe to the
 > truth $z$, [which] also depends on the density that others ascribe to $z$,"
