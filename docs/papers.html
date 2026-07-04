@@ -68,21 +68,46 @@
     <p class="subtitle">Scoring rules, market makers, and pools as composable
       transducers</p>
     <p>
-      Scoring rules, market makers, parimutuels, and opinion pools compose
-      when every stage consumes and emits one object type, a distributional
-      belief, with wealth threaded as state. Convex potentials generate the
-      incentive-bearing core (Savage's characterisation, Hanson's conjugate
-      market maker, the CFMM level-set duality), the two opinion pools are
-      the two KL barycenters, and merging market makers is infimal
-      convolution. The message type extends to sample clouds via jittered
-      settlement, joint laws factor into margin stages plus a rank-settled
-      copula stage, and in the simplest two-stage example a residual market
-      collects the conformal information gap $I(R;X)$ as bankroll growth
-      while marginal coverage stays exact.
+      An expository account of how the forecast-elicitation mechanisms
+      connect. A proper scoring rule is a convex potential; its Fenchel
+      conjugate is a cost-function market maker and a level-set dual is a
+      constant-function market maker; the linear and logarithmic opinion pools
+      are the two Kullback-Leibler barycenters; and merging market makers is
+      infimal convolution, so liquidity adds. A common transducer signature
+      lets the mechanisms chain, and records where propriety survives a
+      transformation of message or outcome. The mathematics is classical; the
+      note gathers it in one convention. Companion papers carry the new
+      results: point-cloud elicitation, and the parimutuel account of a
+      conformal predictor's information gap.
     </p>
     <p class="muted">Peter Cotton · working draft v0.4 ·
       <a href="./papers/composition-and-the-algebra-of-mechanisms.html">full draft</a> ·
       <a href="./papers/composition-and-the-algebra-of-mechanisms.pdf">pdf</a></p>
+
+    <hr />
+
+    <h2 id="multi-stage">
+      <a href="./papers/multi-stage-solicitation.html">Multi-Stage
+      Solicitation</a></h2>
+    <p class="subtitle">Chained elicitation markets, and a report on the
+      microprediction platform</p>
+    <p>
+      A report on the chained elicitation system the microprediction platform
+      deployed: community percentiles from z-streams that became the object of
+      further games, bivariate and trivariate dependence streams that priced
+      copulas, and a stacked-lottery design that composed calibration maps from
+      competing algorithms. Stages compose because each is a transducer over
+      one message type with wealth threaded through, the single-stage
+      dictionary being the companion algebra. The message deployed contests
+      collect is a finite cloud of samples; multivariate settlement factors
+      into marginal stages plus a rank-settled copula stage; and a residual
+      market behind a conformal predictor collects the discarded conditional
+      information $I(R;X)$ as bankroll growth. The platform is retired;
+      monteprediction runs one stage of the chain repeatedly.
+    </p>
+    <p class="muted">Peter Cotton · working draft v0.1 ·
+      <a href="./papers/multi-stage-solicitation.html">full draft</a> ·
+      <a href="./papers/multi-stage-solicitation.pdf">pdf</a></p>
 
     <div class="next-steps">
       <p>Have a mechanism write-up to contribute? Open an issue or PR on

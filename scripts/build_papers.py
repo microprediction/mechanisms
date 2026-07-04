@@ -36,6 +36,7 @@ PAPERS = [
     "nearest-the-pin-parimutuel.md",
     "scoring-point-cloud-distributional-submissions.md",
     "composition-and-the-algebra-of-mechanisms.md",
+    "multi-stage-solicitation.md",
 ]
 
 PAGE = """<!doctype html>
