@@ -2,7 +2,7 @@
 
 ### Scoring rules, market makers, and pools as composable transducers
 
-Peter Cotton · Microprediction · peter.cotton@microprediction.com · *July 2026*
+Peter Cotton · *Working draft v0.4* · 2026
 
 ---
 
@@ -22,12 +22,6 @@ convolution of risk sharing. The benefit of composing is illustrated by the
 simplest two-stage example: a residual market collects the conformal
 predictor's information gap $I(R;X)$ as bankroll growth while its marginal
 coverage stays exact.
-
-**Keywords:** proper scoring rules; cost-function market makers; parimutuel
-mechanisms; opinion pools; convex duality; mechanism composition; conformal
-prediction markets
-
-**JEL classification:** D47, D82, G13, C53
 
 ---
 
