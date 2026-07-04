@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Mechanisms — Landscape</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="site-header">
+    <div class="nav-inner">
+      <a class="brand" href="./index.html">mechanisms</a>
+      <nav>
+        <a href="./catalog.html">Catalog</a>
+        <a href="./demos.html">Demos</a>
+        <a href="./map.html">Map</a>
+        <a href="./connections.html">Connections</a>
+        <a href="./implementations.html">Implementations</a>
+        <a href="./landscape.html">Landscape</a>
+        <a href="./papers.html">Papers</a>
+        <a href="./bibliography.html">Bibliography</a>
+        <a href="./world-cup.html">World Cup</a>
+        <a href="https://github.com/microprediction/mechanisms">GitHub</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <p class="pagenav"><a href="./index.html">&larr; Home</a></p>
+    <h1>The landscape</h1>
+    <p class="subtitle">Deployed contest platforms, prediction markets, and
+    the mechanisms they run, classified by what participants submit, how it
+    settles, whether an aggregation stage exists, and what state threads
+    between rounds. Surveyed July 2026; corrections and additions welcome by
+    PR.</p>
+
+    <p>
+      The classification follows the
+      <a href="./papers/composition-and-the-algebra-of-mechanisms.html">algebra
+      paper</a>: a stage consumes reports, threads a state (wealth,
+      reputation, stake), and emits an aggregate plus transfers.
+      <em>Multi-stage</em> below means one mechanism's output is the priced
+      or scored object of another, not merely a repeated game. Entries
+      marked <strong>·M·</strong> have that structure. Statuses with
+      <em>(?)</em> could not be fully verified.
+    </p>
+
+    <h2 id="probability-markets">Probability markets</h2>
+    <div class="table-wrap"><table class="impl">
+      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://polymarket.com">Polymarket</a></td><td>trades</td><td>order book, on-chain settlement</td><td>price</td><td>wealth</td><td>live</td><td>2020</td></tr>
+        <tr><td><a href="https://kalshi.com">Kalshi</a></td><td>trades</td><td>regulated order book (CFTC DCM)</td><td>price</td><td>wealth</td><td>live</td><td>2021</td></tr>
+        <tr><td><a href="https://www.predictit.org">PredictIt</a></td><td>trades ($850 cap)</td><td>order book (no-action letter)</td><td>price</td><td>wealth</td><td>live</td><td>2014</td></tr>
+        <tr><td><a href="https://iem.uiowa.edu">Iowa Electronic Markets</a></td><td>trades</td><td>order book (academic)</td><td>price</td><td>wealth</td><td>live</td><td>1988</td></tr>
+        <tr><td><a href="https://www.betfair.com">Betfair Exchange</a></td><td>back/lay bets</td><td>order book on odds; Betfair SP reconciles the book parimutuel-style</td><td>odds</td><td>wealth</td><td>live</td><td>2000</td></tr>
+        <tr><td><a href="https://smarkets.com">Smarkets</a></td><td>trades</td><td>order book</td><td>odds</td><td>wealth</td><td>live</td><td>2008</td></tr>
+        <tr><td><a href="https://www.futuur.com">Futuur</a></td><td>trades</td><td>AMM (LMSR family)</td><td>price</td><td>wealth</td><td>live</td><td>2017</td></tr>
+        <tr><td><a href="https://predict.hypermind.com">Hypermind</a></td><td>trades (prizes)</td><td>order book + curated panels</td><td>price + panel</td><td>reputation</td><td>live</td><td>2014</td></tr>
+        <tr><td><a href="https://manifold.markets">Manifold</a> ·M·</td><td>trades (play money)</td><td>AMM; derivative and self-referential markets on other markets exist</td><td>price</td><td>play wealth</td><td>live</td><td>2021</td></tr>
+        <tr><td><a href="https://www.metaculus.com">Metaculus</a> ·M·</td><td>probabilities, CDFs</td><td>proper-score leaderboards</td><td>community aggregate + internal recalibrated model</td><td>reputation</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://zeitgeist.pm">Zeitgeist</a></td><td>trades</td><td>on-chain AMM + dispute staking</td><td>price</td><td>wealth, stake</td><td>live (?)</td><td>2021</td></tr>
+        <tr><td><a href="https://azuro.org">Azuro</a></td><td>bets</td><td>peer-to-pool AMM</td><td>pool odds</td><td>wealth, LP stake</td><td>live</td><td>2022</td></tr>
+        <tr><td>Insight Prediction</td><td>trades</td><td>order book (crypto)</td><td>price</td><td>wealth</td><td>live, thin (?)</td><td>~2022</td></tr>
+        <tr><td>Drift BET</td><td>trades</td><td>order book (Solana)</td><td>price</td><td>wealth</td><td>launched 2024 (?)</td><td>2024</td></tr>
+        <tr><td>Hollywood Stock Exchange</td><td>trades (play money)</td><td>dealer market maker</td><td>price</td><td>play wealth</td><td>live</td><td>1996</td></tr>
+        <tr><td>Augur</td><td>trades</td><td>on-chain book + staked dispute rounds on the reported outcome ·M·</td><td>price</td><td>wealth, REP stake</td><td>defunct</td><td>2018&ndash;~2022</td></tr>
+        <tr><td>Intrade</td><td>trades</td><td>order book</td><td>price</td><td>wealth</td><td>defunct</td><td>2001&ndash;2013</td></tr>
+        <tr><td>SciCast / DAGGRE</td><td>trades (play money)</td><td>combinatorial LMSR</td><td>price</td><td>play wealth</td><td>defunct</td><td>2011&ndash;2015</td></tr>
+      </tbody>
+    </table></div>
+    <p>
+      Polymarket also lists markets whose subject is a named forecaster's
+      output (the Nate Silver markets of 2024 onward): a real-money market
+      on a forecast, which is a genuine two-stage structure. Dispute layers
+      (UMA's optimistic oracle resolving Polymarket, Kleros appeals,
+      Reality.eth bond escalation) are staged bonded games on a first-stage
+      answer rather than second-stage markets.
+    </p>
+
+    <h2 id="tournaments">Forecasting tournaments and polls</h2>
+    <div class="table-wrap"><table class="impl">
+      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://www.gjopen.com">Good Judgment Open</a> ·M·</td><td>probabilities</td><td>Brier leaderboards</td><td>community aggregate; feeds Superforecaster selection</td><td>reputation</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://goodjudgment.com">Good Judgment Inc</a></td><td>probabilities (vetted panel)</td><td>paid panel</td><td>proprietary weighted pool</td><td>reputation</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://www.randforecastinginitiative.org">RAND Forecasting Initiative</a> (ex-INFER, ex-Foretell)</td><td>probabilities</td><td>score leaderboards</td><td>algorithmic crowd aggregate</td><td>reputation</td><td>live</td><td>2020</td></tr>
+        <tr><td>IARPA ACE / Good Judgment Project</td><td>probabilities</td><td>multi-team tournament</td><td>aggregation was the research object</td><td>reputation</td><td>over</td><td>2011&ndash;2015</td></tr>
+        <tr><td>IARPA Hybrid Forecasting Competition</td><td>human-machine probabilities</td><td>tournament</td><td>hybrid aggregation</td><td>reputation</td><td>over</td><td>2017&ndash;2020</td></tr>
+        <tr><td><a href="https://mofc.unic.ac.cy">M-competitions</a></td><td>points, intervals, quantiles; M6 added portfolios</td><td>one-off prize contests</td><td>post-hoc analysis only</td><td>none</td><td>M6 complete; no M7 announced</td><td>1982</td></tr>
+        <tr><td><a href="https://www.estimize.com">Estimize</a> ·M·</td><td>point estimates (EPS, macro)</td><td>leaderboard</td><td>weighted consensus resold as a quant data product</td><td>reputation</td><td>live</td><td>2011</td></tr>
+        <tr><td><a href="https://www.kaggle.com">Kaggle</a></td><td>model predictions</td><td>leaderboard prizes, hidden test set</td><td>none</td><td>reputation</td><td>live</td><td>2010</td></tr>
+        <tr><td>Replication Markets</td><td>probabilities</td><td>play-money LMSR + surveys</td><td>market vs survey comparison</td><td>play wealth</td><td>over</td><td>2019&ndash;2021</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="staked">Quant and staked tournaments</h2>
+    <div class="table-wrap"><table class="impl">
+      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://numer.ai">Numerai</a> ·M·</td><td>equity predictions</td><td>NMR staking, burns; paid CORR and marginal contribution</td><td>stake-weighted meta-model trades a hedge fund</td><td>stake</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://signals.numer.ai">Numerai Signals</a> ·M·</td><td>user-sourced signals</td><td>NMR staking</td><td>Signals meta-model into the fund</td><td>stake</td><td>live</td><td>2020</td></tr>
+        <tr><td><a href="https://crypto.numer.ai">Numerai Crypto</a> ·M·</td><td>token rankings</td><td>NMR staking</td><td>crypto meta-model</td><td>stake</td><td>live</td><td>2024</td></tr>
+        <tr><td><a href="https://hub.crunchdao.com">CrunchDAO</a> ·M·</td><td>model code on hidden data</td><td>prize pools, USDC payouts</td><td>ensemble delivered to clients; crunchers also feed Bittensor SN6</td><td>reputation</td><td>live</td><td>2021</td></tr>
+        <tr><td><a href="https://platform.worldquantbrain.com">WorldQuant BRAIN</a> ·M·</td><td>alphas (code)</td><td>consultant contracts paid on out-of-sample alpha</td><td>alphas combined into internal portfolios</td><td>reputation</td><td>live</td><td>2016</td></tr>
+        <tr><td><a href="https://quantiacs.com">Quantiacs</a></td><td>trading systems</td><td>live out-of-sample contest, allocations</td><td>none (selection, not pooling)</td><td>track record</td><td>live</td><td>2014</td></tr>
+        <tr><td>QuantConnect Alpha Streams</td><td>algorithm signal streams</td><td>licensing marketplace</td><td>fund-side selection</td><td>reputation</td><td>defunct (~2022)</td><td>2018</td></tr>
+        <tr><td><a href="https://www.monteprediction.com">monteprediction</a></td><td>2<sup>20</sup> joint scenarios, 11 sector ETFs, weekly</td><td>density-proportional pot split; wealth threads across rounds, penalty for missing a week</td><td>community joint distribution and moments</td><td>wealth</td><td>live</td><td>2024</td></tr>
+        <tr><td>microprediction ·M·</td><td>225-sample distributional submissions on live streams</td><td>repeated nearest-the-pin lotteries</td><td>community CDF per stream; z-streams and bivariate/trivariate dependence streams were themselves contested</td><td>wealth</td><td>defunct</td><td>2019&ndash;2023</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="crypto-networks">Crypto forecasting networks</h2>
+    <div class="table-wrap"><table class="impl">
+      <thead><tr><th>Network</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+      <tbody>
+        <tr><td><a href="https://www.mode.network/synth">Synth (Bittensor SN50)</a> ·M·</td><td>Monte Carlo price-path ensembles</td><td>CRPS-scored, softmax emissions</td><td>pooled into a synthetic-data product for DeFi</td><td>stake</td><td>live</td><td>2025</td></tr>
+        <tr><td><a href="https://numinous.ai">Numinous (SN6)</a> ·M·</td><td>event probabilities, forecasting agents</td><td>Brier-scored emissions</td><td>consensus model; targets and resolution are Polymarket markets</td><td>stake</td><td>live</td><td>2024</td></tr>
+        <tr><td><a href="https://taoshi.io">Taoshi PTN / Vanta (SN8)</a> ·M·</td><td>trade signals</td><td>scored track records, emissions</td><td>signals packaged into products</td><td>stake</td><td>live</td><td>2023</td></tr>
+        <tr><td><a href="https://predictoor.ai">Ocean Predictoor</a> ·M·</td><td>staked up/down predictions (5 and 60 min)</td><td>parimutuel slash-and-redistribute</td><td>stake-weighted feed sold to bots</td><td>stake</td><td>live</td><td>2023</td></tr>
+        <tr><td><a href="https://www.allora.network">Allora</a> ·M·</td><td>inferences; a second tier forecasts the workers' losses</td><td>performance-weighted emissions, EMA reputation</td><td>on-chain synthesis of both tiers</td><td>stake, reputation</td><td>live</td><td>2025 mainnet</td></tr>
+        <tr><td>Zeus (SN18)</td><td>gridded weather fields</td><td>error-scored emissions</td><td>best-miner selection</td><td>stake</td><td>live</td><td>~2025</td></tr>
+        <tr><td>Precog (SN55), Sportstensor (SN41)</td><td>price / sports forecasts</td><td>scored emissions</td><td>aggregate prediction</td><td>stake</td><td>live (?)</td><td>~2024</td></tr>
+        <tr><td><a href="https://cryptopond.xyz">Pond</a></td><td>ML models</td><td>competition prizes</td><td>winning models deployed into agents</td><td>points</td><td>live</td><td>~2024</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="totes">Totes</h2>
+    <div class="table-wrap"><table class="impl">
+      <thead><tr><th>Operator</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+      <tbody>
+        <tr><td>US racetrack tote ·M·</td><td>bets</td><td>separate parimutuel pools per bet type: win/place/show carry the margins, exacta/trifecta/pick-6 the joint orders (daily double 1931, exacta 1960s, trifecta 1971)</td><td>pool odds per pool; Harville map is the cross-pool consistency condition</td><td>wealth</td><td>live</td><td>1870s</td></tr>
+        <tr><td><a href="https://www.hkjc.com">Hong Kong Jockey Club</a> ·M·</td><td>bets</td><td>parimutuel at the largest per-race scale</td><td>pool odds</td><td>wealth</td><td>live</td><td>1884</td></tr>
+        <tr><td>Japan Racing Association</td><td>bets</td><td>largest tote by handle</td><td>pool odds</td><td>wealth</td><td>live</td><td>1954</td></tr>
+      </tbody>
+    </table></div>
+    <p>
+      The tote is the oldest margins-and-dependence market structure we know
+      of: marginal and joint pools have run simultaneously on the same races
+      since 1931, and the documented win-versus-exotic arbitrage
+      (Hausch&ndash;Ziemba&ndash;Rubinstein and successors) is the consistency
+      trade between them.
+    </p>
+
+    <h2 id="financial">Financial-market analogues</h2>
+    <div class="table-wrap"><table class="impl">
+      <thead><tr><th>Market</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+      <tbody>
+        <tr><td>Two-settlement electricity (PJM, CAISO, ERCOT, EU) ·M·</td><td>offers, bids; virtual bids are pure forecasts</td><td>day-ahead auction, then real-time settlement of deviations from day-ahead positions; convergence bidding bets against the day-ahead consensus</td><td>locational prices</td><td>wealth (collateralised)</td><td>live</td><td>1990s</td></tr>
+        <tr><td>FTR / CRR auctions ·M·</td><td>bids on congestion spreads</td><td>periodic auctions layered on day-ahead congestion prices</td><td>auction prices</td><td>wealth</td><td>live</td><td>1998</td></tr>
+        <tr><td>Index-vs-single-name dispersion ·M·</td><td>option trades</td><td>short index vol against long constituent vol; the priced object is implied correlation, dependence on top of the single-name margins</td><td>implied correlation</td><td>wealth</td><td>live</td><td>~1999</td></tr>
+        <tr><td>CDO base correlation ·M·</td><td>tranche trades</td><td>dealer market; the tranche curve is a market-implied dependence structure over the single-name margins</td><td>base correlation curve</td><td>wealth</td><td>largely historical</td><td>2004&ndash;2008</td></tr>
+        <tr><td><a href="https://www.cmegroup.com/markets/weather.html">CME weather derivatives</a></td><td>futures, options on degree-day indices</td><td>exchange order book</td><td>prices</td><td>wealth</td><td>live</td><td>1999</td></tr>
+      </tbody>
+    </table></div>
+
+    <h2 id="multi-stage">Where the stages actually chain</h2>
+    <p>
+      Reading the tables for genuine chains, one mechanism's output as
+      another's priced object, and setting aside repetition and mere
+      selection funnels:
+    </p>
+    <ul>
+      <li><em>Residual pricing at scale</em>: the two-settlement electricity
+        market, real-time settling the day-ahead residual, with convergence
+        bidders as the informed entrants; FTRs a further layer on the
+        congestion component.</li>
+      <li><em>Margins and dependence in separate pools</em>: the racetrack
+        tote since 1931; dispersion trading and (historically) CDO base
+        correlation in derivatives.</li>
+      <li><em>Markets on forecasts</em>: Polymarket's markets on Nate
+        Silver's model output; Numinous scoring a tournament against
+        Polymarket resolutions; Manifold's self-referential markets (play
+        money).</li>
+      <li><em>Forecasting the forecasters</em>: Allora's second tier
+        predicts the first tier's losses; Numerai and its relatives pay
+        marginal contribution to an internal meta-model.</li>
+      <li><em>Distributional chains</em>: the retired microprediction
+        platform (z-streams and dependence streams contested downstream of
+        every stream); monteprediction as the live wealth-threaded pool.</li>
+    </ul>
+    <p>
+      Nothing live combines the last column with the first four: no platform
+      currently chains distributional elicitation into residual or
+      dependence markets with wealth as the routed state. That gap is the
+      subject of the
+      <a href="./papers/composition-and-the-algebra-of-mechanisms.html">algebra
+      paper's</a> open problems.
+    </p>
+
+    <div class="next-steps">
+      <p>Know a platform that belongs here? Open an issue or PR on
+      <a href="https://github.com/microprediction/mechanisms">microprediction/mechanisms</a>.</p>
+    </div>
+  </main>
+
+  <footer>
+    <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
+    Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
+  </footer>
+</body>
+</html>

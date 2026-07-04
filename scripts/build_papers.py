@@ -60,6 +60,7 @@ PAGE = """<!doctype html>
         <a href="../map.html">Map</a>
         <a href="../connections.html">Connections</a>
         <a href="../implementations.html">Implementations</a>
+        <a href="../landscape.html">Landscape</a>
         <a href="../papers.html">Papers</a>
         <a href="../bibliography.html">Bibliography</a>
         <a href="../world-cup.html">World Cup</a>

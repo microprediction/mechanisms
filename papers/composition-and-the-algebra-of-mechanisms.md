@@ -38,18 +38,28 @@ to it [@craib2017numeraire]; CrunchDAO blends each contest into one
 ensemble; the IARPA prediction polls aggregated forecasts by track record,
 comparing favourably with head-to-head markets [@atanasov2017distilling],
 with reputation rather than wealth as the threaded state. In every case,
-one pool and one internal aggregate. The only live, long-running platform we
-are aware of that composes further is monteprediction, a weekly
-self-funding pool over million-scenario joint submissions in eleven
+one pool and one internal aggregate.
+
+Chained mechanisms are old and live in adjacent markets, priced in points
+rather than distributions. Two-settlement electricity markets settle
+real-time deviations from day-ahead positions, so the second stage prices
+the residual of the first, and convergence bidding pays financial
+forecasters for correcting the day-ahead consensus
+[@cramton2017electricity; @jha2023financial]. Racetrack totes have priced
+margins and joint finishing orders in separate simultaneous pools since
+1931: the win pool carries the marginals, the exotic pools the dependence,
+and the consistency between them supported documented arbitrage
+[@harville1973assigning; @hausch1981efficiency]. What is scarce is the
+composed design for *distributional* forecasts. The only live, long-running
+platform we are aware of that composes past one stage is monteprediction, a
+weekly self-funding pool over million-scenario joint submissions in eleven
 dimensions, with wealth threaded across rounds since January 2024
 [@cotton2024monteprediction]. The full chain ran on the microprediction
 platform [@cotton2022microprediction]: streams spawned z-streams of
 community percentiles, and bivariate and trivariate dependence streams
 priced copulas, so calibration and dependence were themselves the subject of
 further games. The stacked-lottery design behind it was presented at MIT
-CSAIL in 2020 [@cotton2020lottery, slides 29-31]; that platform is retired,
-and the composed design currently has no live instance beyond the wealth
-threading of the weekly pool.
+CSAIL in 2020 [@cotton2020lottery, slides 29-31]; that platform is retired.
 
 Chaining stages raises the question of what each stage elicits, and the
 answer moves under transformation of the message or the outcome. Scoring a
@@ -732,13 +742,19 @@ form.
    it downstream, and whether the iterated correction converges to the true
    conditional law as boosting does. Split-conformal prediction is the
    one-participant degenerate case, with its rent $I(R;X)$ as the value left
-   on the table (Theorem 9).
+   on the table (Theorem 9). The two-settlement electricity market is the
+   live analogue in point prices, with convergence bidders as the residual
+   stage's informed entrants [@jha2023financial]; the distributional version
+   is the gap.
 3. *Copula markets.* A rank-settled stage elicits dependence separately
    from margins (Proposition 13) and is invariant to margin recalibration.
-   Open: the equilibrium when the same participants trade margin and copula
-   stages, and the choice of embedding for $d\ge2$, the space-filling
-   curves as deployed against the random one-dimensional projections of the
-   companion paper.
+   The racetrack's win and exotic pools are the live analogue on a finite
+   outcome space, margins and joint orders in separate simultaneous pools,
+   with the Harville map as the consistency condition between them
+   [@harville1973assigning; @hausch1981efficiency]. Open: the equilibrium
+   when the same participants trade margin and copula stages, and the
+   choice of embedding for $d\ge2$, the space-filling curves as deployed
+   against the random one-dimensional projections of the companion paper.
 
 ## References
 
