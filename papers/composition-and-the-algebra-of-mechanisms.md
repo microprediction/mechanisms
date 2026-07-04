@@ -345,6 +345,12 @@ analysis [@cotton2026pointcloud, §2] gives truthful all-in, a symmetric
 equilibrium at fractional stakes, and degeneracy as the stake fraction
 vanishes, and beyond that the equilibrium theory is open.
 
+Averaging beliefs has two natural senses, one for each direction of the
+Kullback-Leibler divergence, and they are exactly the two pools used in
+practice: the linear pool is the barycenter that pulls the average toward each
+forecast, the logarithmic pool the one that pulls each forecast toward the
+average.
+
 **Ensemble (Proposition 5: the two pools are the two KL barycenters).** *Let
 $q_1,\dots,q_m$ be densities with respect to a common dominating measure,
 $w_i\ge0$, $\sum w_i=1$, and for the second display assume
@@ -367,6 +373,10 @@ and then mixing linearly, $\sum_m w_m F_m$, is Bayesian model averaging, a
 linear pool with score-trained weights; the logarithmic pool multiplies
 densities and renormalizes. They are different aggregates with different
 sharpness [@genest1986combining].
+
+Two market makers standing back to back act as one deeper maker, and the depth
+adds because conjugation turns the sum of their regularisers into the infimal
+convolution of their cost functions.
 
 **Merge (Proposition 6: merging makers is infimal convolution;
 @rockafellar1970convex, @bhaskara2023general).** *For closed
