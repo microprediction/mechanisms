@@ -17,13 +17,14 @@ potential is a cost-function market maker, and a level-set dual is a
 constant-function market maker. The linear and logarithmic opinion pools are
 the two Kullback-Leibler barycenters. Merging market makers is infimal
 convolution, the composition law of the risk-sharing literature, so liquidity
-adds. A common transducer signature then lets the mechanisms chain, one
-stage's belief output feeding the next, and records where propriety survives
-a transformation of message or outcome. The mathematics is classical; the
-contribution is its consolidation. The new results that motivated the framing
-are carried by companion papers: sample-based elicitation on point clouds
-[@cotton2026pointcloud], and the parimutuel account of a conformal
-predictor's information gap [@cotton2026conformalbetting].
+adds. A common transducer signature lets the mechanisms be chained, and this
+note settles when propriety survives a transformation of a stage's message or
+outcome. The mathematics is classical; the contribution is its consolidation.
+The multi-stage theory built on this dictionary, and its deployment on the
+microprediction platform, is a companion report [@cotton2026multistage]; two
+further results that motivated the framing are elsewhere too, sample-based
+elicitation on point clouds [@cotton2026pointcloud] and the parimutuel account
+of a conformal predictor's information gap [@cotton2026conformalbetting].
 
 ---
 
@@ -417,84 +418,6 @@ where propriety needs care, and the theory splits in two:
   stacked-lottery design [@cotton2020lottery, slides 29-31] is this operator
   in practice: percentiles from one game feed the next, and calibration is
   produced by composing monotone maps contributed by competing algorithms.
-
-**Residual.** Let a stage emit the aggregate $F_1$ for an outcome $Y$, and
-let a second market elicit a distribution for the residual $U=F_1(Y)$,
-settling at the realised $u=F_1(y)$. If $F_1$ is the true conditional law
-then $U$ is uniform (Proposition 4) and the second market has nothing to
-price; whatever structure remains in the residual is the second stage's
-edge. The corrected forecast composes the two reports.
-
-**Proposition 7 (the correction is a multiplicative reweighting).** *Let
-$F_1$ be strictly increasing onto $(0,1)$ with density $p_1>0$ and let the
-residual market's consensus be a distribution $H$ on $[0,1]$ with $H(0)=0$,
-$H(1)=1$ and density $g$. The
-composed forecast $F=H\circ F_1$ has density*
-
-$$p(y) \;=\; p_1(y)\, g\!\big(F_1(y)\big),$$
-
-*so $\log p(y)=\log p_1(y)+\log g(u)$ with $u=F_1(y)$: the chain's log score
-is the sum of stage log scores, and the residual stage is paid by a proper
-score on $u$ alone.*
-
-**Proof.** Chain rule: $F'(y)=g(F_1(y))\,p_1(y)$; take logarithms. The
-residual score $\log g(u)$ is the logarithmic score of Theorem 1 applied to
-the report $g$ and outcome $u$, hence strictly proper for the law of $U$.
-$\blacksquare$
-
-Multiplying the density by a ratio fitted to what the current model gets
-wrong is the functional-gradient step of boosting under log loss
-[@mason1999boosting; @friedman2001greedy], so a chain of residual markets is
-stagewise boosting with wealth as the learning rate. What Proposition 7 does
-not settle is the game across stages: who funds the residual pot, and whether
-a forecaster free to enter both stages prefers to withhold information from
-the first and sell it to the second; the companion multi-stage paper takes
-this up [@cotton2026multistage].
-
-**Spec.** Serialise a pipeline to data and search over it; the mechanism
-analogue is a market over pipelines. Also open.
-
-**Stagewise play.** Call a profile of reports a *stagewise equilibrium* if
-no participant gains by a deviation confined to a single stage, all other
-stages' reports held fixed *and the inputs and settlement transforms of
-every other stage clamped at their pre-deviation values*. This is the
-pipeline version of the myopic-trader assumption standard in the
-market-scoring-rule literature [@hanson2007logarithmic;
-@chen2010newunderstanding]. The clamp is not cosmetic: a stage's output is
-wired into later settlement transforms (the residual point $u=F_1(y)$, or a
-rank vector in a copula stage), so an upstream deviation moves downstream
-payoffs even when every downstream report is held fixed.
-
-**Proposition 8 (single-stage guarantees compose under clamped stagewise
-play).** *Suppose each stage of a pipeline, taken in isolation with its
-inputs and settlement transform fixed, makes the truthful report a best
-response: strict propriety for externally funded scoring stages (Theorem 1),
-the sequential scoring of Theorem 2 for market stages, the price-taking
-pot-split analysis of the companion paper for parimutuel stages, and the
-residual score of Proposition 7 for correction stages. Then truthful
-reporting at every stage is a stagewise equilibrium of the pipeline.
-If moreover no participant reports to a stage upstream of one in which they
-hold a position (disjoint stage membership suffices), the clamp is vacuous
-for every feasible deviation, and truthful reporting survives unrestricted
-single-stage deviations.*
-
-**Proof.** With the other stages' inputs and transforms clamped, a deviation
-confined to stage $k$ changes the deviator's payoff only through stage $k$'s
-transfer map, and the stage-$k$ hypothesis makes the truthful report a best
-response. For the second claim: a stage-$k$ deviation moves stage $k$'s
-transfer and, through stage $k$'s output, transfers strictly downstream of
-$k$; a deviator with no downstream position collects none of the latter, so
-the propagation is payoff-irrelevant to them. $\blacksquare$
-
-Proposition 8 is not a Nash equilibrium of the composed game. When the same
-participant reports upstream and holds exposure downstream, the deviation
-propagates through the settlement transform, and a downstream stake is a
-derivative written on an upstream settlement, with the attendant incentives
-to distort the underlying [@kumar1992futures; @jarrow1994derivative;
-@hanson2009manipulator; @ostrovsky2012information]. Disjoint membership,
-zero downstream exposure for upstream reporters, or exogenous freezing of
-the settlement transforms restore the proposition; the dynamic game without
-them is outside the note's scope.
 
 ## 5. A conformal predictor as a degenerate composition
 

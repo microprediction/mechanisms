@@ -83,23 +83,93 @@ parimutuel is a stage whose transfers are a pot split. Composition wires the
 belief output of one stage to the belief inputs of the next while state and
 transfers thread through.
 
-The operators that build and combine stages — Sequentialise (a proper score
-run against a wealth state is a cost-function market maker), Pool, Ensemble,
-Merge, Conjugate, and Residual — and the sense in which single-stage propriety
-survives composition are the subject of the companion algebra
-[@cotton2026algebra]. In particular, under clamped stagewise play, where each
-participant weighs a deviation confined to one stage with the inputs and
-settlement transforms of the others held fixed, truthful reporting at every
-stage is a stagewise equilibrium of the pipeline [@cotton2026algebra, Prop.
-8]. The clamp is not cosmetic: a stage's output is wired into later settlement
-transforms, so an upstream deviation moves downstream payoffs, and the game in
-which one participant reports upstream and holds exposure downstream is a
-derivative written on an upstream settlement, with the attendant incentive to
-distort the underlying [@kumar1992futures; @jarrow1994derivative;
-@hanson2009manipulator; @ostrovsky2012information]. That game is open (§6).
-This note takes the operators as given and reports the two message types the
-platform actually chained on — sample clouds and copula ranks — and the
-residual chain that a conformal predictor degenerates.
+The single-stage operators — Sequentialise (a proper score run against a
+wealth state is a cost-function market maker), Pool, Ensemble, Merge, and
+Conjugate — and the convex dictionary behind them are the companion algebra
+[@cotton2026algebra]. Two operators do the chaining, and their guarantees are
+what let a pipeline be trusted.
+
+**Residual.** Let a stage emit the aggregate $F_1$ for an outcome $Y$, and
+let a second market elicit a distribution for the residual $U=F_1(Y)$,
+settling at the realised $u=F_1(y)$. If $F_1$ is the true conditional law
+then $U$ is uniform (the probability integral transform [@cotton2026algebra,
+Prop. 4]) and the second market has nothing to price; whatever structure
+remains in the residual is the second stage's edge. The corrected forecast
+composes the two reports.
+
+**Proposition 1 (the correction is a multiplicative reweighting).** *Let
+$F_1$ be strictly increasing onto $(0,1)$ with density $p_1>0$ and let the
+residual market's consensus be a distribution $H$ on $[0,1]$ with $H(0)=0$,
+$H(1)=1$ and density $g$. The composed forecast $F=H\circ F_1$ has density*
+
+$$p(y) \;=\; p_1(y)\, g\!\big(F_1(y)\big),$$
+
+*so $\log p(y)=\log p_1(y)+\log g(u)$ with $u=F_1(y)$: the chain's log score
+is the sum of stage log scores, and the residual stage is paid by a proper
+score on $u$ alone.*
+
+**Proof.** Chain rule: $F'(y)=g(F_1(y))\,p_1(y)$; take logarithms. The
+residual score $\log g(u)$ is the logarithmic score [@cotton2026algebra, Thm
+1] applied to the report $g$ and outcome $u$, hence strictly proper for the
+law of $U$. $\blacksquare$
+
+Multiplying the density by a ratio fitted to what the current model gets
+wrong is the functional-gradient step of boosting under log loss
+[@mason1999boosting; @friedman2001greedy], so a chain of residual markets is
+stagewise boosting with wealth as the learning rate. What Proposition 1 does
+not settle is the game across stages: who funds the residual pot, and whether
+a forecaster free to enter both stages prefers to withhold information from
+the first and sell it to the second (§6).
+
+**Spec.** Serialise a pipeline to data and search over it; the mechanism
+analogue is a market over pipelines. Also open.
+
+**Stagewise play.** Call a profile of reports a *stagewise equilibrium* if
+no participant gains by a deviation confined to a single stage, all other
+stages' reports held fixed *and the inputs and settlement transforms of
+every other stage clamped at their pre-deviation values*. This is the
+pipeline version of the myopic-trader assumption standard in the
+market-scoring-rule literature [@hanson2007logarithmic;
+@chen2010newunderstanding]. The clamp is not cosmetic: a stage's output is
+wired into later settlement transforms (the residual point $u=F_1(y)$, or a
+rank vector in a copula stage), so an upstream deviation moves downstream
+payoffs even when every downstream report is held fixed.
+
+**Proposition 2 (single-stage guarantees compose under clamped stagewise
+play).** *Suppose each stage of a pipeline, taken in isolation with its
+inputs and settlement transform fixed, makes the truthful report a best
+response: strict propriety for externally funded scoring stages
+[@cotton2026algebra, Thm 1], the sequential scoring [@cotton2026algebra, Thm
+2] for market stages, the price-taking pot-split analysis of the point-cloud
+paper [@cotton2026pointcloud] for parimutuel stages, and the residual score
+of Proposition 1 for correction stages. Then truthful reporting at every
+stage is a stagewise equilibrium of the pipeline. If moreover no participant
+reports to a stage upstream of one in which they hold a position (disjoint
+stage membership suffices), the clamp is vacuous for every feasible
+deviation, and truthful reporting survives unrestricted single-stage
+deviations.*
+
+**Proof.** With the other stages' inputs and transforms clamped, a deviation
+confined to stage $k$ changes the deviator's payoff only through stage $k$'s
+transfer map, and the stage-$k$ hypothesis makes the truthful report a best
+response. For the second claim: a stage-$k$ deviation moves stage $k$'s
+transfer and, through stage $k$'s output, transfers strictly downstream of
+$k$; a deviator with no downstream position collects none of the latter, so
+the propagation is payoff-irrelevant to them. $\blacksquare$
+
+Proposition 2 is not a Nash equilibrium of the composed game. When the same
+participant reports upstream and holds exposure downstream, the deviation
+propagates through the settlement transform, and a downstream stake is a
+derivative written on an upstream settlement, with the attendant incentives
+to distort the underlying [@kumar1992futures; @jarrow1994derivative;
+@hanson2009manipulator; @ostrovsky2012information]. Disjoint membership,
+zero downstream exposure for upstream reporters, or exogenous freezing of
+the settlement transforms restore the proposition; the dynamic game without
+them is outside this note's scope.
+
+The rest of this note reports the two message types the platform chained on —
+sample clouds (§3) and copula ranks (§4) — and the residual chain that a
+conformal predictor degenerates (§5).
 
 ## 3. Samples as messages
 
@@ -109,7 +179,7 @@ the contest into a density before settlement. The companion point-cloud paper
 gives the sample-based elicitation result the algebra needs
 [@cotton2026pointcloud]:
 
-**Proposition 1 (sample-based elicitation; @cotton2026pointcloud, Thms
+**Proposition 3 (sample-based elicitation; @cotton2026pointcloud, Thms
 1-2).** *Score the bandwidth-$h$ kernel density estimate of a submitted
 cloud by the logarithmic score. Settled at the raw outcome, the optimal
 cloud is drawn from a deconvolution of the belief when one exists (for
@@ -158,7 +228,7 @@ c\big(F_1(x_1),\dots,F_d(x_d)\big),$$
 
 with $c$ the copula density on $[0,1]^d$.
 
-**Proposition 2 (the log score factors).** *For a joint report assembled
+**Proposition 4 (the log score factors).** *For a joint report assembled
 from margin reports $f_i$ and a rank-stage report $c$, a density on
 $[0,1]^d$,*
 
@@ -183,8 +253,8 @@ true joint law. $\blacksquare$
 This is the two-stage estimation logic of inference functions for margins
 [@joe1997multivariate], and the factorization underlies out-of-sample
 copula comparison [@diks2010copula]; here it is read as a market design.
-The rank stage is the multivariate Residual operator of the algebra
-[@cotton2026algebra]: under correct margins the rank vector has uniform
+The rank stage is the multivariate Residual operator of §2: under correct
+margins the rank vector has uniform
 margins and its joint law is the dependence structure alone, so a
 rank-settled market elicits dependence separately from level. When the
 margins are correct the settled object is invariant to monotone
@@ -242,7 +312,7 @@ bankroll is the rent.
    $D_G(qK,\pi K)\le D_G(q,\pi)$, and quantify the contraction or
    amplification of edge through a given interface.
 2. *Residual markets.* The single-step correction is a multiplicative
-   reweighting of the upstream density [@cotton2026algebra, Prop. 7]; a
+   reweighting of the upstream density (Proposition 1); a
    chain of residual markets is stagewise boosting with wealth as the
    learning rate. Open: the microstructure (who funds each residual pot, and
    when it settles relative to the stage before), whether a forecaster free
@@ -256,7 +326,7 @@ bankroll is the rent.
    bidders are the residual stage's informed entrants [@jha2023financial].
    The distributional version is the gap.
 3. *Copula markets.* A rank-settled stage elicits dependence separately
-   from margins (Proposition 2), and under correct margins its settled
+   from margins (Proposition 4), and under correct margins its settled
    object is invariant to monotone transformations of the coordinates.
    The racetrack's win and exotic pools price margins and joint orders in
    parallel books on a finite outcome space, with consistency left to
