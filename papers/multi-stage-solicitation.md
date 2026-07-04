@@ -1,72 +1,93 @@
 # Multi-Stage Solicitation
 
-### Chained elicitation markets, and lessons from the microprediction platform
+### Chained forecast elicitation: representations, and the designs the theory supports
 
-Peter Cotton · *Working draft v0.1* · 2026
+Peter Cotton · *Working draft v0.2* · 2026
 
 ---
 
 ## Abstract
 
-Deployed forecasting contests almost always run one level of competition
-against one internal model. The microprediction platform was built the other
-way: it chained elicitation mechanisms, one market's probabilistic output
-becoming the message or the settlement of the next. Community percentiles from
-univariate z-streams were themselves the object of further games; bivariate
-and trivariate dependence streams priced copulas; a stacked-lottery design
-composed monotone calibration maps contributed by competing algorithms. This
-note reports that design and the theory it rests on. The single-stage
-dictionary — proper scores, market makers, and pools as one convex object — is
-a companion paper [@cotton2026algebra]; here the object is the chain. The
-message type deployed contests collect is a finite cloud of samples, and the
-sample-native forms of the composition operators are given; multivariate
-settlement factors into marginal stages and a rank-settled copula stage; and a
-residual market behind a conformal predictor collects the predictor's
-discarded conditional information as bankroll growth. The platform is retired;
-its nearest live successor, monteprediction, runs one stage of the chain
-repeatedly.
+Elicitation mechanisms chain when one mechanism's output is the next one's
+message or settled outcome. What can be chained, and how to score it, turns on
+what a mechanism emits: a *point* (a price or a forecast) or a *distribution*
+(a density, a percentile, or a rank). This note sorts the chains by
+representation, marks which the theory supports, and then reviews which have
+been built. Point outputs chain as ordinary derivatives. Distributions chain
+more richly, provided an exogenous outcome anchors the chain: a residual stage
+is then scored on the part its predecessor left uniform, and a downstream
+contribution may be judged in its own market or, for the log score
+equivalently, converted into a top-level forecast and judged there. Without an
+anchor the chain is indeterminate. Only then do we turn to practice: the
+microprediction platform's percentile and copula streams, monteprediction, and
+the residual contests at CrunchDAO.
 
 ---
 
 ## 1. Introduction
 
-Deployed forecasting contests are thinner than the theory allows: with few
-exceptions they run one level of competition against one internal model.
-Numerai pools staked submissions into a single stake-weighted meta-model and
-pays each forecast its marginal contribution to it [@craib2017numeraire];
-CrunchDAO blends each contest into one ensemble; the IARPA prediction polls
-aggregated forecasts by track record, comparing favourably with head-to-head
-markets [@atanasov2017distilling], with reputation rather than wealth as the
-threaded state. In every case, one pool and one internal aggregate.
+Deployed forecasting contests almost always run one level of competition
+against one internal model: Numerai pays each staked submission its marginal
+contribution to a single meta-model [@craib2017numeraire], CrunchDAO blends a
+contest into one ensemble, the IARPA prediction polls aggregated by track
+record [@atanasov2017distilling]. The alternative is to *chain*: let one
+mechanism's output be the message, or the settled outcome, of the next, so
+that calibration and dependence become the subject of their own games.
 
-The microprediction platform was built the other way. A market's
-*probabilistic* output — a distribution, a percentile, or a rank emitted by
-one stage — became the message or the settlement transform of the next, so
-calibration and dependence were themselves the subject of further games.
-Univariate streams spawned z-streams of community percentiles; bivariate and
-trivariate dependence streams priced copulas; and a stacked-lottery design
-composed monotone calibration maps contributed by competing algorithms,
-presented at MIT CSAIL in 2020 [@cotton2020lottery, slides 29-31;
-@cotton2022microprediction]. The platform is retired. Its nearest live
-successor, monteprediction, is a weekly self-funding pool over
-million-scenario joint submissions in eleven dimensions with wealth threaded
-across rounds since January 2024 [@cotton2024monteprediction]: one stage of
-the chain, repeated, rather than a chain.
+Whether two mechanisms chain turns on what the upstream one emits, and that is
+the organizing question. A stage emits either a point or a distribution, and
+sorting the four ways one can feed the next leaves only one combination worth
+much (§2). The rest follows from there. Section 3 gives the operator that
+chains and the two ways to score a stage inside a chain. Section 4 draws the
+line between the designs the theory backs and the one it does not. Section 5 is
+what has been built. The single-stage dictionary the chains draw on, proper
+scores and market makers and pools as one convex object, is a companion paper
+[@cotton2026algebra]; here the object is the chain.
 
-This note is a report on that design. The mechanisms compose because each is a
-stateful transducer over one message type, a distributional belief, with
-wealth as the threaded state; the single-stage dictionary that generates them
-— proper scores, market makers, and pools as one convex object — is a
-companion paper [@cotton2026algebra], and §2 recalls only what the chain
-needs. The rest is the multi-stage account the platform demanded: the finite
-sample cloud as the message type deployed contests actually collect (§3), the
-factoring of a multivariate settlement into marginal stages and a rank-settled
-copula stage (§4), and the residual chain behind a conformal predictor whose
-degenerate case leaves an extractable rent (§5). Play is stagewise throughout:
-no participant deviates across stages; the cross-stage game is largely open
-(§6).
+## 2. Two representations, and the chains between them
 
-## 2. Stages and their composition
+A stage of a chain emits one of two things.
+
+A **point output** is a scalar summary: a price, a point forecast, a single
+reported percentile. A **probabilistic output** is a full object over the
+outcome space: a density or distribution function, the probability-integral
+transform (rank) of an outcome, or a finite cloud of samples standing in for a
+density. The distinction is not cosmetic: it decides what a downstream stage
+can be paid to get right.
+
+Write the upstream stage's output as the message or the settlement transform of
+the downstream stage. Four chains are possible, and only some carry content.
+
+- **Point → point.** A second market settles on the first's price: every
+  derivative, the electricity virtual bids and transmission rights written on a
+  day-ahead price, a market on another market's reported number. This is
+  ordinary derivative structure, a translation of a point output; it is
+  ubiquitous and is not composition of *elicitation* — no distribution is
+  elicited about the upstream object.
+- **Probabilistic → probabilistic.** The upstream distribution, percentile, or
+  rank is the downstream stage's message or settled object. This is the case
+  with content, and the rest of the note is about it. It needs one thing to be
+  well posed: an exogenous outcome somewhere in the chain to anchor the scores
+  (§4).
+- **Point → probabilistic.** A point output carries no distribution, so a
+  downstream distributional stage has nothing to elicit *about it* unless a
+  distribution is supplied. The natural way to supply one is to model the point
+  forecast's error: a stage that emits a point leaves a residual, and a second
+  stage elicits the residual's law. Point-to-probabilistic chaining *is* the
+  residual construction of §3.
+- **Probabilistic → point.** Collapsing a distribution to a summary — its mean,
+  a chosen quantile — and chaining a point market on the summary throws away
+  the distributional content the upstream stage worked to produce. It is
+  well defined and lossy, the reverse of the residual construction, and of
+  little interest here.
+
+So the representation answers the question of what chains to what: point
+outputs chain among themselves as derivatives, distributions chain among
+themselves as elicitation, and the only bridge between the two worlds is the
+residual — reintroduce a distribution by scoring what a point forecast got
+wrong.
+
+## 3. Composing a chain, and the two ways to score it
 
 A *stage* is a transducer (Mealy machine) over one message type. Let
 $\mathrm{Dist}$ be the set of distributional beliefs; a stage carries a wealth
@@ -79,23 +100,17 @@ $$M:\ (\mathrm{Dist}^m,\ w,\ x)\ \longmapsto\ (\mathrm{Dist},\ w',\ \pi).$$
 A scoring rule is the transfer component of a stage; a market maker is a stage
 whose state is the inventory vector and whose emitted belief is the price; an
 opinion pool is a stage with no outcome argument and zero transfers; a
-parimutuel is a stage whose transfers are a pot split. Composition wires the
-belief output of one stage to the belief inputs of the next while state and
-transfers thread through.
-
-The single-stage operators — Sequentialise (a proper score run against a
-wealth state is a cost-function market maker), Pool, Ensemble, Merge, and
-Conjugate — and the convex dictionary behind them are the companion algebra
-[@cotton2026algebra]. Two operators do the chaining, and their guarantees are
-what let a pipeline be trusted.
+parimutuel is a stage whose transfers are a pot split. The operators that build
+and combine stages (Sequentialise, Pool, Ensemble, Merge, Conjugate) and the
+convex dictionary behind them are the companion algebra [@cotton2026algebra].
+One operator does the chaining.
 
 **Residual.** Let a stage emit the aggregate $F_1$ for an outcome $Y$, and
 let a second market elicit a distribution for the residual $U=F_1(Y)$,
 settling at the realised $u=F_1(y)$. If $F_1$ is the true conditional law
 then $U$ is uniform (the probability integral transform [@cotton2026algebra,
 Prop. 4]) and the second market has nothing to price; whatever structure
-remains in the residual is the second stage's edge. The corrected forecast
-composes the two reports.
+remains in the residual is the second stage's edge.
 
 **Proposition 1 (the correction is a multiplicative reweighting).** *Let
 $F_1$ be strictly increasing onto $(0,1)$ with density $p_1>0$ and let the
@@ -113,185 +128,204 @@ residual score $\log g(u)$ is the logarithmic score [@cotton2026algebra, Thm
 1] applied to the report $g$ and outcome $u$, hence strictly proper for the
 law of $U$. $\blacksquare$
 
-Multiplying the density by a ratio fitted to what the current model gets
-wrong is the functional-gradient step of boosting under log loss
-[@mason1999boosting; @friedman2001greedy], so a chain of residual markets is
-stagewise boosting with wealth as the learning rate. What Proposition 1 does
-not settle is the game across stages: who funds the residual pot, and whether
-a forecaster free to enter both stages prefers to withhold information from
-the first and sell it to the second (§6).
+**Local scoring versus top-level conversion.** A contribution to the second
+market can be judged two ways. *Locally*, the residual stage is scored on its
+own object $u$, by $\log g(u)$. *At the top level*, the contribution is
+converted into a forecast of $Y$ — the composed density $p_1(y)\,g(F_1(y))$ —
+and scored against the ultimate outcome by $\log p(y)$. Proposition 1 says these
+coincide: $\log p(y)=\log p_1(y)+\log g(u)$, so up to the constant $\log p_1(y)$
+that no downstream report can move, the two scores rank downstream
+contributions identically. This is the choice raised in the stacked-lottery
+design [@cotton2020lottery, slides 29-31]: run the secondary market on its own
+residual, or fold every secondary contribution up to the top level and score it
+there. For the log score they are the same mechanism; the equivalence is
+special to scores that are additive under composition, and fails for a general
+proper score.
+
+Multiplying the density by a ratio fitted to what the current model gets wrong
+is the functional-gradient step of boosting under log loss [@mason1999boosting;
+@friedman2001greedy], so a chain of residual markets is stagewise boosting with
+wealth as the learning rate.
 
 **Spec.** Serialise a pipeline to data and search over it; the mechanism
-analogue is a market over pipelines. Also open.
+analogue is a market over pipelines. Open.
 
-**Stagewise play.** Call a profile of reports a *stagewise equilibrium* if
-no participant gains by a deviation confined to a single stage, all other
-stages' reports held fixed *and the inputs and settlement transforms of
-every other stage clamped at their pre-deviation values*. This is the
-pipeline version of the myopic-trader assumption standard in the
-market-scoring-rule literature [@hanson2007logarithmic;
-@chen2010newunderstanding]. The clamp is not cosmetic: a stage's output is
-wired into later settlement transforms (the residual point $u=F_1(y)$, or a
-rank vector in a copula stage), so an upstream deviation moves downstream
-payoffs even when every downstream report is held fixed.
+**Stagewise play.** Call a profile of reports a *stagewise equilibrium* if no
+participant gains by a deviation confined to a single stage, all other stages'
+reports held fixed *and the inputs and settlement transforms of every other
+stage clamped at their pre-deviation values*. This is the pipeline version of
+the myopic-trader assumption standard in the market-scoring-rule literature
+[@hanson2007logarithmic; @chen2010newunderstanding]. The clamp is not cosmetic:
+a stage's output is wired into later settlement transforms (the residual point
+$u=F_1(y)$, or a rank vector in a copula stage), so an upstream deviation moves
+downstream payoffs even when every downstream report is held fixed.
 
 **Proposition 2 (single-stage guarantees compose under clamped stagewise
-play).** *Suppose each stage of a pipeline, taken in isolation with its
-inputs and settlement transform fixed, makes the truthful report a best
-response: strict propriety for externally funded scoring stages
-[@cotton2026algebra, Thm 1], the sequential scoring [@cotton2026algebra, Thm
-2] for market stages, the price-taking pot-split analysis of the point-cloud
-paper [@cotton2026pointcloud] for parimutuel stages, and the residual score
-of Proposition 1 for correction stages. Then truthful reporting at every
-stage is a stagewise equilibrium of the pipeline. If moreover no participant
-reports to a stage upstream of one in which they hold a position (disjoint
-stage membership suffices), the clamp is vacuous for every feasible
-deviation, and truthful reporting survives unrestricted single-stage
-deviations.*
+play).** *Suppose each stage of a pipeline, taken in isolation with its inputs
+and settlement transform fixed, makes the truthful report a best response:
+strict propriety for externally funded scoring stages [@cotton2026algebra, Thm
+1], the sequential scoring [@cotton2026algebra, Thm 2] for market stages, the
+price-taking pot-split analysis of the point-cloud paper [@cotton2026pointcloud]
+for parimutuel stages, and the residual score of Proposition 1 for correction
+stages. Then truthful reporting at every stage is a stagewise equilibrium of
+the pipeline. If moreover no participant reports to a stage upstream of one in
+which they hold a position (disjoint stage membership suffices), the clamp is
+vacuous for every feasible deviation, and truthful reporting survives
+unrestricted single-stage deviations.*
 
 **Proof.** With the other stages' inputs and transforms clamped, a deviation
 confined to stage $k$ changes the deviator's payoff only through stage $k$'s
 transfer map, and the stage-$k$ hypothesis makes the truthful report a best
 response. For the second claim: a stage-$k$ deviation moves stage $k$'s
-transfer and, through stage $k$'s output, transfers strictly downstream of
-$k$; a deviator with no downstream position collects none of the latter, so
-the propagation is payoff-irrelevant to them. $\blacksquare$
+transfer and, through stage $k$'s output, transfers strictly downstream of $k$;
+a deviator with no downstream position collects none of the latter, so the
+propagation is payoff-irrelevant to them. $\blacksquare$
 
 Proposition 2 is not a Nash equilibrium of the composed game. When the same
 participant reports upstream and holds exposure downstream, the deviation
 propagates through the settlement transform, and a downstream stake is a
-derivative written on an upstream settlement, with the attendant incentives
-to distort the underlying [@kumar1992futures; @jarrow1994derivative;
-@hanson2009manipulator; @ostrovsky2012information]. Disjoint membership,
-zero downstream exposure for upstream reporters, or exogenous freezing of
-the settlement transforms restore the proposition; the dynamic game without
-them is outside this note's scope.
+derivative written on an upstream settlement, with the attendant incentives to
+distort the underlying [@kumar1992futures; @jarrow1994derivative;
+@hanson2009manipulator; @ostrovsky2012information]. Disjoint membership, zero
+downstream exposure for upstream reporters, or exogenous freezing of the
+settlement transforms restore the proposition; the dynamic game without them is
+outside this note's scope.
 
-The rest of this note reports the two message types the platform chained on —
-sample clouds (§3) and copula ranks (§4) — and the residual chain that a
-conformal predictor degenerates (§5).
+## 4. Which designs the theory supports
 
-## 3. Samples as messages
+The propriety of the chain rests on one requirement: an exogenous outcome
+anchors it. Every score above is paid against a realised $y$ or its rank $u$;
+strip the outcome out and nothing pins the reports down. This is the line
+between the designs the theory supports and the one it does not.
 
-The message type has so far been a distribution given exactly. Deployed
-contests collect something rougher: a finite cloud of samples, smoothed by
-the contest into a density before settlement. The companion point-cloud paper
-gives the sample-based elicitation result the algebra needs
-[@cotton2026pointcloud]:
+**Anchored probabilistic chains (supported).** A pipeline whose final stage
+settles on a real outcome, with proper local scores at each stage, is
+well founded: Proposition 2 makes truthful reporting a stagewise equilibrium,
+and Proposition 1's additivity makes local scoring and top-level conversion the
+same mechanism. Residual chains (boosting), and the copula factoring below, are
+of this kind.
 
-**Proposition 3 (sample-based elicitation; @cotton2026pointcloud, Thms
-1-2).** *Score the bandwidth-$h$ kernel density estimate of a submitted
-cloud by the logarithmic score. Settled at the raw outcome, the optimal
-cloud is drawn from a deconvolution of the belief when one exists (for
-Gaussian beliefs and kernels with belief variance exceeding $h^2$, the
-belief with $h^2$ removed from the variance). Settled at the
-outcome jittered by the same kernel, truthful sampling is optimal, and
-strictly so whenever the kernel's characteristic function is nonvanishing on
-a dense set: the smoothing channel is injective on laws.*
+**Unanchored chains (not supported).** A chain in which one market settles on
+another market's displayed probability, with no exogenous outcome anywhere,
+has no scoring anchor: the equilibrium is indeterminate and the mechanism runs
+as a beauty contest. Manifold's resolves-to-market markets are the live
+example; they are play-money precisely because there is nothing to be proper
+about.
 
-The proof is in the companion paper. With jittered settlement the cloud
-*is* a valid message, and the operators of the algebra [@cotton2026algebra]
-act on clouds directly.
+**Samples as the message (supported, and what contests collect).** The message
+type has so far been a distribution given exactly. Deployed contests collect
+something rougher: a finite cloud of samples, smoothed into a density before
+settlement. The companion point-cloud paper gives the elicitation result the
+chain needs [@cotton2026pointcloud]:
 
-- *Conjugate* acts pointwise: the pushforward of a cloud under $\psi$ is
-  $\psi$ applied to each sample, with no Jacobian computed anywhere. This is
-  the practical reason to prefer sample messages: transformation of
-  densities requires calculus, transformation of clouds requires
-  arithmetic.
-- *Pool* (linear) is a wealth-weighted union: sample from participant $i$'s
-  cloud with probability proportional to $w_i$. The linear pool is the
-  sample-native aggregate; the logarithmic pool has no comparably clean
-  sample form, since multiplying densities requires importance weights.
-- *Residual* acts by ranking: pass each sample through the upstream CDF.
-  Composition of monotone maps, the stacked-lottery operation, is again
-  pointwise on samples.
-- *Sequentialise* is the nearest-the-pin pool itself: the market's state is
-  the field's aggregate cloud.
+**Proposition 3 (sample-based elicitation; @cotton2026pointcloud, Thms 1-2).**
+*Score the bandwidth-$h$ kernel density estimate of a submitted cloud by the
+logarithmic score. Settled at the raw outcome, the optimal cloud is drawn from
+a deconvolution of the belief when one exists (for Gaussian beliefs and kernels
+with belief variance exceeding $h^2$, the belief with $h^2$ removed from the
+variance). Settled at the outcome jittered by the same kernel, truthful
+sampling is optimal, and strictly so whenever the kernel's characteristic
+function is nonvanishing on a dense set: the smoothing channel is injective on
+laws.*
 
-One caveat governs the order of operations. Smoothing and conjugation
-commute only for affine maps: for scalar $\psi(x)=ax+b$ and a Gaussian
-kernel, the KDE of the mapped cloud at bandwidth $|a|h$ equals the
-pushforward of the bandwidth-$h$ KDE (in higher dimension the bandwidth
-matrix must transform with the map), and for nonlinear $\psi$ no bandwidth
-makes this an identity. The smoothing seam and its jitter must therefore be applied in the
-settlement coordinates, after all transforms, which in pipeline terms says
-the KDE stage belongs immediately before settlement and nowhere else.
+With jittered settlement the cloud is a valid message, and the operators act on
+clouds pointwise: Conjugate pushes each sample through the map, a linear Pool is
+a wealth-weighted union of clouds, Residual ranks each sample through the
+upstream CDF. One caveat governs the order of operations — smoothing and a
+nonlinear map do not commute, so the kernel and its jitter belong in the
+settlement coordinates, immediately before settlement and nowhere else.
 
-## 4. Margins and copulas
+**Dependence by rank (supported).** A multivariate settlement factors. By
+Sklar's theorem [@sklar1959] a joint law with continuous margins $F_1,\dots,F_d$
+and copula $C$ has density $p(x)=\prod_i f_i(x_i)\cdot c(F_1(x_1),\dots,F_d(x_d))$.
 
-A multivariate settlement can be factored. By Sklar's theorem [@sklar1959]
-a joint law with continuous margins $F_1,\dots,F_d$ and copula $C$ has
-density
-
-$$p(x)\;=\;\prod_{i=1}^d f_i(x_i)\;\cdot\;
-c\big(F_1(x_1),\dots,F_d(x_d)\big),$$
-
-with $c$ the copula density on $[0,1]^d$.
-
-**Proposition 4 (the log score factors).** *For a joint report assembled
-from margin reports $f_i$ and a rank-stage report $c$, a density on
-$[0,1]^d$,*
+**Proposition 4 (the log score factors).** *For a joint report assembled from
+margin reports $f_i$ and a rank-stage report $c$, a density on $[0,1]^d$,*
 
 $$\log p(x)\;=\;\sum_{i=1}^d\log f_i(x_i)\;+\;\log c(u),
 \qquad u_i=F_i(x_i),$$
 
 *so a pipeline of $d$ margin stages and one rank stage settled on the rank
 vector $u$ pays every stage a logarithmic score of its own object, and the
-chain's log score is the sum. Given the margin reports, the rank stage's
-score is strictly proper for the law of the rank vector. That law has
-uniform margins, and is the copula of the joint, iff the margin reports are
-correct; keeping the rank stage's report class as arbitrary densities on
-$[0,1]^d$ keeps the stage closed under wrong upstream reports.*
+chain's log score is the sum. Given the margin reports, the rank stage's score
+is strictly proper for the law of the rank vector, which has uniform margins
+and is the copula of the joint iff the margin reports are correct.*
 
-**Proof.** Take logarithms in Sklar's density factorization; the summands
-are exactly the stage scores. Strict propriety of the rank stage is the
-logarithmic score's strict propriety [@cotton2026algebra, Thm 1] applied to
-densities on $[0,1]^d$, the transform $x\mapsto u$ being fixed once the
-margin reports are given. The final clause is Sklar's theorem applied to the
-true joint law. $\blacksquare$
+**Proof.** Take logarithms in Sklar's factorization; the summands are the stage
+scores. Strict propriety of the rank stage is the logarithmic score
+[@cotton2026algebra, Thm 1] on densities over $[0,1]^d$, the transform
+$x\mapsto u$ fixed once the margins are given. $\blacksquare$
 
-This is the two-stage estimation logic of inference functions for margins
-[@joe1997multivariate], and the factorization underlies out-of-sample
-copula comparison [@diks2010copula]; here it is read as a market design.
-The rank stage is the multivariate Residual operator of §2: under correct
-margins the rank vector has uniform
-margins and its joint law is the dependence structure alone, so a
-rank-settled market elicits dependence separately from level. When the
-margins are correct the settled object is invariant to monotone
-transformations of the coordinates; the settlement transform itself moves
-with the reported margin maps. The microprediction platform ran exactly this
-factoring: alongside univariate z-streams it operated bivariate and
-trivariate streams in which community-implied percentiles were embedded by a
-space-filling curve into one settled scalar [@cotton2022microprediction], a
-copula market in production. Sample messages compose with the factoring:
-rank each coordinate of a submitted cloud through the margin CDFs and the
-result is a cloud on $[0,1]^d$ for the copula stage, with the §3 seam
-discipline applied at that stage's settlement.
+This is the same additivity as Proposition 1, one dimension per margin: the
+rank stage is the multivariate Residual operator, eliciting dependence
+separately from level, and again local scoring of the rank stage equals its
+top-level conversion. The construction is the two-stage estimation logic of
+inference functions for margins [@joe1997multivariate] read as a market design.
 
-## 5. A residual chain: betting against a conformal predictor
+**A worked anchored chain: betting against a conformal predictor.** A point
+predictor leaves a residual $R$; conformalization re-levels its marginal law
+but prices the residual flat in the input. An entrant who conditions on the
+input $X$ collects what the flat predictor discards as bankroll growth, at the
+rate $I(R;X)$, the mutual information between residual and input, while the
+band's marginal coverage stays exact; marginal coverage is the break-even
+statement, the conditional information is the rent. The full account, with the
+Gaussian rate $-\tfrac12\log(1-\rho^2)$ and the anytime-valid measurement, is a
+standalone note [@cotton2026conformalbetting]. It is a point-to-probabilistic
+residual chain with the outcome as anchor, so the theory above applies whole.
 
-The purest deployed chain is a residual market run behind a point predictor.
-A point predictor leaves a residual $R$; re-leveling its marginal law is
-conformalization, and a market on the residual rank prices whatever
-conditional structure the re-leveling ignores. A single-shape conformal
-predictor, one that applies the same residual law at every input, prices the
-residual pool flat: its marginal coverage is exact and its conditional
-information is discarded. An entrant who conditions on the input $X$ collects
-that discarded information as bankroll growth, at the rate $I(R;X)$, the
-mutual information between residual and input, while the band's marginal
-coverage stays exact. Marginal coverage is the break-even statement; the
-conditional information is the rent.
+## 5. What has been built
 
-The full account — the pool payoff, the Kelly-Breiman growth identity, the
-Gaussian rate $-\tfrac12\log(1-\rho^2)$, and the anytime-valid measurement
-that turns the rent into a test — is a standalone note
-[@cotton2026conformalbetting]. The mechanism ran in production: the
-microprediction nearest-the-pin pool [@cotton2022microprediction] paid each
-entry its sample density at the realised value relative to the field's, and
-the MidOne contest [@crunchdao_midone] priced an explicit residual density
-[@cotton_density] the same way. A conformal predictor entering such a pool is
-the participant that prices flat in $X$; its better-informed competitor's
-bankroll is the rent.
+The supported designs are rare in practice; one platform ran several at once.
+
+**The microprediction platform.** The base game was a pool on a single live
+number. Anyone could open a stream for a quantity they cared about;
+contributors submitted a fixed-size bundle of Monte Carlo scenarios, 225 of
+them, and when the number arrived the pot was split by how near the scenarios
+fell. Paying by log-wealth made a contributor's best move to submit scenarios
+that matched her honest distribution [@cotton2022microprediction]. That is the
+nearest-the-pin rule, and it only ever settled one scalar.
+
+To make calibration and dependence into games of their own, the platform
+turned each of them into another scalar. Calibration first. Once the community
+has forecast a quantity, ask where the outcome actually landed in the forecast
+distribution: its percentile, or the z-score you get by pushing that percentile
+through a normal. Forecast well and those z-scores look standard normal;
+forecast badly and they drift or spread out. A z-score is just another number,
+so it opened its own stream, `z1~`, and predicting `z1~` meant predicting the
+first game's miscalibration. In the language of §3 this is the
+probability-integral transform run as a residual stage.
+
+Dependence used the same idea in reverse. The joint behaviour of two streams
+is two-dimensional, but a pool settles one number, so the two community
+percentiles were folded into a single number by the Morton z-curve: interleave
+the binary digits of the two coordinates, the way a geohash packs latitude and
+longitude into one string. A pool on the folded number was a market on the
+copula of the pair, `z2~`; three streams folded the same way gave `z3~`. A 2020
+copula contest ran exactly this on the five-minute comovements of five
+cryptocurrencies, contributors submitting 225 samples packed through the
+z-curve [@cotton2020copula]. This is the rank factoring of Proposition 4, in
+production. A related stacked-lottery design let competing algorithms contribute
+monotone calibration maps that composed into one forecast [@cotton2020lottery,
+slides 29-31]. The platform is retired.
+
+**Its successors.** monteprediction is the base game with one stage repeated
+rather than chained. Each weekly submission is about a million joint scenarios
+of eleven sector-ETF returns, and the pot is split in proportion to the density
+a participant places on the realised vector [@cotton2024monteprediction;
+@cotton2024eleven]; wealth threads across rounds, and the contest has run since
+January 2024. The MidOne contests at CrunchDAO priced residual densities
+directly [@crunchdao_midone; @cotton_density], a residual stage without the
+sample smoothing.
+
+**For contrast, the point-output world.** Chaining on point outputs is
+everywhere: derivatives, the electricity virtual bids and transmission rights
+on day-ahead prices [@jha2023financial], a market on another market's reported
+number. But it is derivative structure, not elicitation composition. And the
+racetrack's win versus exotic pools, index versus single-name option books, and
+tranche versus single-name CDS run margins and dependence in *parallel* books
+that settle independently, consistency left to arbitrage
+[@harville1973assigning; @hausch1981efficiency]; parallel is not chained, and
+the books can disagree.
 
 ## 6. Open problems
 
@@ -299,45 +333,30 @@ bankroll is the rent.
    stage-level zeros, and is not the invariant. The invariant that can fail
    is the edge a truthful participant holds over the price, $D_G(q,\pi)$.
    For the logarithmic score the edge is $\mathrm{KL}(q\Vert\pi)$ and the
-   data-processing inequality settles it: an interface
-   channel cannot increase it, and preserves it exactly when the channel is
-   sufficient for the pair [@csiszar1967information]. No such inequality
-   holds for a general Bregman edge. For the quadratic generator, merging
-   the first two of three outcomes sends
-   $\pi=(\tfrac13,\tfrac13,\tfrac13)$ and
-   $q=(\tfrac{13}{30},\tfrac{13}{30},\tfrac2{15})$, with
-   $D_G(q,\pi)=\tfrac3{50}$, to a pair with
-   $D_G(qK,\pi K)=\tfrac2{25}$: coarsening increased the Brier edge. Open:
-   characterize the generators and channels for which
-   $D_G(qK,\pi K)\le D_G(q,\pi)$, and quantify the contraction or
-   amplification of edge through a given interface.
+   data-processing inequality settles it: an interface channel cannot increase
+   it, and preserves it exactly when the channel is sufficient for the pair
+   [@csiszar1967information]. No such inequality holds for a general Bregman
+   edge. For the quadratic generator, merging the first two of three outcomes
+   sends $\pi=(\tfrac13,\tfrac13,\tfrac13)$ and
+   $q=(\tfrac{13}{30},\tfrac{13}{30},\tfrac2{15})$, with $D_G(q,\pi)=\tfrac3{50}$,
+   to a pair with $D_G(qK,\pi K)=\tfrac2{25}$: coarsening increased the Brier
+   edge. Open: characterize the generators and channels for which
+   $D_G(qK,\pi K)\le D_G(q,\pi)$.
 2. *Residual markets.* The single-step correction is a multiplicative
-   reweighting of the upstream density (Proposition 1); a
-   chain of residual markets is stagewise boosting with wealth as the
-   learning rate. Open: the microstructure (who funds each residual pot, and
-   when it settles relative to the stage before), whether a forecaster free
-   to enter several stages prefers withholding information upstream to sell
-   it downstream, and whether the iterated correction converges to the true
-   conditional law as boosting does. Split-conformal prediction is the
-   one-participant degenerate case, with its rent $I(R;X)$ as the value left
-   on the table [@cotton2026conformalbetting]. The closest live analogue is
-   in point prices: a virtual bid in a two-settlement electricity market is
-   written on the day-ahead stage's pricing error, and its convergence
-   bidders are the residual stage's informed entrants [@jha2023financial].
-   The distributional version is the gap.
-3. *Copula markets.* A rank-settled stage elicits dependence separately
-   from margins (Proposition 4), and under correct margins its settled
-   object is invariant to monotone transformations of the coordinates.
-   The racetrack's win and exotic pools price margins and joint orders in
-   parallel books on a finite outcome space, with consistency left to
-   arbitrage and the Harville map as the bridge [@harville1973assigning;
-   @hausch1981efficiency]; the rank-settled stage differs by construction,
-   chaining through the reported margins so the dependence market cannot
-   disagree with them. Open: the equilibrium when the same participants
-   trade margin and copula stages, and the choice of embedding for
-   $d\ge2$, the space-filling curves as deployed against the random
-   one-dimensional projections of the point-cloud paper
-   [@cotton2026pointcloud].
+   reweighting of the upstream density (Proposition 1); a chain of residual
+   markets is stagewise boosting with wealth as the learning rate. Open: the
+   microstructure (who funds each residual pot, and when it settles relative to
+   the stage before), whether a forecaster free to enter several stages prefers
+   withholding information upstream to sell it downstream, and whether the
+   iterated correction converges to the true conditional law as boosting does.
+   Split-conformal prediction is the one-participant degenerate case, with its
+   rent $I(R;X)$ as the value left on the table
+   [@cotton2026conformalbetting].
+3. *Copula markets.* A rank-settled stage elicits dependence separately from
+   margins (Proposition 4). Open: the equilibrium when the same participants
+   trade margin and copula stages, and the choice of embedding for $d\ge2$, the
+   space-filling curves as deployed against the random one-dimensional
+   projections of the point-cloud paper [@cotton2026pointcloud].
 
 ## References
 
