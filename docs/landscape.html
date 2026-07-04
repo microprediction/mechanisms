@@ -41,7 +41,11 @@
       reputation, stake), and emits an aggregate plus transfers.
       <em>Multi-stage</em> below means one mechanism's output is the priced
       or scored object of another, not merely a repeated game. Entries
-      marked <strong>·M·</strong> have that structure. Statuses with
+      marked <strong>·M·</strong> have that structure. One further axis
+      matters: whether the reused output is a <em>point</em> (a price, a
+      projected winner), which is ordinary derivative structure, or
+      <em>probabilistic</em> (a distribution, percentile, rank), which is
+      rare; the closing section keeps the two apart. Statuses with
       <em>(?)</em> could not be fully verified.
     </p>
 
@@ -157,24 +161,25 @@
       </tbody>
     </table></div>
 
-    <h2 id="multi-stage">Three structures, kept distinct</h2>
+    <h2 id="multi-stage">The structures, kept distinct</h2>
     <p>
-      <strong>Chained</strong> (one mechanism's output is the settled or
-      priced object of another):
+      <strong>Chained on point outputs</strong> (one market's <em>price</em>
+      is the settled object of another): every derivative, and in
+      electricity the virtual bids and FTRs written on day-ahead prices;
+      Polymarket's markets on Nate Silver's projected winner; Numinous
+      scoring against Polymarket resolutions; Allora's second tier
+      predicting the first tier's losses; Numerai paying marginal
+      contribution to its meta-model. These are translations of a point
+      output, ordinary derivative structure, ubiquitous and old.
     </p>
-    <ul>
-      <li>Virtual bids and FTRs in electricity markets, written on the
-        day-ahead stage's prices; convergence bidders are informed entrants
-        against the first stage's error.</li>
-      <li>Markets on forecasts: Polymarket's markets on Nate Silver's model
-        output; Numinous scoring a tournament against Polymarket
-        resolutions; Manifold's self-referential markets (play money).</li>
-      <li>Forecasting the forecasters: Allora's second tier predicts the
-        first tier's losses; Numerai pays marginal contribution to its
-        internal meta-model.</li>
-      <li>The retired microprediction platform: z-streams and dependence
-        streams contested downstream of every stream.</li>
-    </ul>
+    <p>
+      <strong>Chained on probabilistic outputs</strong> (one mechanism's
+      <em>distribution, percentile, or rank</em> becomes the message or
+      settlement transform of another): the retired microprediction
+      platform's z-streams and dependence streams, and, trivially and in
+      play money, Manifold's resolves-to-market markets. We know of nothing
+      else.
+    </p>
     <p>
       <strong>Parallel factored</strong> (margins and dependence in separate
       simultaneous books, neither settling on the other, consistency left to
@@ -189,9 +194,9 @@
       round by round.
     </p>
     <p>
-      Nothing live chains <em>distributional</em> elicitation into residual
-      or dependence markets with wealth as the routed state. That gap is the
-      subject of the
+      Nothing live chains <em>probabilistic</em> output, distributional
+      elicitation into residual or dependence markets with wealth as the
+      routed state. That gap is the subject of the
       <a href="./papers/composition-and-the-algebra-of-mechanisms.html">algebra
       paper's</a> open problems.
     </p>

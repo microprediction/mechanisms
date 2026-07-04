@@ -40,21 +40,19 @@ comparing favourably with head-to-head markets [@atanasov2017distilling],
 with reputation rather than wealth as the threaded state. In every case,
 one pool and one internal aggregate.
 
-Adjacent markets have long run pieces of the structure, in point prices
-rather than distributions, and the pieces differ. The racetrack tote is
-parallel, not chained: win and exotic pools have priced margins and joint
-finishing orders in separate simultaneous books since 1931, neither
-settling on the other's output, with consistency between them left to
-arbitrage [@harville1973assigning; @hausch1981efficiency]; index and
-single-name option books price dependence the same way. Two-settlement
-electricity markets contain an actual chain, though not where the name
-suggests: the real-time stage trades the same commodity with deviations
-from day-ahead positions in the settlement formula, while a virtual bid is
-an instrument written directly on the first stage's output, paying the
-day-ahead-to-real-time spread, and financial forecasters demonstrably
-profit by correcting the day-ahead consensus [@cramton2017electricity;
-@jha2023financial]. What is scarce is the composed design for
-*distributional* forecasts. The only live, long-running
+Adjacent markets contain pieces of the structure, none of them the piece
+this note needs. Derivatives chain point outputs: every futures contract
+settles on another market's price, and in electricity the virtual bids and
+transmission rights that settle on day-ahead prices pay forecasters for
+correcting the day-ahead consensus [@jha2023financial]. These are
+translations of a price, fixed transforms of a point output, not
+composition of elicitation mechanisms. The racetrack tote prices margins
+and joint finishing orders in parallel books, neither settling on the
+other's output, consistency left to arbitrage [@harville1973assigning;
+@hausch1981efficiency]. Reuse of a market's *probabilistic* output, a
+distribution, percentile, or rank emitted by one stage becoming the message
+or the settlement transform of the next, is scarce, and is the chain this
+note studies. The only live, long-running
 platform we are aware of that composes past one stage is monteprediction, a
 weekly self-funding pool over million-scenario joint submissions in eleven
 dimensions, with wealth threaded across rounds since January 2024
