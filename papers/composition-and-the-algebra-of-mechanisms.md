@@ -2,7 +2,7 @@
 
 ### Scoring rules, market makers, and pools as composable transducers
 
-Peter Cotton · *Working draft v0.3* · 2026
+Peter Cotton · *Working draft v0.4* · 2026
 
 ---
 
@@ -19,9 +19,9 @@ classical convex duality: proper scores from convex entropies, cost-function
 market makers by Fenchel conjugacy, the two opinion pools as the two
 Kullback-Leibler barycenters, merged market makers as the infimal
 convolution of risk sharing. The benefit of composing is illustrated by the
-simplest two-stage example, where stagewise equilibrium dominates conformal
-prediction: a residual market collects the conformal predictor's information
-gap $I(R;X)$ as bankroll growth while its marginal coverage stays exact.
+simplest two-stage example: a residual market collects the conformal
+predictor's information gap $I(R;X)$ as bankroll growth while its marginal
+coverage stays exact.
 
 ---
 
@@ -135,7 +135,8 @@ convolution of $f$ and $g$ is
 $(f\,\square\,g)(x)=\inf_y f(y)+g(x-y)$. "Closed proper convex" is used in the
 standard sense [@rockafellar1970convex]. Differentiable statements are on the
 relative interior of $\Delta$, with extended-real values allowed on the
-boundary.
+boundary; subgradients on $\Delta$ act on its tangent space and are defined
+up to addition of multiples of $\mathbf 1$.
 
 ## 3. One potential, three mechanisms
 
@@ -194,8 +195,9 @@ $S(p,i)=\log p_i$ on the relative interior, with $-\infty$ on the boundary.
 
 **Theorem 2 (scoring rule to market maker; @hanson2007logarithmic,
 @abernethy2013efficient).** *Let $R$ be closed, proper, and strictly convex on
-$\Delta$ (in the sequel, $R=G$, the generator of Theorem 1 read as a
-regulariser), and define*
+$\Delta$, extended by $+\infty$ off $\Delta$ so that $C=R^*$ below is the
+Fenchel conjugate on $\mathbb R^n$ (in the sequel, $R=G$, the generator of
+Theorem 1 read as a regulariser), and define*
 
 $$C(\mathbf q)=\sup_{p\in\Delta}\big(\langle p,\mathbf q\rangle - R(p)\big).$$
 
@@ -266,7 +268,7 @@ $$V(p)=\inf\{p\,r_1+(1-p)\,r_2:\ r_1r_2= k\}
       =2\sqrt{k\,p(1-p)},$$
 
 by the AM-GM inequality, with the infimum attained at
-$r_1=\sqrt{k(1-p)/p}$. $V$ is concave; reading $R(p)=-V(p)$ as the
+$r_1=\sqrt{k(1-p)/p}$, $r_2=\sqrt{kp/(1-p)}$. $V$ is concave; reading $R(p)=-V(p)$ as the
 regulariser of Theorem 2 gives a maker whose worst-case loss is the range of
 $R$ on $[0,1]$, namely $\sqrt k$ (between $p=\tfrac12$ and the endpoints):
 the geometric mean of the initial reserves. The corresponding generator is
@@ -338,7 +340,9 @@ equilibrium at fractional stakes, and degeneracy as the stake fraction
 vanishes, and beyond that the equilibrium theory is open.
 
 **Ensemble (Proposition 5: the two pools are the two KL barycenters).** *Let
-$q_1,\dots,q_m$ be densities and $w_i\ge0$, $\sum w_i=1$. Then the linear pool
+$q_1,\dots,q_m$ be densities with respect to a common dominating measure,
+$w_i\ge0$, $\sum w_i=1$, and for the second display assume
+$0<\int\prod_i q_i^{w_i}<\infty$. Then the linear pool
 minimizes the forward divergences and the logarithmic pool the reverse:*
 
 $$\textstyle\arg\min_p \sum_i w_i\,\mathrm{KL}(q_i\Vert p)=\sum_i w_i q_i,
@@ -406,8 +410,9 @@ price; whatever structure remains in the residual is the second stage's
 edge. The corrected forecast composes the two reports.
 
 **Proposition 7 (the correction is a multiplicative reweighting).** *Let
-$F_1$ be strictly increasing with density $p_1>0$ and let the residual
-market's consensus be a distribution $H$ on $[0,1]$ with density $g$. The
+$F_1$ be strictly increasing onto $(0,1)$ with density $p_1>0$ and let the
+residual market's consensus be a distribution $H$ on $[0,1]$ with $H(0)=0$,
+$H(1)=1$ and density $g$. The
 composed forecast $F=H\circ F_1$ has density*
 
 $$p(y) \;=\; p_1(y)\, g\!\big(F_1(y)\big),$$
@@ -432,37 +437,57 @@ the first and sell it to the second (§9).
 **Spec.** Serialise a pipeline to data and search over it; the mechanism
 analogue is a market over pipelines. Also open.
 
-**Stagewise play.** Call a profile of reports a *stagewise equilibrium* if no
-participant gains by a deviation confined to a single stage, all other
-stages' reports held fixed. This is the pipeline version of the
-myopic-trader assumption standard in the market-scoring-rule literature
-[@hanson2007logarithmic; @chen2010newunderstanding].
+**Stagewise play.** Call a profile of reports a *stagewise equilibrium* if
+no participant gains by a deviation confined to a single stage, all other
+stages' reports held fixed *and the inputs and settlement transforms of
+every other stage clamped at their pre-deviation values*. This is the
+pipeline version of the myopic-trader assumption standard in the
+market-scoring-rule literature [@hanson2007logarithmic;
+@chen2010newunderstanding]. The clamp is not cosmetic: a stage's output is
+wired into later settlement transforms (the residual point $u=F_1(y)$, the
+rank vector of §7), so an upstream deviation moves downstream payoffs even
+when every downstream report is held fixed.
 
-**Proposition 8 (single-stage guarantees compose under stagewise play).**
-*Suppose each stage of a pipeline, taken in isolation with its inputs fixed,
-makes the truthful report a best response: strict propriety for externally
-funded scoring stages (Theorem 1), the sequential scoring of Theorem 2 for
-market stages, the price-taking pot-split analysis of the companion paper
-for parimutuel stages, and the residual score of Proposition 7 for
-correction stages. Then truthful reporting at every stage is a stagewise
-equilibrium of the pipeline.*
+**Proposition 8 (single-stage guarantees compose under clamped stagewise
+play).** *Suppose each stage of a pipeline, taken in isolation with its
+inputs and settlement transform fixed, makes the truthful report a best
+response: strict propriety for externally funded scoring stages (Theorem 1),
+the sequential scoring of Theorem 2 for market stages, the price-taking
+pot-split analysis of the companion paper for parimutuel stages, and the
+residual score of Proposition 7 for correction stages. Then truthful
+reporting at every stage is a stagewise equilibrium of the pipeline.
+If moreover no participant reports to a stage upstream of one in which they
+hold a position (disjoint stage membership suffices), the clamp is vacuous
+for every feasible deviation, and truthful reporting survives unrestricted
+single-stage deviations.*
 
-**Proof.** A deviation confined to stage $k$ changes the deviator's payoff
-only through stage $k$'s transfer map, since every other stage's reports,
-and hence its inputs, are held fixed; the stage-$k$ hypothesis then makes
-the truthful report a best response. $\blacksquare$
+**Proof.** With the other stages' inputs and transforms clamped, a deviation
+confined to stage $k$ changes the deviator's payoff only through stage $k$'s
+transfer map, and the stage-$k$ hypothesis makes the truthful report a best
+response. For the second claim: a stage-$k$ deviation moves stage $k$'s
+transfer and, through stage $k$'s output, transfers strictly downstream of
+$k$; a deviator with no downstream position collects none of the latter, so
+the propagation is payoff-irrelevant to them. $\blacksquare$
 
-What the concept excludes is cross-stage deviation: a downstream stake is a
+Proposition 8 is not a Nash equilibrium of the composed game. When the same
+participant reports upstream and holds exposure downstream, the deviation
+propagates through the settlement transform, and a downstream stake is a
 derivative written on an upstream settlement, with the attendant incentives
 to distort the underlying [@kumar1992futures; @jarrow1994derivative;
-@hanson2009manipulator; @ostrovsky2012information]. The note works under
-stagewise play throughout.
+@hanson2009manipulator; @ostrovsky2012information]. Disjoint membership,
+zero downstream exposure for upstream reporters, or exogenous freezing of
+the settlement transforms restore the proposition; the dynamic game without
+them is outside the note's scope.
 
 ## 5. Betting against a conformal predictor
 
 The introduction claimed that split-conformal prediction is a degenerate
 composition and that running the residual stage as a market collects what
-the degeneracy wastes. This section proves it. A point predictor leaves a
+the degeneracy wastes. This section proves it. The analysis is
+population-level throughout: laws are continuous, the ranking uses the true
+marginal CDF, and the finite-sample, exchangeability-based conformal
+construction enters only through the measurement caveat at the end of the
+section. A point predictor leaves a
 residual $R$; conformalization re-levels its marginal law. Write $U=F_R(R)$
 for the PIT of the residual, $F_R$ the marginal CDF of $R$, so $U$ is
 marginally uniform whatever the model (Proposition 4), and let
@@ -476,18 +501,19 @@ $$I(R;X)\;=\;\mathbb E_X\,\mathrm{KL}\big(P_{R\mid X}\,\Vert\,P_R\big)
 The residual stage is the parimutuel of the companion paper run on the rank
 scale. Two facts about that pool are needed.
 
-**Lemma 1 (pool payoff).** *Normalise the pool to one and let the crowd's
-aggregate stake have density $q$ on the outcome space. An infinitesimal,
-price-taking entrant who stakes unit wealth with density $b$ holds, after
-outcome $u$, the wealth $W(u)=b(u)/q(u)$.*
+**Lemma 1 (pool payoff).** *Let the crowd's aggregate stake have density $q$
+on the outcome space, normalised to one, and let a price-taking entrant
+stake $\epsilon\,b(u)\,\mathrm du$ alongside it. As $\epsilon\to0$ the
+entrant's gross payoff per unit of their own wealth, after outcome $u$, is
+$W(u)=b(u)/q(u)$.*
 
 **Proof.** Bin the outcome axis at width $\delta$. The crowd stakes
-$q(u)\delta$ of the unit pool on the bin at $u$, the entrant $b(u)\delta$.
+$q(u)\delta$ on the bin at $u$, the entrant $\epsilon\,b(u)\delta$.
 If the outcome lands there the pool is split in proportion to stake, so the
-per-unit payoff is $1/(q(u)\delta)$ and the entrant collects
-$b(u)\delta\cdot 1/(q(u)\delta)=b(u)/q(u)$. The bin width cancels and the
-limit is the Radon-Nikodym derivative $\mathrm db/\mathrm dq$.
-$\blacksquare$
+per-unit payoff is $1/(q(u)\delta)$ up to $O(\epsilon)$, and the entrant
+collects $\epsilon\,b(u)\delta\cdot 1/(q(u)\delta)=\epsilon\,b(u)/q(u)$: per
+unit of entrant wealth, $b(u)/q(u)$. The bin width cancels and the limit is
+the Radon-Nikodym derivative $\mathrm db/\mathrm dq$. $\blacksquare$
 
 The cancellation is what makes a lottery on a point outcome well posed: the
 pool divides two vanishing quantities and the ratio survives, with no
@@ -543,7 +569,8 @@ takes no rake, so any conditional information at all is pure profit.
 
 **Example (Gaussian residual).** Let $(R,X)$ be jointly Gaussian with
 correlation $\rho$, marginally $R\sim N(0,\sigma_R^2)$,
-$X\sim N(0,\sigma_X^2)$; any misspecified linear predictor produces this.
+$X\sim N(0,\sigma_X^2)$: the canonical case, left by a linear predictor
+whose residual retains correlation with the input.
 The informed entrant's report is
 $R\mid X=x\sim N(\rho(\sigma_R/\sigma_X)x,\,(1-\rho^2)\sigma_R^2)$, and with
 $m(x)=\rho(\sigma_R/\sigma_X)x$, $s^2=(1-\rho^2)\sigma_R^2$,
@@ -572,14 +599,15 @@ entering such a pool is the participant that prices flat in $X$, and Theorem
 estimated rather than read off. Two routes:
 
 **Proposition 10 (certified lower bound).** *Let $\mathrm{HSIC}(U,X)$ be
-computed with a bounded product kernel, $k\le K$. Then
+computed with a product kernel satisfying $\sup_z k(z,z)\le K$. Then
 $I(R;X)\ \ge\ \mathrm{HSIC}(U,X)/(2K)$.*
 
-**Proof.** $\mathrm{MMD}=\mathrm{HSIC}^{1/2}$ is the integral probability
+**Proof.** Write $\mathrm{TV}=\sup_A|P(A)-Q(A)|$ for the total variation
+between the joint law and the product of marginals.
+$\mathrm{MMD}=\mathrm{HSIC}^{1/2}$ is the integral probability
 metric over the unit ball of the tensor RKHS, whose witnesses satisfy
-$\lVert f\rVert_\infty\le\sqrt K$, so
-$\mathrm{MMD}\le 2\sqrt K\,\mathrm{TV}$ between the joint law and the
-product of marginals. Pinsker's inequality [@cover2006] gives
+$\lVert f\rVert_\infty\le\sqrt K$, so $\mathrm{MMD}\le 2\sqrt K\,\mathrm{TV}$.
+Pinsker's inequality in the same convention [@cover2006] gives
 $I(U;X)=\mathrm{KL}\ge 2\,\mathrm{TV}^2$, and $I(U;X)=I(R;X)$. Combining,
 $I(R;X)\ge 2(\mathrm{MMD}/2\sqrt K)^2=\mathrm{HSIC}/(2K)$. $\blacksquare$
 
@@ -593,15 +621,18 @@ does not.
 **Proposition 11 (anytime-valid test and consistent estimate).** *At round
 $t$ choose a betting density $b_t(\cdot\mid x)\ge0$ with
 $\int_0^1 b_t(u\mid x)\,\mathrm du=1$ from the history, and set
-$W_t=\prod_{s\le t}b_s(U_s\mid X_s)$. (i) Under $H_0:U\perp X$, $(W_t)$ is a
+$W_t=\prod_{s\le t}b_s(U_s\mid X_s)$. (i) Under the null of conditional rank
+uniformity, $U_t\mid X_t,\mathcal F_{t-1}\sim\mathrm{Uniform}(0,1)$, the
+process $(W_t)$ is a
 non-negative martingale with mean one, so
 $\Pr(\sup_t W_t\ge1/\alpha)\le\alpha$ [@ville1939]: rejecting when
-$W_t\ge1/\alpha$ is an anytime-valid level-$\alpha$ test of conditional
-miscoverage. (ii) If the rounds are iid and $\log b_t\to\log g$ uniformly
+$W_t\ge1/\alpha$ is an anytime-valid level-$\alpha$ test of conditional rank
+uniformity, that is, of conditional dependence of the residual rank on the
+input. (ii) If the rounds are iid and $\log b_t\to\log g$ uniformly
 with a bounded envelope, then $t^{-1}\log W_t\to I(R;X)$ almost surely.*
 
-**Proof.** (i) Under $H_0$, $U_t\mid X_t$ is uniform and independent of the
-past, so each factor has conditional mean $\int_0^1 b_t=1$; Ville's
+**Proof.** (i) Under the null, each factor has conditional mean
+$\int_0^1 b_t=1$; Ville's
 inequality applies to the resulting martingale. (ii) Write
 $\log b_s=\log g+(\log b_s-\log g)$: the second terms vanish in Cesàro mean
 by uniform convergence, and the average of the first tends almost surely to
@@ -634,8 +665,9 @@ sample-based elicitation result the algebra needs
 **Proposition 12 (sample-based elicitation; @cotton2026pointcloud, Thms
 1-2).** *Score the bandwidth-$h$ kernel density estimate of a submitted
 cloud by the logarithmic score. Settled at the raw outcome, the optimal
-cloud is drawn from a deconvolution of the belief (for Gaussian beliefs and
-kernels, the belief with $h^2$ removed from the variance). Settled at the
+cloud is drawn from a deconvolution of the belief when one exists (for
+Gaussian beliefs and kernels with belief variance exceeding $h^2$, the
+belief with $h^2$ removed from the variance). Settled at the
 outcome jittered by the same kernel, truthful sampling is optimal, and
 strictly so whenever the kernel's characteristic function is nonvanishing on
 a dense set: the smoothing channel is injective on laws.*
@@ -679,16 +711,19 @@ c\big(F_1(x_1),\dots,F_d(x_d)\big),$$
 with $c$ the copula density on $[0,1]^d$.
 
 **Proposition 13 (the log score factors).** *For a joint report assembled
-from margin reports $f_i$ and a copula report $c$,*
+from margin reports $f_i$ and a rank-stage report $c$, a density on
+$[0,1]^d$,*
 
 $$\log p(x)\;=\;\sum_{i=1}^d\log f_i(x_i)\;+\;\log c(u),
 \qquad u_i=F_i(x_i),$$
 
-*so a pipeline of $d$ margin stages and one copula stage settled on the rank
+*so a pipeline of $d$ margin stages and one rank stage settled on the rank
 vector $u$ pays every stage a logarithmic score of its own object, and the
-chain's log score is the sum. Given the margin reports, the copula stage's
-score is strictly proper for the law of the rank vector; that law is the
-copula of the joint iff the margins are correct.*
+chain's log score is the sum. Given the margin reports, the rank stage's
+score is strictly proper for the law of the rank vector. That law has
+uniform margins, and is the copula of the joint, iff the margin reports are
+correct; keeping the rank stage's report class as arbitrary densities on
+$[0,1]^d$ keeps the stage closed under wrong upstream reports.*
 
 **Proof.** Take logarithms in Sklar's density factorization; the summands
 are exactly the stage scores. Strict propriety of the rank stage is Theorem
@@ -699,11 +734,12 @@ applied to the true joint law. $\blacksquare$
 This is the two-stage estimation logic of inference functions for margins
 [@joe1997multivariate], and the factorization underlies out-of-sample
 copula comparison [@diks2010copula]; here it is read as a market design.
-The copula stage is the multivariate Residual operator: under correct
+The rank stage is the multivariate Residual operator: under correct
 margins the rank vector has uniform margins and its joint law is the
 dependence structure alone, so a rank-settled market elicits dependence
-separately from level, and is invariant to any recalibration of the
-margins. The microprediction platform ran exactly this factoring: alongside
+separately from level. When the margins are correct the settled object is
+invariant to monotone transformations of the coordinates; the settlement
+transform itself moves with the reported margin maps. The microprediction platform ran exactly this factoring: alongside
 univariate z-streams it operated bivariate and trivariate streams in which
 community-implied percentiles were embedded by a space-filling curve into
 one settled scalar [@cotton2022microprediction], a copula market in
@@ -730,11 +766,18 @@ form.
    stage-level zeros, and is not the invariant. The invariant that can fail
    is the edge a truthful participant holds over the price, $D_G(q,\pi)$.
    For the logarithmic score the edge is $\mathrm{KL}(q\Vert\pi)$ and the
-   question is closed by the data-processing inequality: an interface
+   data-processing inequality settles it: an interface
    channel cannot increase it, and preserves it exactly when the channel is
-   sufficient for the pair [@csiszar1967information]. Open is the same
-   statement for the Bregman edge of a general generator $G$, and the rate
-   at which edge leaks through an approximately non-sufficient interface.
+   sufficient for the pair [@csiszar1967information]. No such inequality
+   holds for a general Bregman edge. For the quadratic generator, merging
+   the first two of three outcomes sends
+   $\pi=(\tfrac13,\tfrac13,\tfrac13)$ and
+   $q=(\tfrac{13}{30},\tfrac{13}{30},\tfrac2{15})$, with
+   $D_G(q,\pi)=\tfrac3{50}$, to a pair with
+   $D_G(qK,\pi K)=\tfrac2{25}$: coarsening increased the Brier edge. Open:
+   characterize the generators and channels for which
+   $D_G(qK,\pi K)\le D_G(q,\pi)$, and quantify the contraction or
+   amplification of edge through a given interface.
 2. *Residual markets.* Proposition 7 gives the single-step correction; a
    chain of residual markets is stagewise boosting with wealth as the
    learning rate. Open: the microstructure (who funds each residual pot, and
@@ -749,7 +792,8 @@ form.
    residual stage's informed entrants [@jha2023financial]. The
    distributional version is the gap.
 3. *Copula markets.* A rank-settled stage elicits dependence separately
-   from margins (Proposition 13) and is invariant to margin recalibration.
+   from margins (Proposition 13), and under correct margins its settled
+   object is invariant to monotone transformations of the coordinates.
    The racetrack's win and exotic pools price margins and joint orders in
    parallel books on a finite outcome space, with consistency left to
    arbitrage and the Harville map as the bridge [@harville1973assigning;

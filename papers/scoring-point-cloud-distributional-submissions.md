@@ -2,7 +2,7 @@
 
 ### The nearest-the-pin parimutuel, jittered outcomes, and the heat ladder
 
-Peter Cotton · *Working draft v0.4* · 2026
+Peter Cotton · *Working draft v0.5* · 2026
 
 ---
 
@@ -20,7 +20,8 @@ smooth the submission. More generally, composing a proper score with a fixed
 Markov kernel preserves propriety, and strict propriety for the original
 report is recovered exactly
 when the induced channel is injective; for convolution kernels this is
-equivalent to the characteristic function having dense nonzero support. For
+equivalent to the set where the characteristic function is nonzero being
+dense. For
 Gaussian kernels, repeating the repaired score over a ladder of smoothing
 scales decomposes log-score regret, via the relative de Bruijn identity, into
 Fisher-divergence bands plus a coarse-scale KL term. We also describe a
@@ -131,7 +132,9 @@ density $r$ returns exactly one whatever $z$ realises, so a participant
 holding fraction $1-b$ in cash and $b$ on submission $q$ holds total exposure
 $\tilde q = (1-b)\,r + b\,q$, and the classical argument applies to
 $\tilde q$: the log-optimal investor's total exposure is $p$, whatever the
-odds. Inverting the accounting, the optimal submission is
+odds. Equivalently, optimise over the exposure $\tilde q\ge(1-b)r$ directly
+and recover the submission as $q=(\tilde q-(1-b)r)/b$. Inverting the
+accounting, the optimal submission is
 
 $$q^\ast_b(z) \;=\; \Big[\frac{p(z)}{\lambda} - \frac{1-b}{b}\,r(z)\Big]_+,$$
 
@@ -216,7 +219,8 @@ attained), and $\Delta$ above is only the loss of
 the truthful report relative to the unattainable ideal $q=p^*$; the gap to the
 attainable optimum is $\Delta-\inf_{\rho\in\mathcal P}
 \mathrm{KL}(p^*\Vert T_h\rho)$, which can vanish in degenerate cases (for a
-point-mass belief the truthful cloud is optimal).*
+point-mass belief and a centered kernel whose density is maximized at the
+origin, the truthful cloud is optimal).*
 
 *(iii) Gaussian closed form: $p^*=N(\mu,\Sigma)$, $\varphi_h=N(0,h^2I)$. The
 deconvolution exists iff $\Sigma-h^2I\succeq 0$, and then
@@ -242,7 +246,8 @@ $1-\mathrm{Re}\,\hat\varphi(2\omega)\le4\,(1-\mathrm{Re}\,\hat\varphi(\omega))$
 propagates the equality outward), so $\varphi_h$ is the point mass at zero. (ii) KL is jointly
 lower semicontinuous and strictly convex in its second argument where finite,
 and $T_h\mathcal P$ is convex, so the attainable optimum is the KL projection
-when attained; the point-mass example ($p^*=\delta_\mu$: the truthful cloud
+when attained; the point-mass example ($p^*=\delta_\mu$ with a kernel
+maximized at the origin: the truthful cloud
 maximises $(T_h\rho)(\mu)$) shows the gap to the attainable optimum can be
 zero. (iii) Gaussians: convolution adds covariances; the KL between
 $N(0,\tau^2)$ and $N(0,\tau^2+h^2)$ is the stated expression; Taylor expansion
@@ -288,8 +293,9 @@ $\rho=\rho'$ by the uniqueness theorem. ($\Rightarrow$) If $\hat\varphi$
 vanishes on an open ball $B$ (with $0\notin B$, since $\hat\varphi(0)=1$),
 take $\psi\in C_c^\infty(B)$, $\psi\neq0$, and set
 $\hat g(\omega)=\psi(\omega)+\overline{\psi(-\omega)}$, so that $g$ is a real
-Schwartz function (a signed integrable function with zero integral,
-$\int g=\hat g(0)=0$) with $\hat g$ supported where $\hat\varphi=0$. Choose a
+Schwartz function (a signed integrable function with zero integral: $B$
+avoids the origin, so $\int g=\hat g(0)=0$) with $\hat g$ supported where
+$\hat\varphi=0$. Choose a
 base density $p$ with tails heavier than Schwartz decay (Cauchy), so
 $|\epsilon g|\le p$ pointwise for small $\epsilon>0$. Then
 $q=p+\epsilon g$ is a probability density distinct from $p$, and the
@@ -304,7 +310,11 @@ injective (nonvanishing characteristic functions); the uniform kernel is also
 fine (sinc zeros are isolated, hence the nonvanishing set is dense);
 band-limited kernels fail (e.g. Fejér-type kernels, whose characteristic
 function vanishes on a half-line — two beliefs agreeing on low frequencies
-become indistinguishable).
+become indistinguishable). For compactly supported kernels Lemma 1 supplies
+the injectivity, but the log-score statement then requires the extended-real
+convention and a report class on which the expected score is well defined;
+the Gaussian case avoids the nuisance because every smoothed report is
+strictly positive.
 
 **Theorem 2 (kernel-channel properness).** *Let $S$ be a scoring rule, $K$ a
 Markov kernel with push-forward $T_K$ on laws, and define*
@@ -488,11 +498,16 @@ Lemma 1. $\blacksquare$
 **Corollary.** *(i) Each rung (or band), hence the tower, is budget-balanced
 in the additive stake-weighted form. (ii) Each level score is strictly proper
 for the cloud law (Theorem 2) and each band score is strictly proper (the
-Proposition), so truthful submission is optimal in the small-stake,
-risk-neutral limit; the multiplicative pot split of §2 requires a log-wealth
-(Kelly) model stated separately. (iii) Band payments purchase (integrated)
-Fisher divergence, which is Hyvärinen-scored shape, invariant to the
-normalization of the submission; the top level pays
+Proposition), so truthful submission is optimal for a risk-neutral
+participant at any stake short of the whole pool: the own score enters the
+stake-weighted transfer with coefficient $s_i(1-s_i/S)>0$. The small-stake
+caveat belongs to the multiplicative pot split of §2, which requires the
+log-wealth (Kelly) model stated separately. (iii) Band payments purchase
+(integrated) Fisher divergence, the Hyvärinen-scored shape of the smoothed
+submission; the regret is insensitive to multiplicative constants in the
+smoothed density, though the implemented band score remains a difference of
+normalized log scores unless the report class is widened to unnormalized
+densities. The top level pays
 $\mathrm{KL}(p^*_T\Vert\rho_T)$, which at mode-connecting scales carries the
 between-mode mass that score matching is blind to [@wenliang2020blindness;
 @zhang2022healing; @koehler2023statistical]. Under the level schedule the band
@@ -544,7 +559,12 @@ few thousand directions, and equals the CRPS exactly in 1-D
 
 **The projection-scored pool.** For each direction $u$, compute the 1-D CRPS
 of participant $i$'s projected cloud at $\langle u, z\rangle$ and average over
-$u$: the sliced energy score $\mathrm{ES}_i$. The score is negatively
+$u$: the sliced energy score $\mathrm{ES}_i$. In the population idealization,
+replacing the projected cloud by its sampling law, this is the energy score
+and hence strictly proper; for a finite cloud the ordinary empirical CRPS is
+the plug-in score for the empirical distribution and is not, without a
+fair-score correction, the finite-$m$ elicitation rule for iid sampling from
+the belief. The score is negatively
 oriented (smaller is better), so the incentive-compatible wager is the
 additive stake-weighted transfer of §5 driven by its negation,
 $\Delta W_i = s_i\big((-\mathrm{ES}_i) - \overline{(-\mathrm{ES})}\big)$:
@@ -586,16 +606,16 @@ device:
   heuristic.
 
 The projection version is not an approximation bolted onto the mechanism; it
-is the *native* high-dimensional form of a density-pot-split parimutuel whose
-proper score (the energy score) is, by construction, an average over random
-projections.
+is the *native* high-dimensional form of the additive proper-score wagering
+route, with the energy score represented, by construction, as an average of
+one-dimensional CRPS scores over random projections.
 
 ## 7. Two routes to high-dimensional scoring
 
 Step back from the pool to the statistical problem underneath: how do you
 score a joint distributional forecast in $\mathbb{R}^d$ when $d$ is large
 relative to the data you can condition on? This is exactly the regime
-($p > n$) in which the naïve held-out Gaussian likelihood, the density-based
+($d > n$) in which the naïve held-out Gaussian likelihood, the density-based
 score, becomes unreliable, because the estimated covariance is rank-deficient
 and its inverse is nonsense.
 
