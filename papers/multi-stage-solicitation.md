@@ -1,6 +1,6 @@
 # Multi-Stage Solicitation
 
-### Chained elicitation markets, and a report on the microprediction platform
+### Chained elicitation markets, and lessons from the microprediction platform
 
 Peter Cotton · *Working draft v0.1* · 2026
 
