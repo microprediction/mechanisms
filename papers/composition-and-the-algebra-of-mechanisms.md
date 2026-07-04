@@ -40,17 +40,21 @@ comparing favourably with head-to-head markets [@atanasov2017distilling],
 with reputation rather than wealth as the threaded state. In every case,
 one pool and one internal aggregate.
 
-Chained mechanisms are old and live in adjacent markets, priced in points
-rather than distributions. Two-settlement electricity markets settle
-real-time deviations from day-ahead positions, so the second stage prices
-the residual of the first, and convergence bidding pays financial
-forecasters for correcting the day-ahead consensus
-[@cramton2017electricity; @jha2023financial]. Racetrack totes have priced
-margins and joint finishing orders in separate simultaneous pools since
-1931: the win pool carries the marginals, the exotic pools the dependence,
-and the consistency between them supported documented arbitrage
-[@harville1973assigning; @hausch1981efficiency]. What is scarce is the
-composed design for *distributional* forecasts. The only live, long-running
+Adjacent markets have long run pieces of the structure, in point prices
+rather than distributions, and the pieces differ. The racetrack tote is
+parallel, not chained: win and exotic pools have priced margins and joint
+finishing orders in separate simultaneous books since 1931, neither
+settling on the other's output, with consistency between them left to
+arbitrage [@harville1973assigning; @hausch1981efficiency]; index and
+single-name option books price dependence the same way. Two-settlement
+electricity markets contain an actual chain, though not where the name
+suggests: the real-time stage trades the same commodity with deviations
+from day-ahead positions in the settlement formula, while a virtual bid is
+an instrument written directly on the first stage's output, paying the
+day-ahead-to-real-time spread, and financial forecasters demonstrably
+profit by correcting the day-ahead consensus [@cramton2017electricity;
+@jha2023financial]. What is scarce is the composed design for
+*distributional* forecasts. The only live, long-running
 platform we are aware of that composes past one stage is monteprediction, a
 weekly self-funding pool over million-scenario joint submissions in eleven
 dimensions, with wealth threaded across rounds since January 2024
@@ -742,19 +746,22 @@ form.
    it downstream, and whether the iterated correction converges to the true
    conditional law as boosting does. Split-conformal prediction is the
    one-participant degenerate case, with its rent $I(R;X)$ as the value left
-   on the table (Theorem 9). The two-settlement electricity market is the
-   live analogue in point prices, with convergence bidders as the residual
-   stage's informed entrants [@jha2023financial]; the distributional version
-   is the gap.
+   on the table (Theorem 9). The closest live analogue is in point prices:
+   a virtual bid in a two-settlement electricity market is written on the
+   day-ahead stage's pricing error, and its convergence bidders are the
+   residual stage's informed entrants [@jha2023financial]. The
+   distributional version is the gap.
 3. *Copula markets.* A rank-settled stage elicits dependence separately
    from margins (Proposition 13) and is invariant to margin recalibration.
-   The racetrack's win and exotic pools are the live analogue on a finite
-   outcome space, margins and joint orders in separate simultaneous pools,
-   with the Harville map as the consistency condition between them
-   [@harville1973assigning; @hausch1981efficiency]. Open: the equilibrium
-   when the same participants trade margin and copula stages, and the
-   choice of embedding for $d\ge2$, the space-filling curves as deployed
-   against the random one-dimensional projections of the companion paper.
+   The racetrack's win and exotic pools price margins and joint orders in
+   parallel books on a finite outcome space, with consistency left to
+   arbitrage and the Harville map as the bridge [@harville1973assigning;
+   @hausch1981efficiency]; the rank-settled stage differs by construction,
+   chaining through the reported margins so the dependence market cannot
+   disagree with them. Open: the equilibrium when the same participants
+   trade margin and copula stages, and the choice of embedding for
+   $d\ge2$, the space-filling curves as deployed against the random
+   one-dimensional projections of the companion paper.
 
 ## References
 
