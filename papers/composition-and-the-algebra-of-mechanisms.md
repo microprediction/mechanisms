@@ -11,10 +11,10 @@ Peter Cotton · *Working draft v0.3* · 2026
 Scoring rules, market makers, parimutuels, and opinion pools compose when
 each stage is a stateful transducer over one message type, and the message
 deployed contests actually collect is a finite cloud of samples. This note
-provides sample-based elicitation inside that algebra: jittered settlement
-makes cloud submission strictly proper, the composition operators act on
-clouds pointwise, and joint laws factor into margin stages plus a copula
-stage settled on the rank vector. The single-stage theory underneath is
+provides sample-based elicitation inside that algebra: the companion paper's
+jittered settlement makes cloud submission strictly proper; here the
+composition operators act on clouds pointwise, and joint laws factor into
+margin stages plus a copula stage settled on the rank vector. The single-stage theory underneath is
 classical convex duality: proper scores from convex entropies, cost-function
 market makers by Fenchel conjugacy, the two opinion pools as the two
 Kullback-Leibler barycenters, merged market makers as the infimal
@@ -52,19 +52,20 @@ other's output, consistency left to arbitrage [@harville1973assigning;
 @hausch1981efficiency]. Reuse of a market's *probabilistic* output, a
 distribution, percentile, or rank emitted by one stage becoming the message
 or the settlement transform of the next, is scarce, and is the chain this
-note studies. The only live, long-running
-platform we are aware of that composes past one stage is monteprediction, a
-weekly self-funding pool over million-scenario joint submissions in eleven
-dimensions, with wealth threaded across rounds since January 2024
-[@cotton2024monteprediction]. The full chain ran on the microprediction
-platform [@cotton2022microprediction]: streams spawned z-streams of
-community percentiles, and bivariate and trivariate dependence streams
-priced copulas, so calibration and dependence were themselves the subject of
-further games. The stacked-lottery design behind it was presented at MIT
-CSAIL in 2020 [@cotton2020lottery, slides 29-31]; that platform is retired.
+note studies. Its one deployed instance ran on the microprediction platform
+[@cotton2022microprediction]: streams spawned z-streams of community
+percentiles, and bivariate and trivariate dependence streams priced copulas,
+so calibration and dependence were themselves the subject of further games;
+the stacked-lottery design behind it was presented at MIT CSAIL in 2020
+[@cotton2020lottery, slides 29-31], and the platform is retired. The nearest
+live thing is monteprediction, a weekly self-funding pool over
+million-scenario joint submissions in eleven dimensions with wealth threaded
+across rounds since January 2024 [@cotton2024monteprediction]: the
+Sequentialise operator of §4 in production, one stage repeated, not a
+chain.
 
-Chaining stages raises the question of what each stage elicits, and the
-answer moves under transformation of the message or the outcome. Scoring a
+What a stage elicits moves under transformation of its message or its
+outcome. Scoring a
 kernel-smoothed submission at the raw outcome elicits the deconvolution of
 the belief rather than the belief; jittering the settlement by the smoothing
 kernel repairs it [@cotton2026pointcloud]. This is a property of a single
@@ -77,7 +78,8 @@ direction. Split-conformal is itself a composition, a point predictor chained
 into a rank-based calibration stage, but a degenerate one: the pool step is
 skipped by fiat, all credit assigned to a single model in advance, and the
 calibration stage prices the residual flat in the input. The wasted log
-score of a single-shape conformal predictor is the mutual information
+score of a single-shape conformal predictor, one that applies the same
+residual law at every input, is the mutual information
 $I(R;X)$ between residual and input, and
 an entrant to a parimutuel residual pool who conditions on the input collects
 it as bankroll growth at exactly that rate (Theorem 9).
@@ -109,12 +111,12 @@ Cross-stage strategy is outside the note's scope.
 
 ## 2. Preliminaries
 
-**The finite setting.** Sections 3 and 4 work with a finite outcome set
-$\{1,\dots,n\}$ and reports $p$ in the probability simplex $\Delta$. The
-continuous theory uses proper scoring rules on probability measures (log
-score, CRPS, energy and kernel scores) or discretized approximations, and
-the finite statements below transfer with the usual measure-theoretic care;
-the one place where the transfer is not routine is the probability integral
+**The finite setting.** Section 3 works with a finite outcome set
+$\{1,\dots,n\}$ and reports $p$ in the probability simplex $\Delta$; from
+the aggregation operators of §4 onward the paper moves to the continuous
+setting, densities and distribution functions on $\mathbb R$ or $[0,1]^d$.
+The finite statements transfer with the usual measure-theoretic care; the
+one place where the transfer is not routine is the probability integral
 transform, treated separately in Proposition 4.
 
 **Scores.** A scoring rule assigns $S(p,i)\in\mathbb R\cup\{-\infty\}$ to a
@@ -233,9 +235,9 @@ $\alpha\mathbf 1$ costs exactly $\alpha$, its sure payout.
 (iii) The maker collects $C(\mathbf q)-C(\mathbf 0)$ and pays $q_i$, so
 $\mathrm{loss}_i=q_i-C(\mathbf q)+C(\mathbf 0)$. By Fenchel-Moreau,
 $\sup_{\mathbf q}\big(\langle e_i,\mathbf q\rangle - C(\mathbf q)\big)
-=R^{**}(e_i)=R(e_i)$, and $C(\mathbf 0)=\sup_p -R(p)=-\inf_p R(p)$. The final
-inequality holds because $e_i\in\Delta$; for convex $R$ the supremum over
-$\Delta$ is attained at an extreme point, so it is typically an equality.
+=R^{**}(e_i)=R(e_i)$, and $C(\mathbf 0)=\sup_p -R(p)=-\inf_p R(p)$: by
+Fenchel-Moreau the first bound is the exact supremum of the loss over
+$\mathbf q$. The final inequality holds because $e_i\in\Delta$.
 (iv) Lagrange: maximising $\langle p,\mathbf q\rangle-b\sum p_i\log p_i$
 subject to $\sum p_i=1$ gives $q_i-b(\log p_i+1)=\lambda$, so
 $p_i\propto e^{q_i/b}$, and substituting back yields
@@ -294,12 +296,8 @@ complements, and does not replace, a proper score that rewards sharp
 conditional distributions. Conformal prediction lives on exactly this
 distinction: a split-conformal predictor achieves marginal coverage by
 construction, the uniform-PIT guarantee, while free to ignore the
-conditional information in the input. For a single-shape conformal predictor
-the wasted log score equals the mutual
-information $I(R;X)$ between residual and input, and an entrant to the
-parimutuel pool of the companion paper who conditions on $X$ collects it as
-bankroll growth at exactly that rate; the flat-in-$X$ conformal report is the
-break-even crowd (Theorem 9). Second, for discrete forecasts the randomized PIT
+conditional information in the input; §5 prices the gap (Theorem 9).
+Second, for discrete forecasts the randomized PIT
 preserves the exact uniform null, while the mid-PIT is a convenient
 deterministic diagnostic with a different null distribution.
 
@@ -334,10 +332,10 @@ wealth state is a cost-function market maker.
 **Pool.** A proper score gives a batch elicitation mechanism when reports are
 scored independently and funded externally: properness is inherited report by
 report. Parimutuel and budget-balanced versions are a different game, because
-the pot split couples payoffs through the denominator; the companion paper's
-§2 gives the price-taking analysis (truthful all-in, a symmetric equilibrium
-at fractional stakes, degenerate as the stake fraction vanishes), and beyond
-that the equilibrium theory is open.
+the pot split couples payoffs through the denominator; the price-taking
+analysis [@cotton2026pointcloud, §2] gives truthful all-in, a symmetric
+equilibrium at fractional stakes, and degeneracy as the stake fraction
+vanishes, and beyond that the equilibrium theory is open.
 
 **Ensemble (Proposition 5: the two pools are the two KL barycenters).** *Let
 $q_1,\dots,q_m$ be densities and $w_i\ge0$, $\sum w_i=1$. Then the linear pool
@@ -400,25 +398,25 @@ where propriety needs care, and the theory splits in two:
   in practice: percentiles from one game feed the next, and calibration is
   produced by composing monotone maps contributed by competing algorithms.
 
-**Residual.** Let a stage emit the aggregate $F_1$, and let a second market
-elicit a distribution for the residual $U=F_1(X)$, settling at the realised
-$u=F_1(x)$. If $F_1$ is the true conditional law then $U$ is uniform
-(Proposition 4) and the second market has nothing to price; whatever
-structure remains in the residual is the second stage's edge. The corrected
-forecast composes the two reports.
+**Residual.** Let a stage emit the aggregate $F_1$ for an outcome $Y$, and
+let a second market elicit a distribution for the residual $U=F_1(Y)$,
+settling at the realised $u=F_1(y)$. If $F_1$ is the true conditional law
+then $U$ is uniform (Proposition 4) and the second market has nothing to
+price; whatever structure remains in the residual is the second stage's
+edge. The corrected forecast composes the two reports.
 
 **Proposition 7 (the correction is a multiplicative reweighting).** *Let
 $F_1$ be strictly increasing with density $p_1>0$ and let the residual
-market's consensus be a distribution $G$ on $[0,1]$ with density $g$. The
-composed forecast $F=G\circ F_1$ has density*
+market's consensus be a distribution $H$ on $[0,1]$ with density $g$. The
+composed forecast $F=H\circ F_1$ has density*
 
-$$p(x) \;=\; p_1(x)\, g\!\big(F_1(x)\big),$$
+$$p(y) \;=\; p_1(y)\, g\!\big(F_1(y)\big),$$
 
-*so $\log p(x)=\log p_1(x)+\log g(u)$ with $u=F_1(x)$: the chain's log score
+*so $\log p(y)=\log p_1(y)+\log g(u)$ with $u=F_1(y)$: the chain's log score
 is the sum of stage log scores, and the residual stage is paid by a proper
 score on $u$ alone.*
 
-**Proof.** Chain rule: $F'(x)=g(F_1(x))\,p_1(x)$; take logarithms. The
+**Proof.** Chain rule: $F'(y)=g(F_1(y))\,p_1(y)$; take logarithms. The
 residual score $\log g(u)$ is the logarithmic score of Theorem 1 applied to
 the report $g$ and outcome $u$, hence strictly proper for the law of $U$.
 $\blacksquare$
@@ -465,14 +463,14 @@ stagewise play throughout.
 The introduction claimed that split-conformal prediction is a degenerate
 composition and that running the residual stage as a market collects what
 the degeneracy wastes. This section proves it. A point predictor leaves a
-residual $R$; conformalization re-levels its marginal law. Write $U=G(R)$
-for the PIT of the residual, $G$ the marginal CDF of $R$, so $U$ is
+residual $R$; conformalization re-levels its marginal law. Write $U=F_R(R)$
+for the PIT of the residual, $F_R$ the marginal CDF of $R$, so $U$ is
 marginally uniform whatever the model (Proposition 4), and let
 $g(u\mid x)$ be the conditional density of $U$ given $X=x$. Since
-$R\mapsto G(R)$ is almost surely invertible, $I(U;X)=I(R;X)$, and because
+$R\mapsto F_R(R)$ is almost surely invertible, $I(U;X)=I(R;X)$, and because
 the marginal of $U$ is uniform,
 
-$$I(R;X)\;=\;\mathbb E_X\,\mathrm{KL}\big(P_{R\mid X}\,\Vert\,G\big)
+$$I(R;X)\;=\;\mathbb E_X\,\mathrm{KL}\big(P_{R\mid X}\,\Vert\,P_R\big)
 \;=\;\mathbb E_X\!\int_0^1 g(u\mid X)\log g(u\mid X)\,\mathrm du.$$
 
 The residual stage is the parimutuel of the companion paper run on the rank
@@ -558,8 +556,8 @@ At $\rho=\tfrac12$ the rent is $0.144$ nats per observation and the informed
 bankroll doubles every five observations; at $\rho=0.3$, every fifteen.
 Throughout, the conformal band's marginal coverage remains exact. The
 composed forecast of Proposition 7 built from the entrant's rank report
-$g(u\mid x)=p_{R\mid X}(G^{-}(u))/p_R(G^{-}(u))$ recovers the conditional
-law exactly: $p_R(r)\,g(G(r)\mid x)=p_{R\mid X}(r)$.
+$g(u\mid x)=p_{R\mid X}(F_R^{-}(u))/p_R(F_R^{-}(u))$ recovers the
+conditional law exactly: $p_R(r)\,g(F_R(r)\mid x)=p_{R\mid X}(r)$.
 
 **The mechanism has run in production.** The microprediction platform's
 nearest-the-pin pool [@cotton2022microprediction] paid each entry its sample
@@ -599,15 +597,16 @@ $W_t=\prod_{s\le t}b_s(U_s\mid X_s)$. (i) Under $H_0:U\perp X$, $(W_t)$ is a
 non-negative martingale with mean one, so
 $\Pr(\sup_t W_t\ge1/\alpha)\le\alpha$ [@ville1939]: rejecting when
 $W_t\ge1/\alpha$ is an anytime-valid level-$\alpha$ test of conditional
-miscoverage. (ii) If $b_t\to g$, then
-$t^{-1}\log W_t\to I(R;X)$ almost surely.*
+miscoverage. (ii) If the rounds are iid and $\log b_t\to\log g$ uniformly
+with a bounded envelope, then $t^{-1}\log W_t\to I(R;X)$ almost surely.*
 
 **Proof.** (i) Under $H_0$, $U_t\mid X_t$ is uniform and independent of the
 past, so each factor has conditional mean $\int_0^1 b_t=1$; Ville's
-inequality applies to the resulting martingale. (ii)
-$t^{-1}\sum_s\log b_s(U_s\mid X_s)\to\mathbb E[\log g(U\mid X)]=I(R;X)$ by
-the law of large numbers and the display opening this section.
-$\blacksquare$
+inequality applies to the resulting martingale. (ii) Write
+$\log b_s=\log g+(\log b_s-\log g)$: the second terms vanish in Cesàro mean
+by uniform convergence, and the average of the first tends almost surely to
+$\mathbb E[\log g(U\mid X)]=I(R;X)$ by the law of large numbers and the
+display opening this section. $\blacksquare$
 
 The wealth process is simultaneously the test and the estimator; it is the
 log-optimal e-variable of safe testing [@gruenwald2024safe;
@@ -617,8 +616,8 @@ as ancestor [@vovk2003testing]. Sequential tests of forecast calibration
 [@shaer2023modelx] use the same mechanics; the identification of the growth
 rate with the conformal predictor's information gap, and with the realised
 bankroll in a deployed pool, is the reading here. One measurement caveat:
-$U=G(R)$ uses the true marginal, and with empirical ranks the null is exact
-in the full-conformal, leave-one-out sense. And one scope remark: by the
+$U=F_R(R)$ uses the true marginal, and with empirical ranks the null is
+exact in the full-conformal, leave-one-out sense. And one scope remark: by the
 distribution-free no-go results [@lei2014distribution; @barber2021limits;
 @vovk2012conditional] no procedure certifies conditional coverage from data
 alone, so a quiet e-process means no rent found at this power, never
@@ -628,7 +627,7 @@ conditional validity.
 
 The message type has so far been a distribution given exactly. Deployed
 contests collect something rougher: a finite cloud of samples, smoothed by
-the operator into a density before settlement. The companion paper gives the
+the contest into a density before settlement. The companion paper gives the
 sample-based elicitation result the algebra needs
 [@cotton2026pointcloud]:
 
@@ -638,12 +637,11 @@ cloud by the logarithmic score. Settled at the raw outcome, the optimal
 cloud is drawn from a deconvolution of the belief (for Gaussian beliefs and
 kernels, the belief with $h^2$ removed from the variance). Settled at the
 outcome jittered by the same kernel, truthful sampling is optimal, and
-strictly so whenever the kernel's characteristic function has dense nonzero
-support: the smoothing channel is injective on laws.*
+strictly so whenever the kernel's characteristic function is nonvanishing on
+a dense set: the smoothing channel is injective on laws.*
 
-The proof is in the companion paper. What matters here is what the repair
-buys the algebra: with jittered settlement the cloud *is* a valid message,
-and the operators of §4 act on clouds directly.
+The proof is in the companion paper. With jittered settlement the cloud
+*is* a valid message, and the operators of §4 act on clouds directly.
 
 - *Conjugate* acts pointwise: the pushforward of a cloud under $\psi$ is
   $\psi$ applied to each sample, with no Jacobian computed anywhere. This is
@@ -661,10 +659,11 @@ and the operators of §4 act on clouds directly.
   the field's aggregate cloud.
 
 One caveat governs the order of operations. Smoothing and conjugation
-commute only for affine maps: for $\psi(x)=ax+b$ and a Gaussian kernel, the
-KDE of the mapped cloud at bandwidth $|a|h$ equals the pushforward of the
-bandwidth-$h$ KDE, and for nonlinear $\psi$ no bandwidth makes this an
-identity. The smoothing seam and its jitter must therefore be applied in the
+commute only for affine maps: for scalar $\psi(x)=ax+b$ and a Gaussian
+kernel, the KDE of the mapped cloud at bandwidth $|a|h$ equals the
+pushforward of the bandwidth-$h$ KDE (in higher dimension the bandwidth
+matrix must transform with the map), and for nonlinear $\psi$ no bandwidth
+makes this an identity. The smoothing seam and its jitter must therefore be applied in the
 settlement coordinates, after all transforms, which in pipeline terms says
 the KDE stage belongs immediately before settlement and nowhere else.
 
