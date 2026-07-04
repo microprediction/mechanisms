@@ -27,6 +27,8 @@ coverage stays exact.
 mechanisms; opinion pools; convex duality; mechanism composition; conformal
 prediction markets
 
+**JEL classification:** D47, D82, G13, C53
+
 ---
 
 ## 1. Introduction

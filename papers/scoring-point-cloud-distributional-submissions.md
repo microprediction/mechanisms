@@ -34,6 +34,8 @@ bandwidths, and finite-player equilibria are left open.
 score; kernel density estimation; distributional forecasting contests; score
 matching; sliced scores
 
+**JEL classification:** C53, C52, C14, D81
+
 ---
 
 ## 1. The problem
