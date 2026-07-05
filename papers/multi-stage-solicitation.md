@@ -26,11 +26,14 @@ work into specialized steps. Prediction can be organized the same way. A
 forecast that has to be produced over and over is cheaper if it is broken into
 standard sub-forecasts, each contributed by whoever is best at it, the supply
 chain the microprediction project set out to build [@cotton2022microprediction].
-Markets and contests supply one half of that, the competition that makes any
-single sub-forecast cheap, but not the other half: a market pays for the best
-forecast of its own number and stops, with no reason to pass its output to a
-next stage. Chaining supplies the rest. The output of one mechanism becomes the
-message, or the settled outcome, of the next.
+Markets and contests reward competition, and competition makes any single
+sub-forecast cheap, but it does not assemble the sub-forecasts into anything: a
+market pays for the best forecast of its own number and then stops, with no
+reason to pass its output along.
+
+Chaining can help. If the output of one mechanism becomes the message, or the
+settled outcome, of the next, the separate contests link into a pipeline and
+the supply chain takes shape.
 
 We know of exactly one platform that chained probabilistic outputs this way:
 the retired microprediction platform, which ran several such chains at once.
