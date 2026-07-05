@@ -42,9 +42,9 @@ case (§4). Chaining on point outputs is common, but that is derivative
 structure, not elicitation composition (§5).
 
 **The microprediction platform.** A *stream* was a live quantity that someone
-published to the platform one value at a time — a sensor reading, a server's
-response time, the price of something — a real-time feed. The base game was to
-forecast the next value of a stream before it arrived. A forecaster submitted
+published to the platform one value at a time: airport wait times, the
+electricity load for New York State, emoji usage on Twitter. The base game was
+to forecast the next value of a stream before it arrived. A forecaster submitted
 225 Monte Carlo scenarios, a fixed-size sample standing for her predictive
 distribution, and when the value landed the pot was split in proportion to how
 near her scenarios fell to it. A contributor who bets to maximize her long-run
