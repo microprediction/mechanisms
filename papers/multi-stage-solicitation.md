@@ -136,18 +136,20 @@ the reports down. A chain whose final stage settles on a real outcome, with a
 proper score at each stage, is well founded, and truthful reporting is a
 stagewise equilibrium.
 
-**Proposition 1 (single-stage guarantees compose).** *If each stage of a
-pipeline, taken with its inputs and settlement transform fixed, makes the
-truthful report a best response, then truthful reporting at every stage is a
-stagewise equilibrium: no participant gains by a deviation confined to one
-stage. If moreover no participant reports upstream of a stage in which they hold
-a position, truthfulness survives unrestricted single-stage deviations.*
+**Proposition 1 (single-stage guarantees compose).** *Suppose each stage, taken
+with its inputs and settlement transform fixed, makes the truthful report a best
+response for that stage's own transfer. Then, provided no participant can move a
+downstream settlement in which they hold a position, truthful reporting at every
+stage is a stagewise equilibrium: no participant gains by a deviation confined
+to one stage. Without that no-cross-position condition the chained game may
+admit derivative-style manipulation of an upstream settlement.*
 
-**Proof.** With the other stages clamped, a deviation confined to stage $k$
-moves the deviator's payoff only through stage $k$'s transfer, where the
-single-stage hypothesis makes truth a best response. A stage-$k$ deviation also
-moves transfers strictly downstream of $k$; a deviator with no downstream
-position collects none of them. $\blacksquare$
+**Proof.** A deviation confined to stage $k$ moves the deviator's payoff through
+stage $k$'s own transfer, where the single-stage hypothesis makes truth a best
+response, and through the downstream transfers its output feeds. A deviator who
+holds no downstream position collects none of the latter, so that propagation is
+payoff-irrelevant to them and only the stage-$k$ transfer remains.
+$\blacksquare$
 
 This is not a Nash equilibrium of the full game: a participant who reports
 upstream and holds a downstream stake holds a derivative on an upstream
@@ -186,6 +188,21 @@ the same mechanism, since they differ by $\log p_1(y)$, which no downstream
 report can move. The equivalence is special to the log score and to scores additive under
 composition; for a general proper score, local and top-level scoring rank
 downstream contributions differently.
+
+**Residual chains as boosting.** Proposition 2 has each residual stage multiply
+the running density by a likelihood ratio $g(z)/\varphi(z)$ fitted to what the
+chain so far gets wrong. That is the functional-gradient step of boosting under
+log loss [@mason1999boosting; @friedman2001greedy]: a chain of residual markets
+is stagewise gradient boosting, with the market's participants in place of the
+weak learners and their staked wealth in place of the learning rate. A weak
+learner need only beat chance; a participant here need only beat the current
+consensus, and is paid in proportion to how much. The departures from a boosting
+library are the interesting part. The ensemble is not fit by one optimiser but
+bid up by a crowd; the shrinkage is endogenous, set by how much wealth backs
+each correction rather than by a hyperparameter; and there is no explicit
+regulariser, only the propriety of each stage's score. Whether the iteration
+converges to the true conditional law, as boosting does under its assumptions,
+is open (§5).
 
 **Dependence factors the same way.** By Sklar's theorem [@sklar1959] a joint
 density is $\prod_i f_i(x_i)\cdot c(F_1(x_1),\dots,F_d(x_d))$, so
@@ -295,10 +312,11 @@ seen in two ways.
 Forecasters come in two types, and the split has nothing to do with which
 contest they enter. An *unconditional* forecaster submits a single distribution
 and stands by it whatever the input; a *conditional* forecaster submits one that
-moves with the covariates she sees. In any pool that settles on an outcome, base
-or derived, the best conditional entrant out-earns the best unconditional one by
-exactly the conditional information the covariates carry, $I(R;X)$
-[@cotton2026conformalbetting].
+moves with the covariates she sees. In any log-wealth (Kelly) pool that settles
+on an outcome, base or derived, the best conditional entrant out-earns the best
+unconditional one by exactly the conditional information the covariates carry,
+$I(R;X)$ [@cotton2026conformalbetting]; under a general proper score there is
+still a gap, but it is not this mutual information.
 
 Split-conformal prediction is an unconditional recipe. It forms one residual law
 from the calibration data and applies it at every input, reading that marginal

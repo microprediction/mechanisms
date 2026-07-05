@@ -166,10 +166,13 @@ $$S(p;q) \;=\; G(p) + \langle S(p,\cdot),\, q-p\rangle
 so the vector $S(p,\cdot)$ is a subgradient of $G$ at $p$ (acting on the
 tangent space of $\Delta$, where subgradients are defined up to a constant
 shift along $\mathbf 1$, which the representation absorbs). Substituting
-$G'(p)=S(p,\cdot)$ into the display returns $S(p,i)$ identically. If $S$ is
-strictly proper the supremum has a unique maximiser at every $q$, which for
-a supremum of affine functions is equivalent to strict convexity relative to
-$\Delta$. $\blacksquare$
+$G'(p)=S(p,\cdot)$ into the display returns $S(p,i)$ identically. For
+strictness, note $D_G(q,p)=0$ exactly when $G$ has a supporting hyperplane at
+$p$ that also supports $G$ at $q$. If $G$ carried a nontrivial affine segment in
+$\Delta$, a hyperplane supporting it at an interior point of the segment would
+support it along the whole segment, giving $D_G(q,p)=0$ for a distinct
+$q\neq p$, so $S$ would not be strictly proper; conversely strict convexity
+relative to $\Delta$ forces $D_G(q,p)=0$ only at $q=p$. $\blacksquare$
 
 The content of Theorem 1 is the dictionary *proper scoring rule
 $\leftrightarrow$ convex function $\leftrightarrow$ Bregman divergence*
@@ -196,8 +199,10 @@ its worst-case loss are then three properties of that conjugate. Hanson's LMSR
 is the entropic case.
 
 **Theorem 2 (scoring rule to market maker; @hanson2007logarithmic,
-@abernethy2013efficient).** *Let $R$ be closed, proper, and strictly convex on
-$\Delta$, extended by $+\infty$ off $\Delta$ so that $C=R^*$ below is the
+@abernethy2013efficient).** *Let $R$ be closed, proper, strictly convex, and
+finite-valued on $\Delta$ (in particular $R(e_i)<\infty$ at every vertex, which
+the worst-case-loss bound needs), extended by $+\infty$ off $\Delta$ so that
+$C=R^*$ below is the
 Fenchel conjugate on $\mathbb R^n$ (in the sequel, $R=G$, the generator of
 Theorem 1 read as a regulariser), and define*
 
@@ -380,12 +385,14 @@ adds because conjugation turns the sum of their regularisers into the infimal
 convolution of their cost functions.
 
 **Merge (Proposition 6: merging makers is infimal convolution;
-@rockafellar1970convex, @bhaskara2023general).** *For closed
-proper convex $f,g$: $(f\,\square\,g)^*=f^*+g^*$. Consequently, merging two
-cost-function makers with regularisers $R_1,R_2$ (cost functions
-$C_i=R_i^*$) yields the maker with regulariser $R_1+R_2$, and merging
-$\mathrm{LMSR}_{b_1}$ with $\mathrm{LMSR}_{b_2}$ yields
-$\mathrm{LMSR}_{b_1+b_2}$: liquidity adds.*
+@rockafellar1970convex, @bhaskara2023general).** *For closed proper convex
+$f,g$: $(f\,\square\,g)^*=f^*+g^*$, and under the usual qualification that
+$f\,\square\,g$ is closed and exact (which holds for the finite-valued
+regularisers here, and in general after lower-semicontinuous closure) the two
+sides are equal rather than merely conjugate. Consequently, merging two
+cost-function makers with regularisers $R_1,R_2$ (cost functions $C_i=R_i^*$)
+yields the maker with regulariser $R_1+R_2$, and merging $\mathrm{LMSR}_{b_1}$
+with $\mathrm{LMSR}_{b_2}$ yields $\mathrm{LMSR}_{b_1+b_2}$: liquidity adds.*
 
 **Proof.** $(f\,\square\,g)^*(p)
 =\sup_x\langle p,x\rangle-\inf_y\{f(y)+g(x-y)\}

@@ -567,11 +567,12 @@ few thousand directions, and equals the CRPS exactly in 1-D
 **The projection-scored pool.** For each direction $u$, compute the 1-D CRPS
 of participant $i$'s projected cloud at $\langle u, z\rangle$ and average over
 $u$: the sliced energy score $\mathrm{ES}_i$. In the population idealization,
-replacing the projected cloud by its sampling law, this is the energy score
-and hence strictly proper; for a finite cloud the ordinary empirical CRPS is
-the plug-in score for the empirical distribution and is not, without a
-fair-score correction, the finite-$m$ elicitation rule for iid sampling from
-the belief. The score is negatively
+replacing the projected cloud by its sampling law, this is the energy score and
+hence strictly proper for laws with a finite first moment; for a finite cloud
+the ordinary empirical CRPS is the plug-in score for the empirical distribution
+and is not, without a fair-score correction, the finite-$m$ elicitation rule for
+iid sampling from the belief. This wagering claim, like the others here, is
+population-level. The score is negatively
 oriented (smaller is better), so the incentive-compatible wager is the
 additive stake-weighted transfer of §5 driven by its negation,
 $\Delta W_i = s_i\big((-\mathrm{ES}_i) - \overline{(-\mathrm{ES})}\big)$:
