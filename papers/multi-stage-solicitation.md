@@ -84,12 +84,14 @@ algorithms contribute monotone maps that composed into one forecast
 
 **Its successors.** monteprediction is the base game with one stage repeated
 rather than chained. Each weekly submission is about a million joint scenarios
-of eleven sector-ETF returns, and the pot is split in proportion to the density
-a participant places on the realised vector [@cotton2024monteprediction;
-@cotton2024eleven]; wealth threads across rounds, and the contest has run since
-January 2024. The MidOne contests at CrunchDAO priced residual densities
-directly [@crunchdao_midone; @cotton_density], a residual stage without the
-sample smoothing.
+of eleven sector-ETF returns; the score is an exponential-kernel density of the
+submitted scenarios read at the realised vector, blended with the eleven
+leave-one-dimension-out marginals, and the pot is split by that score
+(`monteprediction/scoring.py`) [@cotton2024monteprediction; @cotton2024eleven].
+Wealth threads across rounds, and the contest has run since January 2024. The
+MidOne contests at CrunchDAO priced residual densities directly
+[@crunchdao_midone; @cotton_density], a residual stage without the sample
+smoothing.
 
 **For contrast, the point-output world.** Chaining on point outputs is
 everywhere: derivatives, the electricity virtual bids and transmission rights
@@ -202,9 +204,15 @@ outcome is the repair Proposition 3 prescribes, and it removed the deconvolution
 incentive — a fortunate accident, even though the amount added for numerical
 comfort was almost certainly not the amount matched to the smoothing scale that
 strict propriety asks. The hack that kept the arithmetic well behaved was the
-hinge that kept the game roughly honest. monteprediction settles on continuous
-returns, so the same accident is not available to it; whether its plug-in
-density split needs a fair finite-sample correction is a live question.
+hinge that kept the game roughly honest. monteprediction is the same rule in
+eleven continuous dimensions, and here the accident is not available: its score
+reads an exponential-kernel density of the submitted scenarios at the raw
+realised vector, with no jitter. By Proposition 3 that is the improper case,
+unrepaired — the reward tilts, by about the kernel scale, toward scenarios a
+little tighter than the forecaster's honest ones. The leave-one-dimension-out
+blend in the score guards against high-dimensional fragility but not this tilt,
+and a matched jitter, or a fair finite-sample correction, would remove it. This
+is a live contest, so the point is not academic.
 
 **The `z1~` residual stream: a full prediction game, not a calibration test.**
 Predicting the realized z-score is a proper elicitation of its law, anchored by
