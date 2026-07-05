@@ -27,7 +27,8 @@ Adam Smith's pin factory [@smith1776wealth] made pins cheaply by splitting the
 work into specialized steps. Prediction can be organized the same way. A
 forecast that has to be produced over and over is cheaper if it is broken into
 standard sub-forecasts, each contributed by whoever is best at it, the supply
-chain the microprediction project set out to build [@cotton2022microprediction].
+chain the microprediction project set out to build [@cotton2019roar;
+@cotton2022microprediction].
 Markets and contests reward competition, and competition makes any single
 sub-forecast cheap, but it does not assemble the sub-forecasts into anything: a
 market pays for the best forecast of its own number and then stops, with no
@@ -189,7 +190,7 @@ built games turn.
 
 Take the games of §1 to the tests of §2.
 
-**The base pool: proper by lucky accident.** The nearest-the-pin pool paid each
+**The base pool: approximately proper by lucky accident.** The nearest-the-pin pool paid each
 contributor the density their smoothed samples placed at the realized value.
 By Proposition 3, scored at the raw outcome that rewards a deconvolution of the
 belief, not the belief: a contributor whose honest law is Gaussian would be paid
