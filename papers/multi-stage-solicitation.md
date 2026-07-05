@@ -8,8 +8,9 @@ Peter Cotton · *Working draft v0.3* · 2026
 
 ## Abstract
 
-The microprediction platform built forecasting supply chains, chaining pools so
-that one's output became the message or the settled outcome of the next. This
+The microprediction platform built distributional prediction supply chains,
+chaining pools so that one's output became the message or the settled outcome of
+the next. This
 note is a self-critical, ex-post look at the game theory of those chains: the
 games were built first, and here we ask, of each, whether truthful reporting was
 really the best move. A chain is proper where an exogenous outcome anchors every
