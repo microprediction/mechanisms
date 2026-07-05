@@ -8,24 +8,13 @@ Peter Cotton · *Working draft v0.3* · 2026
 
 ## Abstract
 
-A few forecasting contests chain one elicitation mechanism onto another, and
-the microprediction platform ran several at once: a pool on a live number, a
-stream predicting that pool's own calibration, dependence streams that priced
-copulas through a space-filling curve, and a stacked lottery of calibration
-maps. This note describes those games and then asks, of each, whether it was
-valid — whether truthful reporting was really the best move. The theory of
-composition gives sharp answers. A chain is proper when an exogenous outcome
-anchors every stage; the residual and copula stages meet that test, and a
-downstream contribution can then be scored in its own market or, for the log
-score equivalently, folded up and scored at the top level. The built games
-mostly pass, one of them by luck: the base pool paid sample density at the raw
-outcome, which rewards a deconvolution of the forecaster's belief rather than
-the belief, and would have been improper had the platform not jittered the
-settlement to dodge a computational problem with discrete outcomes — roughly,
-and by accident, the repair the theory prescribes. The copula streams elicit
-properly but settle through a curve whose nearness is not the joint's, so a
-nearness-based pool prices a distorted metric. A chain is as valid as its
-weakest anchor and its settlement transform.
+The microprediction platform built forecasting supply chains, chaining pools so
+that one's output became the message or the settled outcome of the next. This
+note describes those games and asks, of each, whether truthful reporting was
+really the best move. A chain is proper where an exogenous outcome anchors every
+stage; a downstream stage can then be scored on its own residual or, for the log
+score, at the top level. By that test the games mostly hold up, one of them only
+by a lucky accident.
 
 ---
 
