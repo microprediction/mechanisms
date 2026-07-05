@@ -17,7 +17,9 @@ really the best move. A chain is proper where an exogenous outcome anchors every
 stage; a downstream stage can then be scored on its own residual or, for the log
 score, at the top level. By that test the games mostly hold up, one of them only
 by a lucky accident. Flaws aside, the setup had pedagogical merit, as it made
-the shortcomings of conformal prediction obvious.
+the shortcomings of conformal prediction obvious, the latter being equivalent to
+submission of the empirical distribution and not, as a practical matter,
+competitive.
 
 ---
 
