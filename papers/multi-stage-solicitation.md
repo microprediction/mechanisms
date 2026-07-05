@@ -69,8 +69,11 @@ percentile by the inverse normal transform.^[The name *z-score* is only a loose
 analogy to the statistical one; nothing here is assumed normal. The number is
 the community's market-implied law $F_1$, an arbitrary distributional transform
 rather than a Gaussian, composed with the inverse normal $\Phi^{-1}$. Because
-$F_1$ is the market's implied distribution, it is a risk-neutral z-score.] The
-z-score opened its own stream, `z1~`: forecast the distribution of the next one.
+$F_1$ is the market's implied distribution, it is a risk-neutral z-score.]^[The
+streams could equally have been left uniform on $[0,1]$; the normal scale was
+chosen because it was felt to make sharp, well-calibrated prediction slightly
+easier.] The z-score opened its own stream, `z1~`: forecast the distribution of
+the next one.
 A participant who can say more about it than the community can, because the
 community is biased, is the wrong shape, or is blind to a covariate she holds,
 is paid for the difference. In the language of §2 this is a residual stage,
