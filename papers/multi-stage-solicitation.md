@@ -17,13 +17,15 @@ valid — whether truthful reporting was really the best move. The theory of
 composition gives sharp answers. A chain is proper when an exogenous outcome
 anchors every stage; the residual and copula stages meet that test, and a
 downstream contribution can then be scored in its own market or, for the log
-score equivalently, folded up and scored at the top level. Two of the built
-games do not meet it cleanly: the base pool paid sample density at the raw
+score equivalently, folded up and scored at the top level. The built games
+mostly pass, one of them by luck: the base pool paid sample density at the raw
 outcome, which rewards a deconvolution of the forecaster's belief rather than
-the belief, and is proper only once the settlement is jittered; and the copula
-streams, proper as elicitation, settled through a curve whose nearness is not
-the joint's, so any nearness-based pool priced a distorted metric. A chain is
-as valid as its weakest anchor and its settlement transform.
+the belief, and would have been improper had the platform not jittered the
+settlement to dodge a computational problem with discrete outcomes — roughly,
+and by accident, the repair the theory prescribes. The copula streams elicit
+properly but settle through a curve whose nearness is not the joint's, so a
+nearness-based pool prices a distorted metric. A chain is as valid as its
+weakest anchor and its settlement transform.
 
 ---
 
@@ -169,16 +171,21 @@ built games turn.
 
 Take the games of §1 to the tests of §2.
 
-**The base pool: proper only jittered.** The nearest-the-pin pool paid each
+**The base pool: proper by lucky accident.** The nearest-the-pin pool paid each
 contributor the density their smoothed samples placed at the realized value.
-By Proposition 3 that rewards a deconvolution of the belief, not the belief:
-a contributor whose honest law is Gaussian is paid most by submitting samples
-with variance $h^2$ *below* the truth. As deployed, without a jitter of the
-settlement, the base game was subtly improper, and the size of the leak is the
-smoothing bandwidth. It is proper once the outcome is jittered by the smoothing
-kernel — a one-line change that was not made. monteprediction inherits the same
-subtlety in eleven dimensions: a pot split by plug-in density is not the
-finite-sample elicitation rule without a fair correction.
+By Proposition 3, scored at the raw outcome that rewards a deconvolution of the
+belief, not the belief: a contributor whose honest law is Gaussian would be paid
+most by submitting samples with variance $h^2$ *below* the truth. The platform
+escaped this, but by luck. Discrete outcomes caused computational trouble (ties
+when the outcome fell on a submitted sample, degenerate estimates), so the
+implementation jittered the settlement to smooth them over. A jitter of the
+outcome is the repair Proposition 3 prescribes, and it removed the deconvolution
+incentive — a fortunate accident, even though the amount added for numerical
+comfort was almost certainly not the amount matched to the smoothing scale that
+strict propriety asks. The hack that kept the arithmetic well behaved was the
+hinge that kept the game roughly honest. monteprediction settles on continuous
+returns, so the same accident is not available to it; whether its plug-in
+density split needs a fair finite-sample correction is a live question.
 
 **The `z1~` calibration stream: a valid pool, but a diagnostic.** Predicting
 the realized z-score is a proper elicitation of its law — the outcome, the
@@ -211,11 +218,12 @@ PIT is blind to conditional sharpness.
 
 **The verdict.** The chains were the right idea and mostly the right mechanism.
 Where they settled on an exogenous outcome and scored a rank, they were proper
-(the residual and copula elicitations). Where they scored smoothed samples at a
-raw outcome, they were improper by exactly a bandwidth, repairable by a jitter.
-And where they folded a joint onto a space-filling curve, the elicitation held
-but the implied metric did not. A chain is as valid as its weakest anchor and
-its settlement transform.
+(the residual and copula elicitations). The base pool would have leaked an edge
+of order the bandwidth, but an accidental jitter introduced for discrete
+outcomes stood in for the settlement correction and kept it roughly honest.
+Where they folded a joint onto a space-filling curve, the elicitation held but
+the implied metric did not. A chain is as valid as its weakest anchor and its
+settlement transform.
 
 ## 4. Open problems
 
