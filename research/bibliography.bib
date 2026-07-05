@@ -4,6 +4,22 @@
 % A human-readable rendering lives at docs/bibliography.html.
 
 % ===================== Proper scoring rules & distributional forecasting =====================
+@article{bernardo1979expected,
+  author = {Bernardo, Jos{\'e} M.}, title = {Expected Information as Expected Utility},
+  journal = {The Annals of Statistics}, year = {1979}, volume = {7}, number = {3}, pages = {686--690},
+  doi = {10.1214/aos/1176344689}}
+@article{machete2013contrasting,
+  author = {Machete, Reason L.}, title = {Contrasting Probabilistic Scoring Rules},
+  journal = {Journal of Statistical Planning and Inference}, year = {2013}, volume = {143}, number = {10}, pages = {1781--1790},
+  doi = {10.1016/j.jspi.2013.05.012}}
+@article{yao2018using,
+  author = {Yao, Yuling and Vehtari, Aki and Simpson, Daniel and Gelman, Andrew}, title = {Using Stacking to Average Bayesian Predictive Distributions (with Discussion)},
+  journal = {Bayesian Analysis}, year = {2018}, volume = {13}, number = {3}, pages = {917--1007},
+  doi = {10.1214/17-BA1091}}
+@article{papamakarios2021normalizing,
+  author = {Papamakarios, George and Nalisnick, Eric and Rezende, Danilo Jimenez and Mohamed, Shakir and Lakshminarayanan, Balaji}, title = {Normalizing Flows for Probabilistic Modeling and Inference},
+  journal = {Journal of Machine Learning Research}, year = {2021}, volume = {22},
+  url = {https://jmlr.org/papers/v22/19-1028.html}}
 @article{brier1950verification,
   author = {Brier, Glenn W.}, title = {Verification of Forecasts Expressed in Terms of Probability},
   journal = {Monthly Weather Review}, year = {1950}, volume = {78}, number = {1}, pages = {1--3},
@@ -290,6 +306,14 @@
   pages = {51:1--51:21}, year = {2024}, doi = {10.4230/LIPIcs.ITCS.2024.51}}
 
 % ===================== Wagering mechanisms, decision markets & aggregation dynamics =====================
+@article{lei2018distribution,
+  author = {Lei, Jing and G'Sell, Max and Rinaldo, Alessandro and Tibshirani, Ryan J. and Wasserman, Larry}, title = {Distribution-Free Predictive Inference for Regression},
+  journal = {Journal of the American Statistical Association}, year = {2018}, volume = {113}, number = {523}, pages = {1094--1111},
+  doi = {10.1080/01621459.2017.1307116}}
+@article{gruenwald2019minimum,
+  author = {Gr{\"u}nwald, Peter and Roos, Teemu}, title = {Minimum Description Length Revisited},
+  journal = {International Journal of Mathematics for Industry}, year = {2019}, volume = {11}, number = {1}, pages = {1930001},
+  doi = {10.1142/S2661335219300018}}
 @inproceedings{feigenbaum2005computation,
   author = {Feigenbaum, Joan and Fortnow, Lance and Pennock, David M. and Sami, Rahul}, title = {Computation in a Distributed Information Market},
   booktitle = {Theoretical Computer Science}, year = {2005}, volume = {343}, number = {1--2}, pages = {114--132},
@@ -656,6 +680,9 @@
   doi = {10.1145/3565559}}
 
 % ===================== Forecast aggregation, prediction-market economics & info finance =====================
+@book{cochrane2005asset,
+  author = {Cochrane, John H.}, title = {Asset Pricing}, edition = {Revised},
+  publisher = {Princeton University Press}, address = {Princeton, NJ}, year = {2005}, isbn = {9780691121376}}
 @article{galton1907vox,
   author = {Galton, Francis}, title = {Vox Populi}, journal = {Nature},
   year = {1907}, volume = {75}, number = {1949}, pages = {450--451}, doi = {10.1038/075450a0}}
@@ -866,6 +893,10 @@
   journal = {Applied and Computational Harmonic Analysis}, year = {2021}, volume = {51}, pages = {510--542}, doi = {10.1016/j.acha.2019.11.005}}
 
 % --- Weighted / localized proper scoring rules (the properness boundary) ---
+@article{bolin2023local,
+  author = {Bolin, David and Wallin, Jonas}, title = {Local Scale Invariance and Robustness of Proper Scoring Rules},
+  journal = {Statistical Science}, year = {2023}, volume = {38}, number = {1}, pages = {140--159},
+  doi = {10.1214/22-STS864}}
 @article{gneiting2011comparing,
   author = {Gneiting, Tilmann and Ranjan, Roopesh}, title = {Comparing Density Forecasts Using Threshold- and Quantile-Weighted Scoring Rules},
   journal = {Journal of Business \& Economic Statistics}, year = {2011}, volume = {29}, number = {3}, pages = {411--422}, doi = {10.1198/jbes.2010.08110}}
@@ -993,6 +1024,10 @@
   year = {2012}, howpublished = {arXiv:1204.4154}, url = {https://arxiv.org/abs/1204.4154}}
 
 % --- Boosting as functional gradient descent ---
+@inproceedings{rosset2002boosting,
+  author = {Rosset, Saharon and Segal, Eran}, title = {Boosting Density Estimation},
+  booktitle = {Advances in Neural Information Processing Systems 15 (NeurIPS)}, year = {2002},
+  url = {https://proceedings.neurips.cc/paper_files/paper/2002/hash/3de568f8597b94bda53149c7d7f5958c-Abstract.html}}
 @article{freund1997decision,
   author = {Freund, Yoav and Schapire, Robert E.}, title = {A Decision-Theoretic Generalization of On-Line Learning and an Application to Boosting},
   journal = {Journal of Computer and System Sciences}, year = {1997}, volume = {55}, number = {1}, pages = {119--139}, doi = {10.1006/jcss.1997.1504}}
@@ -1118,33 +1153,13 @@
   title = {Multi-Stage Solicitation of Probability Distributions: Experiments, Theory and Perspective on Conformal Prediction},
   year = {2026}, note = {Working draft},
   url = {https://mechanisms.microprediction.org/papers/multi-stage-solicitation.html}}
+@misc{cotton2026likelihoodcrps,
+  author = {Cotton, Peter},
+  title = {Likelihood versus CRPS: A New Perspective},
+  year = {2026}, note = {Working draft},
+  url = {https://mechanisms.microprediction.org/papers/likelihood-versus-crps.html}}
 @misc{cotton2020copula,
   author = {Cotton, Peter},
   title = {A Call for Contributions to a Copula Contest},
   year = {2020}, note = {LinkedIn, 11 July 2020; z-curve copula streams on cryptocurrency comovements},
   url = {https://www.linkedin.com/pulse/call-contributions-copula-contest-where-carefully-can-cotton-phd/}}
-
-% --- Added for the metrics / likelihood-vs-CRPS essay and forthcoming paper ---
-@article{bernardo1979expected,
-  author = {Bernardo, Jos{\'e} M.}, title = {Expected Information as Expected Utility},
-  journal = {The Annals of Statistics}, year = {1979}, volume = {7}, number = {3}, pages = {686--690},
-  doi = {10.1214/aos/1176344689}}
-@article{machete2013contrasting,
-  author = {Machete, Reason L.}, title = {Contrasting Probabilistic Scoring Rules},
-  journal = {Journal of Statistical Planning and Inference}, year = {2013}, volume = {143}, number = {10}, pages = {1781--1790},
-  doi = {10.1016/j.jspi.2013.05.012}}
-@article{bolin2023local,
-  author = {Bolin, David and Wallin, Jonas}, title = {Local Scale Invariance and Robustness of Proper Scoring Rules},
-  journal = {Statistical Science}, year = {2023}, volume = {38}, number = {1}, pages = {140--159},
-  doi = {10.1214/22-STS864}}
-@article{lei2018distribution,
-  author = {Lei, Jing and G'Sell, Max and Rinaldo, Alessandro and Tibshirani, Ryan J. and Wasserman, Larry}, title = {Distribution-Free Predictive Inference for Regression},
-  journal = {Journal of the American Statistical Association}, year = {2018}, volume = {113}, number = {523}, pages = {1094--1111},
-  doi = {10.1080/01621459.2017.1307116}}
-@article{gruenwald2019minimum,
-  author = {Gr{\"u}nwald, Peter and Roos, Teemu}, title = {Minimum Description Length Revisited},
-  journal = {International Journal of Mathematics for Industry}, year = {2019}, volume = {11}, number = {1}, pages = {1930001},
-  doi = {10.1142/S2661335219300018}}
-@book{cochrane2005asset,
-  author = {Cochrane, John H.}, title = {Asset Pricing}, edition = {Revised},
-  publisher = {Princeton University Press}, address = {Princeton, NJ}, year = {2005}, isbn = {9780691121376}}

@@ -28,6 +28,7 @@ PAPERS = [
     "scoring-point-cloud-distributional-submissions.md",
     "composition-and-the-algebra-of-mechanisms.md",
     "multi-stage-solicitation.md",
+    "likelihood-versus-crps.md",
 ]
 
 # The markdown master opens with title / subtitle / byline / hr / Abstract /

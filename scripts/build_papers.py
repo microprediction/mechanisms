@@ -37,6 +37,7 @@ PAPERS = [
     "scoring-point-cloud-distributional-submissions.md",
     "composition-and-the-algebra-of-mechanisms.md",
     "multi-stage-solicitation.md",
+    "likelihood-versus-crps.md",
 ]
 
 PAGE = """<!doctype html>
