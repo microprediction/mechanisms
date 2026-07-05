@@ -87,25 +87,24 @@
     <hr />
 
     <h2 id="multi-stage">
-      <a href="./papers/multi-stage-solicitation.html">Multi-Stage
-      Solicitation</a></h2>
-    <p class="subtitle">Chained forecast elicitation: representations, and the
-      designs the theory supports</p>
+      <a href="./papers/multi-stage-solicitation.html">Multi-Stage Solicitation
+      of Probability Distributions</a></h2>
+    <p class="subtitle">Experiments and theory</p>
     <p>
-      Elicitation mechanisms can be chained, one mechanism's output becoming the
-      next one's message or settled outcome. What can be chained turns on what a
-      mechanism emits: a <em>point</em> (a price or forecast) or a
-      <em>distribution</em> (a density, percentile, or rank). This note sorts the
-      chains by representation, marks which the theory supports, and reviews which
-      have been built. Point outputs chain as ordinary derivatives; distributions
-      chain more richly when an exogenous outcome anchors them, and a downstream
-      contribution can be judged in its own market or, for the log score
-      equivalently, converted to a top-level forecast. Without an anchor the chain
-      is indeterminate. What has been built is the last section, not the first:
-      the microprediction platform's percentile and z-curve copula streams,
-      monteprediction, and the residual contests at CrunchDAO.
+      The microprediction platform ran several chained-elicitation games at
+      once: a pool on a live number, a stream predicting that pool's own
+      calibration, dependence streams that priced copulas through a space-filling
+      curve, and a stacked lottery of calibration maps. This note describes those
+      experiments and then asks, of each, whether it was a valid game: whether
+      truthful reporting was really the best move. A chain is proper where an
+      exogenous outcome anchors every stage, and a downstream contribution can
+      then be scored in its own market or, for the log score equivalently, folded
+      up to the top level. But the base pool scored smoothed samples at the raw
+      outcome, proper only once the settlement is jittered, and the copula streams
+      settled through a curve whose nearness is not the joint's. A chain is as
+      valid as its weakest anchor and its settlement transform.
     </p>
-    <p class="muted">Peter Cotton · working draft v0.2 ·
+    <p class="muted">Peter Cotton · working draft v0.3 ·
       <a href="./papers/multi-stage-solicitation.html">full draft</a> ·
       <a href="./papers/multi-stage-solicitation.pdf">pdf</a></p>
 
