@@ -283,8 +283,7 @@ proper (the residual and copula elicitations). The base pool would have leaked a
 of order the bandwidth, but an accidental jitter introduced for discrete
 outcomes stood in for the settlement correction and kept it roughly honest.
 Where they folded a joint onto a space-filling curve, the elicitation held but
-the implied metric did not. A chain is as valid as its weakest anchor and its
-settlement transform.
+the implied metric did not.
 
 ## 4. Conformal prediction, nested and embarrassed
 
