@@ -10,11 +10,11 @@
   >={Stealth[length=2.4mm]},
 ]
   \node[box] (s1) {Stage 1\\ elicit the law of $Y$};
-  \node[box, right=40mm of s1] (s2) {Stage 2\\ elicit the law of $U$};
+  \node[box, right=44mm of s1] (s2) {Stage 2\\ elicit the law of $Z$};
   \node[below=15mm of $(s1)!0.5!(s2)$] (y) {outcome $y$};
 
   \draw[->] (s1) -- node[above,lbl] {consensus $F_1$} (s2);
   \draw[->] (y) -- node[left=1pt,lbl] {settles} (s1.south);
-  \draw[->] (y) -- node[right=1pt,lbl] {$u=F_1(y)$} (s2.south);
+  \draw[->] (y) -- node[right=1pt,lbl] {$z=\Phi^{-1}(F_1(y))$} (s2.south);
 \end{tikzpicture}
 \end{document}

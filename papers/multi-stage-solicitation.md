@@ -88,7 +88,7 @@ copula contest ran exactly this on the five-minute comovements of five
 cryptocurrencies, contributors submitting 225 samples packed through the
 z-curve [@cotton2020copula].
 
-![The Morton z-curve threads the unit square of two percentiles into a single line, so a bivariate copula is priced as one univariate pool. The thread is not distance-preserving: the two red points are neighbours in the square but far apart along the curve, so a nearness-based pool on the folded scalar prices a metric the curve chose, not the joint's (§3).](figures/z-curve)
+![The Morton z-curve threads the unit square of two percentiles into a single line, so a bivariate copula is priced as one univariate pool. The thread is not distance-preserving: the two red points are neighbours in the square but far apart along the curve, so a nearness-based pool on the folded scalar prices a metric the curve chose, not the joint's (§3).^[The author was aware of the distortion; the z-curve was a practical choice that avoided a major refactoring of the platform.]](figures/z-curve)
 
 A related stacked-lottery design let competing algorithms contribute monotone
 maps that composed into one forecast [@cotton2020lottery, slides 29-31]. The
@@ -106,14 +106,15 @@ MidOne contests at CrunchDAO priced residual densities directly
 smoothing.
 
 **For contrast, the point-output world.** Chaining on point outputs is
-everywhere: derivatives, the electricity virtual bids and transmission rights
-on day-ahead prices [@jha2023financial], a market on another market's reported
-number. But it is derivative structure, not composition of probabilistic
-elicitation. But the racetrack's win versus exotic pools, index versus
-single-name option books, and
-tranche versus single-name CDS run margins and dependence in parallel books
-that settle independently, consistency left to arbitrage [@harville1973assigning;
-@hausch1981efficiency]; parallel is not chained, and the books can disagree.
+everywhere: every derivative, the electricity virtual bids and transmission
+rights written on day-ahead prices [@jha2023financial], a market settling on
+another market's reported number. That, though, is ordinary derivative
+structure, not composition of probabilistic elicitation. A different near-miss
+puts margins and dependence in parallel rather than in series: the racetrack's
+win versus exotic pools, index versus single-name option books, tranche versus
+single-name CDS. These books settle independently, their consistency left to
+arbitrage [@harville1973assigning; @hausch1981efficiency], so parallel is not
+chained and the two can disagree.
 
 ## 2. What can be proven
 
@@ -152,28 +153,33 @@ settlement, with the usual incentive to distort the underlying
 
 **The residual stage, and two ways to score it.** The operator that chains is
 the residual: a stage emits an aggregate $F_1$ for an outcome $Y$, and a second
-market elicits the law of the residual $U=F_1(Y)$, settling at $u=F_1(y)$. If
-$F_1$ were the truth then $U$ is uniform (the probability integral transform),
-and whatever structure remains is the second stage's edge.
+market elicits the law of the residual z-score $Z=\Phi^{-1}(F_1(Y))$, settling at
+$z=\Phi^{-1}(F_1(y))$. If $F_1$ were the truth then $F_1(Y)$ is uniform (the
+probability integral transform) and $Z$ is standard normal, and whatever
+structure remains is the second stage's edge.
 
-![A residual chain. Stage 1's consensus $F_1$ becomes the frame for stage 2, which settles on the transformed outcome $u=F_1(y)$; the same realized $y$ anchors both. The base pool and its $z_1$ residual stream are an instance.](figures/residual-chain)
+![A residual chain. Stage 1's consensus $F_1$ becomes the frame for stage 2, which settles on the z-score $z=\Phi^{-1}(F_1(y))$; the same realized $y$ anchors both. The base pool and its $z_1$ residual stream are an instance.](figures/residual-chain)
 
 **Proposition 2 (the residual correction is a reweighting).** *For $F_1$
-strictly increasing with density $p_1>0$ and a residual report with density
-$g$ on $[0,1]$, the composed forecast $F=H\circ F_1$ has density $p(y)=p_1(y)\,
-g(F_1(y))$, so*
-$$\log p(y)\;=\;\log p_1(y)+\log g(u),\qquad u=F_1(y).$$
+strictly increasing with density $p_1>0$ and a residual report of density $g$
+for the z-score $Z$, the composed forecast has density $p(y)=p_1(y)\,g(z)/\varphi(z)$
+with $z=\Phi^{-1}(F_1(y))$ and $\varphi$ the standard normal density, so*
+$$\log p(y)\;=\;\log p_1(y)+\log\frac{g(z)}{\varphi(z)}.$$
+*The residual stage is paid $\log g(z)-\log\varphi(z)$, the log-likelihood ratio
+of its report against the $N(0,1)$ stake, zero when $g=\varphi$.*
 
-**Proof.** Chain rule on $F=H\circ F_1$; take logarithms. The term $\log g(u)$
-is the logarithmic score [@cotton2026algebra, Thm 1] for the report $g$ against
-$u$, strictly proper for the law of $U$. $\blacksquare$
+**Proof.** On the rank scale the correction is $p(y)=p_1(y)\,h(F_1(y))$ with $h$
+the residual density on $[0,1]$ (chain rule); writing the report on the z-scale,
+$z=\Phi^{-1}(u)$, gives $h(u)=g(z)/\varphi(z)$, hence the displayed forms. The
+term is the logarithmic score [@cotton2026algebra, Thm 1] for the report,
+strictly proper for the law of $Z$. $\blacksquare$
 
 The additive form answers a design question raised by the stacked lottery
 [@cotton2020lottery]. A contribution to the second market can be judged
-*locally*, by $\log g(u)$ on its own residual, or converted to a *top-level*
-forecast of $Y$ and judged by $\log p(y)$. Proposition 2 makes these the same
-mechanism, since they differ by $\log p_1(y)$, which no downstream report can
-move. The equivalence is special to the log score and to scores additive under
+*locally*, by $\log g(z)-\log\varphi(z)$ on its own residual, or converted to a
+*top-level* forecast of $Y$ and judged by $\log p(y)$. Proposition 2 makes these
+the same mechanism, since they differ by $\log p_1(y)$, which no downstream
+report can move. The equivalence is special to the log score and to scores additive under
 composition; for a general proper score, local and top-level scoring rank
 downstream contributions differently.
 
@@ -211,12 +217,12 @@ By Proposition 3, scored at the raw outcome that rewards a deconvolution of the
 belief, not the belief: a contributor whose honest law is Gaussian would be paid
 most by submitting samples with variance $h^2$ *below* the truth.
 
-The platform escaped this, but by luck. Discrete outcomes caused computational trouble (ties
+The platform mostly escaped this, but by luck. Discrete outcomes caused computational trouble (ties
 when the outcome fell on a submitted sample, degenerate estimates), so the
 implementation jittered the settlement to smooth them over. A jitter of the
 outcome is the repair Proposition 3 prescribes, and it removed the deconvolution
 incentive — a fortunate accident, even though the amount added for numerical
-comfort was almost certainly not the amount matched to the smoothing scale that
+comfort was not quite equal to the amount matched to the smoothing scale that
 strict propriety asks. The hack that kept the arithmetic well behaved was the
 hinge that kept the game roughly honest.
 
@@ -233,7 +239,7 @@ is a live contest, so the point is not academic.
 **The `z1~` residual stream: a full prediction game, not a calibration test.**
 Predicting the realized z-score is a proper elicitation of its law, anchored by
 the exogenous outcome (with the same jitter caveat as the base pool). It is a
-residual stage on the base game's rank, and it pays for any edge over the
+residual stage on the base game's z-score, and it pays for any edge over the
 community. If the community's forecast is biased or the wrong shape, its
 z-scores drift or spread, and whoever predicts that is paid. And if the base
 forecast ignored a covariate, an entrant who conditions on it forecasts the
@@ -268,8 +274,8 @@ that pays for the edge it adds, and the composition is a chain of them. Like
 `z1~`, it rewards sharper prediction at each stage, not merely a marginal fit.
 
 **The verdict.** The chains were the right idea and mostly the right mechanism.
-Where they settled on an exogenous outcome and scored a rank, they were proper
-(the residual and copula elicitations). The base pool would have leaked an edge
+Where they settled on an exogenous outcome and scored a residual, they were
+proper (the residual and copula elicitations). The base pool would have leaked an edge
 of order the bandwidth, but an accidental jitter introduced for discrete
 outcomes stood in for the settlement correction and kept it roughly honest.
 Where they folded a joint onto a space-filling curve, the elicitation held but
