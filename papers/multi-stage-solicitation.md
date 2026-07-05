@@ -286,7 +286,7 @@ Where they folded a joint onto a space-filling curve, the elicitation held but
 the implied metric did not. A chain is as valid as its weakest anchor and its
 settlement transform.
 
-## 4. Conformal prediction, nested
+## 4. Conformal prediction, nested and embarrassed
 
 Conformal prediction can be read as a degenerate case of a two-stage
 solicitation: a base forecast, then a residual market in which competition has
