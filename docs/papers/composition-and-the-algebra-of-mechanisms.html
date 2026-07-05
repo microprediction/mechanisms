@@ -58,7 +58,7 @@
     <p>Everything in this section is one fact in different clothing: a scoring rule is proper exactly when it is built from a convex potential. The honest forecaster's expected score is that potential, and the penalty for any other report is the potential's curvature between truth and report. The three classical scores are three choices of potential, and the market makers of the next results are its conjugate.</p>
     <p><strong>Theorem 1 (characterisation of proper scoring rules; Savage (<a href="#ref-savage1971elicitation">1971</a>), McCarthy (<a href="#ref-mccarthy1956measures">1956</a>)).</strong> <em>A regular scoring rule $S$ is proper iff there is a convex $G:\Delta\to\mathbb R$ with</em></p>
     <p>$$S(p,i) \;=\; G(p) + \langle\, G'(p),\; e_i - p\,\rangle,
-\qquad G'(p)\in\partial G(p),$$</p>
+\qquad G'(p)\in\partial G(p)\quad(p\in\operatorname{ri}\Delta),$$</p>
     <p><em>where $e_i$ is the $i$-th unit vector. It is strictly proper iff $G$ is strictly convex relative to $\Delta$, and then $G(p)=S(p;p)$ is the expected score of a truthful forecaster.</em></p>
     <p>The idea is that the expected score is affine in the belief, so the gain from honesty $S(q;q)-S(p;q)$ collapses to the Bregman divergence $D_G(q,p)$, which a supporting hyperplane makes non-negative and strict convexity makes zero only at $q=p$.</p>
     <p><strong>Proof.</strong> ($\Leftarrow$) Since $\sum_i q_i(e_i-p)=q-p$, the expected score is affine in the belief: $S(p;q)=G(p)+\langle G'(p),q-p\rangle$. Hence</p>

@@ -316,7 +316,7 @@ dense-support version. Practical reading: Gaussian and Laplace jitter are
 injective (nonvanishing characteristic functions); the uniform kernel is also
 fine (sinc zeros are isolated, hence the nonvanishing set is dense);
 band-limited kernels fail (e.g. Fejér-type kernels, whose characteristic
-function vanishes on a half-line — two beliefs agreeing on low frequencies
+function vanishes outside a bounded interval — two beliefs agreeing on low frequencies
 become indistinguishable). For compactly supported kernels Lemma 1 supplies
 the injectivity, but the log-score statement then requires the extended-real
 convention and a report class on which the expected score is well defined;

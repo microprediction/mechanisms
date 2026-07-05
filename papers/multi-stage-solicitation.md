@@ -205,7 +205,8 @@ converges to the true conditional law, as boosting does under its assumptions,
 is open (§6).
 
 **Dependence factors the same way.** By Sklar's theorem [@sklar1959] a joint
-density is $\prod_i f_i(x_i)\cdot c(F_1(x_1),\dots,F_d(x_d))$, so
+density is $\prod_i f_i(x_i)\cdot c(u_1,\dots,u_d)$ in terms of the coordinate
+marginals $u_i=F_i(x_i)$, so
 
 $$\log p(x)\;=\;\sum_{i=1}^d \log f_i(x_i)+\log c(u),\qquad u_i=F_i(x_i).$$
 
@@ -262,7 +263,8 @@ realized z-score is a proper elicitation of its law, anchored by the exogenous
 outcome (with the same jitter caveat as the base pool). It pays for any edge
 over the community: a forecaster who conditions on a covariate the base game
 ignored forecasts the z-score's conditional law, beats the community's flat one,
-and collects the missed information as log-wealth growth, at the rate $I(R;X)$
+and collects the missed information as log-wealth growth, at the rate $I(R;X)$ —
+the mutual information between the residual $R$ and the conditioning covariate $X$
 [@cotton2026conformalbetting]. This is where conformal prediction sits, as a
 weak entry; §4 develops the comparison.
 
@@ -276,7 +278,7 @@ prices a metric that the curve, not the problem, chose, and a contributor is
 rewarded for placing mass near the truth *on the curve*. The elicitation is
 valid; the settlement metric is an artifact. The principled high-dimensional
 route scores random one-dimensional projections rather than one space-filling
-projection [@cotton2026pointcloud], averaging a defensible metric instead of
+curve [@cotton2026pointcloud], averaging a defensible metric instead of
 fixing an arbitrary one.
 
 **The stacked lottery: residual stages composed.** The stacked lottery composed

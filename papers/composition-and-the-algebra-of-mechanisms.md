@@ -119,7 +119,7 @@ next results are its conjugate.
 is proper iff there is a convex $G:\Delta\to\mathbb R$ with*
 
 $$S(p,i) \;=\; G(p) + \langle\, G'(p),\; e_i - p\,\rangle,
-\qquad G'(p)\in\partial G(p),$$
+\qquad G'(p)\in\partial G(p)\quad(p\in\operatorname{ri}\Delta),$$
 
 *where $e_i$ is the $i$-th unit vector. It is strictly proper iff $G$ is
 strictly convex relative to $\Delta$, and then $G(p)=S(p;p)$ is the expected
