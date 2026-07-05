@@ -242,6 +242,16 @@ entries, which is to say they are forecasting. The z-stream contests were
 already the place to chase conditional sharpness, and the bare split-conformal
 guarantee is a floor to clear, not a competitive strategy.
 
+Read the base market's consensus as a model. The conformal recipe, form the
+empirical distribution of that model's residuals and use it as the predictive
+law, is then one specific entry in the `z1~` market: the participant who submits
+the empirical distribution of the z-scores. A chained market treats it as just
+another contestant, better than the rest only if it wins and only for as long as
+it does. Conformal prediction instead privileges that entry a priori and calls
+it the answer. Seen this way it is a highly normative prescription, and one that
+runs against the spirit of competition: it fixes the answer in advance where a
+market would have it earned.
+
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
 law elicits the copula, and for the log score the folding is a fixed bijection
