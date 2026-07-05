@@ -189,6 +189,14 @@ report can move. The equivalence is special to the log score and to scores addit
 composition; for a general proper score, local and top-level scoring rank
 downstream contributions differently.
 
+This is a consideration the long-running debate over log score versus CRPS
+rarely weighs, since that debate turns on locality, propriety, robustness, and
+interpretability. For a platform built to chain elicitations, as the
+microprediction supply chain was [@cotton2022microprediction], the operative
+question is instead which score lets residual refinements add up. The log score
+does; CRPS, though proper and a useful CDF-level diagnostic, has no regret that
+decomposes stage by stage.
+
 **Residual chains as boosting.** Proposition 2 has each residual stage multiply
 the running density by a likelihood ratio $g(z)/\varphi(z)$ fitted to what the
 chain so far gets wrong. That is the greedy stagewise step of boosting under
