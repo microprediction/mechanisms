@@ -202,7 +202,7 @@ bid up by a crowd; the shrinkage is endogenous, set by how much wealth backs
 each correction rather than by a hyperparameter; and there is no explicit
 regulariser, only the propriety of each stage's score. Whether the iteration
 converges to the true conditional law, as boosting does under its assumptions,
-is open (§5).
+is open (§6).
 
 **Dependence factors the same way.** By Sklar's theorem [@sklar1959] a joint
 density is $\prod_i f_i(x_i)\cdot c(F_1(x_1),\dots,F_d(x_d))$, so
@@ -334,7 +334,40 @@ marginally standard normal. A conditional participant still profits against the
 marginal submitter, at the same rate: marginal correctness is not conditional
 correctness, and the difference is the whole downstream game.
 
-## 5. Open problems
+## 5. Related work
+
+Prediction markets have long been read as learning algorithms; the chain here
+differs from the main lines in one structural choice, that it runs in series.
+
+Storkey's machine learning markets [@storkey2011machine] price a single market in
+which algorithmic agents trade to a simultaneous equilibrium: the ensemble is
+the clearing price, and the agents' utilities pick out the combination rule, log
+utility giving a wealth-weighted mixture of experts and an exponential utility a
+product of experts, the two pools of the companion algebra [@cotton2026algebra].
+The chain trades that simultaneity for modularity. Each stage settles before the
+next reads its output, which avoids pricing a joint state space all at once but
+gives up a single global equilibrium and makes the payout depend on the order of
+the stages.
+
+Abernethy and Frongillo's crowdsourced learning mechanism
+[@abernethy2011collaborative] publishes one hypothesis and pays each participant
+in proportion to how much their update improves it, the reward a Bregman
+divergence and the market a cost function $C(q)=\sup_p\langle p,q\rangle-R(p)$,
+the same conjugate object as the market makers here. A residual stage rewards
+marginal improvement in the same spirit, but on the probability integral
+transform rather than a shared parameter: when the upstream forecast is
+calibrated the downstream market faces a uniform residual, isolating the
+conditional inefficiency, and the message is a full distribution, a sample
+cloud, or a copula rather than a point.
+
+Falconer, Kazempour and Pinson's regression markets [@falconer2024bayesian] pay
+for shared features by their Shapley value, fair across all coalitions but
+$O(2^n)$ to compute. The chain sidesteps the combinatorics by fixing an order: a
+participant at stage $k$ is scored only on what stage $k-1$ left, path-dependent
+but settleable in real time. The two are complements, Shapley for a fair
+one-shot split and the chain for streaming settlement.
+
+## 6. Open problems
 
 1. *Conservation of edge.* Wealth conservation across a chain is automatic and
    is not the invariant; the edge a truthful participant holds over the price,
@@ -354,6 +387,18 @@ correctness, and the difference is the whole downstream game.
    the right embedding for $d\ge2$, the space-filling curves as deployed against
    the random projections of the point-cloud paper [@cotton2026pointcloud], and
    the equilibrium when the same participants trade margin and copula stages.
+
+## 7. Conclusion
+
+The chain treats calibration, dependence, and residual edge as separate objects,
+each with its own market. A base pool elicits the level, a z-stream prices its
+calibration, a rank-settled stage prices the copula, and a residual stage prices
+whatever conditional structure the level left behind. What a single distributional
+contest folds into one hard-to-price object, the chain lets specialised
+participants earn against one piece at a time. The cost is the loss of a
+simultaneous equilibrium and a dependence on the order of the stages; the gain is
+that a hard, repeated forecast can be assembled, and paid for, one standardised
+piece at a time, which was the point of a supply chain to begin with.
 
 ## References
 
