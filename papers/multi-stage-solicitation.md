@@ -230,9 +230,10 @@ conditional law, and the reward goes to sharper conditional prediction, claimed
 by an entrant who holds better information and stakes on it.
 
 That arena is exactly where conformal prediction belongs, and it belongs there
-as a weak entrant. A single-shape conformal predictor applies one residual law
-at every input, marginally valid but flat in the covariates, so it is the `z1~`
-contestant that stakes uniform and has no chance of being sharp. Its coverage
+as a weak entrant. A single-shape conformal predictor submits the empirical
+distribution of its residuals, one law for every input: marginally valid but
+flat in the covariates, so it is the `z1~` contestant that stakes uniform and
+has no chance of being sharp. Its coverage
 guarantee is the pool's break-even line, and the information gap $I(R;X)$ is the
 rate at which any conditionally sharper competitor takes its money. The z-stream
 contests were already the place to chase conditional sharpness; conformal
