@@ -82,9 +82,13 @@ give `z2~`, a pool on which is a market on the copula of the pair. Three streams
 folded the same way gave `z3~`. A 2020
 copula contest ran exactly this on the five-minute comovements of five
 cryptocurrencies, contributors submitting 225 samples packed through the
-z-curve [@cotton2020copula]. A related stacked-lottery design let competing
-algorithms contribute monotone maps that composed into one forecast
-[@cotton2020lottery, slides 29-31]. The platform is retired.
+z-curve [@cotton2020copula].
+
+![The Morton z-curve threads the unit square of two percentiles into a single line, so a bivariate copula is priced as one univariate pool. The thread is not distance-preserving: the two red points are neighbours in the square but far apart along the curve, so a nearness-based pool on the folded scalar prices a metric the curve chose, not the joint's (§3).](figures/z-curve)
+
+A related stacked-lottery design let competing algorithms contribute monotone
+maps that composed into one forecast [@cotton2020lottery, slides 29-31]. The
+platform is retired.
 
 **Its successors.** monteprediction is the base game with one stage repeated
 rather than chained. Each weekly submission is about a million joint scenarios
@@ -269,30 +273,29 @@ settlement transform.
 
 ## 4. Conformal prediction, nested
 
-Split-conformal prediction is the residual market of §2 with the competition
-switched off. Read the base predictor as the first stage. The conformal recipe,
-form the empirical distribution of that predictor's residuals and use it
-unchanged at every input, is one entry in the residual pool: the participant who
-submits the empirical residual law, which on the `z1~` scale is the default
-N(0,1) stake. Admit only participants willing to follow that recipe, barring
-anyone who would condition on the input, and the pool has a single strategy and
-reduces to conformal prediction. It is a nesting of the same mechanism, the
-residual stage with entry closed to non-conformists. A market would make that
-entry earn its keep and pay it only while no conditioning rival beats it;
-conformal privileges it a priori and calls it the answer. That is a highly
-normative move, and it runs against the spirit of competition: it fixes the
-answer in advance where a market would have it earned. Adaptive conformal
-variants that let the residual law depend on the input are the competition
-switched back on; they are forecasting.
+A residual pool sorts its entrants by what they condition on. An *unconditional*
+participant submits one law for the z-score, the same whatever the input; a
+*conditional* participant submits a law that varies with the covariates she
+sees. The best unconditional entry is the marginal law of the z-score, the best
+conditional entry is its law given the input, and the second out-earns the first
+by exactly the conditional information $I(R;X)$ [@cotton2026conformalbetting].
 
-The same point comes from the other side. Suppose only conformists enter the
-base contest, and suppose they are right, so the base forecast is calibrated
-unconditionally and the `z1~` stream is marginally N(0,1). That settles nothing
-downstream. A `z1~` participant who conditions on the input and bets against the
-N(0,1) submitter still profits, at the rate $I(R;X)$ [@cotton2026conformalbetting],
-because marginal normality leaves the whole conditional structure unpriced. The
-information gap is exactly that profit: what a conditioning entrant takes from a
-forecast that is right on average and blind to the covariates.
+Split-conformal prediction is the best unconditional entry, and nothing more.
+Its recipe, form the empirical distribution of the base predictor's residuals
+and use it unchanged at every input, is just how an unconditional participant
+estimates that marginal law from data: she reads it off the residuals rather
+than assuming any shape. So conformal prediction is the residual market of §2
+with the field restricted to unconditional entries. A market would let it
+compete and pay it only while no conditioning rival beats it; conformal instead
+declares it the answer in advance, forfeiting $I(R;X)$ to anyone who conditions.
+Adaptive conformal variants that let the law depend on the input are conditional
+entries, which is to say they are forecasting.
+
+The gap does not close even if the conformists are right. Suppose only they
+enter the base contest and the base forecast is calibrated, so the z-scores are
+marginally standard normal. A conditional participant still profits against the
+marginal submitter, at the same rate: marginal correctness is not conditional
+correctness, and the difference is the whole downstream game.
 
 ## 5. Open problems
 
