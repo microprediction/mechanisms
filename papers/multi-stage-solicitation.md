@@ -17,8 +17,7 @@ really the best move. A chain is proper where an exogenous outcome anchors every
 stage; a downstream stage can then be scored on its own residual or, for the log
 score, at the top level. By that test the games mostly hold up, one of them only
 by a lucky accident. Flaws aside, the setup had pedagogical merit, as it made
-the shortcomings of conformal prediction obvious, because split conformal
-prediction is equivalent to a very basic and frequently uncompetitive entry.
+the limitations of conformal prediction particularly obvious.
 
 ---
 
@@ -41,9 +40,10 @@ the supply chain takes shape.
 
 We know of exactly one platform that chained probabilistic outputs this way:
 the retired microprediction platform, which ran several such chains at once.
-The only near-relative, Manifold's resolves-to-market markets, is the invalid
-case (§4). Chaining on point outputs is common, but that is derivative
-structure, not elicitation composition (§5).
+The only near-relative, Manifold's resolves-to-market markets, settles on
+another market's price with no exogenous outcome anywhere in the chain, the
+invalid unanchored case (§2). Chaining on point outputs is common, but that is
+derivative structure, not elicitation composition.
 
 **The microprediction platform.** A *stream* was a live quantity that someone
 published to the platform one value at a time: airport wait times, the
@@ -229,28 +229,8 @@ make this a calibration test: marginal standard-normality says nothing about the
 conditional law, and the reward goes to sharper conditional prediction, claimed
 by an entrant who holds better information and stakes on it.
 
-That arena is exactly where conformal prediction belongs, and split-conformal
-enters it as a weak contestant. With a residual nonconformity score it reports
-the empirical distribution of its calibration residuals, the same residual law
-at every input, so its uncertainty does not move with the covariates even as its
-point prediction does. On the `z1~` scale that is the default N(0,1) stake, and
-it cannot win the conditional game: marginal coverage is the pool's break-even
-line, and the information gap $I(R;X)$ is the rate at which a competitor whose
-residual law depends on the input takes its money. Adaptive conformal variants
-that let that law depend on the covariates are, in this picture, simply stronger
-entries, which is to say they are forecasting. The z-stream contests were
-already the place to chase conditional sharpness, and the bare split-conformal
-guarantee is a floor to clear, not a competitive strategy.
-
-Read the base market's consensus as a model. The conformal recipe, form the
-empirical distribution of that model's residuals and use it as the predictive
-law, is then one specific entry in the `z1~` market: the participant who submits
-the empirical distribution of the z-scores. A chained market treats it as just
-another contestant, better than the rest only if it wins and only for as long as
-it does. Conformal prediction instead privileges that entry a priori and calls
-it the answer. Seen this way it is a highly normative prescription, and one that
-runs against the spirit of competition: it fixes the answer in advance where a
-market would have it earned.
+That arena is exactly where conformal prediction belongs, and it enters as a
+weak, prescriptive entry; §4 develops the comparison.
 
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
@@ -281,7 +261,34 @@ Where they folded a joint onto a space-filling curve, the elicitation held but
 the implied metric did not. A chain is as valid as its weakest anchor and its
 settlement transform.
 
-## 4. Open problems
+## 4. Conformal prediction, nested
+
+Split-conformal prediction is the residual market of §2 with the competition
+switched off. Read the base predictor as the first stage. The conformal recipe,
+form the empirical distribution of that predictor's residuals and use it
+unchanged at every input, is one entry in the residual pool: the participant who
+submits the empirical residual law, which on the `z1~` scale is the default
+N(0,1) stake. Admit only participants willing to follow that recipe, barring
+anyone who would condition on the input, and the pool has a single strategy and
+reduces to conformal prediction. It is a nesting of the same mechanism, the
+residual stage with entry closed to non-conformists. A market would make that
+entry earn its keep and pay it only while no conditioning rival beats it;
+conformal privileges it a priori and calls it the answer. That is a highly
+normative move, and it runs against the spirit of competition: it fixes the
+answer in advance where a market would have it earned. Adaptive conformal
+variants that let the residual law depend on the input are the competition
+switched back on; they are forecasting.
+
+The same point comes from the other side. Suppose only conformists enter the
+base contest, and suppose they are right, so the base forecast is calibrated
+unconditionally and the `z1~` stream is marginally N(0,1). That settles nothing
+downstream. A `z1~` participant who conditions on the input and bets against the
+N(0,1) submitter still profits, at the rate $I(R;X)$ [@cotton2026conformalbetting],
+because marginal normality leaves the whole conditional structure unpriced. The
+information gap is exactly that profit: what a conditioning entrant takes from a
+forecast that is right on average and blind to the covariates.
+
+## 5. Open problems
 
 1. *Conservation of edge.* Wealth conservation across a chain is automatic and
    is not the invariant; the edge a truthful participant holds over the price,
