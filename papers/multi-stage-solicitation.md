@@ -15,7 +15,8 @@ games were built first, and here we ask, of each, whether truthful reporting was
 really the best move. A chain is proper where an exogenous outcome anchors every
 stage; a downstream stage can then be scored on its own residual or, for the log
 score, at the top level. By that test the games mostly hold up, one of them only
-by a lucky accident.
+by a lucky accident. Flaws aside, the setup had pedagogical merit, as it made
+the shortcomings of conformal prediction obvious.
 
 ---
 
