@@ -54,15 +54,18 @@ according to her honest distribution, the log-optimal all-in Kelly bet
 differently, so truthfulness here is the log-optimal player's property, not the
 pot split's.
 
-The base game settled only a single scalar. To make calibration and dependence
-into games of their own, the platform turned each of them into another scalar. Calibration first. Once the community
-has forecast a quantity, ask where the outcome actually landed in the forecast
-distribution: its percentile, or the z-score you get by pushing that percentile
-through a normal. Forecast well and those z-scores look standard normal;
-forecast badly and they drift or spread out. A z-score is just another number,
-so it opened its own stream, `z1~`, and predicting `z1~` meant predicting the
-first game's miscalibration. In the language of §2 this is the
-probability-integral transform run as a residual stage.
+The base game settled only a single scalar, but its output could be transformed
+into fresh scalars, and those became games of their own. Take the residual
+first. Once the community has forecast a stream, re-express each outcome on a
+community-relative scale: its percentile, or the z-score got by pushing that
+percentile through a normal. If the community is calibrated these z-scores are
+marginally standard normal, but that only says it is right on average, not that
+it is right given what you know. A z-score is just another number, so it opened
+its own stream, `z1~`, whose game is to predict the z-score's *conditional*
+distribution. Anyone whose conditional forecast beats the community's flat one
+is paid, so `z1~` is a full prediction game; the marginal being normal has
+nothing to do with it. In the language of §2 this is a residual stage on the
+base game's rank.
 
 Dependence used the same idea in reverse. The joint behaviour of two streams
 is two-dimensional, but a pool settles one number, so the two community
@@ -73,7 +76,7 @@ copula of the pair, `z2~`; three streams folded the same way gave `z3~`. A 2020
 copula contest ran exactly this on the five-minute comovements of five
 cryptocurrencies, contributors submitting 225 samples packed through the
 z-curve [@cotton2020copula]. A related stacked-lottery design let competing
-algorithms contribute monotone calibration maps that composed into one forecast
+algorithms contribute monotone maps that composed into one forecast
 [@cotton2020lottery, slides 29-31]. The platform is retired.
 
 **Its successors.** monteprediction is the base game with one stage repeated
@@ -135,7 +138,7 @@ market elicits the law of the residual $U=F_1(Y)$, settling at $u=F_1(y)$. If
 $F_1$ were the truth then $U$ is uniform (the probability integral transform),
 and whatever structure remains is the second stage's edge.
 
-![A residual chain. Stage 1's consensus $F_1$ becomes the frame for stage 2, which settles on the transformed outcome $u=F_1(y)$; the same realized $y$ anchors both. The base pool and its $z_1$ calibration stream are an instance.](figures/residual-chain)
+![A residual chain. Stage 1's consensus $F_1$ becomes the frame for stage 2, which settles on the transformed outcome $u=F_1(y)$; the same realized $y$ anchors both. The base pool and its $z_1$ residual stream are an instance.](figures/residual-chain)
 
 **Proposition 2 (the residual correction is a reweighting).** *For $F_1$
 strictly increasing with density $p_1>0$ and a residual report with density
@@ -200,19 +203,19 @@ hinge that kept the game roughly honest. monteprediction settles on continuous
 returns, so the same accident is not available to it; whether its plug-in
 density split needs a fair finite-sample correction is a live question.
 
-**The `z1~` calibration stream: a residual pool that rewards sharpness.**
+**The `z1~` residual stream: a full prediction game, not a calibration test.**
 Predicting the realized z-score is a proper elicitation of its law, anchored by
 the exogenous outcome (with the same jitter caveat as the base pool). It is a
-residual stage on the base game's PIT, and it does reward sharpness. If the
-community's forecast was miscalibrated, its z-scores drift or spread, and
-whoever predicts that is paid. And if the base forecast ignored a covariate, an
-entrant who conditions on it forecasts the z-score's conditional law, beats the
-flat uniform prediction, and collects the discarded conditional information as
-growth, at the rate $I(R;X)$ [@cotton2026conformalbetting]. What `z1~` does not
-deliver is a certificate from marginal statistics: a uniform PIT does not by
-itself witness a sharp forecast, so the premium for sharpness is claimed by an
-entrant who actually holds the better conditional information and stakes on it,
-not read off the calibration of the first game.
+residual stage on the base game's rank, and it pays for any edge over the
+community. If the community's forecast is biased or the wrong shape, its
+z-scores drift or spread, and whoever predicts that is paid. And if the base
+forecast ignored a covariate, an entrant who conditions on it forecasts the
+z-score's conditional law, beats the community's flat one, and collects the
+missed information as growth, at the rate $I(R;X)$ [@cotton2026conformalbetting].
+The z-scores being marginally standard normal under correct forecasting does not
+make this a calibration test: marginal uniformity says nothing about the
+conditional law, and the reward goes to sharper conditional prediction, claimed
+by an entrant who holds better information and stakes on it.
 
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
@@ -227,12 +230,12 @@ route scores random one-dimensional projections rather than one space-filling
 projection [@cotton2026pointcloud], averaging a defensible metric instead of
 fixing an arbitrary one.
 
-**The stacked lottery: a calibration diagnostic, composed.** Composing the
-monotone calibration maps of competing algorithms is the residual/PIT operator
-applied repeatedly, and it inherits the same standing as `z1~`: proper as
-elicitation of each stage's rank, informative as a calibration diagnostic, but
-not by itself a strictly proper score for the conditional forecast, since the
-PIT is blind to conditional sharpness.
+**The stacked lottery: residual stages composed.** The stacked lottery composed
+the monotone maps of competing algorithms, each remapping the running forecast
+toward the outcome. This is the residual operator applied in sequence, and it
+has the same standing as `z1~`: every stage is a proper residual elicitation
+that pays for the edge it adds, and the composition is a chain of them. Like
+`z1~`, it rewards sharper prediction at each stage, not merely a marginal fit.
 
 **The verdict.** The chains were the right idea and mostly the right mechanism.
 Where they settled on an exogenous outcome and scored a rank, they were proper
