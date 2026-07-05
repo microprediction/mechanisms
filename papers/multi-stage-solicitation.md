@@ -46,12 +46,13 @@ published to the platform one value at a time: airport wait times, the
 electricity load for New York State, emoji usage on Twitter. The base game was
 to forecast the next value of a stream before it arrived. A forecaster submitted
 225 Monte Carlo scenarios, a fixed-size sample standing for her predictive
-distribution, and when the value landed the pot was split in proportion to how
-near her scenarios fell to it. A contributor who bets to maximize her long-run
-wealth does best to place those scenarios according to her honest distribution:
-the log-optimal, all-in Kelly bet [@cotton2022microprediction]. That is a
-property of the log-optimal player, not of the pot split alone; a contributor
-optimizing something else stakes differently. This is the nearest-the-pin rule.
+distribution. When the value landed, the pot was split in proportion to how
+near her scenarios fell to it: the nearest-the-pin rule. A contributor who bets
+to maximize her long-run wealth does best under it to place her scenarios
+according to her honest distribution, the log-optimal all-in Kelly bet
+[@cotton2022microprediction]; a contributor optimizing something else stakes
+differently, so truthfulness here is the log-optimal player's property, not the
+pot split's.
 
 The base game settled only a single scalar. To make calibration and dependence
 into games of their own, the platform turned each of them into another scalar. Calibration first. Once the community
