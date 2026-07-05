@@ -75,17 +75,21 @@ the downstream stage. Four chains are possible, and only some carry content.
   forecast's error: a stage that emits a point leaves a residual, and a second
   stage elicits the residual's law. Point-to-probabilistic chaining *is* the
   residual construction of §3.
-- **Probabilistic → point.** Collapsing a distribution to a summary — its mean,
-  a chosen quantile — and chaining a point market on the summary throws away
-  the distributional content the upstream stage worked to produce. It is
-  well defined and lossy, the reverse of the residual construction, and of
-  little interest here.
+- **Probabilistic → point.** A distribution can be summarized by a number and
+  a point market chained on the summary, dropping whatever the summary omits.
+  How much that is depends on how many summaries you chain: one quantile or
+  moment loses most of the shape, but a battery of point markets, one per moment
+  or one per quantile on a grid, keeps proportionately more, and reassembling a
+  distribution from them is the market analogue of method-of-moments estimation.
+  In the limit a full quantile function is the distribution again. So this is a
+  lossy encoding of the probabilistic-to-probabilistic case, as coarse or as
+  fine as the number of summaries, rather than a design of its own.
 
-So the representation answers the question of what chains to what: point
-outputs chain among themselves as derivatives, distributions chain among
-themselves as elicitation, and the only bridge between the two worlds is the
-residual — reintroduce a distribution by scoring what a point forecast got
-wrong.
+So the representation settles what chains to what. Point outputs chain among
+themselves as derivatives, distributions among themselves as elicitation, and
+the two worlds meet in two ways: a residual stage adds a distribution to a point
+by scoring its error (§3), and a summary, or a battery of them, drops a
+distribution back to points.
 
 ## 3. Composing a chain, and the two ways to score it
 
