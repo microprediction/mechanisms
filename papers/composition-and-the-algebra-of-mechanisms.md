@@ -54,22 +54,6 @@ its deployment on the microprediction platform is a companion report
 [@cotton2026multistage]; here the object is the single-stage dictionary the
 chain is built from.
 
-What a stage elicits moves under transformation of its message or its
-outcome. Scoring a kernel-smoothed submission at the raw outcome elicits the
-deconvolution of the belief rather than the belief; jittering the settlement
-by the smoothing kernel repairs it. This is a property of a single stage, not
-of a chain, and it is the third question below; the companion point-cloud
-paper carries the full account [@cotton2026pointcloud].
-
-The sharpest use of a transformed stage is a residual market run behind a
-conformal predictor. Split-conformal prediction is a degenerate composition,
-a point predictor chained into a rank-based calibration stage with the pool
-step skipped, and the conditional information the predictor discards, the
-mutual information $I(R;X)$ between residual and input, is exactly the
-bankroll an input-conditioning entrant would grow in the residual pool while
-marginal coverage stays exact. That worked instance is a standalone note
-[@cotton2026conformalbetting]; §5 states it and points there.
-
 This note organizes the single-stage dictionary around three questions that
 are often blurred together:
 

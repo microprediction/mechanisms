@@ -257,22 +257,14 @@ blend in the score guards against high-dimensional fragility but not this tilt,
 and a matched jitter, or a fair finite-sample correction, would remove it. This
 is a live contest, so the point is not academic.
 
-**The `z1~` residual stream: a full prediction game, not a calibration test.**
-Predicting the realized z-score is a proper elicitation of its law, anchored by
-the exogenous outcome (with the same jitter caveat as the base pool). It is a
-residual stage on the base game's z-score, and it pays for any edge over the
-community. If the community's forecast is biased or the wrong shape, its
-z-scores drift or spread, and whoever predicts that is paid. And if the base
-forecast ignored a covariate, an entrant who conditions on it forecasts the
-z-score's conditional law, beats the community's flat one, and collects the
-missed information as growth, at the rate $I(R;X)$ [@cotton2026conformalbetting].
-The z-scores being marginally standard normal under correct forecasting does not
-make this only a calibration test: marginal standard-normality says nothing about the
-conditional law, and the reward goes to sharper conditional prediction, claimed
-by an entrant who holds better information and stakes on it.
-
-That arena is exactly where conformal prediction belongs, and it enters as a
-weak, prescriptive entry; §4 develops the comparison.
+**The `z1~` residual stream: valid, and sharp-rewarding.** Predicting the
+realized z-score is a proper elicitation of its law, anchored by the exogenous
+outcome (with the same jitter caveat as the base pool). It pays for any edge
+over the community: a forecaster who conditions on a covariate the base game
+ignored forecasts the z-score's conditional law, beats the community's flat one,
+and collects the missed information as log-wealth growth, at the rate $I(R;X)$
+[@cotton2026conformalbetting]. This is where conformal prediction sits, as a
+weak entry; §4 develops the comparison.
 
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
@@ -292,7 +284,7 @@ the monotone maps of competing algorithms, each remapping the running forecast
 toward the outcome. This is the residual operator applied in sequence, and it
 has the same standing as `z1~`: every stage is a proper residual elicitation
 that pays for the edge it adds, and the composition is a chain of them. Like
-`z1~`, it rewards sharper prediction at each stage, not merely a marginal fit.
+`z1~`, it rewards sharper prediction at each stage.
 
 **The verdict.** The chains were the right idea and mostly the right mechanism.
 Where they settled on an exogenous outcome and scored a residual, they were
