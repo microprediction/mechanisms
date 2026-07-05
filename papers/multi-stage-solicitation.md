@@ -104,8 +104,9 @@ smoothing.
 **For contrast, the point-output world.** Chaining on point outputs is
 everywhere: derivatives, the electricity virtual bids and transmission rights
 on day-ahead prices [@jha2023financial], a market on another market's reported
-number. But it is derivative structure, not composition of probabilistic elicitation. And the
-racetrack's win versus exotic pools, index versus single-name option books, and
+number. But it is derivative structure, not composition of probabilistic
+elicitation. But the racetrack's win versus exotic pools, index versus
+single-name option books, and
 tranche versus single-name CDS run margins and dependence in parallel books
 that settle independently, consistency left to arbitrage [@harville1973assigning;
 @hausch1981efficiency]; parallel is not chained, and the books can disagree.
