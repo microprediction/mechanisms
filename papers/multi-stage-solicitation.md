@@ -48,11 +48,10 @@ near her scenarios fell to it. A contributor who bets to maximize her long-run
 wealth does best to place those scenarios according to her honest distribution:
 the log-optimal, all-in Kelly bet [@cotton2022microprediction]. That is a
 property of the log-optimal player, not of the pot split alone; a contributor
-optimizing something else stakes differently. This is the nearest-the-pin rule,
-and it only ever settled one scalar.
+optimizing something else stakes differently. This is the nearest-the-pin rule.
 
-To make calibration and dependence into games of their own, the platform
-turned each of them into another scalar. Calibration first. Once the community
+The base game settled only a single scalar. To make calibration and dependence
+into games of their own, the platform turned each of them into another scalar. Calibration first. Once the community
 has forecast a quantity, ask where the outcome actually landed in the forecast
 distribution: its percentile, or the z-score you get by pushing that percentile
 through a normal. Forecast well and those z-scores look standard normal;
