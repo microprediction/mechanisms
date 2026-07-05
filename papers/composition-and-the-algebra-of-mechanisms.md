@@ -230,11 +230,12 @@ $C(\mathbf q')-C(\mathbf q)$ by definition, so costs over any path telescope;
 a round trip costs zero, and by translation equivariance the bundle
 $\alpha\mathbf 1$ costs exactly $\alpha$, its sure payout.
 (iii) The maker collects $C(\mathbf q)-C(\mathbf 0)$ and pays $q_i$, so
-$\mathrm{loss}_i=q_i-C(\mathbf q)+C(\mathbf 0)$. By Fenchel-Moreau,
+$\mathrm{loss}_i=q_i-C(\mathbf q)+C(\mathbf 0)$. Then
 $\sup_{\mathbf q}\big(\langle e_i,\mathbf q\rangle - C(\mathbf q)\big)
-=R^{**}(e_i)=R(e_i)$, and $C(\mathbf 0)=\sup_p -R(p)=-\inf_p R(p)$: by
-Fenchel-Moreau the first bound is the exact supremum of the loss over
-$\mathbf q$. The final inequality holds because $e_i\in\Delta$.
+=C^*(e_i)=R^{**}(e_i)=R(e_i)$ (Fenchel-Moreau, $R$ closed), and
+$C(\mathbf 0)=\sup_p -R(p)=-\inf_p R(p)$; hence the supremum of the loss over
+$\mathbf q$ is exactly $R(e_i)-\inf_p R(p)$. The final inequality holds because
+$e_i\in\Delta$.
 (iv) Lagrange: maximising $\langle p,\mathbf q\rangle-b\sum p_i\log p_i$
 subject to $\sum p_i=1$ gives $q_i-b(\log p_i+1)=\lambda$, so
 $p_i\propto e^{q_i/b}$, and substituting back yields
@@ -370,10 +371,12 @@ convolution of their cost functions.
 
 **Merge (Proposition 6: merging makers is infimal convolution;
 @rockafellar1970convex, @bhaskara2023general).** *For closed proper convex
-$f,g$: $(f\,\square\,g)^*=f^*+g^*$, and under the usual qualification that
-$f\,\square\,g$ is closed and exact (which holds for the finite-valued
-regularisers here, and in general after lower-semicontinuous closure) the two
-sides are equal rather than merely conjugate. Consequently, merging two
+$f,g$ the conjugate identity $(f\,\square\,g)^*=f^*+g^*$ holds unconditionally;
+recovering the primal form $f\,\square\,g=(f^*+g^*)^*$ needs $f\,\square\,g$
+closed and the infimal convolution exact (automatic for the finite-valued
+regularisers here, since $\operatorname{ri}\operatorname{dom}R_1\cap
+\operatorname{ri}\operatorname{dom}R_2=\operatorname{ri}\Delta\neq\varnothing$).
+Consequently, merging two
 cost-function makers with regularisers $R_1,R_2$ (cost functions $C_i=R_i^*$)
 yields the maker with regulariser $R_1+R_2$, and merging $\mathrm{LMSR}_{b_1}$
 with $\mathrm{LMSR}_{b_2}$ yields $\mathrm{LMSR}_{b_1+b_2}$: liquidity adds.*

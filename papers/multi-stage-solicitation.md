@@ -131,8 +131,8 @@ the convex dictionary behind them, are a companion paper [@cotton2026algebra].
 Two facts govern whether a chain of them is valid.
 
 **A chain is proper only where an outcome anchors it.** Every score is paid
-against a realized value or its rank; strip the outcome out and nothing pins
-the reports down. A chain whose final stage settles on a real outcome, with a
+against a realized value or its rank; strip the outcome out and every report
+profile is an equilibrium of the settlement, so nothing is elicited. A chain whose final stage settles on a real outcome, with a
 proper score at each stage, is well founded, and truthful reporting is a
 stagewise equilibrium.
 
@@ -191,7 +191,7 @@ downstream contributions differently.
 
 **Residual chains as boosting.** Proposition 2 has each residual stage multiply
 the running density by a likelihood ratio $g(z)/\varphi(z)$ fitted to what the
-chain so far gets wrong. That is the functional-gradient step of boosting under
+chain so far gets wrong. That is the greedy stagewise step of boosting under
 log loss [@mason1999boosting; @friedman2001greedy]: a chain of residual markets
 is stagewise gradient boosting, with the market's participants in place of the
 weak learners and their staked wealth in place of the learning rate. A weak
