@@ -31,17 +31,16 @@ weakest anchor and its settlement transform.
 
 ## 1. The games that were built
 
-The point of chaining is a supply chain for prediction, and the gain it chases
-is specialization. Ever since Adam Smith's pin factory [@smith1776wealth], the
-division of labour into cheap standardized steps has been what drives the cost
-of a repeated task down; a prediction supply chain applies the same logic,
-assembling a hard repeated forecast out of standardized ones, each stage doing
-one thing well and cheaply [@cotton2022microprediction]. Contests and markets
-make any single task cheap by rewarding competition, but competition does not
-compose. A market rewards the best forecast of its own
-settled quantity and stops there; nothing pulls its output into the next task.
-A supply chain needs one mechanism's output to become the message or the
-settled object of another, and that is what a chain is.
+Adam Smith's pin factory [@smith1776wealth] made pins cheaply by splitting the
+work into specialized steps. Prediction can be organized the same way. A
+forecast that has to be produced over and over is cheaper if it is broken into
+standard sub-forecasts, each contributed by whoever is best at it, the supply
+chain the microprediction project set out to build [@cotton2022microprediction].
+Markets and contests supply one half of that, the competition that makes any
+single sub-forecast cheap, but not the other half: a market pays for the best
+forecast of its own number and stops, with no reason to pass its output to a
+next stage. Chaining supplies the rest. The output of one mechanism becomes the
+message, or the settled outcome, of the next.
 
 A handful of forecasting contests have chained one elicitation mechanism onto
 another this way. One platform ran several such chains at once.
@@ -198,14 +197,19 @@ hinge that kept the game roughly honest. monteprediction settles on continuous
 returns, so the same accident is not available to it; whether its plug-in
 density split needs a fair finite-sample correction is a live question.
 
-**The `z1~` calibration stream: a valid pool, but a diagnostic.** Predicting
-the realized z-score is a proper elicitation of its law — the outcome, the
-z-score, is exogenous and anchors it (with the same jitter caveat as any
-nearest-the-pin pool). What it certifies is narrower than it looks. A
-marginally uniform PIT does not witness a sharp forecast; reporting the
-unconditional law of an i.i.d. sequence passes the calibration test while
-ignoring every covariate. So `z1~` is a valid game about calibration relative
-to its own test class, not a certificate that the first game was good.
+**The `z1~` calibration stream: a residual pool that rewards sharpness.**
+Predicting the realized z-score is a proper elicitation of its law, anchored by
+the exogenous outcome (with the same jitter caveat as the base pool). It is a
+residual stage on the base game's PIT, and it does reward sharpness. If the
+community's forecast was miscalibrated, its z-scores drift or spread, and
+whoever predicts that is paid. And if the base forecast ignored a covariate, an
+entrant who conditions on it forecasts the z-score's conditional law, beats the
+flat uniform prediction, and collects the discarded conditional information as
+growth, at the rate $I(R;X)$ [@cotton2026conformalbetting]. What `z1~` does not
+deliver is a certificate from marginal statistics: a uniform PIT does not by
+itself witness a sharp forecast, so the premium for sharpness is claimed by an
+entrant who actually holds the better conditional information and stakes on it,
+not read off the calibration of the first game.
 
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
