@@ -1,6 +1,6 @@
 # Multi-Stage Solicitation of Probability Distributions
 
-### Experiments and Theory
+### Experiments, Theory and Perspective on Conformal Prediction
 
 Peter Cotton · *Working draft v0.3* · 2026
 
@@ -216,6 +216,15 @@ The z-scores being marginally standard normal under correct forecasting does not
 make this a calibration test: marginal uniformity says nothing about the
 conditional law, and the reward goes to sharper conditional prediction, claimed
 by an entrant who holds better information and stakes on it.
+
+That arena is exactly where conformal prediction belongs, and it belongs there
+as a weak entrant. A single-shape conformal predictor applies one residual law
+at every input, marginally valid but flat in the covariates, so it is the `z1~`
+contestant that stakes uniform and has no chance of being sharp. Its coverage
+guarantee is the pool's break-even line, and the information gap $I(R;X)$ is the
+rate at which any conditionally sharper competitor takes its money. The z-stream
+contests were already the place to chase conditional sharpness; conformal
+prediction is a dumb entry in that contest, not an alternative to it.
 
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
