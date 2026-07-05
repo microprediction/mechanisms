@@ -16,8 +16,8 @@ games were built first, and here we ask, of each, whether truthful reporting was
 really the best move. A chain is proper where an exogenous outcome anchors every
 stage; a downstream stage can then be scored on its own residual or, for the log
 score, at the top level. By that test the games mostly hold up, one of them only
-by a lucky accident. Flaws aside, the setup had pedagogical merit, as it made
-the limitations of conformal prediction particularly obvious.
+by a lucky accident. Flaws aside, the setup has continuing pedagogical merit, as
+it illustrates the inherent limitation of conformal prediction.
 
 ---
 
@@ -36,14 +36,13 @@ reason to pass its output along.
 
 Chaining can help. If the output of one mechanism becomes the message, or the
 settled outcome, of the next, the separate contests link into a pipeline and
-the supply chain takes shape.
-
-We know of exactly one platform that chained probabilistic outputs this way:
-the retired microprediction platform, which ran several such chains at once.
+the supply chain takes shape. However, we know of exactly one platform that
+chained probabilistic outputs this way: the retired microprediction platform,
+which ran several such chains at once.
 The only near-relative, Manifold's resolves-to-market markets, settles on
 another market's price with no exogenous outcome anywhere in the chain, the
 invalid unanchored case (§2). Chaining on point outputs is common, but that is
-derivative structure, not elicitation composition.
+derivative structure, not composition of probabilistic elicitation.
 
 **The microprediction platform.** A *stream* was a live quantity that someone
 published to the platform one value at a time: airport wait times, the
@@ -61,22 +60,26 @@ pot split's.
 The base game settled only a single scalar, but its output could be transformed
 into fresh scalars, and those became games of their own. Take the residual
 first. Once the community has forecast a stream, re-express each outcome on a
-community-relative scale: its percentile, or the z-score got by pushing that
-percentile through a normal. If the community is calibrated these z-scores are
-marginally standard normal, but that only says it is right on average, not that
-it is right given what you know. A z-score is just another number, so it opened
-its own stream, `z1~`, whose game is to predict the z-score's *conditional*
-distribution. Anyone whose conditional forecast beats the community's flat one
-is paid, so `z1~` is a full prediction game; the marginal being normal has
-nothing to do with it. In the language of §2 this is a residual stage on the
-base game's rank.
+community-relative scale: its percentile, or the z-score got from that
+percentile by the inverse normal transform.^[The name *z-score* is only a loose
+analogy to the statistical one; nothing here is assumed normal. The number is
+the community's market-implied law $F_1$, an arbitrary distributional transform
+rather than a Gaussian, composed with the inverse normal $\Phi^{-1}$. Because
+$F_1$ is the market's implied distribution, it is a risk-neutral z-score.] The
+z-score opened its own stream, `z1~`: forecast the distribution of the next one.
+A participant who can say more about it than the community can, because the
+community is biased, is the wrong shape, or is blind to a covariate she holds,
+is paid for the difference. In the language of §2 this is a residual stage,
+eliciting the law of that z-score.
 
-Dependence used the same idea in reverse. The joint behaviour of two streams
-is two-dimensional, but a pool settles one number, so the two community
-percentiles were folded into a single number by the Morton z-curve: interleave
-the binary digits of the two coordinates, the way a geohash packs latitude and
-longitude into one string. A pool on the folded number was a market on the
-copula of the pair, `z2~`; three streams folded the same way gave `z3~`. A 2020
+Dependence used the same idea. The joint behaviour of two streams is
+two-dimensional, but a pool settles one number. Each stream's z-score was mapped
+back to a uniform on $[0,1]$ by the normal CDF, the two uniforms were
+interleaved into one by the Morton z-curve (interleave the binary digits of the
+two coordinates, the way a geohash packs latitude and longitude into one
+string), and the result was put back through the inverse normal transform to
+give `z2~`, a pool on which is a market on the copula of the pair. Three streams
+folded the same way gave `z3~`. A 2020
 copula contest ran exactly this on the five-minute comovements of five
 cryptocurrencies, contributors submitting 225 samples packed through the
 z-curve [@cotton2020copula]. A related stacked-lottery design let competing
@@ -97,7 +100,7 @@ smoothing.
 **For contrast, the point-output world.** Chaining on point outputs is
 everywhere: derivatives, the electricity virtual bids and transmission rights
 on day-ahead prices [@jha2023financial], a market on another market's reported
-number. But it is derivative structure, not elicitation composition. And the
+number. But it is derivative structure, not composition of probabilistic elicitation. And the
 racetrack's win versus exotic pools, index versus single-name option books, and
 tranche versus single-name CDS run margins and dependence in parallel books
 that settle independently, consistency left to arbitrage [@harville1973assigning;
@@ -197,15 +200,18 @@ Take the games of §1 to the tests of §2.
 contributor the density their smoothed samples placed at the realized value.
 By Proposition 3, scored at the raw outcome that rewards a deconvolution of the
 belief, not the belief: a contributor whose honest law is Gaussian would be paid
-most by submitting samples with variance $h^2$ *below* the truth. The platform
-escaped this, but by luck. Discrete outcomes caused computational trouble (ties
+most by submitting samples with variance $h^2$ *below* the truth.
+
+The platform escaped this, but by luck. Discrete outcomes caused computational trouble (ties
 when the outcome fell on a submitted sample, degenerate estimates), so the
 implementation jittered the settlement to smooth them over. A jitter of the
 outcome is the repair Proposition 3 prescribes, and it removed the deconvolution
 incentive — a fortunate accident, even though the amount added for numerical
 comfort was almost certainly not the amount matched to the smoothing scale that
 strict propriety asks. The hack that kept the arithmetic well behaved was the
-hinge that kept the game roughly honest. monteprediction is the same rule in
+hinge that kept the game roughly honest.
+
+monteprediction is the same rule in
 eleven continuous dimensions, and here the accident is not available: its score
 reads an exponential-kernel density of the submitted scenarios at the raw
 realised vector, with no jitter. By Proposition 3 that is the improper case,

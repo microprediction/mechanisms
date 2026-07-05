@@ -146,3 +146,10 @@ figure.fig figcaption {
   margin: 0.6rem auto 0; max-width: 40rem;
   color: var(--muted); font-size: 0.9rem; text-align: left;
 }
+
+/* Footnotes on rendered paper pages */
+sup.fnref { font-size: 0.75em; line-height: 0; }
+sup.fnref a { text-decoration: none; }
+.footnotes { margin-top: 2rem; font-size: 0.9rem; color: var(--muted); }
+.footnotes ol { padding-left: 1.2rem; }
+.footnotes li { margin: 0.4rem 0; }

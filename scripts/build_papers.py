@@ -107,6 +107,20 @@ def _restore_math(text: str, spans: list[str]) -> str:
     return text
 
 
+FN_TOKEN = "\x00FN{}\x00"
+
+
+def _extract_footnotes(text: str):
+    """Replace inline ^[...] footnotes with tokens; return (text, bodies)."""
+    bodies: list[str] = []
+
+    def stash(m: "re.Match") -> str:
+        bodies.append(m.group(1))
+        return FN_TOKEN.format(len(bodies) - 1)
+
+    return re.sub(r"\^\[([^\]]*)\]", stash, text), bodies
+
+
 def _inline(s: str) -> str:
     """Inline markdown -> HTML on math-free text (escape first, then mark up)."""
     s = html_mod.escape(s, quote=False)
@@ -141,6 +155,7 @@ def _slugify(s: str) -> str:
 def md_to_html(md: str) -> tuple[str, str]:
     """Return (title, body html)."""
     text, spans = _extract_math(md)
+    text, footnotes = _extract_footnotes(text)
     lines = text.split("\n")
     out: list[str] = []
     title = ""
@@ -227,6 +242,17 @@ def md_to_html(md: str) -> tuple[str, str]:
         para.append(stripped)
     close_blocks()
     body = _restore_math("\n".join(out), spans)
+    if footnotes:
+        for i in range(len(footnotes)):
+            ref = (f'<sup class="fnref"><a id="fnref-{i+1}" '
+                   f'href="#fn-{i+1}">{i+1}</a></sup>')
+            body = body.replace(FN_TOKEN.format(i), ref)
+        items = "".join(
+            f'<li id="fn-{i+1}">{_restore_math(_inline(fn), spans)} '
+            f'<a href="#fnref-{i+1}">↩</a></li>'
+            for i, fn in enumerate(footnotes))
+        body += ('\n    <section class="footnotes"><hr />\n    <ol>'
+                 + items + "</ol></section>")
     return title, body
 
 
