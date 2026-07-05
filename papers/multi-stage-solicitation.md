@@ -44,6 +44,10 @@ another market's price with no exogenous outcome anywhere in the chain, the
 invalid unanchored case (§2). Chaining on point outputs is common, but that is
 derivative structure, not composition of probabilistic elicitation.
 
+Conformal prediction is a closer cousin. It has drawn wide attention lately, and
+it is exactly a prescription for residual modeling, which we read here as a
+restricted, invitation-only variety of chained market (§4).
+
 **The microprediction platform.** A *stream* was a live quantity that someone
 published to the platform one value at a time: airport wait times, the
 electricity load for New York State, emoji usage on Twitter. The base game was
