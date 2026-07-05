@@ -273,6 +273,11 @@ settlement transform.
 
 ## 4. Conformal prediction, nested
 
+Conformal prediction can be read as a degenerate case of a two-stage
+solicitation: a base forecast, then a residual market in which competition has
+been restricted, probably unwisely, to a single unconditional entry. This can be
+seen in two ways.
+
 A residual pool sorts its entrants by what they condition on. An *unconditional*
 participant submits one law for the z-score, the same whatever the input; a
 *conditional* participant submits a law that varies with the covariates she
