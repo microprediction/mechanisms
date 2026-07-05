@@ -5,6 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Mechanisms — Landscape</title>
   <link rel="stylesheet" href="./style.css" />
+  <style>
+    /* Landscape tables: sortable headers, a binary Chaining column, and
+       platform names that wrap rather than dominate the width. */
+    table.impl tbody td:first-child { white-space: normal; }
+    table.impl td.chain { text-align: center; font-weight: 600; white-space: nowrap; }
+    table.impl.sortable thead th { cursor: pointer; user-select: none; white-space: nowrap; }
+    table.impl.sortable thead th::after { content: "\2195"; opacity: 0.25; font-size: 0.8em; margin-left: 4px; }
+    table.impl.sortable thead th.asc::after { content: "\2191"; opacity: 0.85; }
+    table.impl.sortable thead th.desc::after { content: "\2193"; opacity: 0.85; }
+  </style>
 </head>
 <body>
   <header class="site-header">
@@ -40,37 +50,38 @@
       paper</a>: a stage consumes reports, threads a state (wealth,
       reputation, stake), and emits an aggregate plus transfers.
       <em>Multi-stage</em> below means one mechanism's output is the priced
-      or scored object of another, not merely a repeated game. Entries
-      marked <strong>·M·</strong> have that structure. One further axis
-      matters: whether the reused output is a <em>point</em> (a price, a
-      projected winner), which is ordinary derivative structure, or
+      or scored object of another, not merely a repeated game. The
+      <strong>Chaining</strong> column marks entries with that structure, and
+      any column header can be clicked to sort. One further axis matters:
+      whether the reused output is a <em>point</em> (a price, a projected
+      winner), which is ordinary derivative structure, or
       <em>probabilistic</em> (a distribution, percentile, rank), which is
       rare; the closing section keeps the two apart. Statuses with
       <em>(?)</em> could not be fully verified.
     </p>
 
     <h2 id="probability-markets">Probability markets</h2>
-    <div class="table-wrap"><table class="impl">
-      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+    <div class="table-wrap"><table class="impl sortable">
+      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Chaining</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
       <tbody>
-        <tr><td><a href="https://polymarket.com">Polymarket</a></td><td>trades</td><td>order book, on-chain settlement</td><td>price</td><td>wealth</td><td>live</td><td>2020</td></tr>
-        <tr><td><a href="https://kalshi.com">Kalshi</a></td><td>trades</td><td>regulated order book (CFTC DCM)</td><td>price</td><td>wealth</td><td>live</td><td>2021</td></tr>
-        <tr><td><a href="https://www.predictit.org">PredictIt</a></td><td>trades ($850 cap)</td><td>order book (no-action letter)</td><td>price</td><td>wealth</td><td>live</td><td>2014</td></tr>
-        <tr><td><a href="https://iem.uiowa.edu">Iowa Electronic Markets</a></td><td>trades</td><td>order book (academic)</td><td>price</td><td>wealth</td><td>live</td><td>1988</td></tr>
-        <tr><td><a href="https://www.betfair.com">Betfair Exchange</a></td><td>back/lay bets</td><td>order book on odds; Betfair SP reconciles the book parimutuel-style</td><td>odds</td><td>wealth</td><td>live</td><td>2000</td></tr>
-        <tr><td><a href="https://smarkets.com">Smarkets</a></td><td>trades</td><td>order book</td><td>odds</td><td>wealth</td><td>live</td><td>2008</td></tr>
-        <tr><td><a href="https://www.futuur.com">Futuur</a></td><td>trades</td><td>AMM (LMSR family)</td><td>price</td><td>wealth</td><td>live</td><td>2017</td></tr>
-        <tr><td><a href="https://predict.hypermind.com">Hypermind</a></td><td>trades (prizes)</td><td>order book + curated panels</td><td>price + panel</td><td>reputation</td><td>live</td><td>2014</td></tr>
-        <tr><td><a href="https://manifold.markets">Manifold</a> ·M·</td><td>trades (play money)</td><td>AMM; derivative and self-referential markets on other markets exist</td><td>price</td><td>play wealth</td><td>live</td><td>2021</td></tr>
-        <tr><td><a href="https://www.metaculus.com">Metaculus</a></td><td>probabilities, CDFs</td><td>proper-score leaderboards</td><td>community aggregate + internal recalibrated model</td><td>reputation</td><td>live</td><td>2015</td></tr>
-        <tr><td><a href="https://zeitgeist.pm">Zeitgeist</a></td><td>trades</td><td>on-chain AMM + dispute staking</td><td>price</td><td>wealth, stake</td><td>live (?)</td><td>2021</td></tr>
-        <tr><td><a href="https://azuro.org">Azuro</a></td><td>bets</td><td>peer-to-pool AMM</td><td>pool odds</td><td>wealth, LP stake</td><td>live</td><td>2022</td></tr>
-        <tr><td>Insight Prediction</td><td>trades</td><td>order book (crypto)</td><td>price</td><td>wealth</td><td>live, thin (?)</td><td>~2022</td></tr>
-        <tr><td>Drift BET</td><td>trades</td><td>order book (Solana)</td><td>price</td><td>wealth</td><td>launched 2024 (?)</td><td>2024</td></tr>
-        <tr><td>Hollywood Stock Exchange</td><td>trades (play money)</td><td>dealer market maker</td><td>price</td><td>play wealth</td><td>live</td><td>1996</td></tr>
-        <tr><td>Augur</td><td>trades</td><td>on-chain book + staked dispute rounds on the reported outcome ·M·</td><td>price</td><td>wealth, REP stake</td><td>defunct</td><td>2018&ndash;~2022</td></tr>
-        <tr><td>Intrade</td><td>trades</td><td>order book</td><td>price</td><td>wealth</td><td>defunct</td><td>2001&ndash;2013</td></tr>
-        <tr><td>SciCast / DAGGRE</td><td>trades (play money)</td><td>combinatorial LMSR</td><td>price</td><td>play wealth</td><td>defunct</td><td>2011&ndash;2015</td></tr>
+        <tr><td><a href="https://polymarket.com">Polymarket</a></td><td>trades</td><td>order book, on-chain settlement</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>live</td><td>2020</td></tr>
+        <tr><td><a href="https://kalshi.com">Kalshi</a></td><td>trades</td><td>regulated order book (CFTC DCM)</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>live</td><td>2021</td></tr>
+        <tr><td><a href="https://www.predictit.org">PredictIt</a></td><td>trades ($850 cap)</td><td>order book (no-action letter)</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>live</td><td>2014</td></tr>
+        <tr><td><a href="https://iem.uiowa.edu">Iowa Electronic Markets</a></td><td>trades</td><td>order book (academic)</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>live</td><td>1988</td></tr>
+        <tr><td><a href="https://www.betfair.com">Betfair Exchange</a></td><td>back/lay bets</td><td>order book on odds; Betfair SP reconciles the book parimutuel-style</td><td class="chain" data-sort="0">&mdash;</td><td>odds</td><td>wealth</td><td>live</td><td>2000</td></tr>
+        <tr><td><a href="https://smarkets.com">Smarkets</a></td><td>trades</td><td>order book</td><td class="chain" data-sort="0">&mdash;</td><td>odds</td><td>wealth</td><td>live</td><td>2008</td></tr>
+        <tr><td><a href="https://www.futuur.com">Futuur</a></td><td>trades</td><td>AMM (LMSR family)</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>live</td><td>2017</td></tr>
+        <tr><td><a href="https://predict.hypermind.com">Hypermind</a></td><td>trades (prizes)</td><td>order book + curated panels</td><td class="chain" data-sort="0">&mdash;</td><td>price + panel</td><td>reputation</td><td>live</td><td>2014</td></tr>
+        <tr><td><a href="https://manifold.markets">Manifold</a></td><td>trades (play money)</td><td>AMM; derivative and self-referential markets on other markets exist</td><td class="chain" data-sort="1">&#10003;</td><td>price</td><td>play wealth</td><td>live</td><td>2021</td></tr>
+        <tr><td><a href="https://www.metaculus.com">Metaculus</a></td><td>probabilities, CDFs</td><td>proper-score leaderboards</td><td class="chain" data-sort="0">&mdash;</td><td>community aggregate + internal recalibrated model</td><td>reputation</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://zeitgeist.pm">Zeitgeist</a></td><td>trades</td><td>on-chain AMM + dispute staking</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth, stake</td><td>live (?)</td><td>2021</td></tr>
+        <tr><td><a href="https://azuro.org">Azuro</a></td><td>bets</td><td>peer-to-pool AMM</td><td class="chain" data-sort="0">&mdash;</td><td>pool odds</td><td>wealth, LP stake</td><td>live</td><td>2022</td></tr>
+        <tr><td>Insight Prediction</td><td>trades</td><td>order book (crypto)</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>live, thin (?)</td><td>~2022</td></tr>
+        <tr><td>Drift BET</td><td>trades</td><td>order book (Solana)</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>launched 2024 (?)</td><td>2024</td></tr>
+        <tr><td>Hollywood Stock Exchange</td><td>trades (play money)</td><td>dealer market maker</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>play wealth</td><td>live</td><td>1996</td></tr>
+        <tr><td>Augur</td><td>trades</td><td>on-chain book + staked dispute rounds on the reported outcome</td><td class="chain" data-sort="1">&#10003;</td><td>price</td><td>wealth, REP stake</td><td>defunct</td><td>2018&ndash;~2022</td></tr>
+        <tr><td>Intrade</td><td>trades</td><td>order book</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>wealth</td><td>defunct</td><td>2001&ndash;2013</td></tr>
+        <tr><td>SciCast / DAGGRE</td><td>trades (play money)</td><td>combinatorial LMSR</td><td class="chain" data-sort="0">&mdash;</td><td>price</td><td>play wealth</td><td>defunct</td><td>2011&ndash;2015</td></tr>
       </tbody>
     </table></div>
     <p>
@@ -83,59 +94,60 @@
     </p>
 
     <h2 id="tournaments">Forecasting tournaments and polls</h2>
-    <div class="table-wrap"><table class="impl">
-      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+    <div class="table-wrap"><table class="impl sortable">
+      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Chaining</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
       <tbody>
-        <tr><td><a href="https://www.gjopen.com">Good Judgment Open</a></td><td>probabilities</td><td>Brier leaderboards</td><td>community aggregate; feeds Superforecaster selection</td><td>reputation</td><td>live</td><td>2015</td></tr>
-        <tr><td><a href="https://goodjudgment.com">Good Judgment Inc</a></td><td>probabilities (vetted panel)</td><td>paid panel</td><td>proprietary weighted pool</td><td>reputation</td><td>live</td><td>2015</td></tr>
-        <tr><td><a href="https://www.randforecastinginitiative.org">RAND Forecasting Initiative</a> (ex-INFER, ex-Foretell)</td><td>probabilities</td><td>score leaderboards</td><td>algorithmic crowd aggregate</td><td>reputation</td><td>live</td><td>2020</td></tr>
-        <tr><td>IARPA ACE / Good Judgment Project</td><td>probabilities</td><td>multi-team tournament</td><td>aggregation was the research object</td><td>reputation</td><td>over</td><td>2011&ndash;2015</td></tr>
-        <tr><td>IARPA Hybrid Forecasting Competition</td><td>human-machine probabilities</td><td>tournament</td><td>hybrid aggregation</td><td>reputation</td><td>over</td><td>2017&ndash;2020</td></tr>
-        <tr><td><a href="https://mofc.unic.ac.cy">M-competitions</a></td><td>points, intervals, quantiles; M6 added portfolios</td><td>one-off prize contests</td><td>post-hoc analysis only</td><td>none</td><td>M6 complete; no M7 announced</td><td>1982</td></tr>
-        <tr><td><a href="https://www.estimize.com">Estimize</a></td><td>point estimates (EPS, macro)</td><td>leaderboard</td><td>weighted consensus resold as a quant data product</td><td>reputation</td><td>live</td><td>2011</td></tr>
-        <tr><td><a href="https://www.kaggle.com">Kaggle</a></td><td>model predictions</td><td>leaderboard prizes, hidden test set</td><td>none</td><td>reputation</td><td>live</td><td>2010</td></tr>
-        <tr><td>Replication Markets</td><td>probabilities</td><td>play-money LMSR + surveys</td><td>market vs survey comparison</td><td>play wealth</td><td>over</td><td>2019&ndash;2021</td></tr>
+        <tr><td><a href="https://www.gjopen.com">Good Judgment Open</a></td><td>probabilities</td><td>Brier leaderboards</td><td class="chain" data-sort="0">&mdash;</td><td>community aggregate; feeds Superforecaster selection</td><td>reputation</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://goodjudgment.com">Good Judgment Inc</a></td><td>probabilities (vetted panel)</td><td>paid panel</td><td class="chain" data-sort="0">&mdash;</td><td>proprietary weighted pool</td><td>reputation</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://www.randforecastinginitiative.org">RAND Forecasting Initiative</a></td><td>probabilities</td><td>score leaderboards (ex-INFER, ex-Foretell)</td><td class="chain" data-sort="0">&mdash;</td><td>algorithmic crowd aggregate</td><td>reputation</td><td>live</td><td>2020</td></tr>
+        <tr><td>IARPA ACE / GJP</td><td>probabilities</td><td>multi-team tournament</td><td class="chain" data-sort="0">&mdash;</td><td>aggregation was the research object</td><td>reputation</td><td>over</td><td>2011&ndash;2015</td></tr>
+        <tr><td>IARPA HFC</td><td>human-machine probabilities</td><td>hybrid forecasting tournament</td><td class="chain" data-sort="0">&mdash;</td><td>hybrid aggregation</td><td>reputation</td><td>over</td><td>2017&ndash;2020</td></tr>
+        <tr><td><a href="https://mofc.unic.ac.cy">M-competitions</a></td><td>points, intervals, quantiles; M6 added portfolios</td><td>one-off prize contests</td><td class="chain" data-sort="0">&mdash;</td><td>post-hoc analysis only</td><td>none</td><td>M6 complete; no M7 announced</td><td>1982</td></tr>
+        <tr><td><a href="https://www.estimize.com">Estimize</a></td><td>point estimates (EPS, macro)</td><td>leaderboard</td><td class="chain" data-sort="0">&mdash;</td><td>weighted consensus resold as a quant data product</td><td>reputation</td><td>live</td><td>2011</td></tr>
+        <tr><td><a href="https://www.kaggle.com">Kaggle</a></td><td>model predictions</td><td>leaderboard prizes, hidden test set</td><td class="chain" data-sort="0">&mdash;</td><td>none</td><td>reputation</td><td>live</td><td>2010</td></tr>
+        <tr><td>Replication Markets</td><td>probabilities</td><td>play-money LMSR + surveys</td><td class="chain" data-sort="0">&mdash;</td><td>market vs survey comparison</td><td>play wealth</td><td>over</td><td>2019&ndash;2021</td></tr>
       </tbody>
     </table></div>
 
     <h2 id="staked">Quant and staked tournaments</h2>
-    <div class="table-wrap"><table class="impl">
-      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+    <div class="table-wrap"><table class="impl sortable">
+      <thead><tr><th>Platform</th><th>Submits</th><th>Mechanism</th><th>Chaining</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
       <tbody>
-        <tr><td><a href="https://numer.ai">Numerai</a> ·M·</td><td>equity predictions</td><td>NMR staking, burns; paid CORR and marginal contribution</td><td>stake-weighted meta-model trades a hedge fund</td><td>stake</td><td>live</td><td>2015</td></tr>
-        <tr><td><a href="https://signals.numer.ai">Numerai Signals</a> ·M·</td><td>user-sourced signals</td><td>NMR staking</td><td>Signals meta-model into the fund</td><td>stake</td><td>live</td><td>2020</td></tr>
-        <tr><td><a href="https://crypto.numer.ai">Numerai Crypto</a> ·M·</td><td>token rankings</td><td>NMR staking</td><td>crypto meta-model</td><td>stake</td><td>live</td><td>2024</td></tr>
-        <tr><td><a href="https://hub.crunchdao.com">CrunchDAO</a> ·M·</td><td>model code on hidden data</td><td>prize pools, USDC payouts</td><td>ensemble delivered to clients; crunchers also feed Bittensor SN6</td><td>reputation</td><td>live</td><td>2021</td></tr>
-        <tr><td><a href="https://platform.worldquantbrain.com">WorldQuant BRAIN</a></td><td>alphas (code)</td><td>consultant contracts paid on out-of-sample alpha</td><td>alphas combined into internal portfolios</td><td>reputation</td><td>live</td><td>2016</td></tr>
-        <tr><td><a href="https://quantiacs.com">Quantiacs</a></td><td>trading systems</td><td>live out-of-sample contest, allocations</td><td>none (selection, not pooling)</td><td>track record</td><td>live</td><td>2014</td></tr>
-        <tr><td>QuantConnect Alpha Streams</td><td>algorithm signal streams</td><td>licensing marketplace</td><td>fund-side selection</td><td>reputation</td><td>defunct (~2022)</td><td>2018</td></tr>
-        <tr><td><a href="https://www.monteprediction.com">monteprediction</a></td><td>2<sup>20</sup> joint scenarios, 11 sector ETFs, weekly</td><td>density-proportional pot split; wealth threads across rounds, penalty for missing a week</td><td>community joint distribution and moments</td><td>wealth</td><td>live</td><td>2024</td></tr>
-        <tr><td>microprediction ·M·</td><td>225-sample distributional submissions on live streams</td><td>repeated nearest-the-pin lotteries</td><td>community CDF per stream; z-streams and bivariate/trivariate dependence streams were themselves contested</td><td>wealth</td><td>defunct</td><td>2019&ndash;2023</td></tr>
+        <tr><td><a href="https://numer.ai">Numerai</a></td><td>equity predictions</td><td>NMR staking, burns; paid CORR and marginal contribution</td><td class="chain" data-sort="1">&#10003;</td><td>stake-weighted meta-model trades a hedge fund</td><td>stake</td><td>live</td><td>2015</td></tr>
+        <tr><td><a href="https://signals.numer.ai">Numerai Signals</a></td><td>user-sourced signals</td><td>NMR staking</td><td class="chain" data-sort="1">&#10003;</td><td>Signals meta-model into the fund</td><td>stake</td><td>live</td><td>2020</td></tr>
+        <tr><td><a href="https://crypto.numer.ai">Numerai Crypto</a></td><td>token rankings</td><td>NMR staking</td><td class="chain" data-sort="1">&#10003;</td><td>crypto meta-model</td><td>stake</td><td>live</td><td>2024</td></tr>
+        <tr><td><a href="https://hub.crunchdao.com">CrunchDAO</a></td><td>model code on hidden data</td><td>prize pools, USDC payouts</td><td class="chain" data-sort="1">&#10003;</td><td>ensemble delivered to clients; crunchers also feed Bittensor SN6</td><td>reputation</td><td>live</td><td>2021</td></tr>
+        <tr><td><a href="https://platform.worldquantbrain.com">WorldQuant BRAIN</a></td><td>alphas (code)</td><td>consultant contracts paid on out-of-sample alpha</td><td class="chain" data-sort="0">&mdash;</td><td>alphas combined into internal portfolios</td><td>reputation</td><td>live</td><td>2016</td></tr>
+        <tr><td><a href="https://quantiacs.com">Quantiacs</a></td><td>trading systems</td><td>live out-of-sample contest, allocations</td><td class="chain" data-sort="0">&mdash;</td><td>none (selection, not pooling)</td><td>track record</td><td>live</td><td>2014</td></tr>
+        <tr><td>QuantConnect Alpha Streams</td><td>algorithm signal streams</td><td>licensing marketplace</td><td class="chain" data-sort="0">&mdash;</td><td>fund-side selection</td><td>reputation</td><td>defunct (~2022)</td><td>2018</td></tr>
+        <tr><td><a href="https://www.monteprediction.com">monteprediction</a></td><td>2<sup>20</sup> joint scenarios, 11 sector ETFs, weekly</td><td>density-proportional pot split; wealth threads across rounds, penalty for missing a week</td><td class="chain" data-sort="0">&mdash;</td><td>community joint distribution and moments</td><td>wealth</td><td>live</td><td>2024</td></tr>
+        <tr><td>microprediction</td><td>225-sample distributional submissions on live streams</td><td>repeated nearest-the-pin lotteries</td><td class="chain" data-sort="1">&#10003;</td><td>community CDF per stream; z-streams and bivariate/trivariate dependence streams were themselves contested</td><td>wealth</td><td>defunct</td><td>2019&ndash;2023</td></tr>
       </tbody>
     </table></div>
 
     <h2 id="crypto-networks">Crypto forecasting networks</h2>
-    <div class="table-wrap"><table class="impl">
-      <thead><tr><th>Network</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+    <div class="table-wrap"><table class="impl sortable">
+      <thead><tr><th>Network</th><th>Submits</th><th>Mechanism</th><th>Chaining</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
       <tbody>
-        <tr><td><a href="https://www.mode.network/synth">Synth (Bittensor SN50)</a></td><td>Monte Carlo price-path ensembles</td><td>CRPS-scored, softmax emissions</td><td>pooled into a synthetic-data product for DeFi</td><td>stake</td><td>live</td><td>2025</td></tr>
-        <tr><td><a href="https://numinous.ai">Numinous (SN6)</a> ·M·</td><td>event probabilities, forecasting agents</td><td>Brier-scored emissions</td><td>consensus model; targets and resolution are Polymarket markets</td><td>stake</td><td>live</td><td>2024</td></tr>
-        <tr><td><a href="https://taoshi.io">Taoshi PTN / Vanta (SN8)</a></td><td>trade signals</td><td>scored track records, emissions</td><td>signals packaged into products</td><td>stake</td><td>live</td><td>2023</td></tr>
-        <tr><td><a href="https://predictoor.ai">Ocean Predictoor</a></td><td>staked up/down predictions (5 and 60 min)</td><td>parimutuel slash-and-redistribute</td><td>stake-weighted feed sold to bots</td><td>stake</td><td>live</td><td>2023</td></tr>
-        <tr><td><a href="https://www.allora.network">Allora</a> ·M·</td><td>inferences; a second tier forecasts the workers' losses</td><td>performance-weighted emissions, EMA reputation</td><td>on-chain synthesis of both tiers</td><td>stake, reputation</td><td>live</td><td>2025 mainnet</td></tr>
-        <tr><td>Zeus (SN18)</td><td>gridded weather fields</td><td>error-scored emissions</td><td>best-miner selection</td><td>stake</td><td>live</td><td>~2025</td></tr>
-        <tr><td>Precog (SN55), Sportstensor (SN41)</td><td>price / sports forecasts</td><td>scored emissions</td><td>aggregate prediction</td><td>stake</td><td>live (?)</td><td>~2024</td></tr>
-        <tr><td><a href="https://cryptopond.xyz">Pond</a></td><td>ML models</td><td>competition prizes</td><td>winning models deployed into agents</td><td>points</td><td>live</td><td>~2024</td></tr>
+        <tr><td><a href="https://www.mode.network/synth">Synth (SN50)</a></td><td>Monte Carlo price-path ensembles</td><td>CRPS-scored, softmax emissions</td><td class="chain" data-sort="0">&mdash;</td><td>pooled into a synthetic-data product for DeFi</td><td>stake</td><td>live</td><td>2025</td></tr>
+        <tr><td><a href="https://numinous.ai">Numinous (SN6)</a></td><td>event probabilities, forecasting agents</td><td>Brier-scored emissions</td><td class="chain" data-sort="1">&#10003;</td><td>consensus model; targets and resolution are Polymarket markets</td><td>stake</td><td>live</td><td>2024</td></tr>
+        <tr><td><a href="https://taoshi.io">Taoshi PTN / Vanta (SN8)</a></td><td>trade signals</td><td>scored track records, emissions</td><td class="chain" data-sort="0">&mdash;</td><td>signals packaged into products</td><td>stake</td><td>live</td><td>2023</td></tr>
+        <tr><td><a href="https://predictoor.ai">Ocean Predictoor</a></td><td>staked up/down predictions (5 and 60 min)</td><td>parimutuel slash-and-redistribute</td><td class="chain" data-sort="0">&mdash;</td><td>stake-weighted feed sold to bots</td><td>stake</td><td>live</td><td>2023</td></tr>
+        <tr><td><a href="https://www.allora.network">Allora</a></td><td>inferences; a second tier forecasts the workers' losses</td><td>performance-weighted emissions, EMA reputation</td><td class="chain" data-sort="1">&#10003;</td><td>on-chain synthesis of both tiers</td><td>stake, reputation</td><td>live</td><td>2025 mainnet</td></tr>
+        <tr><td>Zeus (SN18)</td><td>gridded weather fields</td><td>error-scored emissions</td><td class="chain" data-sort="0">&mdash;</td><td>best-miner selection</td><td>stake</td><td>live</td><td>~2025</td></tr>
+        <tr><td>Precog (SN55), Sportstensor (SN41)</td><td>price / sports forecasts</td><td>scored emissions</td><td class="chain" data-sort="0">&mdash;</td><td>aggregate prediction</td><td>stake</td><td>live (?)</td><td>~2024</td></tr>
+        <tr><td><a href="https://cryptopond.xyz">Pond</a></td><td>ML models</td><td>competition prizes</td><td class="chain" data-sort="0">&mdash;</td><td>winning models deployed into agents</td><td>points</td><td>live</td><td>~2024</td></tr>
       </tbody>
     </table></div>
 
     <h2 id="totes">Totes</h2>
-    <div class="table-wrap"><table class="impl">
-      <thead><tr><th>Operator</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+    <div class="table-wrap"><table class="impl sortable">
+      <thead><tr><th>Operator</th><th>Submits</th><th>Mechanism</th><th>Chaining</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
       <tbody>
-        <tr><td>US racetrack tote</td><td>bets</td><td>separate parimutuel pools per bet type: win/place/show carry the margins, exacta/trifecta/pick-6 the joint orders (daily double 1931, exacta 1960s, trifecta 1971)</td><td>pool odds per pool; Harville map is the cross-pool consistency condition</td><td>wealth</td><td>live</td><td>1870s</td></tr>
-        <tr><td><a href="https://www.hkjc.com">Hong Kong Jockey Club</a></td><td>bets</td><td>parimutuel at the largest per-race scale</td><td>pool odds</td><td>wealth</td><td>live</td><td>1884</td></tr>
-        <tr><td>Japan Racing Association</td><td>bets</td><td>largest tote by handle</td><td>pool odds</td><td>wealth</td><td>live</td><td>1954</td></tr>
+        <tr><td>Ellerslie &mdash; Julius Totalisator</td><td>bets</td><td>the first automatic totalisator: George Julius's electromechanical machine computed and displayed parimutuel pool odds live (Ellerslie Racecourse, Auckland)</td><td class="chain" data-sort="0">&mdash;</td><td>pool odds</td><td>wealth</td><td>historic (first of its kind)</td><td>1913</td></tr>
+        <tr><td>US racetrack tote</td><td>bets</td><td>separate parimutuel pools per bet type: win/place/show carry the margins, exacta/trifecta/pick-6 the joint orders (daily double 1931, exacta 1960s, trifecta 1971)</td><td class="chain" data-sort="0">&mdash;</td><td>pool odds per pool; Harville map is the cross-pool consistency condition</td><td>wealth</td><td>live</td><td>1870s</td></tr>
+        <tr><td><a href="https://www.hkjc.com">Hong Kong Jockey Club</a></td><td>bets</td><td>parimutuel at the largest per-race scale</td><td class="chain" data-sort="0">&mdash;</td><td>pool odds</td><td>wealth</td><td>live</td><td>1884</td></tr>
+        <tr><td>Japan Racing Association</td><td>bets</td><td>largest tote by handle</td><td class="chain" data-sort="0">&mdash;</td><td>pool odds</td><td>wealth</td><td>live</td><td>1954</td></tr>
       </tbody>
     </table></div>
     <p>
@@ -149,15 +161,15 @@
     </p>
 
     <h2 id="financial">Financial-market analogues</h2>
-    <div class="table-wrap"><table class="impl">
-      <thead><tr><th>Market</th><th>Submits</th><th>Mechanism</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
+    <div class="table-wrap"><table class="impl sortable">
+      <thead><tr><th>Market</th><th>Submits</th><th>Mechanism</th><th>Chaining</th><th>Aggregation</th><th>State</th><th>Status</th><th>Since</th></tr></thead>
       <tbody>
-        <tr><td>Two-settlement electricity (PJM, CAISO, ERCOT, EU)</td><td>offers, bids</td><td>day-ahead auction, then real-time settlement with deviations from day-ahead positions in the settlement formula; same commodity settled twice</td><td>locational prices</td><td>wealth (collateralised)</td><td>live</td><td>1990s</td></tr>
-        <tr><td>Virtual / convergence bids ·M·</td><td>purely financial bids</td><td>instruments written on the day-ahead stage's output: payoff is the day-ahead-to-real-time price spread, a bet on the first stage's pricing error</td><td>&mdash;</td><td>wealth</td><td>live</td><td>2000s</td></tr>
-        <tr><td>FTR / CRR auctions ·M·</td><td>bids on congestion spreads</td><td>instruments settled on day-ahead congestion prices, a derivative on the first market's published output</td><td>auction prices</td><td>wealth</td><td>live</td><td>1998</td></tr>
-        <tr><td>Index-vs-single-name dispersion</td><td>option trades</td><td>parallel books: single-name options carry the margins, index options the joint; implied correlation is the consistency variable, traded by arbitrage</td><td>implied correlation</td><td>wealth</td><td>live</td><td>~1999</td></tr>
-        <tr><td>CDO base correlation</td><td>tranche trades</td><td>parallel books: single-name CDS carry the margins, tranches the dependence; the base-correlation curve is the consistency variable</td><td>base correlation curve</td><td>wealth</td><td>largely historical</td><td>2004&ndash;2008</td></tr>
-        <tr><td><a href="https://www.cmegroup.com/markets/weather.html">CME weather derivatives</a></td><td>futures, options on degree-day indices</td><td>exchange order book</td><td>prices</td><td>wealth</td><td>live</td><td>1999</td></tr>
+        <tr><td>Two-settlement electricity</td><td>offers, bids</td><td>day-ahead auction, then real-time settlement with deviations from day-ahead positions in the settlement formula; same commodity settled twice (PJM, CAISO, ERCOT, EU)</td><td class="chain" data-sort="0">&mdash;</td><td>locational prices</td><td>wealth (collateralised)</td><td>live</td><td>1990s</td></tr>
+        <tr><td>Virtual / convergence bids</td><td>purely financial bids</td><td>instruments written on the day-ahead stage's output: payoff is the day-ahead-to-real-time price spread, a bet on the first stage's pricing error</td><td class="chain" data-sort="1">&#10003;</td><td>&mdash;</td><td>wealth</td><td>live</td><td>2000s</td></tr>
+        <tr><td>FTR / CRR auctions</td><td>bids on congestion spreads</td><td>instruments settled on day-ahead congestion prices, a derivative on the first market's published output</td><td class="chain" data-sort="1">&#10003;</td><td>auction prices</td><td>wealth</td><td>live</td><td>1998</td></tr>
+        <tr><td>Index-vs-single-name dispersion</td><td>option trades</td><td>parallel books: single-name options carry the margins, index options the joint; implied correlation is the consistency variable, traded by arbitrage</td><td class="chain" data-sort="0">&mdash;</td><td>implied correlation</td><td>wealth</td><td>live</td><td>~1999</td></tr>
+        <tr><td>CDO base correlation</td><td>tranche trades</td><td>parallel books: single-name CDS carry the margins, tranches the dependence; the base-correlation curve is the consistency variable</td><td class="chain" data-sort="0">&mdash;</td><td>base correlation curve</td><td>wealth</td><td>largely historical</td><td>2004&ndash;2008</td></tr>
+        <tr><td><a href="https://www.cmegroup.com/markets/weather.html">CME weather derivatives</a></td><td>futures, options on degree-day indices</td><td>exchange order book</td><td class="chain" data-sort="0">&mdash;</td><td>prices</td><td>wealth</td><td>live</td><td>1999</td></tr>
       </tbody>
     </table></div>
 
@@ -214,5 +226,41 @@
     <a href="https://github.com/microprediction/mechanisms">Source</a> &middot;
     Maintained by <a href="https://github.com/microprediction">Peter Cotton</a>.
   </footer>
+
+  <script>
+    // Click a header to sort that table by the column; click again to reverse.
+    // Numeric when the cell's data-sort or leading token is a number (years,
+    // the 0/1 Chaining flag); alphabetical otherwise.
+    (function () {
+      function key(cell) {
+        if (!cell) return "";
+        return cell.dataset.sort !== undefined ? cell.dataset.sort : cell.textContent.trim();
+      }
+      function num(s) {
+        var m = String(s).match(/^\s*~?(\d+(?:\.\d+)?)/);
+        return m ? parseFloat(m[1]) : NaN;
+      }
+      document.querySelectorAll("table.impl.sortable").forEach(function (table) {
+        var ths = table.tHead.rows[0].cells;
+        Array.prototype.forEach.call(ths, function (th, idx) {
+          th.addEventListener("click", function () {
+            var tbody = table.tBodies[0];
+            var rows = Array.prototype.slice.call(tbody.rows);
+            var asc = !th.classList.contains("asc");
+            Array.prototype.forEach.call(ths, function (h) { h.classList.remove("asc", "desc"); });
+            th.classList.add(asc ? "asc" : "desc");
+            rows.sort(function (a, b) {
+              var ka = key(a.cells[idx]), kb = key(b.cells[idx]);
+              var na = num(ka), nb = num(kb), r;
+              if (!isNaN(na) && !isNaN(nb)) r = na - nb;
+              else r = ka.localeCompare(kb);
+              return asc ? r : -r;
+            });
+            rows.forEach(function (row) { tbody.appendChild(row); });
+          });
+        });
+      });
+    })();
+  </script>
 </body>
 </html>
