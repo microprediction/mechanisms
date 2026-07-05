@@ -246,7 +246,7 @@ forecast ignored a covariate, an entrant who conditions on it forecasts the
 z-score's conditional law, beats the community's flat one, and collects the
 missed information as growth, at the rate $I(R;X)$ [@cotton2026conformalbetting].
 The z-scores being marginally standard normal under correct forecasting does not
-make this a calibration test: marginal standard-normality says nothing about the
+make this only a calibration test: marginal standard-normality says nothing about the
 conditional law, and the reward goes to sharper conditional prediction, claimed
 by an entrant who holds better information and stakes on it.
 
