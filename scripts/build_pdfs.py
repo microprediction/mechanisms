@@ -106,7 +106,7 @@ def absolutize(md: str) -> str:
         if base.endswith(".md") and (SRC / name).exists():
             return f"[{text}]({SITE}/papers/{name[:-3]}.html{frag})"
         return f"[{text}]({GITHUB}/{base.lstrip('./').replace('../', '')}{frag})"
-    return re.sub(r"\[([^\]]+)\]\(([^)\s]+)\)", repl, md)
+    return re.sub(r"(?<!!)\[([^\]]+)\]\(([^)\s]+)\)", repl, md)  # skip ![img](...)
 
 
 def build_one(name: str) -> Path:
@@ -123,6 +123,8 @@ def build_one(name: str) -> Path:
         "--citeproc",
         "--bibliography", str(ROOT / "research" / "bibliography.bib"),
         "--metadata", "link-citations=true",
+        "--resource-path", str(SRC),          # resolve figures/<name>.pdf
+        "--default-image-extension=pdf",
         "--pdf-engine=xelatex",
         "-V", "geometry:margin=1.1in",
         "-V", "fontsize=11pt",

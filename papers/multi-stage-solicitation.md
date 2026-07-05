@@ -10,7 +10,8 @@ Peter Cotton · *Working draft v0.3* · 2026
 
 The microprediction platform built forecasting supply chains, chaining pools so
 that one's output became the message or the settled outcome of the next. This
-note describes those games and asks, of each, whether truthful reporting was
+note is a self-critical, ex-post look at the game theory of those chains: the
+games were built first, and here we ask, of each, whether truthful reporting was
 really the best move. A chain is proper where an exogenous outcome anchors every
 stage; a downstream stage can then be scored on its own residual or, for the log
 score, at the top level. By that test the games mostly hold up, one of them only
@@ -31,18 +32,23 @@ forecast of its own number and stops, with no reason to pass its output to a
 next stage. Chaining supplies the rest. The output of one mechanism becomes the
 message, or the settled outcome, of the next.
 
-A handful of forecasting contests have chained one elicitation mechanism onto
-another this way. One platform ran several such chains at once.
+We know of exactly one platform that chained probabilistic outputs this way:
+the retired microprediction platform, which ran several such chains at once.
+The only near-relative, Manifold's resolves-to-market markets, is the invalid
+case (§4). Chaining on point outputs is common, but that is derivative
+structure, not elicitation composition (§5).
 
-**The microprediction platform.** The base game was a pool on a single live
-number. Anyone could open a stream for a quantity they cared about;
-contributors submitted a fixed-size bundle of Monte Carlo scenarios, 225 of
-them, and when the number arrived the pot was split in proportion to how near
-the scenarios fell. A contributor who bets to maximize her long-run wealth then
-does best to place scenarios according to her honest distribution: the
-log-optimal, all-in Kelly bet [@cotton2022microprediction]. This is a property
-of the log-optimal player, not of the pot split alone; a contributor
-optimizing something else stakes differently. That is the nearest-the-pin rule,
+**The microprediction platform.** A *stream* was a live quantity that someone
+published to the platform one value at a time — a sensor reading, a server's
+response time, the price of something — a real-time feed. The base game was to
+forecast the next value of a stream before it arrived. A forecaster submitted
+225 Monte Carlo scenarios, a fixed-size sample standing for her predictive
+distribution, and when the value landed the pot was split in proportion to how
+near her scenarios fell to it. A contributor who bets to maximize her long-run
+wealth does best to place those scenarios according to her honest distribution:
+the log-optimal, all-in Kelly bet [@cotton2022microprediction]. That is a
+property of the log-optimal player, not of the pot split alone; a contributor
+optimizing something else stakes differently. This is the nearest-the-pin rule,
 and it only ever settled one scalar.
 
 To make calibration and dependence into games of their own, the platform
@@ -125,6 +131,8 @@ the residual: a stage emits an aggregate $F_1$ for an outcome $Y$, and a second
 market elicits the law of the residual $U=F_1(Y)$, settling at $u=F_1(y)$. If
 $F_1$ were the truth then $U$ is uniform (the probability integral transform),
 and whatever structure remains is the second stage's edge.
+
+![A residual chain. Stage 1's consensus $F_1$ becomes the frame for stage 2, which settles on the transformed outcome $u=F_1(y)$; the same realized $y$ anchors both. The base pool and its $z_1$ calibration stream are an instance.](figures/residual-chain)
 
 **Proposition 2 (the residual correction is a reweighting).** *For $F_1$
 strictly increasing with density $p_1>0$ and a residual report with density

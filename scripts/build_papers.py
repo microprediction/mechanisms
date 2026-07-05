@@ -171,6 +171,17 @@ def md_to_html(md: str) -> tuple[str, str]:
             continue
         if stripped.startswith("---") and set(stripped) <= {"-"}:
             close_blocks(); out.append("    <hr />"); continue
+        m = re.match(r"^!\[(?P<cap>.*?)\]\((?P<src>[^)]+)\)$", stripped)
+        if m:                       # a standalone figure: ![caption](figures/name)
+            close_blocks()
+            src = m.group("src")
+            if "." not in src.rsplit("/", 1)[-1]:
+                src += ".svg"        # extensionless ref -> the rendered SVG
+            cap = _inline(m.group("cap"))
+            out.append(f'    <figure class="fig">'
+                       f'<img src="{html_mod.escape(src)}" alt="" />'
+                       f'<figcaption>{cap}</figcaption></figure>')
+            continue
         m = re.match(r"^(#{1,4})\s+(.*)$", stripped)
         if m:
             close_blocks()

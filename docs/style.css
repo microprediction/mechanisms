@@ -138,3 +138,11 @@ footer {
 .status-note summary { cursor: pointer; color: var(--muted); font-size: 0.95rem; }
 .status-note[open] summary { margin-bottom: 6px; }
 .status-note blockquote { margin-top: 6px; }
+
+/* Figures on rendered paper pages */
+figure.fig { margin: 1.6rem auto; text-align: center; }
+figure.fig img { max-width: 100%; height: auto; }
+figure.fig figcaption {
+  margin: 0.6rem auto 0; max-width: 40rem;
+  color: var(--muted); font-size: 0.9rem; text-align: left;
+}
