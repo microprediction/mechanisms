@@ -289,23 +289,23 @@ solicitation: a base forecast, then a residual market in which competition has
 been restricted, probably unwisely, to a single unconditional entry. This can be
 seen in two ways.
 
-A residual pool sorts its entrants by what they condition on. An *unconditional*
-participant submits one law for the z-score, the same whatever the input; a
-*conditional* participant submits a law that varies with the covariates she
-sees. The best unconditional entry is the marginal law of the z-score, the best
-conditional entry is its law given the input, and the second out-earns the first
-by exactly the conditional information $I(R;X)$ [@cotton2026conformalbetting].
+Forecasters come in two types, and the split has nothing to do with which
+contest they enter. An *unconditional* forecaster submits a single distribution
+and stands by it whatever the input; a *conditional* forecaster submits one that
+moves with the covariates she sees. In any pool that settles on an outcome, base
+or derived, the best conditional entrant out-earns the best unconditional one by
+exactly the conditional information the covariates carry, $I(R;X)$
+[@cotton2026conformalbetting].
 
-Split-conformal prediction is the best unconditional entry, and nothing more.
-Its recipe, form the empirical distribution of the base predictor's residuals
-and use it unchanged at every input, is just how an unconditional participant
-estimates that marginal law from data: she reads it off the residuals rather
-than assuming any shape. So conformal prediction is the residual market of §2
-with the field restricted to unconditional entries. A market would let it
-compete and pay it only while no conditioning rival beats it; conformal instead
-declares it the answer in advance, forfeiting $I(R;X)$ to anyone who conditions.
-Adaptive conformal variants that let the law depend on the input are conditional
-entries, which is to say they are forecasting.
+Split-conformal prediction is an unconditional recipe. It forms one residual law
+from the calibration data and applies it at every input, reading that marginal
+off the residuals rather than assuming any shape; as a forecaster it simply does
+not condition. So conformal prediction is the residual market of §2 with the
+field restricted to unconditional entries. A market would let that entry compete
+and pay it only while no conditioning rival beats it; conformal instead declares
+it the answer in advance, forfeiting $I(R;X)$ to anyone who conditions. Adaptive
+conformal variants that let the law depend on the input are conditional entries,
+which is to say they are forecasting.
 
 The gap does not close even if the conformists are right. Suppose only they
 enter the base contest and the base forecast is calibrated, so the z-scores are
