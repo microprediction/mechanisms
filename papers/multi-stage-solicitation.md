@@ -31,9 +31,17 @@ weakest anchor and its settlement transform.
 
 ## 1. The games that were built
 
+The point of chaining is a supply chain for prediction: to build a hard,
+repeated forecasting task out of cheaper standardized ones, and to drive the
+cost of the assembled pipeline radically low [@cotton2022microprediction].
+Contests and markets make any single task cheap by rewarding competition, but
+competition does not compose. A market rewards the best forecast of its own
+settled quantity and stops there; nothing pulls its output into the next task.
+A supply chain needs one mechanism's output to become the message or the
+settled object of another, and that is what a chain is.
+
 A handful of forecasting contests have chained one elicitation mechanism onto
-another, letting one market's output be the message or the settled outcome of
-the next. One platform ran several such chains at once.
+another this way. One platform ran several such chains at once.
 
 **The microprediction platform.** The base game was a pool on a single live
 number. Anyone could open a stream for a quantity they cared about;
