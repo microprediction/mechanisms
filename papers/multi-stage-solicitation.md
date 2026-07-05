@@ -65,8 +65,9 @@ The base game settled only a single scalar, but its output could be transformed
 into fresh scalars, and those became games of their own. Take the residual
 first. Once the community has forecast a stream, re-express each outcome on a
 community-relative scale: its percentile, or the z-score got from that
-percentile by the inverse normal transform.^[The name *z-score* is only a loose
-analogy to the statistical one; nothing here is assumed normal. The number is
+percentile by the inverse normal transform.^[The name *z-score* is a terminological
+overloading where the analogy to the statistical one is loose; nothing here is
+assumed normal. The number is
 the community's market-implied law $F_1$, an arbitrary distributional transform
 rather than a Gaussian, composed with the inverse normal $\Phi^{-1}$. Because
 $F_1$ is the market's implied distribution, it is a risk-neutral z-score.]^[The
