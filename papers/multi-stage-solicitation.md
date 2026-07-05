@@ -225,19 +225,22 @@ forecast ignored a covariate, an entrant who conditions on it forecasts the
 z-score's conditional law, beats the community's flat one, and collects the
 missed information as growth, at the rate $I(R;X)$ [@cotton2026conformalbetting].
 The z-scores being marginally standard normal under correct forecasting does not
-make this a calibration test: marginal uniformity says nothing about the
+make this a calibration test: marginal standard-normality says nothing about the
 conditional law, and the reward goes to sharper conditional prediction, claimed
 by an entrant who holds better information and stakes on it.
 
-That arena is exactly where conformal prediction belongs, and it belongs there
-as a weak entrant. A single-shape conformal predictor submits the empirical
-distribution of its residuals, one law for every input: marginally valid but
-flat in the covariates, so it is the `z1~` contestant that stakes uniform and
-has no chance of being sharp. Its coverage
-guarantee is the pool's break-even line, and the information gap $I(R;X)$ is the
-rate at which any conditionally sharper competitor takes its money. The z-stream
-contests were already the place to chase conditional sharpness; conformal
-prediction is a dumb entry in that contest, not an alternative to it.
+That arena is exactly where conformal prediction belongs, and split-conformal
+enters it as a weak contestant. With a residual nonconformity score it reports
+the empirical distribution of its calibration residuals, the same residual law
+at every input, so its uncertainty does not move with the covariates even as its
+point prediction does. On the `z1~` scale that is the default N(0,1) stake, and
+it cannot win the conditional game: marginal coverage is the pool's break-even
+line, and the information gap $I(R;X)$ is the rate at which a competitor whose
+residual law depends on the input takes its money. Adaptive conformal variants
+that let that law depend on the covariates are, in this picture, simply stronger
+entries, which is to say they are forecasting. The z-stream contests were
+already the place to chase conditional sharpness, and the bare split-conformal
+guarantee is a floor to clear, not a competitive strategy.
 
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
