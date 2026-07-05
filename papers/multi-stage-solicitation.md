@@ -48,10 +48,13 @@ another this way. One platform ran several such chains at once.
 **The microprediction platform.** The base game was a pool on a single live
 number. Anyone could open a stream for a quantity they cared about;
 contributors submitted a fixed-size bundle of Monte Carlo scenarios, 225 of
-them, and when the number arrived the pot was split by how near the scenarios
-fell. Paying by log-wealth made a contributor's best move to submit scenarios
-that matched her honest distribution [@cotton2022microprediction]. That is the
-nearest-the-pin rule, and it only ever settled one scalar.
+them, and when the number arrived the pot was split in proportion to how near
+the scenarios fell. A contributor who bets to maximize her long-run wealth then
+does best to place scenarios according to her honest distribution: the
+log-optimal, all-in Kelly bet [@cotton2022microprediction]. This is a property
+of the log-optimal player, not of the pot split alone; a contributor
+optimizing something else stakes differently. That is the nearest-the-pin rule,
+and it only ever settled one scalar.
 
 To make calibration and dependence into games of their own, the platform
 turned each of them into another scalar. Calibration first. Once the community
