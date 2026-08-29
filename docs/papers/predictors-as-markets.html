@@ -35,7 +35,7 @@
       <a href="https://github.com/microprediction/mechanisms/blob/main/papers/predictors-as-markets.md">markdown source</a></p>
     <h1 id="predictors-as-markets">Predictors as Markets</h1>
     <h3 id="one-maker-makers-in-parallel-markets-in-series">One maker, makers in parallel, markets in series</h3>
-    <p>Peter Cotton · <em>Working draft v0.4</em> · August 29, 2026</p>
+    <p>Peter Cotton · <em>Working draft v0.5</em> · August 29, 2026</p>
     <hr />
     <h2 id="abstract">Abstract</h2>
     <p>There are two algebraic reasons markets appear inside learning: convex duality turns optimization into trading, and graphical factorization turns inference into networks of local markets. We develop both. For one maker, non-convexity does not obstruct coherence: no-arbitrage is a chord condition, rational flow trades the biconjugate, and a proportional fee of at least the chord excursion restores no-arbitrage, the fee being exactly a bid-ask spread by conjugation. For makers in parallel, combining fee-bearing makers is an infimal convolution solved by one monotone clearing-price root-find with sparse fills, and the aggregate supply curve is a consolidated limit order book. For markets in series, one market per chain-rule factor makes the market an exact min-plus inference engine: parallel merge implements factor multiplication and cheapest routing implements variable elimination, both for arbitrary convex potentials. A finite-state chain of markets runs Viterbi exactly; sum-product semantics are recovered exactly on log-quadratic families, where partial minimization equals marginalization up to a constant, and the market-implemented Kalman filter and exact tree marginals live on this intersection. A cost-based predictor admits a coherent market implementation if and only if its arbitrage depth is dominated by the permitted friction; friction extends the construction beyond convexity, and arbitrage enforces coherence across markets, every convex feasibility violation being a separating portfolio. The resulting object is the incentive closure of the predictor: the same operator, with every information source paying to move the state.</p>
@@ -111,8 +111,14 @@ f\lvert\cdot\rvert$ has conjugate</em></p>
 \text{multiply factors} &amp; \longleftrightarrow &amp; \text{parallel merge: } \varphi_i = C_i^* \text{ add as costs inf-convolve}\\
 \text{eliminate a variable} &amp; \longleftrightarrow &amp; \text{route through its market: } \inf \text{ over the shared leg}
 \end{array}$$</p>
-    <p>with the two sides related by the Legendre transform, which is the Laplace transform of the min-plus semiring (<a href="#ref-litvinov2007idempotent">Litvinov 2005</a>). Serial composition of stage kernels obeys the composition law $(\varphi_2 \circ \varphi_1)(x,z) = \inf_y [\varphi_1(x,y) +
-\varphi_2(y,z)]$, the min-plus kernel product.</p>
+    <p>with the two sides related by the Legendre transform, which is the Laplace transform of the min-plus semiring (<a href="#ref-litvinov2007idempotent">Litvinov 2005</a>). The parallel law is a commuting square,</p>
+    <p>$$\begin{array}{ccc}
+C_1,\, C_2 &amp; \xrightarrow{\ \square\ } &amp; C_1 \,\square\, C_2\\[2pt]
+\downarrow{\scriptstyle *} &amp; &amp; \downarrow{\scriptstyle *}\\[2pt]
+C_1^*,\, C_2^* &amp; \xrightarrow{\ +\ } &amp; C_1^* + C_2^*
+\end{array}$$</p>
+    <p>while serial composition stays primal, obeying the composition law $(\varphi_2 \circ \varphi_1)(x,z) = \inf_y [\varphi_1(x,y) +
+\varphi_2(y,z)]$, the min-plus kernel product. The Legendre transform is not a computational trick here but the change of representation between the two composition laws.</p>
     <p><strong>Proposition 10 (the market computes min-plus inference).</strong> <em>(i) Parallel: merging makers multiplies factors, since $(C_1 \square C_2)^* = C_1^* +
 C_2^*$ and potentials add exactly when densities multiply. (ii) Serial: the cheapest route to a terminal exposure through the chain of stage markets prices the min-plus elimination $\inf_{z_1,\dots,z_{n-1}} \sum_i \varphi_i(z_{i-1}, z_i)$, the tropical product of the stage kernels. (iii) On log-quadratic families, partial minimization of a potential equals its marginalization up to an additive constant independent of the retained variables, so the market's min-plus messages are the sum-product messages and the market computes exact Bayesian inference.</em></p>
     <p><strong>Proof.</strong> (i) is the conjugate-sum identity together with $-\log(p_1 p_2) = \varphi_1 + \varphi_2$. (ii) is the definition of the cheapest route: the trader chooses intermediate exposures to minimize the sum of stage costs. For (iii), write a jointly quadratic potential $q(x,y)$ with positive definite $y$-block $Q_{yy}$; completing the square, $-\log \int e^{-q(x,y)}\,dy = \min_y q(x,y) + \tfrac12\log\det(Q_{yy}/2\pi)$, the Schur-complement identity, and the constant does not depend on $x$. $\blacksquare$</p>
@@ -148,20 +154,24 @@ The PSD cone is not special. Coherent price sets are convex (they are
 convex hulls of payoff vectors, or their conic images), and separation
 turns every exterior point into a trade:
 
-**Proposition 14 (arbitrage is separation).** *Let $K$ be a closed convex
-set of coherent quote vectors and $x \notin K$ a quoted configuration.
-Any separating functional $y$ with $\langle y, x\rangle &lt; \inf_{z \in K} \langle y, z\rangle$ is a portfolio whose price under the quotes is less
-than its worst coherent value: a sure profit relative to $K$-consistency.
-Proposition 13 is the instance $K = \{P \succeq 0\}$ with the separating
-functional $ww^\top$.*
+**Proposition 14 (arbitrage is separation).** *Let $K$ be the closed
+convex hull of the attainable payoff vectors (or its image under a linear
+security map), so that $\inf_{z \in K} \langle y, z\rangle \le \langle y, \varphi(\omega)\rangle$ for every outcome $\omega$ and portfolio $y$. If a
+quoted configuration $x \notin K$, any separating functional $y$ with
+$\langle y, x\rangle &lt; \inf_{z \in K} \langle y, z\rangle$ is a portfolio
+whose price is strictly less than its realized payoff in every state: a
+sure profit. Proposition 13 is the instance $K = \{P \succeq 0\}$ with the
+separating functional $ww^\top$.*
 
 The proof is the separating-hyperplane theorem read as a trade
-([Nau &amp; McCardle 1991](#ref-nau1991arbitrage); [d'Aspremont 2005](#ref-daspremont2005market)). In an ordinary numerical
-method an infeasibility is a residual to be driven down by the algorithm;
-in a market it is a payoff, and whoever finds it is paid to act as the
-separation oracle. Arbitrageurs are decentralized separation oracles, and
-the friction of §4 sets the tolerance below which infeasibility is
-allowed to persist.
+([Nau &amp; McCardle 1991](#ref-nau1991arbitrage); [d'Aspremont 2005](#ref-daspremont2005market)); the payoff-hull hypothesis is
+what upgrades the separation certificate to an arbitrage, and for an
+abstract consistency set the construction yields the certificate only. In
+an ordinary numerical method an infeasibility is a residual to be driven
+down by the algorithm; in a market it is a payoff, and whoever finds it
+is paid to act as the separation oracle. Arbitrageurs are decentralized
+separation oracles, and the friction of §4 sets the tolerance below which
+infeasibility is allowed to persist.
 
 ## 12. The characterization, and open problems
 
@@ -193,32 +203,30 @@ constraints, plus payment to whoever holds one.
 Nothing in the definition mentions prediction. The serial law is the
 min-plus kernel composition of dynamic programming, control, and shortest
 paths; the parallel law is the additive combination of local potentials;
-and eliminating a network's internal inventories to leave an effective
-cost at its boundary is the operation that reduces resistor networks,
-eliminates latent Gaussian variables, and takes Schur complements. A
-network of local makers is one effective maker at its boundary, and
-prediction is the application in which beliefs and prices share units. We
-leave the general theory, including the categorical formulation in which
-markets are min-plus kernels composed by shared inventory, outside this
-paper's scope.
+and the closure of the whole construction is a boundary statement:
 
-Open problems, in rough order of tractability:
+**Proposition 15 (the effective boundary maker).** *Let a network of
+makers have boundary variables $b$, internal variables $h$, and local
+costs $C_e$, each jointly convex, and define
+$C_{\mathrm{eff}}(b) = \inf_h \sum_e C_e(b, h)$. Then
+$C_{\mathrm{eff}}$ is convex; the elimination may be performed variable
+by variable in any order; for quadratic costs each single-variable
+elimination is a Schur complement; and on a chain the computation is the
+dynamic program of Proposition 10(ii). A network of local makers is one
+effective maker at its boundary.*
 
-*Which inference algorithm does a risk-averse market run?* Proposition 10
-says a risk-neutral market computes min-plus exactly and sum-product only
-on the Gaussian intersection. Risk aversion is an exponential tilt,
-suggesting it interpolates between the two semirings; whether a
-risk-averse trading population prices the marginal, the mode, or a
-temperature in between would complete the correspondence.
-
-*Market representations of general prediction maps.* The
-characterization above is confined to cost-based predictors. Define what
-it means for an arbitrary prediction map $T$, from data sets to forecasts,
-to possess a market representation, and give conditions on $T$ equivalent to existence; the cost-based case suggests path independence and a chord bound are the shadow of the general condition.</p>
+**Proof.** Partial minimization of a jointly convex function is convex,
+and iterated infima may be taken in any order ([Rockafellar 1970](#ref-rockafellar1970convex));
+the quadratic case is the completion of the square in the proof of
+Proposition 10(iii). $\blacksquare$</p>
+    <p>This is the operation that reduces resistor networks to terminal impedances, eliminates latent Gaussian variables, and takes Schur complements; prediction is the application in which beliefs and prices share units. We leave the general theory, including the categorical formulation in which markets are min-plus kernels composed by shared inventory, outside this paper's scope.</p>
+    <p>Open problems, in rough order of tractability:</p>
+    <p><em>Which inference algorithm does a risk-averse market run?</em> Proposition 10 says a risk-neutral market computes min-plus exactly and sum-product only on the Gaussian intersection. Risk aversion is an exponential tilt, suggesting it interpolates between the two semirings; whether a risk-averse trading population prices the marginal, the mode, or a temperature in between would complete the correspondence.</p>
+    <p><em>Market representations of general prediction maps.</em> The characterization above is confined to cost-based predictors. Define what it means for an arbitrary prediction map $T$, from data sets to forecasts, to possess a market representation, and give conditions on $T$ equivalent to existence; the cost-based case suggests path independence and a chord bound are the shadow of the general condition.</p>
     <p><em>The equilibrium fee.</em> Section 7 argues discipline, not equilibrium. In a sparse-signal flow model, does the Bertrand-equilibrium fee reproduce the universal-threshold rate of the shrinkage literature? If so, the regularization constant that statistics tunes by cross-validation equals the adverse-selection cost of the data source.</p>
     <p><em>Loopy fixed points.</em> Under a concrete flow model, does arbitrage-corrected quoting converge, and to what?</p>
     <p><em>Arbitrage depth as a capacity measure.</em> The minimum viable spread of a trained landscape is computable; whether it tracks quantities learning theory names (sharpness, mode connectivity) is open.</p>
-    <p><em>Effective markets at boundaries.</em> Eliminating a network's internal inventories leaves an effective maker at its boundary. State the closure theorem: which classes of local costs are closed under boundary elimination, and what the effective fees and liquidities of the reduced maker are in terms of the network's.</p>
+    <p><em>Effective friction.</em> Proposition 15 eliminates frictionless networks. With per-maker fees, what are the effective fees and liquidities of the reduced boundary maker in terms of the network's, and which fee-bearing classes are closed under elimination?</p>
     <p><em>Books around binary events.</em> The multimodal-quote reading of book holes (§3) is testable against limit-order data around court rulings and FDA decisions, where bimodal implied densities are documented (<a href="#ref-clark2017brexit">Clark &amp; Amen 2017</a>).</p>
     <h2 id="references">References</h2>
         <ul class="bib">

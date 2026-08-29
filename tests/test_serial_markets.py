@@ -84,6 +84,32 @@ def test_cheapest_route_is_viterbi():
     assert tuple(path) == best_path
 
 
+def test_effective_boundary_maker_is_schur_complement():
+    # Proposition 15: eliminating a quadratic network's internal variables
+    # leaves the Schur-complement quadratic at the boundary, in any order.
+    rng = np.random.default_rng(5)
+    A = rng.normal(size=(4, 4))
+    Q = A @ A.T + 4 * np.eye(4)          # joint cost 0.5 z' Q z, z = (b, h)
+    Qbb, Qbh, Qhh = Q[:2, :2], Q[:2, 2:], Q[2:, 2:]
+    schur = Qbb - Qbh @ np.linalg.inv(Qhh) @ Qbh.T
+
+    def eliminate(M, k):
+        keep = [i for i in range(M.shape[0]) if i != k]
+        return M[np.ix_(keep, keep)] - np.outer(M[keep, k], M[k, keep]) / M[k, k]
+
+    one_then_other = eliminate(eliminate(Q, 3), 2)
+    other_then_one = eliminate(eliminate(Q, 2), 2)  # after removing idx2, old idx3 is idx2
+    assert np.allclose(one_then_other, schur)
+    assert np.allclose(other_then_one, schur)
+    assert np.all(np.linalg.eigvalsh(schur) > 0)  # effective maker is convex
+    # and it is the true partial minimum: min over h of the joint cost
+    for _ in range(20):
+        b = rng.normal(size=2)
+        h_star = -np.linalg.solve(Qhh, Qbh.T @ b)
+        z = np.concatenate([b, h_star])
+        assert 0.5 * z @ Q @ z == pytest.approx(0.5 * b @ schur @ b, rel=1e-10)
+
+
 def test_cycle_inconsistency_is_arbitrage():
     # quotes around a 3-cycle admitting no joint distribution
     bad = np.array([[1.0, 0.9, -0.5], [0.9, 1.0, 0.9], [-0.5, 0.9, 1.0]])

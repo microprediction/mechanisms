@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.4* · August 29, 2026
+Peter Cotton · *Working draft v0.5* · August 29, 2026
 
 ---
 
@@ -380,10 +380,20 @@ $$\begin{array}{ccc}
 \end{array}$$
 
 with the two sides related by the Legendre transform, which is the Laplace
-transform of the min-plus semiring [@litvinov2007idempotent]. Serial
-composition of stage kernels obeys the composition law
+transform of the min-plus semiring [@litvinov2007idempotent]. The parallel
+law is a commuting square,
+
+$$\begin{array}{ccc}
+C_1,\, C_2 & \xrightarrow{\ \square\ } & C_1 \,\square\, C_2\\[2pt]
+\downarrow{\scriptstyle *} & & \downarrow{\scriptstyle *}\\[2pt]
+C_1^*,\, C_2^* & \xrightarrow{\ +\ } & C_1^* + C_2^*
+\end{array}$$
+
+while serial composition stays primal, obeying the composition law
 $(\varphi_2 \circ \varphi_1)(x,z) = \inf_y [\varphi_1(x,y) +
-\varphi_2(y,z)]$, the min-plus kernel product.
+\varphi_2(y,z)]$, the min-plus kernel product. The Legendre transform is
+not a computational trick here but the change of representation between
+the two composition laws.
 
 **Proposition 10 (the market computes min-plus inference).** *(i) Parallel:
 merging makers multiplies factors, since $(C_1 \square C_2)^* = C_1^* +
@@ -543,21 +553,25 @@ The PSD cone is not special. Coherent price sets are convex (they are
 convex hulls of payoff vectors, or their conic images), and separation
 turns every exterior point into a trade:
 
-**Proposition 14 (arbitrage is separation).** *Let $K$ be a closed convex
-set of coherent quote vectors and $x \notin K$ a quoted configuration.
-Any separating functional $y$ with $\langle y, x\rangle < \inf_{z \in K}
-\langle y, z\rangle$ is a portfolio whose price under the quotes is less
-than its worst coherent value: a sure profit relative to $K$-consistency.
-Proposition 13 is the instance $K = \{P \succeq 0\}$ with the separating
-functional $ww^\top$.*
+**Proposition 14 (arbitrage is separation).** *Let $K$ be the closed
+convex hull of the attainable payoff vectors (or its image under a linear
+security map), so that $\inf_{z \in K} \langle y, z\rangle \le \langle y,
+\varphi(\omega)\rangle$ for every outcome $\omega$ and portfolio $y$. If a
+quoted configuration $x \notin K$, any separating functional $y$ with
+$\langle y, x\rangle < \inf_{z \in K} \langle y, z\rangle$ is a portfolio
+whose price is strictly less than its realized payoff in every state: a
+sure profit. Proposition 13 is the instance $K = \{P \succeq 0\}$ with the
+separating functional $ww^\top$.*
 
 The proof is the separating-hyperplane theorem read as a trade
-[@nau1991arbitrage; @daspremont2005market]. In an ordinary numerical
-method an infeasibility is a residual to be driven down by the algorithm;
-in a market it is a payoff, and whoever finds it is paid to act as the
-separation oracle. Arbitrageurs are decentralized separation oracles, and
-the friction of §4 sets the tolerance below which infeasibility is
-allowed to persist.
+[@nau1991arbitrage; @daspremont2005market]; the payoff-hull hypothesis is
+what upgrades the separation certificate to an arbitrage, and for an
+abstract consistency set the construction yields the certificate only. In
+an ordinary numerical method an infeasibility is a residual to be driven
+down by the algorithm; in a market it is a payoff, and whoever finds it
+is paid to act as the separation oracle. Arbitrageurs are decentralized
+separation oracles, and the friction of §4 sets the tolerance below which
+infeasibility is allowed to persist.
 
 ## 12. The characterization, and open problems
 
@@ -589,14 +603,29 @@ constraints, plus payment to whoever holds one.
 Nothing in the definition mentions prediction. The serial law is the
 min-plus kernel composition of dynamic programming, control, and shortest
 paths; the parallel law is the additive combination of local potentials;
-and eliminating a network's internal inventories to leave an effective
-cost at its boundary is the operation that reduces resistor networks,
-eliminates latent Gaussian variables, and takes Schur complements. A
-network of local makers is one effective maker at its boundary, and
-prediction is the application in which beliefs and prices share units. We
-leave the general theory, including the categorical formulation in which
-markets are min-plus kernels composed by shared inventory, outside this
-paper's scope.
+and the closure of the whole construction is a boundary statement:
+
+**Proposition 15 (the effective boundary maker).** *Let a network of
+makers have boundary variables $b$, internal variables $h$, and local
+costs $C_e$, each jointly convex, and define
+$C_{\mathrm{eff}}(b) = \inf_h \sum_e C_e(b, h)$. Then
+$C_{\mathrm{eff}}$ is convex; the elimination may be performed variable
+by variable in any order; for quadratic costs each single-variable
+elimination is a Schur complement; and on a chain the computation is the
+dynamic program of Proposition 10(ii). A network of local makers is one
+effective maker at its boundary.*
+
+**Proof.** Partial minimization of a jointly convex function is convex,
+and iterated infima may be taken in any order [@rockafellar1970convex];
+the quadratic case is the completion of the square in the proof of
+Proposition 10(iii). $\blacksquare$
+
+This is the operation that reduces resistor networks to terminal
+impedances, eliminates latent Gaussian variables, and takes Schur
+complements; prediction is the application in which beliefs and prices
+share units. We leave the general theory, including the categorical
+formulation in which markets are min-plus kernels composed by shared
+inventory, outside this paper's scope.
 
 Open problems, in rough order of tractability:
 
@@ -627,11 +656,10 @@ arbitrage-corrected quoting converge, and to what?
 trained landscape is computable; whether it tracks quantities learning
 theory names (sharpness, mode connectivity) is open.
 
-*Effective markets at boundaries.* Eliminating a network's internal
-inventories leaves an effective maker at its boundary. State the closure
-theorem: which classes of local costs are closed under boundary
-elimination, and what the effective fees and liquidities of the reduced
-maker are in terms of the network's.
+*Effective friction.* Proposition 15 eliminates frictionless networks.
+With per-maker fees, what are the effective fees and liquidities of the
+reduced boundary maker in terms of the network's, and which fee-bearing
+classes are closed under elimination?
 
 *Books around binary events.* The multimodal-quote reading of book holes
 (§3) is testable against limit-order data around court rulings and FDA
