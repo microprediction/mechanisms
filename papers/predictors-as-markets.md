@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.5* · August 29, 2026
+Peter Cotton · *Working draft v0.6* · August 29, 2026
 
 ---
 
@@ -612,6 +612,31 @@ and the closure adds the third: a marketized computation is self-policing
 in proportion to the value of its own errors, with friction the exchange
 rate between tolerated error and the cost of participation.
 
+The definition has neighbors in four literatures, and each holds one
+column. Markets that compute are old: a combinatorial auction cleared
+airport slots by integer programming [@rassenti1982slots], electricity
+markets pay the dual variables of the dispatch program as nodal prices
+[@schweppe1988spot], and market-oriented programming solved distributed
+allocation by computing competitive equilibria of artificial economies
+[@wellman1993market]. Algorithmic mechanism design asks when optimization
+is compatible with incentives [@nisan2001algorithmic], and the
+classification of what can be computed incentive-compatibly was posed as
+a program by @feigenbaum2002distributed. The middle column carries a
+lower bound: any communication protocol realizing an efficient allocation
+must reveal supporting prices [@nisan2006communication], so certificates
+are not optional. The third column exists in practice without the
+duality: fraud-proof systems pay whoever exhibits an invalid state
+transition [@teutsch2019truebit; @kalodner2018arbitrum], for discrete
+transitions rather than convex programs. And the friction bound has an
+incentive-free ancestor: the auction algorithm's
+$\varepsilon$-complementary slackness permits suboptimality at most
+$n\varepsilon$, vanishing for $\varepsilon < 1/n$ on integer data
+[@bertsekas1992auction]; Proposition 3 is the same shape of bound with
+the $\varepsilon$ charged to traders. The connective tissue, the closure
+operation itself, serial composition of mechanisms, and the
+identification of violation certificates with separating portfolios,
+appears unoccupied.
+
 Nothing in the definition mentions prediction. The serial law is the
 min-plus kernel composition of dynamic programming, control, and shortest
 paths; the parallel law is the additive combination of local potentials;
@@ -634,10 +659,15 @@ Proposition 10(iii). $\blacksquare$
 
 This is the operation that reduces resistor networks to terminal
 impedances, eliminates latent Gaussian variables, and takes Schur
-complements; prediction is the application in which beliefs and prices
-share units. We leave the general theory, including the categorical
-formulation in which markets are min-plus kernels composed by shared
-inventory, outside this paper's scope.
+complements: internal competition disappears into an external price law,
+as internal nodes disappear into a Dirichlet-to-Neumann map. One caution
+attaches to "any order": the effective boundary market is
+elimination-order invariant, but the computational cost of producing it
+is not, and the blowup of intermediate scopes is the treewidth phenomenon
+of variable elimination. Prediction is the application in which beliefs
+and prices share units. We leave the general theory, including the
+categorical formulation in which markets are min-plus kernels composed by
+shared inventory, outside this paper's scope.
 
 Open problems, in rough order of tractability:
 
@@ -662,8 +692,13 @@ cost-based case.
 certificate once. Characterize the mechanisms in which the stream of
 certificate payments funds the ongoing computation, and account for the
 complexity of the certificate search: separation can be computationally
-hard, and the economics of a self-policing computation depend on whether
-its own errors are findable at a cost below their value.
+hard, and decentralized correction occurs only where a certificate's
+value exceeds its search cost. The residual error set at equilibrium is
+then not the feasible set $K$, nor its friction-widened neighborhood
+$\{\operatorname{dist}(x, K) \lesssim f\}$, but the computationally
+bounded coherence set
+$\{x : \sup_y [\text{value}(y) - \text{search cost}(y)] \le 0\}$,
+a notion of feasibility indexed by the economics of finding violations.
 
 *The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
 sparse-signal flow model, does the Bertrand-equilibrium fee reproduce the
