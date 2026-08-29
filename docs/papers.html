@@ -133,6 +133,31 @@
       <a href="./papers/likelihood-versus-crps.html">full draft</a> ·
       <a href="./papers/likelihood-versus-crps.pdf">pdf</a></p>
 
+    <h2 id="combining-linear-fee-market-makers">
+      <a href="./papers/combining-linear-fee-market-makers.html">Combining
+      Linear-Fee Market Makers</a></h2>
+    <p class="subtitle">The infimal convolution of cost-function makers with
+      proportional fees: spreads, sparse routing, and a derived order book</p>
+    <p>
+      A cost-function market maker charging a proportional fee f|s| per fill
+      quotes, after Fenchel conjugation, exactly a bid-ask spread: the
+      conjugate of the fee-bearing cost is the no-fee conjugate at a
+      soft-thresholded price, zero on a band of half-width f around the
+      marginal price. Combining n such makers is the infimal convolution of
+      their effective costs; the optimal split equalises fee-adjusted marginal
+      prices at a single clearing price found by a monotone scalar root-find,
+      and any maker whose quote band contains the clearing price trades exactly
+      zero, so the split is sparse in the manner of lasso solutions. The
+      aggregate supply curve is a consolidated limit order book with smooth
+      levels, and each maker may quote its own fee with routing as the
+      discipline. The identities are classical and the near misses catalogued;
+      the assembly, fees inside the costs rather than beside them, appears
+      unoccupied.
+    </p>
+    <p class="muted">Peter Cotton · working draft v0.1 ·
+      <a href="./papers/combining-linear-fee-market-makers.html">full draft</a> ·
+      <a href="./papers/combining-linear-fee-market-makers.pdf">pdf</a></p>
+
     <div class="next-steps">
       <p>Have a mechanism write-up to contribute? Open an issue or PR on
       <a href="https://github.com/microprediction/mechanisms">microprediction/mechanisms</a>.</p>

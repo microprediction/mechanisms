@@ -38,6 +38,7 @@ PAPERS = [
     "composition-and-the-algebra-of-mechanisms.md",
     "multi-stage-solicitation.md",
     "likelihood-versus-crps.md",
+    "combining-linear-fee-market-makers.md",
 ]
 
 PAGE = """<!doctype html>
