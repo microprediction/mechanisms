@@ -314,7 +314,10 @@ $$\sup_{s<0} d_q(s) - f \;\le\; \mu \;\le\; \inf_{s>0} d_q(s) + f,$$
 
 *so the set of no-trade beliefs is exactly this interval intersected with
 the payoff hull. For differentiable convex $C$ both bounds equal $C'(q)$
-and the interval is Lemma 4's band $[m - f, m + f]$. Write
+and the interval is Lemma 4's band $[m - f, m + f]$; at a convex kink the
+bounds are the one-sided derivatives, so the interval is
+$[\partial^- C(q) - f,\ \partial^+ C(q) + f]$ and the kink contributes a
+spread of its own even at $f = 0$. Write
 $\Delta_q = \sup_{s<0} d_q - \inf_{s>0} d_q$. The untruncated interval is
 non-empty if and only if $2f \ge \Delta_q$; if in addition $C$ is
 chord-coherent, both bounds lie in the hull, so their midpoint does and
