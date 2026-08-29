@@ -2,7 +2,7 @@
 
 ### The infimal convolution of cost-function makers with proportional fees: spreads, sparse routing, and a derived order book
 
-Peter Cotton · *Working draft v0.1* · 2026
+Peter Cotton · *Working draft v0.1* · August 28, 2026
 
 ---
 

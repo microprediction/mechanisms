@@ -35,7 +35,7 @@
       <a href="https://github.com/microprediction/mechanisms/blob/main/papers/combining-linear-fee-market-makers.md">markdown source</a></p>
     <h1 id="combining-linear-fee-market-makers">Combining Linear-Fee Market Makers</h1>
     <h3 id="the-infimal-convolution-of-cost-function-makers-with-proportional-fees-spreads-sparse-routing-and-a-derived-order-book">The infimal convolution of cost-function makers with proportional fees: spreads, sparse routing, and a derived order book</h3>
-    <p>Peter Cotton · <em>Working draft v0.1</em> · 2026</p>
+    <p>Peter Cotton · <em>Working draft v0.1</em> · August 28, 2026</p>
     <hr />
     <h2 id="abstract">Abstract</h2>
     <p>A cost-function market maker charging a proportional fee $f\lvert s\rvert$ per fill quotes, after Fenchel conjugation, exactly a bid-ask spread: the conjugate of the fee-bearing cost is the no-fee conjugate evaluated at a soft-thresholded price, zero on a band of half-width $f$ around the marginal price. Combining $n$ such makers is the infimal convolution of their effective costs, and the optimal split equalises fee-adjusted marginal prices at a single clearing price, found by a monotone scalar root-find; any maker whose quote band contains the clearing price receives exactly zero flow, so the split is sparse in the manner of lasso solutions. The aggregate supply curve is a consolidated limit order book whose levels are smooth curves. The identities are classical and the near misses are catalogued; the assembly, fees inside the costs rather than beside them, appears unoccupied, and it leaves each maker free to quote its own fee with routing as the discipline.</p>
