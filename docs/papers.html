@@ -185,6 +185,31 @@
       <a href="./papers/predictors-as-markets.html">full draft</a> ·
       <a href="./papers/predictors-as-markets.pdf">pdf</a></p>
 
+    <h2 id="markets-in-series">
+      <a href="./papers/markets-in-series.html">Markets in Series</a></h2>
+    <p class="subtitle">Filtering, belief propagation, and arbitrage as the
+      loop correction</p>
+    <p>
+      Parallel composition of market makers is infimal convolution;
+      liquidities add. This note develops the serial operator: factorize a
+      joint by the chain rule and run one market per conditional factor,
+      opening when its conditioning information freezes and settling in
+      cascade. For linear-Gaussian structure the correspondence with
+      inference is exact: alternating a model step with a market step is the
+      Kalman filter (the market step is the Kalman update), and market
+      messages on a tree compute exact posterior marginals — belief
+      propagation with trades as messages. On loopy graphs the pathology of
+      belief propagation materializes as arbitrage: cycle quotes admitting
+      no joint form a matrix with a negative eigenvalue, a bundle with
+      negative price and nonnegative payoff, so arbitrageurs are the loop
+      correction. The two operators are the two operations of the inference
+      semiring, and Gaussian exactness has one source: the family where
+      sum-product and min-sum agree.
+    </p>
+    <p class="muted">Peter Cotton · working draft v0.1 ·
+      <a href="./papers/markets-in-series.html">full draft</a> ·
+      <a href="./papers/markets-in-series.pdf">pdf</a></p>
+
     <div class="next-steps">
       <p>Have a mechanism write-up to contribute? Open an issue or PR on
       <a href="https://github.com/microprediction/mechanisms">microprediction/mechanisms</a>.</p>

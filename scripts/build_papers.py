@@ -40,6 +40,7 @@ PAPERS = [
     "likelihood-versus-crps.md",
     "combining-linear-fee-market-makers.md",
     "predictors-as-markets.md",
+    "markets-in-series.md",
 ]
 
 PAGE = """<!doctype html>
