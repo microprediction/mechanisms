@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.12* · August 29, 2026
+Peter Cotton · *Working draft v0.13* · August 29, 2026
 
 ---
 
@@ -107,7 +107,8 @@ Throughout, *arbitrage* means a fill whose profit is strictly positive
 for every outcome, and *no-arbitrage* the absence of one; this is the
 strong or sure-loss convention, and it counts a quote on the boundary of
 the payoff hull as coherent even though the fill it permits is weakly
-profitable, losing only on a single outcome. Readers importing the
+profitable, breaking even on the outcomes that attain the boundary payoff
+and gaining on the rest. Readers importing the
 nonnegative-payoff convention should add relative interiors throughout.
 
 **Proposition 1 (no-arbitrage without convexity).** *For a
@@ -173,11 +174,13 @@ $$\Pi_C(q,\mu) \;=\; \Pi_{\hat C}(q,\mu) + g(q)$$
 at the starting state.*
 
 **Proof.** $\sup_s \mu s - [C(q+s) - C(q)] = \sup_x [\mu x - C(x)] - \mu q
-+ C(q)$. Since $C \ge \hat C$ with equality on the contact set, and a
-maximizer of an affine function minus $C$ is a point where an affine
-minorant touches $C$, hence touches $\hat C$, the supremum equals
-$\sup_x [\mu x - \hat C(x)]$, attained on the contact set when attained at
-all. Adding and subtracting $\hat C(q)$ gives (ii). $\blacksquare$
++ C(q)$, so the profit is $C^*(\mu)$ up to terms in $q$ alone. Since
+conjugation is invariant under biconjugation,
+$\hat C^{\,*} = C^{***} = C^*$, the two suprema agree whether or not
+either is attained, which gives (ii) after adding and subtracting
+$\hat C(q)$. For (i), a maximizer of an affine function minus $C$ is a
+point where an affine minorant touches $C$, hence touches $\hat C$, so
+any attained optimum lies in the contact set. $\blacksquare$
 
 Attainment is a genuine hypothesis, not a formality. The chord-coherent
 cost $C(x) = \arctan x$ has lower convex envelope the constant
@@ -203,9 +206,14 @@ What the gap does to the book is the opposite of a gap in prices. Between
 contact points $q_1 < q_2$ the envelope is affine with a single supporting
 slope $\mu_0$, so the marginal price is constant across the excluded
 inventory range: as belief crosses $\mu_0$ the optimal inventory jumps
-from $q_1$ to $q_2$ while the price does not move. In book terms the
-maker offers a block of size $q_2 - q_1$ at the single price $\mu_0$, a
-depth spike rather than a missing price range. Non-convexity of $C$ also
+from $q_1$ to $q_2$ while the price does not move. In the convexified
+supply correspondence this is an inventory jump of size $q_2 - q_1$ at
+the supporting price $\mu_0$, a depth spike rather than a missing price
+range. Against the original non-convex cost the jump is generally
+indivisible: for the double well of §6 the full trade from $-c$ to $c$
+costs nothing while the half trade from $-c$ to $0$ costs $\alpha c$, so
+the prefixes of the block are not executable at $\mu_0$ and this is a
+lumpy endpoint trade, not a conventional divisible level. Non-convexity of $C$ also
 does not by itself make an implied density bimodal: $C^*$ is convex, so
 any factor read as $\exp(-C^*)$ is log-concave. Earlier drafts of this
 paper described the gap as a hole in the book and as a multimodal quote;
@@ -465,9 +473,9 @@ and $c^2/(2\lambda)$ after, strictly positive for every finite $\lambda$;
 since $e_\lambda C \ge 0$ vanishes at $\pm c$, its convex envelope is
 zero at the midpoint, so the midpoint stays strictly off contact at every
 depth and the gap merely decays like $1/\lambda$. The accurate statement
-is that depth attenuates the gap and regularizes crossing geometry
-without creating chord incoherence; it does not restore convexity or make
-every state reachable. Crossing kinks close at rate $1/\lambda$ only
+is that depth attenuates the envelope gap and regularizes crossing
+geometry without creating chord incoherence; it does not close the
+off-contact interval, restore convexity, or make every state reachable. Crossing kinks close at rate $1/\lambda$ only
 where the competing minimizers stay within a $\lambda$-independent
 diameter; the double well shows what happens otherwise, its jump holding
 at $2\alpha$ until the depth exceeds $c/\alpha$. Smooth concave stretches
@@ -502,7 +510,7 @@ $\lVert\Delta\theta\rVert^2/(2\eta)$ per move, a trust region is an
 infinite fee outside a band, weight decay is a zero-quoting participant.
 In market language the stabilizers of non-convex training are the
 market's two repairs: friction prices chord excursions (Proposition 3)
-and depth attenuates the excluded range (Proposition 9); non-convexity by
+and depth attenuates the envelope gap (Proposition 9); non-convexity by
 itself is not
 exploitability (§2).
 Path-dependent optimizers correspond to makers whose quotes depend on flow
@@ -611,10 +619,12 @@ clean dual representation, not coherence.
 
 **Corollary (the serial algebra runs Viterbi).** *Take finite state
 spaces and stage potentials $\varphi_t(i,j) = -\log P(X_t = j \mid
-X_{t-1} = i) - \log P(y_t \mid X_t = j)$ for $t \ge 1$, with the initial
-term $-\log P(X_0 = j) - \log P(y_0 \mid X_0 = j)$ folded into the first
-stage unless $X_0$ is fixed. The cheapest route of
-Proposition 10(ii) is $\min_{x_{1:T}} \sum_t \varphi_t(x_{t-1}, x_t)$:
+X_{t-1} = i) - \log P(y_t \mid X_t = j)$ for $t \ge 1$ and
+$\varphi_0(j) = -\log P(X_0 = j) - \log P(y_0 \mid X_0 = j)$. The
+cheapest route of Proposition 10(ii) is
+$\min_{x_{0:T}} \{\varphi_0(x_0) + \sum_{t \ge 1}
+\varphi_t(x_{t-1}, x_t)\}$, the initial state being minimized over unless
+it is fixed:
 the Viterbi decoding of the hidden Markov model, exactly, with no
 Gaussian structure anywhere. The statement is about the serial algebra;
 a coherent cost-function implementation of arbitrary finite-state
@@ -681,7 +691,14 @@ and calling it one is a bookkeeping convenience rather than a mechanism.
 ## 10. The market step is the Kalman update
 
 Take the linear-Gaussian chain $x_{t+1} = a x_t + \varepsilon_t$,
-$y_t = x_t + \eta_t$, and alternate two steps: a *model step*, propagating
+$y_t = x_t + \eta_t$. For the securities to be markets under
+Proposition 1 the state must settle, so assume in this section that each
+$x_t$ is eventually revealed and that the security on node $t$ settles at
+$x_t$; the payoff hull is then $\mathbb{R}$, the unrestricted regime of
+§1. Where the state is never revealed the fusion below is formally
+identical to a parallel quadratic merge but is not a traded market, since
+no settlement functional has been named. Now alternate two steps: a
+*model step*, propagating
 the current belief through the dynamics in mean-precision form, and a
 *market step*, merging the propagated belief with an observation maker
 quoting $y_t$ whose capital is the observation precision.
@@ -751,8 +768,9 @@ is the pricing algorithm inside one joint market [@sun2012junction]; here
 the messages pass between venues, and the graph's edges are market
 boundaries.
 
-On loopy graphs belief propagation double-counts and its fixed points
-drift. In a market the same inconsistency is self-punishing.
+On loopy graphs belief propagation can double-count evidence and can
+converge to biased or inconsistent fixed points. In a market one class of
+that inconsistency is self-punishing.
 
 **Proposition 13 (quote inconsistency is a sure profit).** *Let $x$ be a
 vector of unrestricted real random variables and let separate venues
@@ -817,10 +835,11 @@ sure profit. Proposition 13 is the instance $K = \{P \succeq 0\}$.*
 *For a nonlinear cost-function maker the conclusion is local. There $x$
 is the current gradient and a trade of size $\delta y$ costs
 $\delta \langle y, x \rangle + o(\delta)$, since the marginal price moves
-as the trade is filled, so a strict separating margin yields sure profit
-for all sufficiently small $\delta$, at a rate rather than in the size of
-$y$; market impact and fees then set how large a position the certificate
-supports.*
+as the trade is filled, so a separating margin exceeding
+$f\lVert y\rVert$ yields sure profit for all sufficiently small $\delta$,
+at a rate rather than in the size of $y$; a margin below that is
+suppressed by Proposition 3, and market impact then sets how large a
+position the certificate supports.*
 
 The proof is the separating-hyperplane theorem read as a trade
 [@nau1991arbitrage; @daspremont2005market]; the payoff-hull hypothesis is
@@ -849,12 +868,19 @@ is dominated by the permitted friction; chord coherence is the $f = 0$
 special case, and convexity is the separate, further property of monotone
 information incorporation. Three words are kept apart throughout:
 *coherence* (chord slopes stay in the payoff hull), *convexity* (marginal
-prices respond monotonically to flow), and *expressiveness* (the quoting
-range, which non-convexity restricts to the contact set). Within the
-coherent class, non-convexity spends expressiveness and spends nothing
-else against rational flow.
+prices respond monotonically to flow), and *expressiveness* (which
+inventory states rational flow can leave the maker in). Within the
+proper-envelope class, and for beliefs whose response is well posed,
+non-convexity restricts the rationally reachable inventory states to the
+contact set: from a contact state $C$ and $\hat C$ give the same optimal
+value and the same optima, and from an off-contact state the next
+rational trader extracts the gap $g(q)$. Coherence alone promises no
+more than this, since $C(q) = -\alpha\lvert q\rvert$ is coherent with
+unbounded speculative profit (§3).
 
-The construction throughout is one operation: *marketization*. Given an
+The target operation throughout is *marketization*, of which this paper
+realizes the single-maker and parallel parts and, in series, only the
+representation of §§10–11. Given an
 operator $T$ from inputs to outputs, a marketization is a mechanism whose
 clearing computes $T$; whose local contributions compose, in parallel and
 in series, to compute composite operators; in which inconsistent
@@ -1014,12 +1040,13 @@ whether a
 risk-averse trading population prices the marginal, the mode, or a
 temperature in between would complete the correspondence.
 
-*A serial market mechanism in general.* Proposition 10(ii) is routing
-algebra and §§10–11 implement it only for quadratic makers on
-unrestricted real securities. Give, for a useful class of kernels beyond
-the quadratic, the securities, settlements and inventory variables of
-each stage market, verify chord coherence stage by stage, and show that
-self-interested trading performs the elimination. The interface between
+*A serial market mechanism, even in the quadratic case.* Proposition
+10(ii) supplies routing algebra, and §§10–11 an algebraic market
+representation in which Gaussian fusions are traded while propagation and
+pull-back are computed. Construct named securities, settlements and
+inventory adjustments for which self-interested trading performs the
+Gaussian elimination itself; then seek the same for kernels beyond the
+quadratic family, verifying chord coherence stage by stage. The interface between
 the two compositions is part of the problem: parallel merge acts on
 conjugates and serial routing on primal leg costs, so a factor graph
 alternating the two needs an explicit change of representation at each
@@ -1065,13 +1092,13 @@ With per-maker fees, what are the effective fees and liquidities of the
 reduced boundary maker in terms of the network's, and which fee-bearing
 classes are closed under elimination?
 
-*Blocks from non-convexity.* Section 3 predicts that a non-convex maker
-shows a block of size $q_2 - q_1$ at one price rather than a gap in
-quoted prices. Whether anything of that shape is visible in venues whose
-liquidity is known to be non-convex, and what if anything connects it to
-the bimodal implied densities documented around binary events
-[@melick1997crude; @clark2017brexit], needs the explicit map from
-inventory geometry to quoted depth before it is worth testing.
+*From endpoint jumps to quoted depth.* Section 3 predicts an inventory
+jump at a single supporting price, and notes the jump is generally lumpy
+rather than divisible. The map from that endpoint correspondence to
+anything observable in a quoted book is missing, and is what a test
+against venues with non-convex liquidity, or against the bimodal implied
+densities documented around binary events [@melick1997crude;
+@clark2017brexit], would require first.
 
 ## References
 

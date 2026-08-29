@@ -203,6 +203,17 @@ def test_nonconvexity_shows_as_a_block_not_a_gap():
     assert xs[idx[-1]] - xs[idx[0]] == pytest.approx(2.0, abs=1e-2)  # block size
 
 
+def test_the_endpoint_jump_is_lumpy_not_a_divisible_level():
+    # The inventory jump sits at one supporting price, but against the
+    # original non-convex cost its prefixes are not executable there: the
+    # double well's full trade -c -> c is free while the half trade
+    # -c -> 0 costs alpha*c, so this is not a divisible book level.
+    alpha, c = 0.5, 3.0
+    C = lambda y: alpha * min(abs(y - c), abs(y + c))
+    assert C(c) - C(-c) == pytest.approx(0.0)
+    assert C(0.0) - C(-c) == pytest.approx(alpha * c)
+
+
 def test_no_trade_interval_must_meet_the_payoff_hull():
     # C(q) = 100q has Delta_q = 0, so the untruncated interval {100} is
     # nonempty for every fee, yet no belief in the hull [-1,1] declines to
