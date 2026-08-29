@@ -129,19 +129,39 @@ def route(makers: Sequence[LogCoshMaker], size: float, tol: float = 1e-12):
     of the effective costs, evaluated by bisection on the clearing price.
 
     Does not mutate the makers; call ``apply_fill`` on each to execute.
+
+    The bracket accounts for fees. Maker ``i`` sells at prices above
+    ``ask_i`` by solving ``tanh((q+s)/b) = p - f_i``, so its supply is finite
+    only for ``p < 1 + f_i`` and diverges as ``p`` approaches that bound;
+    symmetrically for buys at ``p > -1 - f_i``. Bracketing at ``[-1, 1]``
+    would therefore refuse trades that a fee-bearing maker can plainly fill,
+    since it never lets the clearing price rise past ``1`` to reach a maker
+    whose ask already sits above it. With the correct bracket the aggregate
+    supply diverges at either end, so every finite demand clears; the error
+    below is a numerical limit of the bracket, not an economic capacity.
+    The divergence is only logarithmic, ``arctanh(1 - d) = log(2/d - 1)/2``,
+    so that limit binds sooner than it looks.
+
+    A clearing price outside the payoff hull is reachable but not rational:
+    a buyer holding any belief in the hull stops when the price reaches
+    their belief, so demand they generate clears inside it. Prices beyond
+    arise only because ``size`` is exogenous here, the routine answering
+    what the cheapest sourcing of a given demand is rather than whether
+    anyone should want it.
     """
     if not makers:
         raise ValueError("need at least one maker")
     if size == 0.0:
         return np.zeros(len(makers)), float(np.mean([m.marginal_price for m in makers]))
 
-    lo, hi = -1.0 + _PRICE_EPS, 1.0 - _PRICE_EPS
-    total = sum(m.supply(hi) for m in makers)
-    if total < size:
-        raise ValueError("size exceeds the makers' aggregate capacity")
-    total = sum(m.supply(lo) for m in makers)
-    if total > size:
-        raise ValueError("size exceeds the makers' aggregate capacity")
+    # Finite-supply range: the tightest maker bound binds at each end.
+    lo = max(-1.0 - m.fee for m in makers) + _PRICE_EPS
+    hi = min(1.0 + m.fee for m in makers) - _PRICE_EPS
+    if sum(m.supply(hi) for m in makers) < size or \
+       sum(m.supply(lo) for m in makers) > size:
+        raise ValueError(
+            "clearing price outside the representable bracket; the demand "
+            "exceeds what the makers supply at the numerical price bound")
 
     for _ in range(200):
         mid = 0.5 * (lo + hi)

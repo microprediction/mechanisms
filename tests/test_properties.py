@@ -193,13 +193,39 @@ def test_routing_properties_over_random_maker_configurations():
             assert alt >= best - 1e-8
 
 
-def test_routing_capacity_boundary_is_the_bounded_slope_range():
-    # Log-cosh slopes live in (-1, 1), so aggregate capacity is finite: a
-    # demand beyond what the makers can supply at the extreme price has no
-    # clearing price and must be refused rather than silently clamped.
-    makers = [LogCoshMaker(b=1.0, fee=0.0), LogCoshMaker(b=2.0, fee=0.0)]
-    reachable = sum(m.supply(1.0 - 1e-9) for m in makers)
-    fills, _ = route(makers, 0.9 * reachable)
-    assert fills.sum() == pytest.approx(0.9 * reachable, abs=1e-6)
-    with pytest.raises(ValueError):
-        route(makers, 1.5 * reachable)
+def test_clearing_price_may_exceed_the_payoff_bound_when_fees_are_charged():
+    # Regression. A maker selling at prices above its ask solves
+    # tanh((q+s)/b) = p - f, so its supply is finite only for p < 1 + f and
+    # diverges there. Bracketing the clearing price at [-1, 1] refuses
+    # demands such a maker can plainly fill, since the price can never rise
+    # past 1 to reach an ask that already sits above it.
+    m = LogCoshMaker(b=1.0, fee=0.5, q0=0.0)
+    assert m.ask == pytest.approx(0.5)
+    fills, p = route([m], 2.0)
+    assert fills[0] == pytest.approx(2.0, abs=1e-9)
+    assert p > 1.0                       # the clearing price leaves [-1, 1]
+    assert p < 1.0 + m.fee               # and stays inside the finite range
+
+
+def test_aggregate_supply_diverges_at_the_smallest_fee_bound():
+    # Supply grows without bound as p approaches 1 + f, so aggregate
+    # capacity is not an economic quantity; the binding bound is the
+    # smallest 1 + f_i across makers, and every finite demand below the
+    # numerical limit clears there.
+    m = LogCoshMaker(b=1.0, fee=0.3)
+    deltas = np.array([10.0 ** -k for k in (1, 2, 3, 4, 5)])
+    supplies = np.array([m.supply(1.3 - d) for d in deltas])
+    assert np.all(np.diff(supplies) > 0)                        # increasing
+    # arctanh(1 - d) = (1/2) log(2/d - 1), so supply diverges only
+    # logarithmically: each decade of d buys about (b/2) log 10 more size.
+    steps = np.diff(supplies)
+    assert np.allclose(steps, 0.5 * np.log(10.0), rtol=0.05)
+    # which is why the numerical bracket binds early: supplying 100 units
+    # from b = 1 would need the price within exp(-200) of the bound.
+    assert m.supply(1.3 - 1e-12) < 15.0
+
+    mixed = [LogCoshMaker(b=1.0, fee=0.0), LogCoshMaker(b=2.0, fee=0.4, q0=-1.0)]
+    for demand in (0.5, 5.0, 12.0):
+        fills, p = route(mixed, demand)
+        assert fills.sum() == pytest.approx(demand, abs=1e-6)
+        assert p <= min(1.0 + m.fee for m in mixed)             # bracket binds
