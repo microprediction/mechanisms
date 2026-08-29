@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.7* · August 29, 2026
+Peter Cotton · *Working draft v0.8* · August 29, 2026
 
 ---
 
@@ -13,7 +13,8 @@ duality turns optimization into trading, and graphical factorization turns
 inference into networks of local markets. We develop both. For one maker,
 non-convexity does not obstruct coherence: no-arbitrage is a chord
 condition, rational flow trades the biconjugate, and a proportional fee of
-at least the chord excursion restores no-arbitrage, the fee being exactly a
+at least the arbitrage depth (the worst per-unit excursion of chord slopes
+beyond the payoff hull) restores no-arbitrage, the fee being exactly a
 bid-ask spread by conjugation. For makers in parallel, combining
 fee-bearing makers is an infimal convolution solved by one monotone
 clearing-price root-find with sparse fills, and the aggregate supply curve
@@ -22,8 +23,8 @@ chain-rule factor makes the market an exact min-plus inference engine:
 parallel merge implements factor multiplication and cheapest routing
 implements variable elimination, both for arbitrary convex potentials.
 A finite-state chain of markets runs Viterbi exactly; sum-product
-semantics are recovered exactly on log-quadratic families, where partial
-minimization equals marginalization up to a constant, and the
+semantics are recovered exactly on log-quadratic (Gaussian) families,
+where partial minimization equals marginalization up to a constant, and the
 market-implemented Kalman filter and exact tree marginals live on this
 intersection. A cost-based predictor admits a coherent market
 implementation if and only if its arbitrage depth is dominated by the
@@ -37,10 +38,10 @@ information source paying to move the state.
 
 ## 1. Many predictors are already markets
 
-A cost-function market maker posts a potential $C$ over inventory and
-charges $C(q+s) - C(q)$ for a fill $s$; prices are gradients and, when $C$
-is convex, the standard theory applies [@hanson2003combinatorial;
-@abernethy2013efficient]. A run of published identities makes many learning
+A cost-function market maker posts a potential $C$ over its inventory $q$
+of outstanding shares and charges $C(q+s) - C(q)$ for a fill of $s$
+shares; prices are gradients of $C$, and when $C$ is convex the standard
+theory applies [@hanson2003combinatorial; @abernethy2013efficient]. A run of published identities makes many learning
 procedures markets in this literal sense. Trading against such a maker is
 follow-the-regularized-leader with the cost as conjugate regularizer
 [@chen2010newunderstanding; @abernethy2013efficient], with trader wealth as
@@ -52,9 +53,10 @@ implement mixtures and products of experts [@pennock1997aggregate;
 
 Two further identities are used throughout. Ordinary least squares is a
 market of data points: each observation a quadratic maker quoting its
-value with capital equal to its precision, the estimate their merge, since
-merging makers is the infimal convolution of their costs and liquidity
-adds [@bhaskara2023general; @barrieu2005inf]. And a proximal step is a
+value with capital equal to its precision (inverse variance), the estimate
+their merge, since merging makers is the infimal convolution of their
+costs and liquidity, the inverse of price impact, adds
+[@bhaskara2023general; @barrieu2005inf]. And a proximal step is a
 trade against a fee-bearing maker: the proximal operator of
 $f\lvert\cdot\rvert$ is the soft-threshold, which is the optimal response
 to a proportional fee (Lemma 4 below), and the prox of any convex $g$ is
@@ -79,10 +81,12 @@ theorem tests accompany the paper in the `mechanisms` repository.
 
 ## 2. Coherence is a chord condition
 
-**Proposition 1 (no-arbitrage without convexity).** *For a path-independent
-maker with cost $C$ (no convexity assumed), there is no outcome-independent
-profitable fill from any state if and only if every chord slope of $C$ lies
-in the convex hull of payoffs: for all $q, s$,*
+**Proposition 1 (no-arbitrage without convexity).** *For a
+path-independent maker (one whose charge depends only on the inventory
+endpoints) with cost $C$, no convexity assumed, there is no
+outcome-independent profitable fill from any state if and only if every
+chord slope $[C(q+s) - C(q)]/s$ lies in the convex hull of payoffs: for
+all $q, s$,*
 
 $$C(q+s) - C(q) \;\ge\; \min_{\omega}\, \varphi(\omega)\, s
 \qquad\text{(scalar: } C \text{ is } 1\text{-Lipschitz).}$$
@@ -134,14 +138,15 @@ $\sup_x [\mu x - \hat C(x)]$ and is attained on the contact set. Adding and
 subtracting $\hat C(q)$ gives (ii). $\blacksquare$
 
 The maker behaves observationally like its convex envelope. Concave
-stretches are unquotable intermediate states, holes in the book that
-rational flow jumps across. Whoever lands inside one (noise) overpays the
+stretches are unquotable intermediate states, holes in the maker's book of
+standing quotes that rational flow jumps across. Whoever lands inside one (noise) overpays the
 gap at the landing state, and by (ii) the next rational trader recoups it,
 so the maker is a conduit keeping envelope differences over any
 rational-to-rational span, and off-contact states are transient. The
-trade-set analogue on the CFMM side is the canonical concave trading
-function: an arbitrary invariant is behaviorally equivalent to a concave
-one [@angeris2024geometry], with the limits of concavification mapped by
+trade-set analogue for constant-function market makers (CFMMs, the
+decentralized-exchange design) is the canonical concave trading function:
+an arbitrary invariant is behaviorally equivalent to a concave one
+[@angeris2024geometry], with the limits of concavification mapped by
 @frongillo2024axiomatic.
 
 Read as beliefs, a hole is a multimodal quote: the maker takes prices on
@@ -169,17 +174,20 @@ no-arbitrage for price processes that are arbitrageable frictionlessly,
 with a consistent price system inside the spread as certificate
 [@guasoni2006transaction; @guasoni2010ftap]. In prediction markets the
 precedent is fees sized to expected arbitrage profit restoring bounded loss
-under privacy noise [@cummings2016privacy; @frongillo2018private]. The
-minimum viable spread of a cost is its arbitrage depth, and a venue
-quoting a wide spread to cover a badly non-convex cost is coherent but
-uninformative in proportion: the market prices the model's incoherence as
-uncertainty.
+under privacy noise [@cummings2016privacy; @frongillo2018private]. Call
+the smallest $\varepsilon$ for which the hypothesis of Proposition 3
+holds the cost's *arbitrage depth*: the worst per-unit excursion of its
+chord slopes beyond the payoff hull, and so the minimum viable spread. A
+venue quoting a wide spread to cover a deeply incoherent cost is
+arbitrage-free but uninformative in proportion: the market prices the
+model's incoherence as uncertainty.
 
 ## 5. A linear fee is a bid-ask spread
 
 Why a fee at all? A cost-function maker's charge telescopes, so round trips
 are free: the maker earns nothing on uninformed flow and cannot recover
-adverse-selection losses from volume. That no state-dependent cost can
+from volume its adverse-selection losses, the losses to better-informed
+traders. That no state-dependent cost can
 charge a round trip, and that a path-dependent volume charge repairs it, is
 due to @othman2012profitcharging; the linear charge $f\lvert s\rvert$ is
 their volume levy in its simplest convex form, chosen because it conjugates
@@ -226,7 +234,10 @@ leaves no zero. $\blacksquare$
 ## 6. Makers in parallel
 
 Let makers $i = 1..n$ hold inventories $q_i$ with convex costs $C_i$,
-liquidities of their choosing, and fees $f_i$ of their choosing.
+liquidities of their choosing, and fees $f_i$ of their choosing; write
+$m_i = C_i'(q_i)$ for maker $i$'s marginal price and
+$\mathrm{ask}_i = m_i + f_i$, $\mathrm{bid}_i = m_i - f_i$ for its
+quotes, as in Lemma 4.
 
 **Lemma 6 (combination).** *Let
 $\tilde C = \tilde C_1 \,\square\, \cdots \,\square\, \tilde C_n$ and define
@@ -270,13 +281,16 @@ through the next band and spills over, consuming makers in fee order.
 **Corollary 7 (zero fees).** *With $f_i \equiv 0$ the convolution reduces
 to the fee-free merge: conjugate regularisers add, and for a perspective
 family $C_b(q) = b\,C_1(q/b)$ liquidity adds,
-$C_{b_1} \square C_{b_2} = C_{b_1+b_2}$* [@bhaskara2023general].
+$C_{b_1} \square C_{b_2} = C_{b_1+b_2}$ [@bhaskara2023general]. For
+quadratic makers the merge is Gaussian fusion: the merged quote is the
+precision-weighted mean of the makers' quotes, and the merged liquidity
+is the sum of their liquidities (precisions).*
 
 **Corollary 8 (the order book).** *The aggregate supply
 $S(p) = \sum_i s_i(p)$ is non-decreasing, identically zero on
 $\big(\max_i \mathrm{bid}_i,\ \min_i \mathrm{ask}_i\big)$ when that
 interval is non-empty, flat wherever every maker's band covers $p$, and
-smooth and strictly increasing wherever some maker is in the money.* Read
+smooth and strictly increasing wherever some maker is active.* Read
 as a market: best bid and ask are the tightest quotes, depth at each price
 is the sum of the active makers' closed-form supplies, and large orders
 walk the levels. The aggregate of linear-fee makers is a consolidated
@@ -290,10 +304,12 @@ schedules in @biais2000competing.
 **Proposition 9 (a deep co-quoter is Moreau smoothing).** *Merging a
 maker with cost $C$ with a quadratic co-quoter of cost $s^2/(2\lambda)$
 yields the venue with cost the Moreau envelope
-$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$. Then:
+$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$, a pointwise minimum
+of the convex branches $y \mapsto C(y) + (\cdot - y)^2/(2\lambda)$, two of
+which can attain the minimum at the same $x$ (a crossing). Then:
 (i) coherence is preserved: if $C$ is chord-coherent, so is $e_\lambda C$
 for every $\lambda$; (ii) the convexity defect of $e_\lambda C$, the
-largest slope drop at a branch crossing, equals the separation of the
+largest slope drop at a crossing, equals the separation of the
 competing minimizers divided by $\lambda$, so if all competing minimizers
 lie in an interval of diameter $D$ (as when the set where $C$ exceeds its
 convex envelope is bounded and $C$ is convex outside it), the defect is at
@@ -337,12 +353,15 @@ and the strategic equilibrium of the quote game is not solved here.
 Optimization already pays these frictions: a proximal step charges
 $\lVert\Delta\theta\rVert^2/(2\eta)$ per move, a trust region is an
 infinite fee outside a band, weight decay is a zero-quoting participant.
-In market language the stabilizers that make non-convex training behave
-are the frictions that make a non-convex venue non-exploitable.
+In market language the stabilizers of non-convex training are the
+market's two repairs: friction prices chord excursions (Proposition 3)
+and depth fills holes (Proposition 9); non-convexity by itself is not
+exploitability (§2).
 Path-dependent optimizers correspond to makers whose quotes depend on flow
 history, the adaptive-liquidity territory where path independence is
 deliberately traded away: no maker combines path independence, translation
-invariance and liquidity sensitivity [@othman2013practical], the adaptive
+invariance (complete-bundle prices summing to the sure payoff) and
+liquidity sensitivity [@othman2013practical], the adaptive
 class is axiomatized by @li2013adaptive with the homogeneous-risk-measure
 characterization in @othman2011liquidity, no trade-history maker achieves
 every desideratum at once [@abernethy2014vpm], and liquidity selection
@@ -391,17 +410,19 @@ C_1^*,\, C_2^* & \xrightarrow{\ +\ } & C_1^* + C_2^*
 
 while serial composition stays primal, obeying the composition law
 $(\varphi_2 \circ \varphi_1)(x,z) = \inf_y [\varphi_1(x,y) +
-\varphi_2(y,z)]$, the min-plus kernel product. The Legendre transform is
+\varphi_2(y,z)]$, the min-plus product of kernels (two-argument
+potentials). The Legendre transform is
 not a computational trick here but the change of representation between
 the two composition laws.
 
 **Proposition 10 (the market computes min-plus inference).** *(i) Parallel:
 merging makers multiplies factors, since $(C_1 \square C_2)^* = C_1^* +
 C_2^*$ and potentials add exactly when densities multiply. (ii) Serial:
-the cheapest route to a terminal exposure through the chain of stage
+the cheapest route to a terminal position through the chain of stage
 markets prices the min-plus elimination
-$\inf_{z_1,\dots,z_{n-1}} \sum_i \varphi_i(z_{i-1}, z_i)$, the tropical
-product of the stage kernels. (iii) On log-quadratic families, partial
+$\inf_{z_1,\dots,z_{n-1}} \sum_i \varphi_i(z_{i-1}, z_i)$, the min-plus
+product of the stage kernels. (iii) On log-quadratic (Gaussian) families,
+partial
 minimization of a potential equals its marginalization up to an additive
 constant independent of the retained variables, so the market's min-plus
 messages are the sum-product messages and the market computes exact
@@ -418,18 +439,25 @@ $\blacksquare$
 
 The proposition divides its labor as follows. The min-plus identities of
 (i) and (ii) are algebraic and hold for arbitrary potentials; the
-generalized distributive law needs no convexity [@aji2000gdl]. Convexity
-is what the market adds: it is the condition
-under which the potentials are implementable as coherent cost-function
-makers (§2), so that the min-plus computation is carried out by
+generalized distributive law needs no convexity [@aji2000gdl]. What the
+market adds is implementability, and the condition is the one §2
+identified, stated dually: a kernel is tradeable as a path-independent
+maker when its cost's chord slopes respect the payoff hull, equivalently
+when the potential $\varphi = C^*$ has effective domain inside the hull,
+so that $C = \varphi^*$ has subgradients in the hull. Convexity is the
+separate, further property of monotone information incorporation, and it
+is what gives the clean dual representation, not coherence. Under the
+implementability condition the min-plus computation is carried out by
 self-interested trading rather than by a solver.
 
-**Corollary (a chain of markets runs Viterbi).** *Take finite state
+**Corollary (the serial algebra runs Viterbi).** *Take finite state
 spaces and stage potentials $\varphi_t(i,j) = -\log P(X_t = j \mid
 X_{t-1} = i) - \log P(y_t \mid X_t = j)$. The cheapest route of
 Proposition 10(ii) is $\min_{x_{1:T}} \sum_t \varphi_t(x_{t-1}, x_t)$:
-the Viterbi decoding of the hidden Markov model, computed exactly, with
-no Gaussian structure anywhere.* The three worked examples of this paper
+the Viterbi decoding of the hidden Markov model, exactly, with no
+Gaussian structure anywhere. The statement is about the serial algebra;
+a coherent cost-function implementation of arbitrary finite-state
+kernels is not claimed.* The three worked examples of this paper
 now form a progression: least squares is parallel composition, Viterbi is
 serial min-plus composition, and the Kalman filter of §10 is the Gaussian
 intersection where the serial computation is also Bayesian.
@@ -450,8 +478,9 @@ algorithm a risk-averse market runs.
 ## 9. One market per factor
 
 The locality that makes the factorization tradable is Hanson's modularity:
-in a combinatorial LMSR a bet on $A \mid B$ moves that conditional and
-provably nothing else, uniquely among market scoring rules
+in a combinatorial logarithmic market scoring rule (LMSR) a bet on
+$A \mid B$ moves that conditional and provably nothing else, uniquely
+among market scoring rules
 [@hanson2007logarithmic; @hanson2003combinatorial]. Hanson runs one joint
 market over the product space; the substance of pricing it is
 probabilistic inference, which is why exact pricing is #P-hard
@@ -465,10 +494,11 @@ that preserve the structure characterized by @xia2011structure.
 
 The serial architecture takes the factors as separate venues rather than
 one joint book. Market $i$ opens on $P(x_i \mid \text{parents})$ when its
-conditioning information freezes, conditions on upstream quotes while
-upstream is live, and re-references when upstream settles; settlements
-cascade through the DAG like dataflow, and the schedule of markets is an
-unrolling of the graph. Observable nodes carry settled markets; a latent
+conditioning information freezes, that is, when the upstream quantities it
+conditions on stop changing; it conditions on upstream quotes while
+upstream is live, and re-references when upstream settles. Settlements
+cascade through the directed acyclic graph like dataflow, and the schedule
+of markets is an unrolling of the graph. Observable nodes carry settled markets; a latent
 node either settles through its observable footprint, a market on a hidden
 state being a market on a functional of future observables scored through
 the model, or remains indicated but unsettled, priced by whoever
@@ -522,13 +552,18 @@ boundaries.
 On loopy graphs belief propagation double-counts and its fixed points
 drift. In a market the same inconsistency is self-punishing.
 
-**Proposition 13 (cycle inconsistency is a sure profit).** *Assemble
-pairwise correlation quotes around a cycle
-into a quote matrix $P$ with unit diagonal. The quotes admit a joint
-distribution iff $P \succeq 0$. Otherwise, with $w$ the eigenvector of a
-negative eigenvalue $\lambda$, the bundle with weights $ww^\top$ has price
-$w^\top P w = \lambda < 0$ and payoff $(w^\top x)^2 \ge 0$: a sure profit
-of at least $\lvert\lambda\rvert$ per unit.*
+**Proposition 13 (quote inconsistency is a sure profit).** *Let $x$ be a
+vector of unrestricted real random variables and let separate markets
+quote securities paying the products $x_i x_j$ for every pair, the
+diagonal quoted at one; assemble the quotes into a matrix $P$ with unit
+diagonal. The quotes admit a joint distribution iff $P \succeq 0$ (a
+Gaussian with covariance $P$ witnesses sufficiency). Otherwise, with $w$
+the eigenvector of a negative eigenvalue $\lambda_{\min}$, the bundle
+with weights $ww^\top$ has price $w^\top P w = \lambda_{\min} < 0$ and
+payoff $(w^\top x)^2 \ge 0$: a sure profit of at least
+$\lvert\lambda_{\min}\rvert$ per unit. On three coordinates the quoted
+pairs are exactly the edges of a triangle, so the loopy reading is
+literal.*
 
 This is the second-moment coherence condition, prices of products must
 form a PSD matrix [@daspremont2005market], read as cycle consistency.
@@ -541,13 +576,26 @@ arbitrage algorithmically over the marginal polytope [@kroer2016arbitrage];
 and @saguillo2025arbitrage measure Polymarket arbitrageurs extracting
 \$39.6M enforcing logical coherence across markets.
 
-The scope of Proposition 13 is one class of consistency failure: locally
+Two boundaries of the proposition mark the general picture. If only a
+subgraph of pairs is quoted, the realizability condition is not positive
+semidefiniteness of a filled-in matrix but PSD-completability of the
+partial one [@grone1984completions], and the arbitrage bundle must be
+supported on quoted pairs. If the coordinates are constrained, say binary
+$x_i \in \{\pm 1\}$, the feasible quote set is the cut polytope, a strict
+subset of the PSD body [@deza1997cuts], so quotes can be positive
+semidefinite yet jointly unrealizable. In every case the coherent set is
+the convex hull of attainable payoffs, and Proposition 14 below is the
+universal form.
+
+The scope of Proposition 13 is in any case one class of consistency
+failure: locally
 quoted beliefs that cannot be embedded in any joint distribution, detected
 here at second moments. Not every loopy-propagation error takes this form,
 but the class it covers is, in a market, free money, and the flow that
 harvests it pushes the quotes back toward the cone. Whether the corrected
-fixed point is the true marginal, a Bethe-like surrogate, or something the
-liquidity profile selects is open.
+fixed point is the true marginal, a surrogate of the kind loopy
+propagation converges to, or something the liquidity profile selects is
+open.
 
 The PSD cone is not special. Coherent price sets are convex (they are
 convex hulls of payoff vectors, or their conic images), and separation
@@ -580,10 +628,14 @@ The characterization is for the cost-based class. Call a predictor
 security inventory, and call friction of size $f$ *permitted* if the
 mechanism may charge up to $f$ per unit traded. A cost-based predictor
 admits a coherent market implementation if and only if its arbitrage depth
-is dominated by the permitted friction; convexity is the $f = 0$ special
-case. Within the coherent class, non-convexity spends expressiveness, the
-contact set in place of a full quoting range, and spends nothing else
-against rational flow.
+is dominated by the permitted friction; chord coherence is the $f = 0$
+special case, and convexity is the separate, further property of monotone
+information incorporation. Three words are kept apart throughout:
+*coherence* (chord slopes stay in the payoff hull), *convexity* (marginal
+prices respond monotonically to flow), and *expressiveness* (the quoting
+range, which non-convexity restricts to the contact set). Within the
+coherent class, non-convexity spends expressiveness and spends nothing
+else against rational flow.
 
 The construction throughout is one operation: *marketization*. Given an
 operator $T$ from inputs to outputs, a marketization is a mechanism whose
@@ -727,17 +779,18 @@ characterize the mechanisms in which the stream of certificate payments
 funds the ongoing computation.
 
 *The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
-sparse-signal flow model, does the Bertrand-equilibrium fee reproduce the
-universal-threshold rate of the shrinkage literature? If so, the
-regularization constant that statistics tunes by cross-validation equals
-the adverse-selection cost of the data source.
+flow model where most coefficients are zero and informed trades carry
+signal plus noise, does the fee that survives undercutting reproduce the
+universal threshold $\sigma\sqrt{2\log p}$ of the shrinkage literature?
+If so, the regularization constant that statistics tunes by
+cross-validation equals the adverse-selection cost of the data source.
 
 *Loopy fixed points.* Under a concrete flow model, does
 arbitrage-corrected quoting converge, and to what?
 
-*Arbitrage depth as a capacity measure.* The minimum viable spread of a
-trained landscape is computable; whether it tracks quantities learning
-theory names (sharpness, mode connectivity) is open.
+*Arbitrage depth as a capacity measure.* The arbitrage depth of a trained
+model's loss landscape is computable; whether it tracks quantities
+learning theory names (sharpness, mode connectivity) is open.
 
 *Effective friction.* Proposition 15 eliminates frictionless networks.
 With per-maker fees, what are the effective fees and liquidities of the
