@@ -10,31 +10,24 @@ Peter Cotton · *Working draft v0.2* · August 28, 2026
 
 Many learning procedures are cost-function markets by identity rather than
 analogy: mirror descent trades against a convex-cost maker, Bayesian model
-averaging is a market of Kelly bettors with wealths as posterior weights,
-least squares is the precision-weighted merge of one quadratic maker per
-observation, and a proximal step is the optimal response to a maker charging
-the penalty. This paper asks the converse, which predictors are markets, and
-answers in three movements. For one maker, the apparent obstruction,
-non-convexity, does not obstruct coherence: charges telescope for any cost,
-no-arbitrage is a chord condition, and rational flow trades the biconjugate,
-landing on the contact set so that non-convexity costs expressiveness (holes
-in the book, multimodal quotes) rather than soundness; a proportional fee is
-exactly a bid-ask spread, by conjugation, and a fee of at least the chord
-excursion restores no-arbitrage. For makers in parallel, combining
+averaging is a market of Kelly bettors, least squares is the
+precision-weighted merge of one quadratic maker per observation, and a
+proximal step is the optimal response to a maker charging the penalty. We
+ask the converse: which predictors are markets. For one maker, we show
+non-convexity does not obstruct coherence: no-arbitrage is a chord
+condition, rational flow trades the biconjugate, and a proportional fee of
+at least the chord excursion restores no-arbitrage, the fee being exactly a
+bid-ask spread by conjugation. For makers in parallel, combining
 fee-bearing makers is an infimal convolution solved by one monotone
-clearing-price root-find with lasso-sparse fills; the aggregate supply curve
-is a consolidated limit order book, each maker may quote its own fee with
-routing as the discipline, and a deep quadratic co-quoter is Moreau
-smoothing. For markets in series, one market per chain-rule factor opens
-when its conditioning information freezes and settles in cascade:
-alternating a model step with a market step is the Kalman filter, market
-messages on a tree compute exact posterior marginals, and on loopy graphs
-the pathology of belief propagation materializes as arbitrage, with
-arbitrageurs as the loop correction. The two compositions are the two
-operations of the inference semiring, and Gaussian exactness throughout has
-one source, the family on which sum-product and min-sum agree. A predictor
-is a market when its arbitrage depth is finite relative to affordable
-friction; a market is the incentive closure of a predictor.
+clearing-price root-find with sparse fills, the aggregate supply curve is a
+consolidated limit order book, and a deep quadratic co-quoter is Moreau
+smoothing. For markets in series, running one market per chain-rule factor
+makes the alternation of model step and market step the Kalman filter,
+makes market messages on a tree exact posterior marginals, and turns the
+inconsistency that degrades loopy belief propagation into an arbitrage that
+traders remove. A predictor is a market when its arbitrage depth is finite
+relative to affordable friction; the two compositions are the two
+operations of the inference semiring.
 
 ---
 
@@ -52,27 +45,25 @@ performs Bayesian model averaging with wealths as posterior weights
 [@beygelzimer2012kelly], and equilibrium prices of utility-maximizing agents
 implement mixtures and products of experts [@pennock1997aggregate;
 @storkey2011machine; @storkey2012isoelastic; @barbu2012artificial].
-Ordinary least squares is a market of data points: each observation a
-quadratic maker quoting its value with capital equal to its precision, the
-estimate their merge, since merging makers is the infimal convolution of
-their costs and liquidity adds [@bhaskara2023general; @barrieu2005inf]. A
-proximal step is a trade against a fee-bearing maker: the proximal operator
-of $f\lvert\cdot\rvert$ is the soft-threshold, which is the optimal response
-to a proportional fee (Lemma 5 below), and the prox of any convex $g$ is the
-response to a maker charging $g$. The two canonical penalties are then the
-two market primitives: ridge is a zero-quoting participant with capital
-$\lambda$, lasso is a fee of $\lambda$, and the theorem that regularization
-is robustness to data perturbation [@elghaoui1997robust; @xu2009robustness]
-acquires a market reading in which the adversary's budget is priced rather
-than assumed.
 
-The question is the converse: which predictors are markets, and what does
-the market form demand? The paper proceeds in three movements. Sections
-2–4 treat one maker and show the suspect requirement, convexity, is weaker
-and more informative than supposed. Sections 5–7 treat makers in parallel:
-fees, routing, the order book, and the frictions that repair incoherence.
-Sections 8–11 treat markets in series: the chain rule as architecture,
-filtering, message passing, and loops. Section 12 states the
+Two further identities are used throughout. Ordinary least squares is a
+market of data points: each observation a quadratic maker quoting its
+value with capital equal to its precision, the estimate their merge, since
+merging makers is the infimal convolution of their costs and liquidity
+adds [@bhaskara2023general; @barrieu2005inf]. And a proximal step is a
+trade against a fee-bearing maker: the proximal operator of
+$f\lvert\cdot\rvert$ is the soft-threshold, which is the optimal response
+to a proportional fee (Lemma 4 below), and the prox of any convex $g$ is
+the response to a maker charging $g$. The two canonical penalties are then
+the two market primitives: ridge is a zero-quoting participant with
+capital $\lambda$, lasso is a fee of $\lambda$, and the theorem that
+regularization is robustness to data perturbation [@elghaoui1997robust;
+@xu2009robustness] acquires a market reading in which the adversary's
+budget is priced rather than assumed.
+
+We ask the converse: which predictors are markets, and what does the
+market form demand? Sections 2–4 treat one maker, sections 5–7 makers in
+parallel, sections 8–11 markets in series, and section 12 states the
 characterization. Throughout, a scalar security settles at
 $\varphi(\omega) = \omega \in [-1,1]$; vector statements substitute the
 convex hull of payoff vectors. Reference implementations and numerical
@@ -94,15 +85,17 @@ $(q,s)$ is exactly the failure of the displayed inequality, and the
 inequality for all pairs says every chord slope is supported by the hull.
 $\blacksquare$
 
-Two remarks. Cycling was never the exploit: the charge telescopes over any
-closed path whatever $C$ is, so round trips are refunds; the exploit, when
-the chord condition fails, is the accumulation of sure-profit net positions
-at states where quotes exit the hull. And convexity enters the standard
-axiomatics not through no-arbitrage but through *information incorporation*
-(the marginal-cost monotonicity condition of @abernethy2013efficient);
-dropping that axiom while keeping the chord condition leaves a coherent
-non-convex maker, exhibited numerically in the companion repository.
-Arbitrage theory without convexity is developed in a different formalism by
+Round trips are refunds for any $C$, convex or not, because the charge
+telescopes over closed paths. When the chord condition fails the exploit is
+the accumulation of sure-profit net positions at states where quotes exit
+the hull.
+
+Convexity enters the standard axiomatics through *information
+incorporation*, the marginal-cost monotonicity condition of
+@abernethy2013efficient, not through no-arbitrage. Dropping that axiom
+while keeping the chord condition leaves a coherent non-convex maker,
+exhibited numerically in the companion repository. Arbitrage theory
+without convexity is developed in a different formalism by
 @lepinette2017nonconvex.
 
 ## 3. The market trades the biconjugate
@@ -129,17 +122,19 @@ subtracting $\hat C(q)$ gives (ii). $\blacksquare$
 
 The maker behaves observationally like its convex envelope. Concave
 stretches are unquotable intermediate states, holes in the book that
-rational flow jumps across; whoever lands inside one (noise) overpays the
+rational flow jumps across. Whoever lands inside one (noise) overpays the
 gap at the landing state, and by (ii) the next rational trader recoups it,
 so the maker is a conduit keeping envelope differences over any
 rational-to-rational span, and off-contact states are transient. The
 trade-set analogue on the CFMM side is the canonical concave trading
 function: an arbitrary invariant is behaviorally equivalent to a concave
 one [@angeris2024geometry], with the limits of concavification mapped by
-@frongillo2024axiomatic. Read as beliefs, a hole is a multimodal quote:
-the maker takes prices on either side of the gap and refuses every price
-inside, jumping discontinuously as flow accumulates, the book-side shape of
-the bimodal implied densities documented around binary events
+@frongillo2024axiomatic.
+
+Read as beliefs, a hole is a multimodal quote: the maker takes prices on
+either side of the gap and refuses every price inside, jumping
+discontinuously as flow accumulates. This is the book-side shape of the
+bimodal implied densities documented around binary events
 [@melick1997crude; @clark2017brexit].
 
 ## 4. Frictions price the remaining failure
@@ -162,9 +157,10 @@ with a consistent price system inside the spread as certificate
 [@guasoni2006transaction; @guasoni2010ftap]. In prediction markets the
 precedent is fees sized to expected arbitrage profit restoring bounded loss
 under privacy noise [@cummings2016privacy; @frongillo2018private]. The
-minimum viable spread of a cost is its arbitrage depth, and a venue quoting
-a wide spread to cover a wild landscape is coherent but uninformative in
-proportion: the market prices the model's incoherence as uncertainty.
+minimum viable spread of a cost is its arbitrage depth, and a venue
+quoting a wide spread to cover a badly non-convex cost is coherent but
+uninformative in proportion: the market prices the model's incoherence as
+uncertainty.
 
 ## 5. A linear fee is a bid-ask spread
 
@@ -195,12 +191,12 @@ the convex function $g_q^*$ over $[p - f,\, p + f]$. Since $g_q^* \ge 0$
 with equality exactly at $m$, the minimum is attained at the projection of
 $m$ onto the interval, which is $m + T_{f}(p - m)$. $\blacksquare$
 
-The maker quotes $\mathrm{ask} = m + f$ and $\mathrm{bid} = m - f$ and is
-untouchable in between: a proportional fee is not like a spread, it is one,
-the same duality by which a proportional transaction cost confines the
-pricing functional to the bid-ask band [@jouini1995transaction]. And
-because conjugation reads only biconjugates, the lemma survives
-non-convexity verbatim with the envelope in place of the cost:
+The maker quotes $\mathrm{ask} = m + f$ and $\mathrm{bid} = m - f$ and
+trades nothing in between: a proportional fee is a bid-ask spread, the
+same duality by which a proportional transaction cost confines the pricing
+functional to the bid-ask band [@jouini1995transaction]. Because
+conjugation reads only biconjugates, the lemma survives non-convexity with
+the envelope in place of the cost:
 
 **Lemma 5 (the envelope form).** *For any chord-coherent $C$ with envelope
 $\hat C$, the fee-bearing maker's no-trade band at state $q$ is the
@@ -331,21 +327,22 @@ $$P(\text{everything}) \;=\; \prod_{\text{nodes}} P(x_i \mid
 \text{parents}(x_i)),$$
 
 and the remaining operator runs one market per factor, each pricing its
-conditional given what is upstream. That there are exactly two operators is
-not an accident of taste. Message-passing inference is an algorithm over a
-commutative semiring [@aji2000gdl]: one operation combines evidence about a
-variable (the product), one moves evidence between variables (the sum), and
-sum-product, max-product and min-sum are the one algorithm over different
-semirings. The market algebra is that pair: parallel merge is the product,
-densities multiplying as precisions add, and serial propagation is the sum.
-The parallel operation wears two costumes, addition of conjugates and
-infimal convolution of costs, because inf-convolution is convolution in the
-min-plus semiring and the Legendre transform is its Laplace transform
-[@litvinov2007idempotent]: the convex machinery of this paper is the
-tropical shadow of the probability calculus. Exactness in everything
-Gaussian below has one source: log-quadratics are the family on which the
+conditional given what is upstream. The count of two is structural.
+Message-passing inference is an algorithm over a commutative semiring
+[@aji2000gdl]: one operation combines evidence about a variable (the
+product), one moves evidence between variables (the sum), and sum-product,
+max-product and min-sum are the one algorithm over different semirings.
+The market algebra is that pair: parallel merge is the product, densities
+multiplying as precisions add, and serial propagation is the sum.
+
+The parallel operation has two equivalent forms, addition of conjugates
+and infimal convolution of costs, because inf-convolution is convolution
+in the min-plus semiring and the Legendre transform is its Laplace
+transform [@litvinov2007idempotent]: the convex machinery of this paper is
+the min-plus form of the probability calculus. Every Gaussian exactness
+below has one source: log-quadratics are the family on which the
 sum-product and min-sum semirings coincide, so a market whose traders
-optimize agrees with an inference engine that integrates; off the family
+optimize agrees with an inference engine that integrates. Off the family
 they diverge by the Laplace-approximation gap, which is §12's open
 question.
 
@@ -384,9 +381,10 @@ the current belief through the dynamics in mean-precision form, and a
 *market step*, merging the propagated belief with an observation maker
 quoting $y_t$ whose capital is the observation precision.
 
-**Proposition 10.** *The alternation is the Kalman filter
-[@kalman1960filtering]: after each observation the market state equals the
-filtered mean and variance exactly.*
+**Proposition 10 (the market step is the Kalman update).** *The
+alternation is the Kalman filter [@kalman1960filtering]: after each
+observation the market state equals the filtered mean and variance
+exactly.*
 
 **Proof.** The model step is the standard prediction of mean and variance.
 Merging quadratic makers adds precisions and precision-weights means (the
@@ -394,12 +392,12 @@ fusion form of Corollary 7), which is the information-form measurement
 update; the covariance-form update follows by the usual algebra.
 $\blacksquare$
 
-Prediction is computation; correction is a market; capital decides how
-hard the data pulls. The nearest published object is the Bayesian market
-maker of @brahma2012bayesianmm, whose trade update is a scalar Gaussian
-measurement update with covariance inflation for jumps; the filtering
-reading, and any alternation with a dynamic model, appear unstated in the
-literature.
+The prediction step is computed and the correction step is traded, with
+capital setting the weight of the data. The nearest published object is
+the Bayesian market maker of @brahma2012bayesianmm, whose trade update is
+a scalar Gaussian measurement update with covariance inflation for jumps;
+we find no filtering reading, and no alternation with a dynamic model, in
+the literature.
 
 ## 11. Trees and loops
 
@@ -409,10 +407,10 @@ filter of §10 run up to the node), the local observation, and the backward
 message (downstream observations pulled back through the dynamics, each
 pull-back a reparametrization and each combination a precision addition).
 
-**Proposition 11.** *All three messages are market operations, and the
-merged posterior equals the brute-force conditioning of the joint at every
-node: Gaussian belief propagation [@pearl1988probabilistic] with trades as
-messages, exact on trees.*
+**Proposition 11 (trades as messages, exact on trees).** *All three
+messages are market operations, and the merged posterior equals the
+brute-force conditioning of the joint at every node: Gaussian belief
+propagation [@pearl1988probabilistic] with trades as messages.*
 
 The repository verifies the identity to ten digits. The contrast with the
 deployed combinatorial engines is architectural: there the junction tree
@@ -421,9 +419,10 @@ the messages pass between venues, and the graph's edges are market
 boundaries.
 
 On loopy graphs belief propagation double-counts and its fixed points
-drift. The market version of the pathology is sharper and self-punishing.
+drift. In a market the same inconsistency is self-punishing.
 
-**Proposition 12.** *Assemble pairwise correlation quotes around a cycle
+**Proposition 12 (cycle inconsistency is a sure profit).** *Assemble
+pairwise correlation quotes around a cycle
 into a quote matrix $P$ with unit diagonal. The quotes admit a joint
 distribution iff $P \succeq 0$. Otherwise, with $w$ the eigenvector of a
 negative eigenvalue $\lambda$, the bundle with weights $ww^\top$ has price
@@ -431,21 +430,21 @@ $w^\top P w = \lambda < 0$ and payoff $(w^\top x)^2 \ge 0$: a sure profit
 of at least $\lvert\lambda\rvert$ per unit.*
 
 This is the second-moment coherence condition, prices of products must
-form a PSD matrix [@daspremont2005market], read as cycle consistency. The
-lineage of "arbitrageurs enforce coherence" is long and must be owned:
-coherence is no-arbitrage [@nau1991arbitrage]; @pennock1996marketbayes
-built arbitrageur agents enforcing the additivity identities of a
-Bayes-net economy, with equilibrium prices equal to the network's
-probabilities and distributed bidding as distributed inference; the
-combinatorial literature removes the arbitrage algorithmically over the
-marginal polytope [@kroer2016arbitrage]; and Polymarket's arbitrageurs
-have been measured doing the enforcement for eight figures
-[@saguillo2025arbitrage]. What the loop reading adds is the object being
-corrected: the inconsistency that degrades loopy belief propagation is, in
-a market, not a numerical nuisance but free money, and the flow that
-harvests it pushes the quotes back toward the cone. Whether the corrected
-fixed point is the true marginal, a Bethe-like surrogate, or something the
-liquidity profile selects is open.
+form a PSD matrix [@daspremont2005market], read as cycle consistency.
+Arbitrage-enforced coherence is an old idea. Coherence is no-arbitrage
+[@nau1991arbitrage]; @pennock1996marketbayes built arbitrageur agents
+enforcing the additivity identities of a Bayes-net economy, with
+equilibrium prices equal to the network's probabilities and distributed
+bidding as distributed inference; the combinatorial literature removes the
+arbitrage algorithmically over the marginal polytope [@kroer2016arbitrage];
+and @saguillo2025arbitrage measure Polymarket arbitrageurs extracting
+\$39.6M enforcing logical coherence across markets.
+
+Proposition 12 identifies the object being corrected: the inconsistency
+that degrades loopy belief propagation is, in a market, free money, and
+the flow that harvests it pushes the quotes back toward the cone. Whether
+the corrected fixed point is the true marginal, a Bethe-like surrogate, or
+something the liquidity profile selects is open.
 
 ## 12. The characterization, and open problems
 
@@ -453,13 +452,14 @@ A predictor is a market when its cost has finite arbitrage depth relative
 to affordable friction; convexity is the $f = 0$ special case. Within the
 coherent class, non-convexity spends expressiveness, the contact set in
 place of a full quoting range, and spends nothing else against rational
-flow. What the market form adds to a predictor is not new estimates but
-three things the estimation literature obtains otherwise: tuning constants
-become prices set by competition rather than formulas, composition becomes
-an algebra, parallel and serial as the two semiring operations, and the
-procedure becomes robust to strategic data, since every source pays to
-move the state. A market is the incentive closure of a predictor; a
-predictor is a market with the strategyproofing stripped out.
+flow.
+
+The market form adds three things the estimation literature obtains
+otherwise. Tuning constants become prices set by competition rather than
+formulas. Composition becomes an algebra, parallel and serial as the two
+semiring operations. And the procedure becomes robust to strategic data,
+since every source pays to move the state: a market is the incentive
+closure of a predictor.
 
 Open problems, in rough order of tractability:
 
@@ -474,9 +474,9 @@ market runs.
 
 *The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
 sparse-signal flow model, does the Bertrand-equilibrium fee reproduce the
-universal-threshold rate of the shrinkage literature, making "the right
-amount of regularization is the adverse-selection cost of the data source"
-a proposition rather than a slogan?
+universal-threshold rate of the shrinkage literature? If so, the
+regularization constant that statistics tunes by cross-validation equals
+the adverse-selection cost of the data source.
 
 *Loopy fixed points.* Under a concrete flow model, does
 arbitrage-corrected quoting converge, and to what?
