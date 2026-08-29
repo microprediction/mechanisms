@@ -27,10 +27,12 @@ convolution with ``(.)^2 / (2 lam)`` — the Moreau envelope — which
 preserves chord coherence at every depth and attenuates the excluded
 range like ``1/lam``. It does not fill that range at finite depth: for the
 symmetric double well the midpoint stays strictly off contact for every
-finite ``lam``. Where the merged venue does become convex, the depth
-required is set by the global geometry of the gaps (how wide a concave
-stretch the quadratic must bridge), not by the local weak-convexity
-constant, which governs prox uniqueness instead.
+finite ``lam``, and it does not convexify the venue either. Apparent
+convexification on a bounded window is an artifact: for large ``lam`` the
+infimum is attained at the window edge and the envelope is dominated by
+the boundary parabola, so widening the window at fixed ``lam`` brings the
+non-convexity back (tested). What the depth buys is attenuation of the
+envelope gap, not a change of kind.
 
 See ``research/predictors-as-markets.md``.
 

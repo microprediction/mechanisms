@@ -17,7 +17,8 @@ non-convexity, turns out not to obstruct coherence at all: no-arbitrage is a
 chord condition, rational flow trades the biconjugate, and what non-convexity
 costs is expressiveness (unquotable inventory states), not
 soundness. Frictions then price the remaining failure mode, bounded slope
-excursions, and a deep convex co-quoter fills the holes.
+excursions, and a deep convex co-quoter attenuates the envelope gap
+without closing it.
 
 ## 1. The literal correspondences
 
@@ -37,7 +38,7 @@ Procedures that are markets by identity rather than analogy:
 - *Proximal steps* are trades against fee-bearing makers: the prox of
   $f\lvert\cdot\rvert$ is the soft-threshold is the optimal response to a
   proportional fee (the fee lemma of the
-  [working paper](../papers/predictors-as-markets.md), §5), and
+  [working paper](../papers/non-convex-market-makers.md), §5), and
   the prox of a general convex $g$ is the response to a maker charging $g$.
   ISTA for the lasso is repeated trading against a quadratic maker with a
   fee.
@@ -85,11 +86,12 @@ differences over any rational-to-rational span. Non-convexity costs
 expressiveness, not coherence, and it costs the maker nothing against
 rational flow.
 
-Read as beliefs, a hole in the book is a multimodal quote: the maker will
-take the price on either side of the gap but refuses every price inside it,
-and accumulating flow moves the quote across the gap discontinuously. This
-is the shape of books around binary events, stated here as an
-interpretation rather than an empirical claim (§9).
+Across the excluded range the envelope is affine, so the marginal price is
+constant there: the jump is an inventory jump at one supporting price, not
+a missing price range, and against the original non-convex cost it is
+lumpy rather than divisible. Earlier drafts read the gap as a hole in the
+book and as a multimodal quote; both were wrong, and no claim about
+bimodal implied densities is made.
 
 ## 4. Frictions price the remaining failure
 
@@ -107,21 +109,18 @@ market prices the model's incoherence as uncertainty.
 The second repair is a participant rather than a friction. Merging with a
 quadratic co-quoter of liquidity $\lambda$ is infimal convolution with
 $\lvert\cdot\rvert^2/(2\lambda)$, the Moreau envelope. A deep co-quoter
-convexifies the merged venue on the tested costs; a shallow one does not.
-Depth never fills an excluded range at finite depth, however: for the
-double well the midpoint gap decays like $1/\lambda$ but stays strictly
-positive (tested). The required depth is set by the
-*global* geometry of the gaps (how wide a concave stretch the quadratic
-must bridge), not by the local weak-convexity constant, which governs prox
-uniqueness instead — the numerical demonstration in the tests has the venue
-still non-convex at the local scale $1/\rho$ and convex at several times
-it. The merge also never creates arbitrage: the envelope's derivative is a
+attenuates the envelope gap, but does not convexify the venue and does not
+close the excluded range. For the double well the midpoint gap decays like
+$1/\lambda$ and stays strictly positive; and apparent convexification on a
+bounded window is an artifact of the boundary, disappearing when the window
+is widened at fixed $\lambda$ (both tested). The merge never creates
+arbitrage: the envelope's derivative is a
 selection of $C$'s derivatives (first-order condition), so a chord-coherent
 maker stays chord-coherent at every depth, and what the deep co-quoter buys
 is expressiveness, not coherence (tested). The crossing-jump bound measures
 crossing defects only: $C = a\sin y$ with $\lambda a < 1$ has a unique
 minimizer everywhere yet envelope curvature $C''/(1+\lambda C'') < 0$
-wherever $C'' < 0$, smooth non-convexity with no crossing (tested). Exact convexification at finite depth is generic but not universal: for
+wherever $C'' < 0$, smooth non-convexity with no crossing (tested). For
 a symmetric double well the merged venue keeps a concave kink at every
 finite depth (the minimum of two crossing parabolas), with defect decaying
 like $1/\lambda$, so the residue is priced by a fee of the same order. The two repairs are exactly the dictionary's two primitives, friction
@@ -129,7 +128,7 @@ like $1/\lambda$, so the residue is priced by a fee of the same order. The two r
 ridge.
 
 The fee lemma (§5 of the
-[working paper](../papers/predictors-as-markets.md)) extends without
+[working paper](../papers/non-convex-market-makers.md)) extends without
 convexity in exact form: the no-trade beliefs at state $q$ are the
 fee-widened interval of one-sided chord bounds,
 $[\sup_{s<0} d_q - f,\ \inf_{s>0} d_q + f]$, intersected with the payoff
@@ -163,7 +162,7 @@ non-convexity spends is expressiveness (contact set in place of full
 quoting range) and what unbounded incoherence spends is everything. Two
 corrections to the conversational versions of this claim are recorded
 here: cycles were never the exploit (telescoping refunds them, §2), and the
-Moreau convexification threshold is global, not the weak-convexity constant
+Moreau envelope attenuates rather than convexifies, apparent convexification on a bounded window being a boundary artifact
 (§4).
 
 ## 6. Implementation
@@ -175,7 +174,7 @@ diagnostic), and `moreau_envelope` (the merged venue with a quadratic
 co-quoter). The tests verify: coherence without convexity; rational landing
 on the contact set and the profit identity $\Pi_C = \Pi_{\hat C} + g(q_0)$;
 the off-contact pass-through; fee-priced slope excursions with round trips
-costing exactly $2fs$; and deep-versus-shallow co-quoter convexification.
+costing exactly $2fs$; and the window-artifact character of apparent convexification.
 
 ## 7. Prior art and novelty (calibrated)
 

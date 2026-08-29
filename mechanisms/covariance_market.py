@@ -24,7 +24,7 @@ moving the quote to their believed second-moment matrix and collects
 An optional proportional fee on the nuclear norm of the fill conjugates to a
 spectral-norm dead zone: no profitable trade exists while the spectral norm
 of the mispricing is below the fee, the matrix form of the fee-spread lemma
-in ``papers/predictors-as-markets.md``.
+in ``papers/non-convex-market-makers.md``.
 
 See ``research/covariance-market.md`` for the derivations, the graphical
 (restricted-coverage) reading, and the monteprediction connection.

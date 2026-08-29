@@ -216,14 +216,23 @@ def test_the_endpoint_jump_is_lumpy_not_a_divisible_level():
 
 def test_no_trade_interval_must_meet_the_payoff_hull():
     # C(q) = 100q has Delta_q = 0, so the untruncated interval {100} is
-    # nonempty for every fee, yet no belief in the hull [-1,1] declines to
-    # trade: non-emptiness needs the intersection, i.e. chord coherence.
+    # nonempty for every fee; whether any admissible belief declines to
+    # trade depends on the intersection with the hull, non-empty exactly
+    # when 100 - f <= 1. The threshold is therefore f = 99, which is
+    # Proposition 3's excursion: the chord slope exceeds the hull's upper
+    # end by 99, and a fee of at least that restores no-arbitrage.
     xs = np.linspace(-5.0, 5.0, 4001)
     C = 100.0 * xs
-    for f in (0.0, 0.5, 5.0):
-        for mu in np.linspace(-1.0, 1.0, 21):
-            prof = (mu * (xs - 0.0) - (C - 0.0) - f * np.abs(xs)).max()
-            assert prof > 0                        # every admissible belief trades
+    mus = np.linspace(-1.0, 1.0, 201)
+
+    def some_belief_declines(f):
+        return any((mu * xs - C - f * np.abs(xs)).max() <= 1e-9 for mu in mus)
+
+    for f in (0.0, 0.5, 5.0, 98.0):
+        assert not some_belief_declines(f)         # below the depth: all trade
+    for f in (99.0, 150.0):
+        assert some_belief_declines(f)             # at the depth: mu = 1 rests
+    assert (1.0 * xs - C - 99.0 * np.abs(xs)).max() == pytest.approx(0.0, abs=1e-9)
 
 
 def test_double_well_jump_is_constant_until_the_coquoter_reaches_across():
@@ -254,27 +263,35 @@ def test_fee_can_stabilize_the_sine_hole():
     assert profit(0.0, 0.5 * a) > 0.1
 
 
-def test_deep_coquoter_convexifies_but_does_not_fill():
-    # Merging with a quadratic co-quoter of liquidity lam is the Moreau
-    # envelope. A deep co-quoter (large lam) can convexify the merged venue
-    # on this cost; it never fills the excluded range (see the double-well
-    # test), and a
-    # shallow one leaves it non-convex. The threshold is global (gap
-    # geometry): lam near the local weak-convexity scale 1/0.35 is NOT yet
-    # enough, which is part of the point.
-    C = _wiggly_cost()
-    xs = XS[::4]
-    c = C[::4]
-    interior = slice(20, len(xs) - 20)
-    deep = np.diff(moreau_envelope(xs, c, lam=25.0), 2)[interior]
-    local_scale = np.diff(moreau_envelope(xs, c, lam=3.0), 2)[interior]
-    shallow = np.diff(moreau_envelope(xs, c, lam=1.0), 2)[interior]
-    assert deep.min() >= -1e-6           # deep co-quoter: convex venue
-    assert local_scale.min() < -1e-3     # 1/rho depth: still non-convex
-    assert shallow.min() < -1e-4         # shallow: still non-convex
-    # coherence is preserved at every depth: the envelope's slopes are a
-    # selection of C's slopes, so the merged venue stays 1-Lipschitz
+def _wiggly_on(xs):
     dx = xs[1] - xs[0]
+    sl = 0.6 * np.tanh(xs) + 0.35 * np.sin(xs)
+    C = np.concatenate([[0.0], np.cumsum(0.5 * (sl[1:] + sl[:-1]) * dx)])
+    return C - C[len(xs) // 2]
+
+
+def test_moreau_apparent_convexification_is_a_window_artifact():
+    # It is tempting to report that a deep co-quoter convexifies the venue.
+    # On a bounded window it can look that way, because for large lam the
+    # infimum is attained at the window edge and the envelope is dominated
+    # by the boundary parabola. Widening the window at fixed lam exposes the
+    # non-convexity again: finite smoothing attenuates genuine convex-envelope
+    # gaps, it does not remove them.
+    curvature = []
+    for half in (12.0, 40.0, 120.0):
+        xs = np.linspace(-half, half, 2001)
+        d2 = np.diff(moreau_envelope(xs, _wiggly_on(xs), lam=25.0), 2)
+        inner = slice(len(d2) // 4, 3 * len(d2) // 4)     # away from the edges
+        curvature.append(float(d2[inner].min()))
+    assert curvature[0] > -1e-6        # narrow window: looks convex
+    assert curvature[-1] < -1e-3       # wide window: plainly is not
+    assert curvature[-1] < curvature[0]
+
+    # Coherence, by contrast, survives every depth and window, since the
+    # envelope's slopes are a selection of C's slopes.
+    xs = np.linspace(-40.0, 40.0, 2001)
+    dx = xs[1] - xs[0]
+    interior = slice(50, len(xs) - 51)
     for lam in (1.0, 3.0, 25.0):
-        slopes = np.diff(moreau_envelope(xs, c, lam)) / dx
+        slopes = np.diff(moreau_envelope(xs, _wiggly_on(xs), lam)) / dx
         assert np.abs(slopes[interior]).max() <= 0.95 + 1e-6
