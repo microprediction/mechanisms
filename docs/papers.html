@@ -133,82 +133,36 @@
       <a href="./papers/likelihood-versus-crps.html">full draft</a> ·
       <a href="./papers/likelihood-versus-crps.pdf">pdf</a></p>
 
-    <h2 id="combining-linear-fee-market-makers">
-      <a href="./papers/combining-linear-fee-market-makers.html">Combining
-      Linear-Fee Market Makers</a></h2>
-    <p class="subtitle">The infimal convolution of cost-function makers with
-      proportional fees: spreads, sparse routing, and a derived order book</p>
-    <p>
-      A cost-function market maker charging a proportional fee f|s| per fill
-      quotes, after Fenchel conjugation, exactly a bid-ask spread: the
-      conjugate of the fee-bearing cost is the no-fee conjugate at a
-      soft-thresholded price, zero on a band of half-width f around the
-      marginal price. Combining n such makers is the infimal convolution of
-      their effective costs; the optimal split equalises fee-adjusted marginal
-      prices at a single clearing price found by a monotone scalar root-find,
-      and any maker whose quote band contains the clearing price trades exactly
-      zero, so the split is sparse in the manner of lasso solutions. The
-      aggregate supply curve is a consolidated limit order book with smooth
-      levels, and each maker may quote its own fee with routing as the
-      discipline. The identities are classical and the near misses catalogued;
-      the assembly, fees inside the costs rather than beside them, appears
-      unoccupied.
-    </p>
-    <p class="muted">Peter Cotton · working draft v0.1 ·
-      <a href="./papers/combining-linear-fee-market-makers.html">full draft</a> ·
-      <a href="./papers/combining-linear-fee-market-makers.pdf">pdf</a></p>
-
     <h2 id="predictors-as-markets">
       <a href="./papers/predictors-as-markets.html">Predictors as
       Markets</a></h2>
-    <p class="subtitle">Coherence without convexity, frictions as
-      regularizers, and the market as biconjugate</p>
+    <p class="subtitle">One maker, makers in parallel, markets in series</p>
     <p>
       Many learning procedures are cost-function markets by identity: mirror
       descent trades against a maker, Bayesian model averaging is a Kelly
       market with wealths as posterior weights, least squares is the merge of
       one quadratic maker per observation, and a proximal step is the optimal
-      response to a maker charging the penalty. This note asks the converse
-      and finds the apparent obstruction, non-convexity, does not obstruct
-      coherence: charges telescope for any cost, no-arbitrage is a chord
-      condition, and rational flow trades the biconjugate, landing on the
-      contact set with the concave stretches as unquotable holes in the book
-      that read as multimodal quotes. Frictions price the remaining failure:
-      a fee of at least the chord excursion restores no-arbitrage (the
-      mechanism-level analogue of no-arbitrage under small transaction
-      costs), the fee-spread lemma survives with the envelope in place of the
-      cost, and a deep quadratic co-quoter is Moreau smoothing. A predictor
-      is a market when its arbitrage depth is finite relative to affordable
-      friction; convexity is the zero-friction case.
+      response to a maker charging the penalty. This paper asks the converse
+      in three movements. One maker: no-arbitrage is a chord condition, not
+      convexity; rational flow trades the biconjugate, with concave stretches
+      as unquotable holes in the book that read as multimodal quotes; a
+      proportional fee, conjugated, is exactly a bid-ask spread, and a fee of
+      at least the chord excursion restores no-arbitrage. Makers in parallel:
+      combining fee-bearing makers is an infimal convolution solved by one
+      clearing-price root-find with lasso-sparse fills; the aggregate supply
+      curve is a consolidated limit order book; each maker may quote its own
+      fee with routing as the discipline; a deep quadratic co-quoter is
+      Moreau smoothing. Markets in series: one market per chain-rule factor,
+      opening when its conditioning information freezes; the market step is
+      the Kalman update, trades are belief-propagation messages, exact on
+      trees, and loopy inconsistency is a sure-arbitrage certificate, so
+      arbitrageurs are the loop correction. Parallel and serial are the two
+      operations of the inference semiring; a predictor is a market when its
+      arbitrage depth is finite relative to affordable friction.
     </p>
-    <p class="muted">Peter Cotton · working draft v0.1 ·
+    <p class="muted">Peter Cotton · working draft v0.2 ·
       <a href="./papers/predictors-as-markets.html">full draft</a> ·
       <a href="./papers/predictors-as-markets.pdf">pdf</a></p>
-
-    <h2 id="markets-in-series">
-      <a href="./papers/markets-in-series.html">Markets in Series</a></h2>
-    <p class="subtitle">Filtering, belief propagation, and arbitrage as the
-      loop correction</p>
-    <p>
-      Parallel composition of market makers is infimal convolution;
-      liquidities add. This note develops the serial operator: factorize a
-      joint by the chain rule and run one market per conditional factor,
-      opening when its conditioning information freezes and settling in
-      cascade. For linear-Gaussian structure the correspondence with
-      inference is exact: alternating a model step with a market step is the
-      Kalman filter (the market step is the Kalman update), and market
-      messages on a tree compute exact posterior marginals — belief
-      propagation with trades as messages. On loopy graphs the pathology of
-      belief propagation materializes as arbitrage: cycle quotes admitting
-      no joint form a matrix with a negative eigenvalue, a bundle with
-      negative price and nonnegative payoff, so arbitrageurs are the loop
-      correction. The two operators are the two operations of the inference
-      semiring, and Gaussian exactness has one source: the family where
-      sum-product and min-sum agree.
-    </p>
-    <p class="muted">Peter Cotton · working draft v0.1 ·
-      <a href="./papers/markets-in-series.html">full draft</a> ·
-      <a href="./papers/markets-in-series.pdf">pdf</a></p>
 
     <div class="next-steps">
       <p>Have a mechanism write-up to contribute? Open an issue or PR on

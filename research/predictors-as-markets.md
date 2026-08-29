@@ -37,7 +37,7 @@ Procedures that are markets by identity rather than analogy:
 - *Proximal steps* are trades against fee-bearing makers: the prox of
   $f\lvert\cdot\rvert$ is the soft-threshold is the optimal response to a
   proportional fee (the fee lemma of the
-  [linear-fee note](../papers/combining-linear-fee-market-makers.md)), and
+  [working paper](../papers/predictors-as-markets.md), §5), and
   the prox of a general convex $g$ is the response to a maker charging $g$.
   ISTA for the lasso is repeated trading against a quadratic maker with a
   fee.
@@ -114,8 +114,8 @@ like $1/\lambda$, so the residue is priced by a fee of the same order. The two r
 ($\ell_1$) and participant depth ($\ell_2$), the same pair as lasso and
 ridge.
 
-The fee lemma of the
-[linear-fee note](../papers/combining-linear-fee-market-makers.md) is
+The fee lemma (§5 of the
+[working paper](../papers/predictors-as-markets.md)) is
 absorbed by this picture, because conjugation only ever reads biconjugates:
 for any chord-coherent cost, the fee-bearing maker's dead zone is the band
 of half-width $f$ around the *envelope's* marginal price, it exists exactly

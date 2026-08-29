@@ -104,7 +104,7 @@ completion convention is this maker's idle state.
 ## 4. Fees are spectral spreads
 
 The fee-spread lemma of the
-[linear-fee note](../papers/combining-linear-fee-market-makers.md) goes
+[fee lemma](../papers/predictors-as-markets.md) goes
 matrix-valued by changing the norm. A proportional fee on the *nuclear norm*
 of the fill, $f\lVert S\rVert_*$, conjugates to the indicator of the
 spectral-norm ball, so the maker's dead zone is
@@ -344,7 +344,7 @@ test in [`test_covariance_market.py`](../tests/test_covariance_market.py).
 - [liquidity-is-precision.md](liquidity-is-precision.md) — the fusion
   algebra and the shrinkage-by-selection reading.
 - [proportional-fees-and-the-order-book.md](proportional-fees-and-the-order-book.md)
-  and the [linear-fee note](../papers/combining-linear-fee-market-makers.md)
+  and the [fee lemma](../papers/predictors-as-markets.md)
   — the scalar fee lemma the spectral spread generalizes.
 - The [point-cloud paper](../papers/scoring-point-cloud-distributional-submissions.md)
   and [multi-stage paper](../papers/multi-stage-solicitation.md) — the

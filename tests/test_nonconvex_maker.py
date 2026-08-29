@@ -80,7 +80,7 @@ def test_generalized_fee_lemma():
     # With a fee, the dead zone sits around the ENVELOPE's marginal price and
     # exists exactly on the contact set; at off-contact states every belief
     # yields profit at least the gap, so such states are transient. The
-    # linear-fee paper's Lemma 1 is the convex case (contact set everywhere).
+    # convex fee-spread lemma is the special case (contact set everywhere).
     C = _wiggly_cost()
     env = lower_convex_envelope(XS, C)
     gap = C - env
