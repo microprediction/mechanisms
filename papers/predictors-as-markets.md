@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, routing in series
 
-Peter Cotton · *Working draft v0.14* · August 29, 2026
+Peter Cotton · *Working draft v0.15* · August 29, 2026
 
 ---
 
@@ -63,7 +63,7 @@ adds [@bhaskara2023general; @barrieu2005inf]. General least squares with
 regressors is not this one-quantity merge: observation $i$ contributes
 the rank-one potential $(y_i - x_i^\top\beta)^2/(2\sigma_i^2)$ and the
 potentials add in parameter space, which asks for vector securities or
-the network reduction of Proposition 15. And a proximal step is a
+the network reduction of Remark 15. And a proximal step is a
 trade against a fee-bearing maker: the proximal operator of
 $f\lvert\cdot\rvert$ is the soft-threshold, which is the optimal response
 to a proportional fee (Lemma 4 below), and the prox of any convex $g$ is
@@ -101,7 +101,11 @@ no-trade bands and sparse participation, and the consolidated-order-book
 reading (§§5–6); arbitrage depth, the friction characterization, and
 accessible coherence (§§4, 12); and the synthesis with regularization
 and incentive closure (§§1, 12). The serial sections contribute an
-architecture and a separation of claims, not a mechanism.
+architecture and a separation of claims, not a mechanism. Results that
+are not new are labelled *Remark* and cited to their sources rather than
+numbered as contributions: Remarks 7, 10 and 15 are the aggregation law,
+the min-plus identities, and convex partial minimization, all used here
+and none claimed.
 
 Two payoff regimes appear and must not be conflated. In the *bounded*
 regime a scalar security settles at $\varphi(\omega) = \omega \in [-1,1]$,
@@ -415,13 +419,14 @@ through the next band and spills over, consuming makers in quote-price
 order, which coincides with fee order only when their marginal prices
 agree.
 
-**Corollary 7 (zero fees).** *With $f_i \equiv 0$ the convolution reduces
-to the fee-free merge: conjugate regularisers add, and for a perspective
-family $C_b(q) = b\,C_1(q/b)$ liquidity adds,
-$C_{b_1} \square C_{b_2} = C_{b_1+b_2}$ [@bhaskara2023general]. For
-quadratic makers the merge is Gaussian fusion: the merged quote is the
-precision-weighted mean of the makers' quotes, and the merged liquidity
-is the sum of their liquidities (precisions).*
+**Remark 7 (zero fees; known).** *With $f_i \equiv 0$ the convolution
+reduces to the fee-free merge: conjugate regularisers add, and for a
+perspective family $C_b(q) = b\,C_1(q/b)$ liquidity adds,
+$C_{b_1} \square C_{b_2} = C_{b_1+b_2}$. This is the aggregation law of
+@bhaskara2023general, in risk-measure form @barrieu2005inf, and is used
+here rather than claimed. For quadratic makers the merge is Gaussian
+fusion: the merged quote is the precision-weighted mean of the makers'
+quotes and the merged liquidity the sum of their precisions.*
 
 **Corollary 8 (the order book).** *The aggregate supply
 $S(p) = \sum_i s_i(p)$ is non-decreasing, identically zero on
@@ -591,7 +596,8 @@ potentials). The Legendre transform is
 not a computational trick here but the change of representation between
 the two composition laws.
 
-**Proposition 10 (the routing algebra).** *(i) Parallel: merging makers
+**Remark 10 (the routing algebra; classical ingredients).** *(i) Parallel:
+merging makers
 multiplies factors, since $(C_1 \square C_2)^* = C_1^* + C_2^*$ and
 potentials add exactly when unnormalized factors multiply,
 $p_{\mathrm{merge}} \propto p_1 p_2$, the normalization being an additive
@@ -614,7 +620,7 @@ the Schur-complement identity, and the constant does not depend on $x$.
 $\blacksquare$
 
 Three things must be kept apart here, and the rest of the paper keeps
-them apart. The *routing algebra* is Proposition 10: min-plus identities
+them apart. The *routing algebra* is Remark 10: min-plus identities
 that hold for arbitrary potentials, (ii) being little more than the
 definition of a cheapest route, and needing no convexity, as the
 generalized distributive law does not [@aji2000gdl]. *Sum-product
@@ -623,7 +629,7 @@ implementation* is a third thing, and strictly more: it requires each
 kernel to be posted as a path-independent maker with named securities and
 settlements, chord slopes inside the payoff hull, and the property that
 self-interested trades perform the minimization rather than a solver
-performing it. Proposition 10 does not supply that, and neither do
+performing it. Remark 10 does not supply that, and neither do
 §§10–11: what those sections give is an *algebraic market
 representation*, in which the fusion half of each step is a genuine
 parallel merge executed by trades and the propagation half is computed.
@@ -644,7 +650,7 @@ clean dual representation, not coherence.
 spaces and stage potentials $\varphi_t(i,j) = -\log P(X_t = j \mid
 X_{t-1} = i) - \log P(y_t \mid X_t = j)$ for $t \ge 1$ and
 $\varphi_0(j) = -\log P(X_0 = j) - \log P(y_0 \mid X_0 = j)$. The
-cheapest route of Proposition 10(ii) is
+cheapest route of Remark 10(ii) is
 $\min_{x_{0:T}} \{\varphi_0(x_0) + \sum_{t \ge 1}
 \varphi_t(x_{t-1}, x_t)\}$, the initial state being minimized over unless
 it is fixed:
@@ -661,7 +667,7 @@ step is traded and the computation is also Bayesian.
 **Principle (the Gaussian intersection).** *Log-quadratic families are a
 family on which probabilistic inference and min-plus optimization
 coincide, and one closed under both compositions: optimizing traders
-compute min-plus, an inference engine integrates, and Proposition 10(iii)
+compute min-plus, an inference engine integrates, and Remark 10(iii)
 says the two agree here up to constants that cancel in every price.* The
 Kalman and tree-marginal propositions below live on this intersection and
 are not evidence for a universal serial thesis. The coincidence is not
@@ -746,7 +752,7 @@ exactly.*
 
 **Proof.** The model step is the standard prediction of mean and variance.
 Merging quadratic makers adds precisions and precision-weights means (the
-fusion form of Corollary 7), which is the information-form measurement
+fusion form of Remark 7), which is the information-form measurement
 update; the covariance-form update follows by the usual algebra.
 $\blacksquare$
 
@@ -791,10 +797,10 @@ here; as in §10, the reparametrizations are computed rather than traded.
 into node and edge potentials. Induct on the chain: the predictive
 message at $t$ is the model step applied to the merge at $t-1$, a
 precision-scaled reparametrization; merging it with the local
-observation's potential adds precisions (Corollary 7), which is the
+observation's potential adds precisions (Remark 7), which is the
 information-form conditioning identity; the backward recursion is the
 same argument run on the reversed chain, its pull-backs the Schur
-complements of Proposition 10(iii). Since each merge is exactly the
+complements of Remark 10(iii). Since each merge is exactly the
 information-form update and the three potentials multiply to the
 conditional, the merge is the posterior. $\blacksquare$
 
@@ -986,7 +992,7 @@ min-plus kernel composition of dynamic programming, control, and shortest
 paths; the parallel law is the additive combination of local potentials;
 and the closure of the whole construction is a boundary statement:
 
-**Proposition 15 (the effective boundary maker).** *Let a network of
+**Remark 15 (the effective boundary maker; classical).** *Let a network of
 makers have boundary variables $b$, internal variables $h$, and local
 costs $C_e$, each closed, proper and jointly convex, with
 $\sum_e C_e(b, \cdot)$ coercive in $h$ for each $b$ in the boundary
@@ -995,7 +1001,7 @@ $C_{\mathrm{eff}}$ is convex, proper and finite there, the infimum is
 attained, and the elimination may be performed variable by variable in
 any order. For quadratic costs with positive definite internal block each
 single-variable elimination is a Schur complement, and on a chain the
-computation is the dynamic program of Proposition 10(ii). If in addition
+computation is the dynamic program of Remark 10(ii). If in addition
 the chord slopes of $C_{\mathrm{eff}}$ lie in the boundary payoff hull,
 the network is one coherent effective maker at its boundary.*
 
@@ -1003,7 +1009,7 @@ the network is one coherent effective maker at its boundary.*
 coercivity gives attainment and rules out the value $-\infty$, and
 iterated infima may be taken in any order [@rockafellar1970convex]; the
 quadratic case is the completion of the square in the proof of
-Proposition 10(iii), which needs the internal block invertible.
+Remark 10(iii), which needs the internal block invertible.
 $\blacksquare$
 
 Both hypotheses earn their place. A single local term linear and
@@ -1081,7 +1087,7 @@ is the error's value net of discovery cost and friction.
 
 Open problems, in rough order of tractability:
 
-*Which inference algorithm does a risk-averse market run?* Proposition 10
+*Which inference algorithm does a risk-averse market run?* Remark 10
 says risk-neutral routing computes min-plus exactly and sum-product only
 on the Gaussian intersection. Entropic risk aversion applies an
 exponential tilt, suggesting it interpolates between the two semirings;
@@ -1136,7 +1142,7 @@ boundable, though computing it exactly is a global problem; whether it
 tracks quantities learning theory names (sharpness, mode connectivity) is
 open.
 
-*Effective friction.* Proposition 15 eliminates frictionless networks.
+*Effective friction.* Remark 15 eliminates frictionless networks.
 With per-maker fees, what are the effective fees and liquidities of the
 reduced boundary maker in terms of the network's, and which fee-bearing
 classes are closed under elimination?
