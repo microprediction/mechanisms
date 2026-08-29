@@ -138,29 +138,28 @@
       Markets</a></h2>
     <p class="subtitle">One maker, makers in parallel, markets in series</p>
     <p>
-      Many learning procedures are cost-function markets by identity: mirror
-      descent trades against a maker, Bayesian model averaging is a Kelly
-      market with wealths as posterior weights, least squares is the merge of
-      one quadratic maker per observation, and a proximal step is the optimal
-      response to a maker charging the penalty. This paper asks the converse
-      in three movements. One maker: no-arbitrage is a chord condition, not
-      convexity; rational flow trades the biconjugate, with concave stretches
-      as unquotable holes in the book that read as multimodal quotes; a
-      proportional fee, conjugated, is exactly a bid-ask spread, and a fee of
-      at least the chord excursion restores no-arbitrage. Makers in parallel:
-      combining fee-bearing makers is an infimal convolution solved by one
-      clearing-price root-find with lasso-sparse fills; the aggregate supply
-      curve is a consolidated limit order book; each maker may quote its own
-      fee with routing as the discipline; a deep quadratic co-quoter is
-      Moreau smoothing. Markets in series: one market per chain-rule factor,
-      opening when its conditioning information freezes; the market step is
-      the Kalman update, trades are belief-propagation messages, exact on
-      trees, and loopy inconsistency is a sure-arbitrage certificate, so
-      arbitrageurs are the loop correction. Parallel and serial are the two
-      operations of the inference semiring; a predictor is a market when its
-      arbitrage depth is finite relative to affordable friction.
+      There are two algebraic reasons markets appear inside learning: convex
+      duality turns optimization into trading, and graphical factorization
+      turns inference into networks of local markets. One maker:
+      no-arbitrage is a chord condition, not convexity; rational flow trades
+      the biconjugate, with concave stretches as unquotable holes in the
+      book that read as multimodal quotes; a proportional fee, conjugated,
+      is exactly a bid-ask spread, and a fee of at least the chord excursion
+      restores no-arbitrage. Makers in parallel: combining fee-bearing
+      makers is an infimal convolution solved by one clearing-price
+      root-find with sparse fills, and the aggregate supply curve is a
+      consolidated limit order book. Markets in series: one market per
+      chain-rule factor makes the market an exact min-plus inference engine
+      — parallel merge implements factor multiplication, cheapest routing
+      implements variable elimination — with sum-product semantics recovered
+      exactly on log-quadratic families, where the market-implemented Kalman
+      filter and exact tree marginals live, and with one class of loopy
+      inconsistency arbitraged away by traders. A cost-based predictor
+      admits a coherent market implementation iff its arbitrage depth is
+      dominated by the permitted friction; a market is the incentive closure
+      of a predictor.
     </p>
-    <p class="muted">Peter Cotton · working draft v0.2 ·
+    <p class="muted">Peter Cotton · working draft v0.3 ·
       <a href="./papers/predictors-as-markets.html">full draft</a> ·
       <a href="./papers/predictors-as-markets.pdf">pdf</a></p>
 

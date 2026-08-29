@@ -2,32 +2,33 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.2* · August 28, 2026
+Peter Cotton · *Working draft v0.3* · August 28, 2026
 
 ---
 
 ## Abstract
 
-Many learning procedures are cost-function markets by identity rather than
-analogy: mirror descent trades against a convex-cost maker, Bayesian model
-averaging is a market of Kelly bettors, least squares is the
-precision-weighted merge of one quadratic maker per observation, and a
-proximal step is the optimal response to a maker charging the penalty. We
-ask the converse: which predictors are markets. For one maker, we show
+There are two algebraic reasons markets appear inside learning: convex
+duality turns optimization into trading, and graphical factorization turns
+inference into networks of local markets. We develop both. For one maker,
 non-convexity does not obstruct coherence: no-arbitrage is a chord
 condition, rational flow trades the biconjugate, and a proportional fee of
 at least the chord excursion restores no-arbitrage, the fee being exactly a
 bid-ask spread by conjugation. For makers in parallel, combining
 fee-bearing makers is an infimal convolution solved by one monotone
-clearing-price root-find with sparse fills, the aggregate supply curve is a
-consolidated limit order book, and a deep quadratic co-quoter is Moreau
-smoothing. For markets in series, running one market per chain-rule factor
-makes the alternation of model step and market step the Kalman filter,
-makes market messages on a tree exact posterior marginals, and turns the
-inconsistency that degrades loopy belief propagation into an arbitrage that
-traders remove. A predictor is a market when its arbitrage depth is finite
-relative to affordable friction; the two compositions are the two
-operations of the inference semiring.
+clearing-price root-find with sparse fills, and the aggregate supply curve
+is a consolidated limit order book. For markets in series, one market per
+chain-rule factor makes the market an exact min-plus inference engine:
+parallel merge implements factor multiplication and cheapest routing
+implements variable elimination, both for arbitrary convex potentials.
+Sum-product semantics are recovered exactly on log-quadratic families,
+where partial minimization equals marginalization up to a constant; the
+market-implemented Kalman filter and exact tree marginals are instances of
+this intersection, and away from it the market prices the max-product
+posterior. A cost-based predictor admits a coherent market implementation
+if and only if its arbitrage depth is dominated by the permitted friction;
+friction extends the construction beyond convexity, and arbitrage enforces
+coherence across markets.
 
 ---
 
@@ -62,9 +63,13 @@ regularization is robustness to data perturbation [@elghaoui1997robust;
 budget is priced rather than assumed.
 
 We ask the converse: which predictors are markets, and what does the
-market form demand? Sections 2–4 treat one maker, sections 5–7 makers in
-parallel, sections 8–11 markets in series, and section 12 states the
-characterization. Throughout, a scalar security settles at
+market form demand? The answer has two independent parts, and the paper is
+organized around them. Convex duality turns optimization into trading:
+sections 2–4 treat one maker and sections 5–7 makers in parallel.
+Graphical factorization turns inference into networks of local markets:
+sections 8–11 treat markets in series, with the precise semiring statement
+in section 8. Section 12 states the characterization. Throughout, a scalar
+security settles at
 $\varphi(\omega) = \omega \in [-1,1]$; vector statements substitute the
 convex hull of payoff vectors. Reference implementations and numerical
 theorem tests accompany the paper in the `mechanisms` repository.
@@ -92,11 +97,16 @@ the hull.
 
 Convexity enters the standard axiomatics through *information
 incorporation*, the marginal-cost monotonicity condition of
-@abernethy2013efficient, not through no-arbitrage. Dropping that axiom
-while keeping the chord condition leaves a coherent non-convex maker,
-exhibited numerically in the companion repository. Arbitrage theory
-without convexity is developed in a different formalism by
-@lepinette2017nonconvex.
+@abernethy2013efficient, not through no-arbitrage. The habit of assuming
+convexity has bundled two different guarantees: monotone price response to
+flow, and absence of sure-loss opportunities. The axiom sets impose the
+first, convexity follows, and no-arbitrage is then derived with convexity
+in hand, so the possibility of a coherent maker with non-monotone quotes
+never arises. Proposition 1 separates the guarantees: dropping information
+incorporation while keeping the chord condition leaves a coherent
+non-convex maker, exhibited numerically in the companion repository.
+Arbitrage theory without convexity is developed in a different formalism
+by @lepinette2017nonconvex.
 
 ## 3. The market trades the biconjugate
 
@@ -276,23 +286,26 @@ schedules in @biais2000competing.
 
 **Proposition 9 (a deep co-quoter is Moreau smoothing).** *Merging a
 chord-coherent (possibly non-convex) maker with a quadratic co-quoter of
-liquidity $\lambda$ yields the venue with cost the Moreau envelope
+cost $s^2/(2\lambda)$ yields the venue with cost the Moreau envelope
 $e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$, whose arbitrage depth
-decreases to zero as $\lambda \to \infty$; generically (tilted gaps) the
-merged venue is exactly convex at finite depth, while a symmetric double
-well retains a concave kink of magnitude $O(1/\lambda)$ at every depth,
-priced by a fee of the same order.*
+is $O(1/\lambda)$. Exact convexity at finite $\lambda$ can fail only where
+two branches of the envelope cross at equal value; the symmetric double
+well is the canonical failure, retaining a concave kink of magnitude
+$O(1/\lambda)$ at every depth, priced by a fee of the same order.*
 
 **Proof sketch.** The merge is infimal convolution, and inf-convolution
 with the quadratic is the Moreau envelope [@rockafellar1970convex].
 $e_\lambda C$ is a minimum of convex branches
 $y \mapsto C(y) + (\cdot - y)^2/(2\lambda)$; non-convexity survives only at
 branch crossings, where the slope jump is the branch-minimizer separation
-over $\lambda$, hence $O(1/\lambda)$, vanishing or merging entirely when
-the crossing is eliminated by tilt. $\blacksquare$
+over $\lambda$, hence $O(1/\lambda)$. $\blacksquare$
 
-The two repairs are the two market primitives again: friction ($\ell_1$,
-the fee) and participant depth ($\ell_2$, capital), lasso and ridge.
+Here $\lambda$ is the co-quoter's liquidity: its price impact is
+$1/\lambda$, so large $\lambda$ means a deep book, not a strong pull. The
+two repairs are the two market primitives again: friction ($\ell_1$, the
+fee) and participant depth ($\ell_2$, capital), lasso and ridge. The
+identification maps the penalty terms, not the statistical procedures; it
+is a dictionary of primitives, not an equivalence of estimators.
 
 ## 7. Self-set fees, stabilizers, adaptivity
 
@@ -332,19 +345,58 @@ Message-passing inference is an algorithm over a commutative semiring
 [@aji2000gdl]: one operation combines evidence about a variable (the
 product), one moves evidence between variables (the sum), and sum-product,
 max-product and min-sum are the one algorithm over different semirings.
-The market algebra is that pair: parallel merge is the product, densities
-multiplying as precisions add, and serial propagation is the sum.
 
-The parallel operation has two equivalent forms, addition of conjugates
-and infimal convolution of costs, because inf-convolution is convolution
-in the min-plus semiring and the Legendre transform is its Laplace
-transform [@litvinov2007idempotent]: the convex machinery of this paper is
-the min-plus form of the probability calculus. Every Gaussian exactness
-below has one source: log-quadratics are the family on which the
-sum-product and min-sum semirings coincide, so a market whose traders
-optimize agrees with an inference engine that integrates. Off the family
-they diverge by the Laplace-approximation gap, which is §12's open
-question.
+The correspondence with the market algebra is exact once the objects are
+fixed. Assign each factor its potential, the negative log-density
+$\varphi_i = -\log P(x_i \mid \text{parents})$, and read potentials as
+costs. The dictionary is then
+
+$$\begin{array}{ccc}
+\text{factor algebra} & \longleftrightarrow & \text{market algebra}\\[2pt]
+\text{density } p_i & \longleftrightarrow & \text{potential/cost } \varphi_i\\
+\text{multiply factors} & \longleftrightarrow & \text{parallel merge (add potentials; inf-convolve costs)}\\
+\text{eliminate a variable} & \longleftrightarrow & \text{route through its market (minimize over the leg)}
+\end{array}$$
+
+with the two costumes of the parallel operation, addition of conjugates
+and infimal convolution of costs, related by the Legendre transform, which
+is the Laplace transform of the min-plus semiring
+[@litvinov2007idempotent].
+
+**Proposition 10 (the market computes min-plus inference).** *(i) Parallel:
+merging makers multiplies factors, since $(C_1 \square C_2)^* = C_1^* +
+C_2^*$ and potentials add exactly when densities multiply. (ii) Serial:
+the cheapest route to a terminal exposure through the chain of stage
+markets prices the min-plus elimination
+$\inf_{z_1,\dots,z_{n-1}} \sum_i \varphi_i(z_{i-1}, z_i)$, the tropical
+product of the stage kernels. Both hold for arbitrary convex potentials:
+the market is an exact min-plus (max-product) inference engine. (iii) On
+log-quadratic families, partial minimization of a potential equals its
+marginalization up to an additive constant independent of the retained
+variables, so the market's min-plus messages are the sum-product messages
+and the market computes exact Bayesian inference.*
+
+**Proof.** (i) is the conjugate-sum identity together with
+$-\log(p_1 p_2) = \varphi_1 + \varphi_2$. (ii) is the definition of the
+cheapest route: the trader chooses intermediate exposures to minimize the
+sum of stage costs. For (iii), write a jointly quadratic potential
+$q(x,y)$ with positive definite $y$-block $Q_{yy}$; completing the square,
+$-\log \int e^{-q(x,y)}\,dy = \min_y q(x,y) + \tfrac12\log\det(Q_{yy}/2\pi)$,
+the Schur-complement identity, and the constant does not depend on $x$.
+$\blacksquare$
+
+**Principle (the Gaussian intersection).** *Log-quadratic families are
+exactly where probabilistic inference and market optimization coincide: a
+market whose traders optimize computes min-plus, an inference engine
+integrates, and Proposition 10(iii) says the two agree on this family up
+to constants that cancel in every price.* The Kalman and tree-marginal
+propositions below are instances of the intersection, not evidence for a
+universal serial thesis. Away from log-quadratics the market prices the
+max-product (MAP) posterior rather than the sum-product marginal, and the
+discrepancy is the Laplace-approximation gap of the potential. Risk
+aversion is an exponential tilt and plausibly interpolates between the two
+semirings; §12 poses this as the open question of which inference
+algorithm a risk-averse market runs.
 
 ## 9. One market per factor
 
@@ -381,7 +433,7 @@ the current belief through the dynamics in mean-precision form, and a
 *market step*, merging the propagated belief with an observation maker
 quoting $y_t$ whose capital is the observation precision.
 
-**Proposition 10 (the market step is the Kalman update).** *The
+**Proposition 11 (the market step is the Kalman update).** *The
 alternation is the Kalman filter [@kalman1960filtering]: after each
 observation the market state equals the filtered mean and variance
 exactly.*
@@ -407,7 +459,7 @@ filter of §10 run up to the node), the local observation, and the backward
 message (downstream observations pulled back through the dynamics, each
 pull-back a reparametrization and each combination a precision addition).
 
-**Proposition 11 (trades as messages, exact on trees).** *All three
+**Proposition 12 (trades as messages, exact on trees).** *All three
 messages are market operations, and the merged posterior equals the
 brute-force conditioning of the joint at every node: Gaussian belief
 propagation [@pearl1988probabilistic] with trades as messages.*
@@ -421,7 +473,7 @@ boundaries.
 On loopy graphs belief propagation double-counts and its fixed points
 drift. In a market the same inconsistency is self-punishing.
 
-**Proposition 12 (cycle inconsistency is a sure profit).** *Assemble
+**Proposition 13 (cycle inconsistency is a sure profit).** *Assemble
 pairwise correlation quotes around a cycle
 into a quote matrix $P$ with unit diagonal. The quotes admit a joint
 distribution iff $P \succeq 0$. Otherwise, with $w$ the eigenvector of a
@@ -440,37 +492,53 @@ arbitrage algorithmically over the marginal polytope [@kroer2016arbitrage];
 and @saguillo2025arbitrage measure Polymarket arbitrageurs extracting
 \$39.6M enforcing logical coherence across markets.
 
-Proposition 12 identifies the object being corrected: the inconsistency
-that degrades loopy belief propagation is, in a market, free money, and
-the flow that harvests it pushes the quotes back toward the cone. Whether
-the corrected fixed point is the true marginal, a Bethe-like surrogate, or
-something the liquidity profile selects is open.
+The scope of Proposition 13 is one class of consistency failure: locally
+quoted beliefs that cannot be embedded in any joint distribution, detected
+here at second moments. Not every loopy-propagation error takes this form,
+but the class it covers is, in a market, free money, and the flow that
+harvests it pushes the quotes back toward the cone. Whether the corrected
+fixed point is the true marginal, a Bethe-like surrogate, or something the
+liquidity profile selects is open.
 
 ## 12. The characterization, and open problems
 
-A predictor is a market when its cost has finite arbitrage depth relative
-to affordable friction; convexity is the $f = 0$ special case. Within the
-coherent class, non-convexity spends expressiveness, the contact set in
-place of a full quoting range, and spends nothing else against rational
-flow.
+The characterization is for the cost-based class. Call a predictor
+*cost-based* if it is specified by a path-independent potential $C$ over a
+security inventory, and call friction of size $f$ *permitted* if the
+mechanism may charge up to $f$ per unit traded. A cost-based predictor
+admits a coherent market implementation if and only if its arbitrage depth
+is dominated by the permitted friction; convexity is the $f = 0$ special
+case. Within the coherent class, non-convexity spends expressiveness, the
+contact set in place of a full quoting range, and spends nothing else
+against rational flow.
 
-The market form adds three things the estimation literature obtains
-otherwise. Tuning constants become prices set by competition rather than
-formulas. Composition becomes an algebra, parallel and serial as the two
-semiring operations. And the procedure becomes robust to strategic data,
-since every source pays to move the state: a market is the incentive
-closure of a predictor.
+The construction throughout is one operation: *marketization*, the
+incentive-compatible implementation of an operator. One estimator becomes
+one maker; combining evidence becomes parallel composition; composing
+conditional operators becomes serial composition. A statistical procedure
+specifies how information would be combined if supplied honestly; its
+marketization makes every source pay to move the state, and so adds
+strategic robustness to the same operator. In this sense a market is the
+incentive closure of a predictor. Two further consequences come with the
+form: tuning constants become prices set by competition rather than
+formulas, and composition becomes an algebra with parallel and serial as
+the two semiring operations.
 
 Open problems, in rough order of tractability:
 
-*Which inference algorithm is a market?* A market of optimizing traders
-natively computes min-plus, so off the Gaussian family it prices the
-max-product posterior rather than the sum-product marginal, the
-discrepancy being the Laplace-approximation gap. Risk aversion is an
-exponential tilt, suggesting it interpolates between the two semirings;
-whether a risk-averse trading population prices the marginal, the mode, or
-a temperature in between would say precisely which inference algorithm a
-market runs.
+*Which inference algorithm does a risk-averse market run?* Proposition 10
+says a risk-neutral market computes min-plus exactly and sum-product only
+on the Gaussian intersection. Risk aversion is an exponential tilt,
+suggesting it interpolates between the two semirings; whether a
+risk-averse trading population prices the marginal, the mode, or a
+temperature in between would complete the correspondence.
+
+*Market representations of general prediction maps.* The
+characterization above is confined to cost-based predictors. Define what
+it means for an arbitrary prediction map $T$, from data sets to forecasts,
+to possess a market representation, and give conditions on $T$ equivalent
+to existence; the cost-based case suggests path independence and a chord
+bound are the shadow of the general condition.
 
 *The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
 sparse-signal flow model, does the Bertrand-equilibrium fee reproduce the
