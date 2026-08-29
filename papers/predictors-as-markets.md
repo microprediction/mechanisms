@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.6* · August 29, 2026
+Peter Cotton · *Working draft v0.7* · August 29, 2026
 
 ---
 
@@ -669,6 +669,37 @@ and prices share units. We leave the general theory, including the
 categorical formulation in which markets are min-plus kernels composed by
 shared inventory, outside this paper's scope.
 
+One principle deserves separation from the open problems it generates,
+because it qualifies everything above.
+
+**Principle (accessible arbitrage).** *Market coherence is relative not
+only to friction but to the cost of discovering violations. Let
+$\mathcal{A}$ be a class of admissible certificate-search procedures, and
+for a quoted configuration $x$ let $V(A(x); x)$ be the value of the
+separating portfolio a procedure $A$ finds and $C_A(x)$ its cost. The
+accessible-coherence set relative to $\mathcal{A}$ is*
+
+$$K_{\mathcal{A}} \;=\; \Big\{\, x :\ \sup_{A \in \mathcal{A}}
+\mathbb{E}\big[\, V(A(x); x) - C_A(x) \,\big] \le 0 \,\Big\}.$$
+
+*A violation persists whenever every available separation procedure costs
+at least as much as the certificate it finds is worth.*
+
+The supremum ranges over procedures, not certificates: two procedures can
+find the same portfolio at very different costs, so coherence is relative
+to a class of arbitrageurs. Instantiating $\mathcal{A}$ gives
+polynomial-time coherence, bounded-budget coherence, and
+latency-constrained coherence, and a venue can be arbitrage-free to
+ordinary participants while arbitrageable to a better-equipped class.
+Three nested notions of coherence result: exact (no sure-profit chord,
+Proposition 1), frictional (violations below the spread survive,
+Proposition 3), and accessible (violations too expensive to discover
+survive). Proposition 14 addresses the existence of arbitrage; whether a
+procedure in $\mathcal{A}$ can profitably prove $x \notin K$ is its
+accessibility, a different property. The self-policing of the
+marketization table is qualified accordingly: effective self-correction
+is the error's value net of discovery cost and friction.
+
 Open problems, in rough order of tractability:
 
 *Which inference algorithm does a risk-averse market run?* Proposition 10
@@ -688,17 +719,12 @@ the chord bound applying kernel by kernel; path independence and the
 chord condition would then be the image of the general condition in the
 cost-based case.
 
-*Separation economics.* Proposition 14 pays the discoverer of one
-certificate once. Characterize the mechanisms in which the stream of
-certificate payments funds the ongoing computation, and account for the
-complexity of the certificate search: separation can be computationally
-hard, and decentralized correction occurs only where a certificate's
-value exceeds its search cost. The residual error set at equilibrium is
-then not the feasible set $K$, nor its friction-widened neighborhood
-$\{\operatorname{dist}(x, K) \lesssim f\}$, but the computationally
-bounded coherence set
-$\{x : \sup_y [\text{value}(y) - \text{search cost}(y)] \le 0\}$,
-a notion of feasibility indexed by the economics of finding violations.
+*Accessible coherence, characterized.* Compute $K_{\mathcal{A}}$ for
+concrete classes: polynomial-time arbitrageurs against cones whose
+separation is hard, budgeted arbitrageurs against fee-bearing venues,
+latency-constrained arbitrageurs against cascading settlements. And
+characterize the mechanisms in which the stream of certificate payments
+funds the ongoing computation.
 
 *The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
 sparse-signal flow model, does the Bertrand-equilibrium fee reproduce the
