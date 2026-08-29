@@ -30,6 +30,7 @@ PAPERS = [
     "multi-stage-solicitation.md",
     "likelihood-versus-crps.md",
     "non-convex-market-makers.md",
+    "clamped-markets.md",
 ]
 
 # The markdown master opens with title / subtitle / byline / hr / Abstract /

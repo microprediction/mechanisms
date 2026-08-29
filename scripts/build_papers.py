@@ -39,6 +39,7 @@ PAPERS = [
     "multi-stage-solicitation.md",
     "likelihood-versus-crps.md",
     "non-convex-market-makers.md",
+    "clamped-markets.md",
 ]
 
 PAGE = """<!doctype html>

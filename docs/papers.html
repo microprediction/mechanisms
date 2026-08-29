@@ -159,6 +159,31 @@
       <a href="./papers/non-convex-market-makers.html">full draft</a> ·
       <a href="./papers/non-convex-market-makers.pdf">pdf</a></p>
 
+    <h2 id="clamped-markets">
+      <a href="./papers/clamped-markets.html">Clamped Markets</a></h2>
+    <p class="subtitle">How prediction mechanisms compose, and what familiar
+      methods are when the competition is switched off</p>
+    <p>
+      An overview of the results that tie prediction mechanisms together,
+      organized around one observation: many familiar statistical methods are
+      market ecosystems with degrees of freedom clamped. Mechanisms compose
+      in parallel (competing makers merge by infimal convolution, so
+      liquidity adds) and in series (one venue per conditional factor, the
+      arrangement Hanson's modularity makes tradable and that deployed
+      combinatorial markets price by junction-tree inference), and the two
+      laws are the two operations of one semiring. Clamping then recovers
+      ordinary statistics: freeze entry and a market of Kelly bettors is
+      Bayesian model averaging; freeze capital and a market of data points is
+      least squares; freeze propagation and a chain of venues is the Kalman
+      filter; freeze the residual venue to a single unconditional entry and a
+      two-stage solicitation is split-conformal prediction, forfeiting
+      exactly the conditional information I(R;X). Nearest-the-pin
+      point-cloud pools sit at the unclamped end.
+    </p>
+    <p class="muted">Peter Cotton · working draft v0.1 ·
+      <a href="./papers/clamped-markets.html">full draft</a> ·
+      <a href="./papers/clamped-markets.pdf">pdf</a></p>
+
     <div class="next-steps">
       <p>Have a mechanism write-up to contribute? Open an issue or PR on
       <a href="https://github.com/microprediction/mechanisms">microprediction/mechanisms</a>.</p>
