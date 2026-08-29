@@ -86,7 +86,8 @@ factorization, is developed in a companion paper; nothing below depends
 on it.
 
 What is and is not new here should be said at the outset, because the
-nearest neighbours are close. That competing makers operate in parallel,
+nearest neighbours are close. The identities of the preceding two
+paragraphs are used and cited, not claimed. That competing makers operate in parallel,
 that their aggregate is an infimal convolution, that conjugates add and
 liquidity adds, and that fees can be levied on the aggregate, are
 established in @bhaskara2023general; the risk-sharing form of the same

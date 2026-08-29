@@ -8,8 +8,10 @@ Peter Cotton · *Working draft v0.1* · August 29, 2026
 
 ## Abstract
 
-This is an overview of results that tie prediction mechanisms together,
-organized around one observation: many familiar statistical methods are
+This paper is partly synthetic. Many of the correspondences below are
+known individually; the purpose is to place them in one compositional
+calculus and to ask what a familiar statistical method is when read
+through it. The organizing observation is that many familiar statistical methods are
 market ecosystems with degrees of freedom clamped. Mechanisms compose in
 two ways, and both are established. In parallel, competing makers merge by
 infimal convolution, so conjugates add and liquidity adds. In series,
@@ -27,8 +29,9 @@ to a single unconditional entry and a two-stage solicitation becomes
 split-conformal prediction. Each clamp forfeits a specific rent, and in
 the conformal case the rent is exactly the conditional information
 $I(R;X)$ that the unconditional entry declines to price. The paper
-surveys the composition laws, catalogues the clamps, and states what
-unclamping would require.
+sets out the composition laws with their sources, catalogues the clamps,
+and states what unclamping would require. Where the calculus stops is
+itself informative: it locates the mechanism that is missing.
 
 ---
 
@@ -54,8 +57,8 @@ logarithmic market scoring rule a bet on $A \mid B$ moves that conditional
 and provably nothing else, uniquely among market scoring rules
 [@hanson2007logarithmic; @hanson2003combinatorial].
 
-Neither law is new here, and §§2–3 survey them. What the survey adds is a
-dial. Between a full ecosystem, in which every stage is a live venue with
+Neither law is new here, and §§2–3 set them out with their sources. What
+this paper adds is a dial. Between a full ecosystem, in which every stage is a live venue with
 free entry, and a single fitted model, there is a continuum of
 *clamped* mechanisms: the same composition, with some degree of freedom
 frozen. Ordinary statistical procedures sit at the clamped end, and the
@@ -63,6 +66,20 @@ question worth asking of each is not whether it is a market but which
 clamp it applies and what that clamp costs. Section 5 catalogues them,
 and conformal prediction turns out to be the sharpest case, because there
 the forfeited rent has a closed form.
+
+Three kinds of statement appear below and are worth distinguishing as
+they arrive. *Known identities* are used and cited, not claimed: that
+trading against a cost-function maker is follow-the-regularized-leader,
+that a market of Kelly bettors performs Bayesian model averaging, that
+merging makers is infimal convolution, that Gaussian fusion is
+information-form addition, that min-plus elimination is dynamic
+programming. *Results* are the few small formal statements, mostly in the
+companion paper, that the calculus turns up on its way through. And
+*principles* are proposed organizing ideas that are not yet theorems,
+chiefly clamping itself and the accounting of what each clamp forfeits.
+The individual identities are mostly known; the algebra connecting them,
+and what it says about methods that are not usually thought of as
+markets, is the subject here.
 
 ## 2. Parallel composition: what is settled
 
@@ -86,7 +103,7 @@ price [@barrieu2005inf; @jouini2008optimal].
 Fees complicate the picture and are treated in the companion paper: a
 proportional fee is exactly a bid-ask spread, participation becomes
 sparse, and the aggregate supply curve is a consolidated limit order
-book. Nothing in this survey depends on that development.
+book. Nothing here depends on that development.
 
 ## 3. Serial composition: what is settled
 
@@ -110,7 +127,7 @@ network's probabilities and distributed bidding is distributed inference.
 give equilibria factorizing as products of local potentials, and derives
 messages from optimized positions.
 
-The arrangement this survey calls serial differs in architecture rather
+The arrangement called serial here differs in architecture rather
 than in that observation: separate venues with settlement boundaries and
 an opening rule, each factor a market that opens when its conditioning
 information freezes and settles in cascade, rather than one joint book
@@ -246,7 +263,7 @@ mechanism has already decided the answers.
 The platform stacked such games: a pool on a live quantity, a stream
 predicting that pool's own calibration, dependence streams pricing
 copulas, and a lottery of calibration maps
-[@cotton2026multistage]. Read through this survey, that architecture is
+[@cotton2026multistage]. Read through this calculus, that architecture is
 the serial law of §3 with every stage left unclamped, and the familiar
 methods of §5 are what remain when the stages are frozen one at a time.
 
@@ -272,9 +289,10 @@ the platform implemented, has no general theorem saying self-interested
 trading performs the elimination; the companion paper states what such a
 mechanism would need.
 
-The survey's claim is modest and, I think, useful: the composition laws
-are known, the mechanisms are known, and the clamped limits of those
-mechanisms are the methods statistics already uses. Naming the clamp is a
+The claim is modest and, I think, useful: the individual identities are
+mostly known, and the algebra connecting them is the subject here. The
+clamped limits of these mechanisms are the methods statistics already
+uses. Naming the clamp is a
 quick way to see what a method has given up, and in one case it says
 exactly how much.
 
