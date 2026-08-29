@@ -75,7 +75,7 @@ functional to the bid-ask band [@jouini1995transaction].
 
 ## 3. Combining makers
 
-**Theorem 2 (combination).** *Let
+**Lemma 2 (combination).** *Let
 $\tilde C = \tilde C_1 \,\square\, \cdots \,\square\, \tilde C_n$ and define
 each maker's supply*
 
@@ -132,7 +132,7 @@ strictly increasing wherever some maker is in the money.* Read as a market:
 best bid and ask are the tightest quotes, depth at each price is the sum of
 the active makers' closed-form supplies, and large orders walk the levels.
 The aggregate of linear-fee makers is a consolidated limit order book, and in
-producer-theory terms Theorem 2 is Marshall's horizontal summation of firm
+producer-theory terms Lemma 2 is Marshall's horizontal summation of firm
 supply curves [@marshall1890principles; @mascolell1995microeconomic] with the
 reversibility of share production patched by the fee.
 
