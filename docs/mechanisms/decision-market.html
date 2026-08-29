@@ -79,14 +79,38 @@
       conditional markets are <em>not</em> incentive compatible: a trader can move
       <em>which</em> action is selected, and the markets for the actions not taken
       never settle, so reports there are never scored and can be pushed around for
-      free. The fix is a decision rule with <strong>full support</strong>: if every
-      action keeps a positive probability of being chosen, every conditional market
-      settles with positive probability, and a risk-neutral trader maximises expected
-      payoff by reporting its true conditional belief in each one. Softmax and
-      $\varepsilon$-greedy have full support; argmax does not (Othman &amp; Sandholm
-      2010; Chen, Kash, Ruberry &amp; Shnayder 2011). The governance reading,
-      "vote on values, bet on beliefs" (Hanson 2013), sits on top of this market
-      core and is left out as social theory.
+      free. Full support is the first half of the fix: if every action keeps a
+      positive probability of being chosen, every conditional market settles with
+      positive probability. Softmax and $\varepsilon$-greedy have full support;
+      argmax does not.
+    </p>
+    <p>
+      Full support alone is <em>not</em> sufficient, because the selection
+      probability itself depends on the reports. Writing $R(P, a) > 0$ for the
+      probability that action $a$ is chosen given the submitted conditionals $P$,
+      and scoring only the action actually taken, the construction that restores
+      propriety divides by that probability:
+    </p>
+    <div class="equation-card">
+      $S_R(P, a, \omega) = \dfrac{\bar S(P_a, \omega)}{R(P, a)},
+       \qquad\text{so}\qquad
+       \sum_a R(P,a)\,\mathbb E\!\left[\frac{\bar S(P_a,\omega)}{R(P,a)}\right]
+       = \sum_a \mathbb E\big[\bar S(P_a, \omega)\big].$
+    </div>
+    <p>
+      The endogenous sampling probabilities cancel, leaving the sum of ordinary
+      proper scores across actions, which is what makes truthful reporting optimal
+      in each conditional market (Othman &amp; Sandholm 2010; Chen, Kash, Ruberry
+      &amp; Shnayder 2011). This inverse-selection factor is the substance of the
+      construction, not an implementation detail.
+    </p>
+    <p>
+      It carries a practical cost worth stating: when $R(P,a)$ is small the realised
+      payment scales like $1/R(P,a)$, so near-deterministic selection produces
+      high-variance or very large contingent payments. Full support fixes
+      identification; it buys that with an exploration-versus-payment-risk
+      trade-off. The governance reading, "vote on values, bet on beliefs" (Hanson
+      2013), sits on top of this market core and is left out as social theory.
     </p>
 
     <h2 id="demo">Try it</h2>

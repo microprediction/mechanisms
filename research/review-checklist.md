@@ -76,19 +76,19 @@ and its verification are fixed, and cross-checked at the end.
 
 ## Site review (second report)
 
-- [ ] P1. Proper-scoring page: reward/loss sign convention is backwards
+- [x] P1. Proper-scoring page: reward/loss sign convention is backwards
   (`G = S(q;q)` convex in reward form; `H = L(q;q)` concave in loss form).
-- [ ] P2. Cost-function-maker page: convexity is not path independence, is
+- [x] P2. Cost-function-maker page: convexity is not path independence, is
   not sufficient for no-arbitrage (quadratic counterexample), and the
   worst-case-loss formula `sup C - inf C` is false (LMSR is `b log n`).
   Replace with `C = R^*` on the payoff polytope.
-- [ ] P3. `b` is the inverse learning rate, not the learning rate (also on
+- [x] P3. `b` is the inverse learning rate, not the learning rate (also on
   the Connections page).
-- [ ] P4. CFMM correspondence is a level-set/perspective duality, not the
+- [x] P4. CFMM correspondence is a level-set/perspective duality, not the
   bare Fenchel conjugate.
-- [ ] P5. Decision markets need the inverse-selection-probability factor,
+- [x] P5. Decision markets need the inverse-selection-probability factor,
   not merely full support.
-- [ ] P6. Finite-ensemble CRPS is not truthful for iid sampling; the fair
+- [x] P6. Finite-ensemble CRPS is not truthful for iid sampling; the fair
   U-statistic form is, and `m = 1` is the counterexample.
 - [ ] P7. Opinion pooling: log pool does not multiply independent evidence
   without a prior correction, is not "sharper than its members", and the

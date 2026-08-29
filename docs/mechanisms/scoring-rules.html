@@ -65,9 +65,33 @@
       a dominant strategy to reveal it, with no need to know the rule, the other
       forecasters, or the true outcome distribution. Geometrically (Savage 1971;
       Gneiting &amp; Raftery 2007) every strictly proper rule corresponds to a
-      strictly convex "expected-score" function $G(q) = S(q, q)$, with the rule
-      recovered from its subgradients, the same convex-duality skeleton that
-      reappears in <a href="./cmm.html">cost-function makers</a>.
+      generating function recovered from its subgradients, but the sign depends
+      on which form you are in, and the two must not be mixed:
+    </p>
+    <div class="equation-card">
+      $\textbf{reward form: } G(q) = S(q,q) \text{ is convex.}\qquad
+       \textbf{loss form: } H(q) = L(q,q) \text{ is } \emph{concave}, \text{ and } G = -H.$
+    </div>
+    <p>
+      The reason is that $q \mapsto L(p, q)$ is affine for each fixed $p$, so the
+      Bayes risk $H(q) = \inf_p L(p,q)$ is an infimum of affine functions and is
+      therefore concave; strict propriety is strict concavity of $H$. Brier makes
+      this concrete: with $L(p,y) = \sum_i (p_i - \mathbf 1\{i=y\})^2$ the truthful
+      expected loss is $H(q) = 1 - \lVert q\rVert^2$, which is strictly concave.
+      This page and the reference code use loss form, so the convex object is
+      $G = -H$; the <a href="../papers/composition-and-the-algebra-of-mechanisms.html">algebra
+      paper</a> works in reward form, where $G = S(q,q)$ is convex directly. It is
+      the same convex-duality skeleton that reappears in
+      <a href="./cmm.html">cost-function makers</a>, up to that sign.
+    </p>
+    <p>
+      One qualification on "dominant strategy". Strict propriety makes truth the
+      unique maximiser of <em>expected score under the forecaster's own belief</em>.
+      Converting that into a statement about money additionally assumes risk
+      neutrality (or quasilinear utility), that the forecaster cannot influence how
+      the outcome resolves, and that they hold no position elsewhere whose payoff
+      depends on this report. Several mechanisms elsewhere on this site violate the
+      last of these deliberately.
     </p>
     <p class="muted">
       In code: <code>expected_score(score_fn, belief, p)</code> in
@@ -153,11 +177,30 @@
       $\mathrm{CRPS} = \dfrac{1}{m}\sum_i |x_i - y| - \dfrac{1}{2m^2}\sum_{i,j} |x_i - x_j|.$
     </div>
     <p>
-      The first term rewards getting close to the truth; the second rewards
-      <em>sharpness</em> (a tight ensemble); together they make truthfulness about the
-      whole distribution optimal. Its multivariate generalisation is the
-      <strong>energy score</strong>: for an ensemble of points $x_i \in \mathbb
-      R^d$ and an observation $y$,
+      The first term rewards getting close to the truth; the second, entering with
+      a minus sign, rewards ensemble <em>spread</em>, and it is the balance of the
+      two that produces calibrated sharpness rather than either term alone.
+    </p>
+    <p>
+      One caveat matters and is easy to get wrong. This estimator is strictly
+      proper for the <em>empirical distribution regarded as the report</em>. It is
+      <em>not</em> a truthful rule for asking a participant to submit $m$ draws from
+      their belief: at $m = 1$ it collapses to $|x_1 - y|$, whose optimal
+      submission is a median, not a sample. For i.i.d. ensemble elicitation the
+      fair U-statistic correction divides by $m(m-1)$ over distinct pairs,
+    </p>
+    <div class="equation-card">
+      $\widehat{\mathrm{CRPS}}_{\text{fair}} = \dfrac{1}{m}\sum_i |x_i - y|
+        - \dfrac{1}{2m(m-1)}\sum_{i \ne j} |x_i - x_j|, \qquad m > 1,$
+    </div>
+    <p>
+      whose expectation carries the correct population second term. The
+      <a href="../papers/scoring-point-cloud-distributional-submissions.html">point-cloud
+      paper</a> develops the finite-$m$ incentives, including the separate seam
+      where scoring a smoothed cloud at the raw outcome elicits a deconvolution of
+      the belief. Its multivariate generalisation is the <strong>energy
+      score</strong>: for an ensemble of points $x_i \in \mathbb R^d$ and an
+      observation $y$,
     </p>
     <div class="equation-card">
       $\mathrm{ES} = \dfrac{1}{m}\sum_i \lVert x_i - y\rVert^{\beta}
@@ -165,7 +208,9 @@
     </div>
     <p>
       It is strictly proper for $\beta \in (0, 2)$ (Gneiting &amp; Raftery 2007); at
-      $\beta = 1$ it is exactly the multivariate CRPS. Because it scores a raw
+      $\beta = 1$ and $d = 1$ it coincides with CRPS, and in higher dimensions it
+      is best described as the multivariate analogue rather than an equality.
+      Because it scores a raw
       <em>cloud of Monte-Carlo points</em> rather than a parametric density, it is
       the natural rule for sample-based distributional-forecasting contests such as
       <a href="https://www.monteprediction.com">monteprediction.com</a>, where
