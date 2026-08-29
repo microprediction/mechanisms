@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.3* · August 28, 2026
+Peter Cotton · *Working draft v0.4* · August 29, 2026
 
 ---
 
@@ -21,14 +21,17 @@ is a consolidated limit order book. For markets in series, one market per
 chain-rule factor makes the market an exact min-plus inference engine:
 parallel merge implements factor multiplication and cheapest routing
 implements variable elimination, both for arbitrary convex potentials.
-Sum-product semantics are recovered exactly on log-quadratic families,
-where partial minimization equals marginalization up to a constant; the
-market-implemented Kalman filter and exact tree marginals are instances of
-this intersection, and away from it the market prices the max-product
-posterior. A cost-based predictor admits a coherent market implementation
-if and only if its arbitrage depth is dominated by the permitted friction;
-friction extends the construction beyond convexity, and arbitrage enforces
-coherence across markets.
+A finite-state chain of markets runs Viterbi exactly; sum-product
+semantics are recovered exactly on log-quadratic families, where partial
+minimization equals marginalization up to a constant, and the
+market-implemented Kalman filter and exact tree marginals live on this
+intersection. A cost-based predictor admits a coherent market
+implementation if and only if its arbitrage depth is dominated by the
+permitted friction; friction extends the construction beyond convexity,
+and arbitrage enforces coherence across markets, every convex feasibility
+violation being a separating portfolio. The resulting object is the
+incentive closure of the predictor: the same operator, with every
+information source paying to move the state.
 
 ---
 
@@ -285,25 +288,37 @@ liquidity suppliers is @glosten1994limit, with convergence of strategic
 schedules in @biais2000competing.
 
 **Proposition 9 (a deep co-quoter is Moreau smoothing).** *Merging a
-chord-coherent (possibly non-convex) maker with a quadratic co-quoter of
-cost $s^2/(2\lambda)$ yields the venue with cost the Moreau envelope
-$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$, whose arbitrage depth
-is $O(1/\lambda)$. Exact convexity at finite $\lambda$ can fail only where
-two branches of the envelope cross at equal value; the symmetric double
-well is the canonical failure, retaining a concave kink of magnitude
-$O(1/\lambda)$ at every depth, priced by a fee of the same order.*
+maker with cost $C$ with a quadratic co-quoter of cost $s^2/(2\lambda)$
+yields the venue with cost the Moreau envelope
+$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$. Then:
+(i) coherence is preserved: if $C$ is chord-coherent, so is $e_\lambda C$
+for every $\lambda$; (ii) the convexity defect of $e_\lambda C$, the
+largest slope drop at a branch crossing, equals the separation of the
+competing minimizers divided by $\lambda$, so if all competing minimizers
+lie in an interval of diameter $D$ (as when the set where $C$ exceeds its
+convex envelope is bounded and $C$ is convex outside it), the defect is at
+most $D/\lambda$; (iii) the symmetric double well attains the bound at
+every depth.*
 
-**Proof sketch.** The merge is infimal convolution, and inf-convolution
-with the quadratic is the Moreau envelope [@rockafellar1970convex].
-$e_\lambda C$ is a minimum of convex branches
-$y \mapsto C(y) + (\cdot - y)^2/(2\lambda)$; non-convexity survives only at
-branch crossings, where the slope jump is the branch-minimizer separation
-over $\lambda$, hence $O(1/\lambda)$. $\blacksquare$
+**Proof.** The merge is infimal convolution, and inf-convolution with the
+quadratic is the Moreau envelope [@rockafellar1970convex]. For (i),
+wherever the infimum is attained at $y^*(x)$ with $C$ differentiable
+there, the first-order condition gives $e_\lambda C'(x) = (x - y^*)/
+\lambda = C'(y^*)$: the envelope's derivative is a selection of $C$'s
+derivatives, chords average derivatives, and $C$'s derivatives lie in the
+payoff hull by hypothesis. For (ii), at a crossing $x_0$ with competing
+minimizers $y_1^* < y_2^*$ the branch slopes are $(x_0 - y_i^*)/\lambda$,
+so the drop is exactly $(y_2^* - y_1^*)/\lambda$. $\blacksquare$
 
-Here $\lambda$ is the co-quoter's liquidity: its price impact is
-$1/\lambda$, so large $\lambda$ means a deep book, not a strong pull. The
-two repairs are the two market primitives again: friction ($\ell_1$, the
-fee) and participant depth ($\ell_2$, capital), lasso and ridge. The
+Part (i) corrects a possible misreading of the construction: the merge
+never creates arbitrage, at any depth, so what the deep co-quoter buys is
+expressiveness. The holes in the book close at rate $1/\lambda$, and the
+residual kink of the symmetric double well is priced by a fee of the same
+order. Here $\lambda$ is the co-quoter's liquidity: its price impact is
+$1/\lambda$, so large $\lambda$ means a deep book, not a strong pull.
+
+The two repairs are the two market primitives again: friction ($\ell_1$,
+the fee) and participant depth ($\ell_2$, capital), lasso and ridge. The
 identification maps the penalty terms, not the statistical procedures; it
 is a dictionary of primitives, not an equivalence of estimators.
 
@@ -313,9 +328,11 @@ Nothing requires the fees to be administered. Each maker may quote its own
 $f_i$: a quote inside the aggregate spread earns nothing, a quote too tight
 is picked off by informed flow, and the undercutting happens inside the
 same minimisation that clears the trade, since the $\inf$ in the
-convolution is a minimum over quotes. The surviving fee is the competitive
-adverse-selection charge of classical microstructure [@glosten1985bidask;
-@biais2000competing], reached through routing rather than a dealer game.
+convolution is a minimum over quotes. The surviving fee has the
+interpretation of the competitive adverse-selection charge of classical
+microstructure [@glosten1985bidask; @biais2000competing], reached through
+routing rather than a dealer game; this is an argument about discipline,
+and the strategic equilibrium of the quote game is not solved here.
 
 Optimization already pays these frictions: a proximal step charges
 $\lVert\Delta\theta\rVert^2/(2\eta)$ per move, a trust region is an
@@ -347,21 +364,26 @@ product), one moves evidence between variables (the sum), and sum-product,
 max-product and min-sum are the one algorithm over different semirings.
 
 The correspondence with the market algebra is exact once the objects are
-fixed. Assign each factor its potential, the negative log-density
-$\varphi_i = -\log P(x_i \mid \text{parents})$, and read potentials as
-costs. The dictionary is then
+fixed, and the fixing matters: the two compositions live on the two sides
+of the Legendre transform. Assign each factor its potential, the negative
+log-density $\varphi_i = -\log P(x_i \mid \text{parents})$. For parallel
+composition, identify each maker's factor potential with its *conjugate*,
+$\varphi_i = C_i^*$: infimal convolution of costs in inventory space is
+addition of potentials in price space. For serial composition, the stage
+potentials are the *primal* leg costs of a route. The dictionary is
 
 $$\begin{array}{ccc}
 \text{factor algebra} & \longleftrightarrow & \text{market algebra}\\[2pt]
-\text{density } p_i & \longleftrightarrow & \text{potential/cost } \varphi_i\\
-\text{multiply factors} & \longleftrightarrow & \text{parallel merge (add potentials; inf-convolve costs)}\\
-\text{eliminate a variable} & \longleftrightarrow & \text{route through its market (minimize over the leg)}
+\text{density } p_i & \longleftrightarrow & \text{potential } \varphi_i = -\log p_i\\
+\text{multiply factors} & \longleftrightarrow & \text{parallel merge: } \varphi_i = C_i^* \text{ add as costs inf-convolve}\\
+\text{eliminate a variable} & \longleftrightarrow & \text{route through its market: } \inf \text{ over the shared leg}
 \end{array}$$
 
-with the two costumes of the parallel operation, addition of conjugates
-and infimal convolution of costs, related by the Legendre transform, which
-is the Laplace transform of the min-plus semiring
-[@litvinov2007idempotent].
+with the two sides related by the Legendre transform, which is the Laplace
+transform of the min-plus semiring [@litvinov2007idempotent]. Serial
+composition of stage kernels obeys the composition law
+$(\varphi_2 \circ \varphi_1)(x,z) = \inf_y [\varphi_1(x,y) +
+\varphi_2(y,z)]$, the min-plus kernel product.
 
 **Proposition 10 (the market computes min-plus inference).** *(i) Parallel:
 merging makers multiplies factors, since $(C_1 \square C_2)^* = C_1^* +
@@ -369,12 +391,11 @@ C_2^*$ and potentials add exactly when densities multiply. (ii) Serial:
 the cheapest route to a terminal exposure through the chain of stage
 markets prices the min-plus elimination
 $\inf_{z_1,\dots,z_{n-1}} \sum_i \varphi_i(z_{i-1}, z_i)$, the tropical
-product of the stage kernels. Both hold for arbitrary convex potentials:
-the market is an exact min-plus (max-product) inference engine. (iii) On
-log-quadratic families, partial minimization of a potential equals its
-marginalization up to an additive constant independent of the retained
-variables, so the market's min-plus messages are the sum-product messages
-and the market computes exact Bayesian inference.*
+product of the stage kernels. (iii) On log-quadratic families, partial
+minimization of a potential equals its marginalization up to an additive
+constant independent of the retained variables, so the market's min-plus
+messages are the sum-product messages and the market computes exact
+Bayesian inference.*
 
 **Proof.** (i) is the conjugate-sum identity together with
 $-\log(p_1 p_2) = \varphi_1 + \varphi_2$. (ii) is the definition of the
@@ -384,6 +405,24 @@ $q(x,y)$ with positive definite $y$-block $Q_{yy}$; completing the square,
 $-\log \int e^{-q(x,y)}\,dy = \min_y q(x,y) + \tfrac12\log\det(Q_{yy}/2\pi)$,
 the Schur-complement identity, and the constant does not depend on $x$.
 $\blacksquare$
+
+The proposition divides its labor as follows. The min-plus identities of
+(i) and (ii) are algebraic and hold for arbitrary potentials; the
+generalized distributive law needs no convexity [@aji2000gdl]. Convexity
+is what the market adds: it is the condition
+under which the potentials are implementable as coherent cost-function
+makers (§2), so that the min-plus computation is carried out by
+self-interested trading rather than by a solver.
+
+**Corollary (a chain of markets runs Viterbi).** *Take finite state
+spaces and stage potentials $\varphi_t(i,j) = -\log P(X_t = j \mid
+X_{t-1} = i) - \log P(y_t \mid X_t = j)$. The cheapest route of
+Proposition 10(ii) is $\min_{x_{1:T}} \sum_t \varphi_t(x_{t-1}, x_t)$:
+the Viterbi decoding of the hidden Markov model, computed exactly, with
+no Gaussian structure anywhere.* The three worked examples of this paper
+now form a progression: least squares is parallel composition, Viterbi is
+serial min-plus composition, and the Kalman filter of §10 is the Gaussian
+intersection where the serial computation is also Bayesian.
 
 **Principle (the Gaussian intersection).** *Log-quadratic families are
 exactly where probabilistic inference and market optimization coincide: a
@@ -500,6 +539,26 @@ harvests it pushes the quotes back toward the cone. Whether the corrected
 fixed point is the true marginal, a Bethe-like surrogate, or something the
 liquidity profile selects is open.
 
+The PSD cone is not special. Coherent price sets are convex (they are
+convex hulls of payoff vectors, or their conic images), and separation
+turns every exterior point into a trade:
+
+**Proposition 14 (arbitrage is separation).** *Let $K$ be a closed convex
+set of coherent quote vectors and $x \notin K$ a quoted configuration.
+Any separating functional $y$ with $\langle y, x\rangle < \inf_{z \in K}
+\langle y, z\rangle$ is a portfolio whose price under the quotes is less
+than its worst coherent value: a sure profit relative to $K$-consistency.
+Proposition 13 is the instance $K = \{P \succeq 0\}$ with the separating
+functional $ww^\top$.*
+
+The proof is the separating-hyperplane theorem read as a trade
+[@nau1991arbitrage; @daspremont2005market]. In an ordinary numerical
+method an infeasibility is a residual to be driven down by the algorithm;
+in a market it is a payoff, and whoever finds it is paid to act as the
+separation oracle. Arbitrageurs are decentralized separation oracles, and
+the friction of §4 sets the tolerance below which infeasibility is
+allowed to persist.
+
 ## 12. The characterization, and open problems
 
 The characterization is for the cost-based class. Call a predictor
@@ -512,17 +571,32 @@ case. Within the coherent class, non-convexity spends expressiveness, the
 contact set in place of a full quoting range, and spends nothing else
 against rational flow.
 
-The construction throughout is one operation: *marketization*, the
-incentive-compatible implementation of an operator. One estimator becomes
-one maker; combining evidence becomes parallel composition; composing
-conditional operators becomes serial composition. A statistical procedure
-specifies how information would be combined if supplied honestly; its
-marketization makes every source pay to move the state, and so adds
-strategic robustness to the same operator. In this sense a market is the
-incentive closure of a predictor. Two further consequences come with the
-form: tuning constants become prices set by competition rather than
-formulas, and composition becomes an algebra with parallel and serial as
-the two semiring operations.
+The construction throughout is one operation: *marketization*. Given an
+operator $T$ from inputs to outputs, a marketization is a mechanism whose
+clearing computes $T$; whose local contributions compose, in parallel and
+in series, to compute composite operators; in which inconsistent
+contributions create exploitable trades (Proposition 14); in which
+friction bounds how much inconsistency can persist (Proposition 3); and in
+which every participant pays to perturb the computation. One estimator
+becomes one maker, combining evidence becomes parallel composition,
+composing conditional operators becomes serial composition. A statistical
+procedure specifies how information would be combined if supplied
+honestly; its marketization implements the same operator against
+self-interested sources. In this sense a market is the incentive closure
+of a predictor: the computation, plus the dual certificates of its
+constraints, plus payment to whoever holds one.
+
+Nothing in the definition mentions prediction. The serial law is the
+min-plus kernel composition of dynamic programming, control, and shortest
+paths; the parallel law is the additive combination of local potentials;
+and eliminating a network's internal inventories to leave an effective
+cost at its boundary is the operation that reduces resistor networks,
+eliminates latent Gaussian variables, and takes Schur complements. A
+network of local makers is one effective maker at its boundary, and
+prediction is the application in which beliefs and prices share units. We
+leave the general theory, including the categorical formulation in which
+markets are min-plus kernels composed by shared inventory, outside this
+paper's scope.
 
 Open problems, in rough order of tractability:
 
@@ -552,6 +626,12 @@ arbitrage-corrected quoting converge, and to what?
 *Arbitrage depth as a capacity measure.* The minimum viable spread of a
 trained landscape is computable; whether it tracks quantities learning
 theory names (sharpness, mode connectivity) is open.
+
+*Effective markets at boundaries.* Eliminating a network's internal
+inventories leaves an effective maker at its boundary. State the closure
+theorem: which classes of local costs are closed under boundary
+elimination, and what the effective fees and liquidities of the reduced
+maker are in terms of the network's.
 
 *Books around binary events.* The multimodal-quote reading of book holes
 (§3) is testable against limit-order data around court rulings and FDA

@@ -11,6 +11,7 @@ import pytest
 
 from mechanisms.serial_markets import (
     chain_posterior,
+    cheapest_route,
     cycle_arbitrage,
     market_kalman_filter,
 )
@@ -61,6 +62,26 @@ def test_chain_marginals_match_joint_conditioning():
         mu, var = chain_posterior(node, m0, tau0, coeffs, noises, ys, rs)
         assert mu == pytest.approx(post_mean[node], rel=1e-10)
         assert var == pytest.approx(post_cov[node, node], rel=1e-10)
+
+
+def test_cheapest_route_is_viterbi():
+    rng = np.random.default_rng(4)
+    k, T = 3, 5
+    stages = [rng.uniform(0.0, 2.0, size=(k, k)) for _ in range(T)]
+    stages[0] = stages[0][:1, :]  # initial vector folded into stage 0
+    values, path = cheapest_route(stages)
+    # brute force over all routes
+    best_cost, best_path = np.inf, None
+    from itertools import product as iproduct
+    for route in iproduct(*[range(s.shape[1]) for s in stages]):
+        cost, prev = 0.0, 0
+        for s, j in zip(stages, route):
+            cost += s[prev, j]
+            prev = j
+        if cost < best_cost:
+            best_cost, best_path = cost, (0,) + route
+    assert values.min() == pytest.approx(best_cost, abs=1e-12)
+    assert tuple(path) == best_path
 
 
 def test_cycle_inconsistency_is_arbitrage():

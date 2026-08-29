@@ -43,6 +43,7 @@ __all__ = [
     "market_update",
     "market_kalman_filter",
     "chain_posterior",
+    "cheapest_route",
     "cycle_arbitrage",
 ]
 
@@ -107,6 +108,29 @@ def chain_posterior(node: int, mus, taus, coeffs, noises, ys, rs):
     if b_prec > 0:
         mean, prec = market_update(mean, prec, b_mean, b_prec)
     return mean, 1.0 / prec
+
+
+def cheapest_route(stage_costs):
+    """Min-plus elimination over a finite-state chain: Viterbi by routing.
+
+    ``stage_costs[t]`` is a ``(k_t, k_{t+1})`` array of leg costs
+    ``phi_t(i, j)`` (for an HMM, ``-log P(x_{t+1}=j | x_t=i) - log
+    P(y_{t+1} | x_{t+1}=j)`` plus an initial vector folded into stage 0).
+    Returns ``(values, path)``: ``values[j]`` is the cheapest total cost of
+    any route ending in state ``j``, and ``path`` the argmin route — the
+    max-product (Viterbi) decoding of the corresponding HMM.
+    """
+    values = np.zeros(np.asarray(stage_costs[0], float).shape[0])
+    back = []
+    for phi in stage_costs:
+        phi = np.asarray(phi, float)
+        totals = values[:, None] + phi
+        back.append(np.argmin(totals, axis=0))
+        values = totals.min(axis=0)
+    path = [int(np.argmin(values))]
+    for pointers in reversed(back):
+        path.append(int(pointers[path[-1]]))
+    return values, path[::-1]
 
 
 def cycle_arbitrage(corr):

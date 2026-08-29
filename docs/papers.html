@@ -151,15 +151,17 @@
       consolidated limit order book. Markets in series: one market per
       chain-rule factor makes the market an exact min-plus inference engine
       — parallel merge implements factor multiplication, cheapest routing
-      implements variable elimination — with sum-product semantics recovered
-      exactly on log-quadratic families, where the market-implemented Kalman
-      filter and exact tree marginals live, and with one class of loopy
-      inconsistency arbitraged away by traders. A cost-based predictor
-      admits a coherent market implementation iff its arbitrage depth is
-      dominated by the permitted friction; a market is the incentive closure
-      of a predictor.
+      implements variable elimination, and a finite-state chain of markets
+      runs Viterbi exactly — with sum-product semantics recovered exactly on
+      log-quadratic families, where the market-implemented Kalman filter and
+      exact tree marginals live. Every convex feasibility violation is a
+      separating portfolio, so arbitrageurs are decentralized separation
+      oracles for cross-market coherence. A cost-based predictor admits a
+      coherent market implementation iff its arbitrage depth is dominated by
+      the permitted friction; a market is the incentive closure of a
+      predictor.
     </p>
-    <p class="muted">Peter Cotton · working draft v0.3 ·
+    <p class="muted">Peter Cotton · working draft v0.4 ·
       <a href="./papers/predictors-as-markets.html">full draft</a> ·
       <a href="./papers/predictors-as-markets.pdf">pdf</a></p>
 

@@ -118,3 +118,9 @@ def test_deep_quadratic_coquoter_fills_the_gaps():
     assert deep.min() >= -1e-6           # deep co-quoter: convex venue
     assert local_scale.min() < -1e-3     # 1/rho depth: still non-convex
     assert shallow.min() < -1e-4         # shallow: still non-convex
+    # coherence is preserved at every depth: the envelope's slopes are a
+    # selection of C's slopes, so the merged venue stays 1-Lipschitz
+    dx = xs[1] - xs[0]
+    for lam in (1.0, 3.0, 25.0):
+        slopes = np.diff(moreau_envelope(xs, c, lam)) / dx
+        assert np.abs(slopes[interior]).max() <= 0.95 + 1e-6
