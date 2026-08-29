@@ -12,7 +12,9 @@ myopic risk-neutral trader's optimal fill lands exactly on the contact set
 where ``C`` meets its lower convex envelope, with maximal profit equal to
 the envelope profit plus the gap ``C - conv(C)`` at the starting state: the
 market trades the biconjugate ``C**``, and the concave stretches become
-unquoted gaps — holes in the book. Whoever lands off-contact (noise)
+an excluded inventory range, which the book shows as a block at the
+single supporting price, not as a missing price range. Whoever lands
+off-contact (noise)
 overpays by the gap; the next rational trader recoups it; the maker is a
 conduit that keeps only envelope differences over rational-to-rational
 spans.
@@ -21,11 +23,14 @@ Two frictions buy back what non-convexity spends. A proportional fee ``f``
 tolerates chord slopes exiting the payoff hull by up to ``f`` (bounded
 incoherence is priced, the scalar form of the fee-spread lemma). And merging
 with a quadratic co-quoter of depth ``lam`` (liquidity ``lam``) is infimal
-convolution with ``(.)^2 / (2 lam)`` — the Moreau envelope — which becomes
-convex once the co-quoter is deep enough: a deep convex co-quoter fills the
-gaps in the book. The required depth is set by the global geometry of the
-gaps (how wide a concave stretch the quadratic must bridge), not by the
-local weak-convexity constant, which governs prox uniqueness instead.
+convolution with ``(.)^2 / (2 lam)`` — the Moreau envelope — which
+preserves chord coherence at every depth and attenuates the excluded
+range like ``1/lam``. It does not fill that range at finite depth: for the
+symmetric double well the midpoint stays strictly off contact for every
+finite ``lam``. Where the merged venue does become convex, the depth
+required is set by the global geometry of the gaps (how wide a concave
+stretch the quadratic must bridge), not by the local weak-convexity
+constant, which governs prox uniqueness instead.
 
 See ``research/predictors-as-markets.md``.
 

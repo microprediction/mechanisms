@@ -156,6 +156,53 @@ def test_contact_set_can_be_empty_without_attainment():
     assert prev > np.pi / 2 - 1e-3                 # approaching pi/2
 
 
+def test_chord_coherence_does_not_give_a_proper_envelope():
+    # C = -alpha|q| is alpha-Lipschitz, hence chord-coherent for hull
+    # [-1,1], but has no affine minorant: C* = +inf everywhere, so the
+    # convex envelope is -inf and Proposition 2's gap is undefined. The
+    # speculative supremum at q = 0, mu = 0 is already infinite.
+    alpha = 0.5
+    for M in (10.0, 100.0, 1000.0):
+        xs = np.linspace(-M, M, 20001)
+        C = -alpha * np.abs(xs)
+        # chord-coherent: every chord slope within [-1, 1]
+        s = xs[xs != 0.0]
+        chords = (-alpha * np.abs(s) - 0.0) / s
+        assert np.abs(chords).max() <= 1.0 + 1e-12
+        # yet mu = 0 profit from q = 0 grows without bound
+        assert (-(C - 0.0)).max() == pytest.approx(alpha * M, rel=1e-6)
+
+
+def test_depth_attenuates_but_never_fills_the_double_well():
+    # e_lam C(0) > 0 for every finite lam while e_lam C(+-c) = 0, so the
+    # midpoint stays strictly off contact at every depth; the gap decays
+    # like c^2/(2 lam).
+    alpha, c = 0.5, 3.0
+    xs = np.linspace(-30.0, 30.0, 6001)
+    C = alpha * np.minimum(np.abs(xs - c), np.abs(xs + c))
+    mid = len(xs) // 2
+    for lam in (1.0, 6.0, 30.0, 200.0):
+        e = moreau_envelope(xs, C, lam)
+        expected = alpha * c - lam * alpha ** 2 / 2 if lam * alpha < c else c ** 2 / (2 * lam)
+        assert e[mid] == pytest.approx(expected, abs=1e-3)
+        assert e[mid] > 0                                  # never filled
+        assert (e - lower_convex_envelope(xs, e))[mid] > 0  # still off contact
+
+
+def test_nonconvexity_shows_as_a_block_not_a_gap():
+    # Across an excluded inventory range the envelope is affine, so the
+    # marginal price is constant there: the book shows a block of size
+    # q2 - q1 at one price, not a missing price range.
+    xs = np.linspace(-3.0, 3.0, 12001)
+    dx = xs[1] - xs[0]
+    C = xs ** 4 / 4 - xs ** 2 / 2          # coercive double well, minima at +-1
+    env = lower_convex_envelope(xs, C)
+    idx = np.flatnonzero(C - env > 1e-9)
+    slopes = np.diff(env)[idx[:-1]] / dx
+    assert slopes.max() - slopes.min() < 1e-6      # one supporting price
+    assert xs[idx[-1]] - xs[idx[0]] == pytest.approx(2.0, abs=1e-2)  # block size
+
+
 def test_no_trade_interval_must_meet_the_payoff_hull():
     # C(q) = 100q has Delta_q = 0, so the untruncated interval {100} is
     # nonempty for every fee, yet no belief in the hull [-1,1] declines to

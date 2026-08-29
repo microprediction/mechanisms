@@ -15,7 +15,7 @@ learning procedures are markets literally, by published correspondences and
 by the identities in this repository's notes. The apparent obstruction,
 non-convexity, turns out not to obstruct coherence at all: no-arbitrage is a
 chord condition, rational flow trades the biconjugate, and what non-convexity
-costs is expressiveness (unquotable states, holes in the book), not
+costs is expressiveness (unquotable inventory states), not
 soundness. Frictions then price the remaining failure mode, bounded slope
 excursions, and a deep convex co-quoter fills the holes.
 
@@ -76,7 +76,9 @@ the constant $-\pi/2$, so its contact set is empty and the optimum runs
 off to $-\infty$ (tested). Rational
 flow reads $C^{**}$: the maker behaves observationally like its convex
 envelope, with the concave stretches as unquotable intermediate states —
-holes in the book. Whoever lands off-contact (noise flow) overpays the gap
+an excluded inventory range, which the book shows as a block of size
+$q_2 - q_1$ at the single supporting price rather than as a missing price
+range. Whoever lands off-contact (noise flow) overpays the gap
 at the landing state; the profit identity hands exactly that amount to the
 next rational trader; the maker is a conduit that keeps envelope
 differences over any rational-to-rational span. Non-convexity costs
@@ -105,8 +107,10 @@ market prices the model's incoherence as uncertainty.
 The second repair is a participant rather than a friction. Merging with a
 quadratic co-quoter of liquidity $\lambda$ is infimal convolution with
 $\lvert\cdot\rvert^2/(2\lambda)$, the Moreau envelope. A deep co-quoter
-convexifies the merged venue, filling the holes in the book with its own
-liquidity; a shallow one leaves them open. The required depth is set by the
+convexifies the merged venue on the tested costs; a shallow one does not.
+Depth never fills an excluded range at finite depth, however: for the
+double well the midpoint gap decays like $1/\lambda$ but stays strictly
+positive (tested). The required depth is set by the
 *global* geometry of the gaps (how wide a concave stretch the quadratic
 must bridge), not by the local weak-convexity constant, which governs prox
 uniqueness instead — the numerical demonstration in the tests has the venue
