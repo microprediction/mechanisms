@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.8* · August 29, 2026
+Peter Cotton · *Working draft v0.9* · August 29, 2026
 
 ---
 
@@ -304,17 +304,18 @@ schedules in @biais2000competing.
 **Proposition 9 (a deep co-quoter is Moreau smoothing).** *Merging a
 maker with cost $C$ with a quadratic co-quoter of cost $s^2/(2\lambda)$
 yields the venue with cost the Moreau envelope
-$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$, a pointwise minimum
-of the convex branches $y \mapsto C(y) + (\cdot - y)^2/(2\lambda)$, two of
-which can attain the minimum at the same $x$ (a crossing). Then:
+$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$. Then:
 (i) coherence is preserved: if $C$ is chord-coherent, so is $e_\lambda C$
-for every $\lambda$; (ii) the convexity defect of $e_\lambda C$, the
-largest slope drop at a crossing, equals the separation of the
-competing minimizers divided by $\lambda$, so if all competing minimizers
-lie in an interval of diameter $D$ (as when the set where $C$ exceeds its
-convex envelope is bounded and $C$ is convex outside it), the defect is at
-most $D/\lambda$; (iii) the symmetric double well attains the bound at
-every depth.*
+for every $\lambda$; (ii) at any point where two distinct minimizing
+branches coexist (a crossing), the downward jump in marginal price is
+exactly the separation of the competing minimizers divided by $\lambda$,
+at most $D/\lambda$ when all competing minimizers lie in an interval of
+diameter $D$; (iii) the symmetric double well attains the crossing bound
+at every depth. The bound in (ii) measures crossing defects only: the
+envelope can be smoothly non-convex with a unique minimizer everywhere,
+as for $C(y) = a \sin y$ with $\lambda a < 1$, where
+$(e_\lambda C)''(x) = C''(y^*)/(1 + \lambda C''(y^*))$ is negative
+wherever $C''$ is.*
 
 **Proof.** The merge is infimal convolution, and inf-convolution with the
 quadratic is the Moreau envelope [@rockafellar1970convex]. For (i),
@@ -324,14 +325,19 @@ there, the first-order condition gives $e_\lambda C'(x) = (x - y^*)/
 derivatives, chords average derivatives, and $C$'s derivatives lie in the
 payoff hull by hypothesis. For (ii), at a crossing $x_0$ with competing
 minimizers $y_1^* < y_2^*$ the branch slopes are $(x_0 - y_i^*)/\lambda$,
-so the drop is exactly $(y_2^* - y_1^*)/\lambda$. $\blacksquare$
+so the drop is exactly $(y_2^* - y_1^*)/\lambda$. For the smooth case,
+differentiate the first-order condition $y^* = x - \lambda C'(y^*)$ to
+get $dy^*/dx = 1/(1 + \lambda C''(y^*))$ and hence the displayed
+curvature. $\blacksquare$
 
-Part (i) corrects a possible misreading of the construction: the merge
-never creates arbitrage, at any depth, so what the deep co-quoter buys is
-expressiveness. The holes in the book close at rate $1/\lambda$, and the
-residual kink of the symmetric double well is priced by a fee of the same
-order. Here $\lambda$ is the co-quoter's liquidity: its price impact is
-$1/\lambda$, so large $\lambda$ means a deep book, not a strong pull.
+Part (i) is the durable statement: adding depth reshapes a non-convex
+maker without ever creating arbitrage, at any $\lambda$, so what the deep
+co-quoter buys is expressiveness. Crossing kinks close at rate
+$1/\lambda$ and the double well's residual kink is priced by a fee of the
+same order; smooth concave stretches lie outside the bound's scope and
+are verified numerically for the tested costs. Here $\lambda$ is the
+co-quoter's liquidity: its price impact is $1/\lambda$, so large
+$\lambda$ means a deep book, not a strong pull.
 
 The two repairs are the two market primitives again: friction ($\ell_1$,
 the fee) and participant depth ($\ell_2$, capital), lasso and ridge. The
@@ -725,17 +731,21 @@ One principle deserves separation from the open problems it generates,
 because it qualifies everything above.
 
 **Principle (accessible arbitrage).** *Market coherence is relative not
-only to friction but to the cost of discovering violations. Let
-$\mathcal{A}$ be a class of admissible certificate-search procedures, and
-for a quoted configuration $x$ let $V(A(x); x)$ be the value of the
-separating portfolio a procedure $A$ finds and $C_A(x)$ its cost. The
-accessible-coherence set relative to $\mathcal{A}$ is*
+only to friction but to the cost of discovering violations. Write $K$ for
+the exactly coherent quotes (Proposition 1) and $K_f$ for those admitting
+no sure profit net of a fee $f$ (Proposition 3). Let $\mathcal{A}$ be a
+class of admissible certificate-search procedures, and for a quoted
+configuration $x$ let $V_f(A(x); x)$ be the value, net of trading
+friction, of the separating portfolio a procedure $A$ finds and $C_A(x)$
+its search cost. The accessible-coherence set is*
 
-$$K_{\mathcal{A}} \;=\; \Big\{\, x :\ \sup_{A \in \mathcal{A}}
-\mathbb{E}\big[\, V(A(x); x) - C_A(x) \,\big] \le 0 \,\Big\}.$$
+$$K_{\mathcal{A}, f} \;=\; \Big\{\, x :\ \sup_{A \in \mathcal{A}}
+\mathbb{E}\big[\, V_f(A(x); x) - C_A(x) \,\big] \le 0 \,\Big\}.$$
 
-*A violation persists whenever every available separation procedure costs
-at least as much as the certificate it finds is worth.*
+*With nonnegative search costs, $K \subseteq K_f \subseteq
+K_{\mathcal{A}, f}$: a violation persists whenever every available
+separation procedure costs at least as much, net of friction, as the
+certificate it finds is worth.*
 
 The supremum ranges over procedures, not certificates: two procedures can
 find the same portfolio at very different costs, so coherence is relative
@@ -771,7 +781,7 @@ the chord bound applying kernel by kernel; path independence and the
 chord condition would then be the image of the general condition in the
 cost-based case.
 
-*Accessible coherence, characterized.* Compute $K_{\mathcal{A}}$ for
+*Accessible coherence, characterized.* Compute $K_{\mathcal{A}, f}$ for
 concrete classes: polynomial-time arbitrageurs against cones whose
 separation is hard, budgeted arbitrageurs against fee-bearing venues,
 latency-constrained arbitrageurs against cascading settlements. And

@@ -110,7 +110,10 @@ still non-convex at the local scale $1/\rho$ and convex at several times
 it. The merge also never creates arbitrage: the envelope's derivative is a
 selection of $C$'s derivatives (first-order condition), so a chord-coherent
 maker stays chord-coherent at every depth, and what the deep co-quoter buys
-is expressiveness, not coherence (tested). Exact convexification at finite depth is generic but not universal: for
+is expressiveness, not coherence (tested). The crossing-jump bound measures
+crossing defects only: $C = a\sin y$ with $\lambda a < 1$ has a unique
+minimizer everywhere yet envelope curvature $C''/(1+\lambda C'') < 0$
+wherever $C'' < 0$, smooth non-convexity with no crossing (tested). Exact convexification at finite depth is generic but not universal: for
 a symmetric double well the merged venue keeps a concave kink at every
 finite depth (the minimum of two crossing parabolas), with defect decaying
 like $1/\lambda$, so the residue is priced by a fee of the same order. The two repairs are exactly the dictionary's two primitives, friction

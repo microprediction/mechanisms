@@ -76,6 +76,23 @@ def test_slope_excursions_are_priced_by_the_fee():
     assert m.apply_fill(s) + m.apply_fill(-s) == pytest.approx(2 * 0.20 * s, abs=1e-9)
 
 
+def test_moreau_nonconvexity_is_not_only_crossings():
+    # C(y) = a sin y with lam*a < 1: the prox is unique everywhere (no
+    # branch crossing), yet the envelope is smoothly non-convex with
+    # curvature C''/(1 + lam C''), and coherence is still preserved
+    # (slopes stay within a). The crossing-jump bound therefore measures
+    # crossing defects only, not total non-convexity.
+    a, lam = 0.5, 1.0
+    xs = np.linspace(-15.0, 15.0, 12001)
+    dx = xs[1] - xs[0]
+    e = moreau_envelope(xs, a * np.sin(xs), lam)
+    interior = slice(200, len(xs) - 200)
+    d2 = np.diff(e, 2)[interior]
+    assert d2.min() == pytest.approx(-1.0 * dx * dx, rel=1e-4)  # C''/(1+lam C'') = -1 at trough
+    slopes = np.diff(e)[interior] / dx
+    assert np.abs(slopes).max() <= a + 1e-6                      # coherence preserved
+
+
 def test_generalized_fee_lemma():
     # With a fee, the dead zone sits around the ENVELOPE's marginal price and
     # exists exactly on the contact set; at off-contact states every belief
