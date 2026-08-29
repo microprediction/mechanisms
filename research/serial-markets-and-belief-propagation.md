@@ -32,6 +32,15 @@ cascade through the DAG like dataflow, and a node's market opens when its
 conditioning information freezes; the schedule of markets is an unrolling
 of the graph.
 
+Scope. Three things are separated in the working paper and should be
+separated here: the min-plus *routing algebra* (identities holding for
+arbitrary potentials), its *market implementation* (named securities,
+settlements, chord coherence, self-interested trading performing the
+minimization), which is exhibited only for quadratic makers on
+unrestricted real securities, and *sum-product inference*, recovered on
+log-quadratic families. The Viterbi statement below belongs to the
+algebra, not the implementation.
+
 Why exactly two operators. Message-passing inference is an algorithm over a
 commutative semiring (the generalized distributive law of Aji & McEliece
 2000): one operation combines evidence about the same variable (the

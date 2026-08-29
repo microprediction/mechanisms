@@ -84,6 +84,22 @@ def test_cheapest_route_is_viterbi():
     assert tuple(path) == best_path
 
 
+def test_minimization_equals_marginalization_off_the_quadratic_family():
+    # The Gaussian intersection is sufficient, not necessary: for the
+    # non-quadratic jointly convex q(x,y) = x^2 + (y-x)^4, min_y q = x^2 and
+    # -log int e^{-q} dy = x^2 - log int e^{-u^4} du, differing by an
+    # x-independent constant, so min-plus and sum-product still agree.
+    ys = np.linspace(-8.0, 8.0, 200001)
+    dy = ys[1] - ys[0]
+    diffs = []
+    for x in (-1.5, -0.4, 0.0, 0.7, 2.0):
+        q = x ** 2 + (ys - x) ** 4
+        minimized = q.min()
+        marginalized = -np.log(np.sum(np.exp(-q)) * dy)
+        diffs.append(marginalized - minimized)
+    assert np.allclose(diffs, diffs[0], atol=1e-9)   # constant in x
+
+
 def test_effective_boundary_maker_is_schur_complement():
     # Proposition 15: eliminating a quadratic network's internal variables
     # leaves the Schur-complement quadratic at the boundary, in any order.

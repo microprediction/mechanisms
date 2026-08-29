@@ -64,12 +64,16 @@ $\hat C$ for the lower convex envelope of $C$ (so $\hat C = C^{**}$ on the
 line) and $g = C - \hat C \ge 0$ for the gap. For a myopic risk-neutral
 trader with believed mean $\mu$ in the hull:
 
-- the optimal fill lands on the *contact set* $\{C = \hat C\}$, and
+- every *attained* optimal fill lands on the *contact set*
+  $\{C = \hat C\}$, and
 - the maximal profit is the envelope profit plus the gap at the starting
-  state: $\Pi_C(q) = \Pi_{\hat C}(q) + g(q)$,
+  state: $\Pi_C(q) = \Pi_{\hat C}(q) + g(q)$, as extended reals,
 
 both verified to machine precision in
-[`test_nonconvex_maker.py`](../tests/test_nonconvex_maker.py). Rational
+[`test_nonconvex_maker.py`](../tests/test_nonconvex_maker.py). Attainment
+is a real hypothesis: $C = \arctan$ is chord-coherent with convex envelope
+the constant $-\pi/2$, so its contact set is empty and the optimum runs
+off to $-\infty$ (tested). Rational
 flow reads $C^{**}$: the maker behaves observationally like its convex
 envelope, with the concave stretches as unquotable intermediate states —
 holes in the book. Whoever lands off-contact (noise flow) overpays the gap
@@ -124,13 +128,15 @@ The fee lemma (§5 of the
 [working paper](../papers/predictors-as-markets.md)) extends without
 convexity in exact form: the no-trade beliefs at state $q$ are the
 fee-widened interval of one-sided chord bounds,
-$[\sup_{s<0} d_q - f,\ \inf_{s>0} d_q + f]$ with $d_q$ the chord slope.
-For convex $C$ both bounds equal $C'(q)$, the band $m \pm f$. Off the
-contact set the frictionless interval is empty (chord gap $\Delta_q > 0$)
-and the fee fills the hole exactly when $2f \ge \Delta_q$: at small fees
-every belief still profits and the state is transient, while a wide
-enough spread stabilizes a state inside a quote hole (both tested; the
-sine cost at its crest is the worked instance).
+$[\sup_{s<0} d_q - f,\ \inf_{s>0} d_q + f]$, intersected with the payoff
+hull, with $d_q$ the chord slope. For convex $C$ both bounds equal
+$C'(q)$, the band $m \pm f$. Off the contact set the frictionless
+interval is empty (chord gap $\Delta_q > 0$) and the fee fills the hole
+exactly when $2f \ge \Delta_q$: at small fees every belief still profits
+and the state is transient, while a wide enough spread stabilizes a state
+inside a quote hole (both tested; the sine cost at its crest is the worked
+instance). The intersection with the hull is not optional: $C(q) = 100q$
+has $\Delta_q = 0$ yet no admissible belief declines to trade (tested).
 
 Optimization already pays these frictions. A proximal step charges
 $\lVert\Delta\theta\rVert^2/(2\eta)$ per move; a trust region is an

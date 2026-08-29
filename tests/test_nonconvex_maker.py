@@ -138,6 +138,51 @@ def test_no_trade_interval_is_fee_adjusted_chord_bounds():
     assert max_profit(i_o, hi + f_big + 0.03, f_big) > 1e-3
 
 
+def test_contact_set_can_be_empty_without_attainment():
+    # C = arctan is 1-Lipschitz (chord-coherent for hull [-1,1]); on R its
+    # convex envelope is the constant -pi/2, never attained, so the contact
+    # set is empty and the mu = 0 supremum pi/2 is only approached as
+    # x -> -inf. Numerically: the optimal fill sits at the left boundary for
+    # every truncation and the value keeps rising with the domain, so no
+    # interior optimum exists to land on a contact point.
+    prev = -np.inf
+    for M in (10.0, 100.0, 1000.0, 10000.0):
+        xs = np.linspace(-M, M, 20001)
+        prof = -(np.arctan(xs) - np.arctan(0.0))   # mu = 0, from state q = 0
+        assert int(np.argmax(prof)) == 0           # optimum at the left edge
+        assert prof.max() < np.pi / 2              # never attains the supremum
+        assert prof.max() > prev                   # and keeps improving
+        prev = prof.max()
+    assert prev > np.pi / 2 - 1e-3                 # approaching pi/2
+
+
+def test_no_trade_interval_must_meet_the_payoff_hull():
+    # C(q) = 100q has Delta_q = 0, so the untruncated interval {100} is
+    # nonempty for every fee, yet no belief in the hull [-1,1] declines to
+    # trade: non-emptiness needs the intersection, i.e. chord coherence.
+    xs = np.linspace(-5.0, 5.0, 4001)
+    C = 100.0 * xs
+    for f in (0.0, 0.5, 5.0):
+        for mu in np.linspace(-1.0, 1.0, 21):
+            prof = (mu * (xs - 0.0) - (C - 0.0) - f * np.abs(xs)).max()
+            assert prof > 0                        # every admissible belief trades
+
+
+def test_double_well_jump_is_constant_until_the_coquoter_reaches_across():
+    # Proposition 9(iii): jump = 2*alpha while lam*alpha < c, then 2c/lam.
+    alpha, c = 0.5, 3.0
+    xs = np.linspace(-20.0, 20.0, 4001)
+    dx = xs[1] - xs[0]
+    C = alpha * np.minimum(np.abs(xs - c), np.abs(xs + c))
+    mid = len(xs) // 2
+    for lam in (1.0, 3.0, 12.0, 30.0):
+        sl = np.diff(moreau_envelope(xs, C, lam)) / dx
+        jump = sl[mid - 2] - sl[mid + 2]
+        expected = 2 * alpha if lam * alpha < c else 2 * c / lam
+        assert jump == pytest.approx(expected, abs=2e-2)
+        assert np.abs(sl).max() <= alpha + 1e-9    # coherence preserved
+
+
 def test_fee_can_stabilize_the_sine_hole():
     # C(q) = a sin q at q = 0 sits a above its flat envelope; belief mu = 0
     # admits no profitable trade exactly when f >= a.

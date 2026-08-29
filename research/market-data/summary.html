@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Predicted 2026 — Q2 Prediction Markets Report (slide summary)</title>
+<style>
+  :root {
+    color-scheme: dark light;
+    --bg: #16140f;
+    --bg-card: #211e17;
+    --border: #3a352a;
+    --text: #ece7da;
+    --text-dim: #a89f8c;
+    --accent: #c9784a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2rem 1.25rem 4rem;
+    background: var(--bg);
+    color: var(--text);
+    font-family: "SF Mono", "Menlo", "Consolas", monospace;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+  header {
+    margin-bottom: 2.5rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 1.5rem;
+  }
+  h1 {
+    font-size: 1.6rem;
+    margin: 0 0 0.75rem;
+    color: var(--text);
+  }
+  header p {
+    color: var(--text-dim);
+    max-width: 68ch;
+    margin: 0.5rem 0;
+  }
+  .meta {
+    font-size: 0.85rem;
+    color: var(--text-dim);
+    margin-top: 1rem;
+  }
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 0.9rem;
+    margin: 1.25rem 0 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.8rem;
+  }
+  .toc a {
+    color: var(--text-dim);
+    text-decoration: none;
+    border-bottom: 1px dotted var(--border);
+  }
+  .toc a:hover { color: var(--accent); }
+  .section-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 3rem 0 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .section-label:first-of-type { border-top: none; padding-top: 0; }
+  figure {
+    margin: 0 0 2.5rem;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  figure img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-bottom: 1px solid var(--border);
+  }
+  figcaption { padding: 0.9rem 1.1rem 1.1rem; }
+  .idx {
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    margin-right: 0.5rem;
+  }
+  .title {
+    font-weight: 700;
+    font-size: 1.02rem;
+    color: var(--text);
+  }
+  .desc {
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    margin-top: 0.4rem;
+  }
+  .filename {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.72rem;
+    color: #6f6858;
+  }
+  footer {
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--border);
+    color: var(--text-dim);
+    font-size: 0.8rem;
+  }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]) {
+      --bg: #faf7f0;
+      --bg-card: #ffffff;
+      --border: #e2dbc8;
+      --text: #2b2519;
+      --text-dim: #7a715d;
+      --accent: #a9552b;
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #faf7f0;
+    --bg-card: #ffffff;
+    --border: #e2dbc8;
+    --text: #2b2519;
+    --text-dim: #7a715d;
+    --accent: #a9552b;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>Predicted 2026 — Q2 Prediction Markets Report</h1>
+  <p>This folder holds 43 screenshots captured from a "Predicted 2026" slide deck covering Q2 2026 (April–June) activity across the prediction-market industry: volume and open interest, category mix, the World Cup, fees, funding, incumbent moves (Robinhood/Rothera, Coinbase, Big Tech, iGaming), and the regulatory fight between the CFTC and the states. Files are numbered 01–43 in the deck's original order and renamed to describe their content. This page is a plain local reference — open it directly in a browser from this folder.</p>
+  <p class="meta">Source: screenshots of the "Predicted 2026" Q2 report, captured 2026-08-24. Sourcing within slides cites Artemis, DefiLlama, RootData, Dune (@ommiii), Apptopia, CFTC filings, and press reports as noted per-slide.</p>
+  <ul class="toc">
+    <li><a href="#s-volume">Volume &amp; category</a></li>
+    <li><a href="#s-worldcup">World Cup</a></li>
+    <li><a href="#s-fees">Fees</a></li>
+    <li><a href="#s-funding">Funding &amp; new entrants</a></li>
+    <li><a href="#s-incumbents">Incumbents &amp; giants</a></li>
+    <li><a href="#s-regulation">Regulation &amp; integrity</a></li>
+  </ul>
+</header>
+
+<div id="s-volume" class="section-label">01–16 · Volume, open interest &amp; category mix</div>
+
+<figure>
+  <img src="01-q2-by-the-numbers.png" alt="Q2 By The Numbers" loading="lazy">
+  <figcaption><span class="idx">01</span><span class="title">Q2 By The Numbers</span>
+  <div class="desc">Headline Q2 2026 stats: $111B quarterly notional volume, +1,764% YoY, $52.7B in June alone (the quarter's biggest month), 1.7x Q2 2025's volume, and $1.288B in funding raised. Source: Artemis.</div>
+  <span class="filename">01-q2-by-the-numbers.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="02-cumulative-platform-growth.png" alt="More Prediction markets have existed than ever before" loading="lazy">
+  <figcaption><span class="idx">02</span><span class="title">More Prediction markets have existed than ever before</span>
+  <div class="desc">Cumulative count of prediction-market platforms 2020–2026, from 15 to 125, annotated with milestones (Polymarket/Kalshi/Manifold founding, Polymarket's AMM-to-CLOB migration, the 2024 election). Binary markets (52) and infrastructure/tooling (33) dominate the mix of 12 mechanism types. Source: Prediction Atlas.</div>
+  <span class="filename">02-cumulative-platform-growth.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="03-onchain-vs-offchain-platforms.png" alt="Prediction Markets: onchain and offchain" loading="lazy">
+  <figcaption><span class="idx">03</span><span class="title">Prediction Markets: onchain and offchain</span>
+  <div class="desc">Directory of platforms split into on-chain/crypto-native (Polymarket International, Limitless, Myriad, SX Bet, XO Markets, Opinion, Predict, PRED, Predict Street) versus off-chain/event-contract venues (Kalshi, ForecastEx, Rothera, DraftKings, FanDuel, Fanatics, PredictIt, OG.com, Robinhood, Novig, Polymarket US).</div>
+  <span class="filename">03-onchain-vs-offchain-platforms.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="04-quarterly-volume-growth.png" alt="In Q2 2026 prediction markets traded more than all 2024 + 2025 combined" loading="lazy">
+  <figcaption><span class="idx">04</span><span class="title">In Q2 2026 prediction markets traded more than all 2024 + 2025 combined</span>
+  <div class="desc">Notional volume by platform, 2024 ($17B) → 2025 ($65B) → Q1 2026 ($80B) → Q2 2026 ($111B), stacked by Polymarket/Kalshi/Opinion/Predict/Limitless/others. Source: Artemis.</div>
+  <span class="filename">04-quarterly-volume-growth.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="05-open-interest-all-time-high.png" alt="Open interest hit all time high" loading="lazy">
+  <figcaption><span class="idx">05</span><span class="title">Open interest hit all time high</span>
+  <div class="desc">Daily open interest area chart, Jan 2025–Jul 2026, showing Kalshi reaching $1.2B and Polymarket $569M by Q2 2026, both all-time highs. Source: Artemis.</div>
+  <span class="filename">05-open-interest-all-time-high.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="06-kalshi-polymarket-market-share.png" alt="Kalshi & Polymarket's dominance is 91%" loading="lazy">
+  <figcaption><span class="idx">06</span><span class="title">Kalshi &amp; Polymarket's dominance is 91%</span>
+  <div class="desc">Share-of-volume area chart, Jan 2024–Q2 2026: Kalshi and Polymarket together hold 91% of volume in Q2 2026 (63% / 28%), with Predict, CDNA, Opinion, Rothera and Limitless splitting the rest.</div>
+  <span class="filename">06-kalshi-polymarket-market-share.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="07-category-breakdown-by-platform.png" alt="Sports still dominates notional volumes in Q2" loading="lazy">
+  <figcaption><span class="idx">07</span><span class="title">Sports still dominates notional volumes in Q2</span>
+  <div class="desc">Stacked bar of Q2 volume by category (Sports/Politics/Crypto/Culture &amp; Other/Finance) for Kalshi ($65.9B, 86% sports), Polymarket ($26.7B, 56% sports), Limitless, Predict, Opinion and Myriad.</div>
+  <span class="filename">07-category-breakdown-by-platform.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="08-category-qoq-change-table.png" alt="While other categories saw Quarter-on-quarter draw downs" loading="lazy">
+  <figcaption><span class="idx">08</span><span class="title">While other categories saw Quarter-on-quarter draw downs</span>
+  <div class="desc">QoQ % change table by platform and category. Kalshi grew across sports (+104%) and crypto (+222%); Opinion and Myriad saw steep declines (crypto/politics/culture down 90%+) as their Q1 spikes faded.</div>
+  <span class="filename">08-category-qoq-change-table.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="09-kalshi-polymarket-category-trend.png" alt="Kalshi and Polymarket Category Breakdown" loading="lazy">
+  <figcaption><span class="idx">09</span><span class="title">Kalshi and Polymarket Category Breakdown</span>
+  <div class="desc">Category share of each platform's own volume over time (Oct 2025–Q2 2026): Kalshi stays ~85-90% sports throughout; Polymarket's sports share rose through Q2 as crypto and politics receded. Source: Dune @ommiii.</div>
+  <span class="filename">09-kalshi-polymarket-category-trend.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="10-other-venues-category-trend.png" alt="Other venues Category Breakdown" loading="lazy">
+  <figcaption><span class="idx">10</span><span class="title">Other venues Category Breakdown</span>
+  <div class="desc">Same category-share view for Limitless ($3.95B), Predict ($2.83B), Opinion ($2.25B) and Myriad ($4.3M) — each with a distinct mix shift into Q2, notably Opinion and Predict rotating toward finance.</div>
+  <span class="filename">10-other-venues-category-trend.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="11-emerging-verticals-outside-sports-crypto.png" alt="Outside of sports and crypto, these are the emerging verticals in Q2" loading="lazy">
+  <figcaption><span class="idx">11</span><span class="title">Outside of sports and crypto, these are the emerging verticals in Q2</span>
+  <div class="desc">Monthly notional volume (log scale) for Trump, Elon Musk, Weather, Finance, Tech and Entertainment markets, Oct 2025–Jun 2026, with a table of Q2 totals — Trump markets alone did $2.26B in Q2.</div>
+  <span class="filename">11-emerging-verticals-outside-sports-crypto.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="12-events-that-drove-q2-volume.png" alt="The events that drove volumes in Q2 2026" loading="lazy">
+  <figcaption><span class="idx">12</span><span class="title">The events that drove volumes in Q2 2026</span>
+  <div class="desc">Three news clippings: Kalshi added 3M users during the FIFA World Cup; a Knicks win triggered a record loss for Susquehanna's sports-trading desk; prediction markets kept betting on Strait of Hormuz reopening.</div>
+  <span class="filename">12-events-that-drove-q2-volume.png</span></figcaption>
+</figure>
+
+<div id="s-worldcup" class="section-label">13–16 · The World Cup</div>
+
+<figure>
+  <img src="13-world-cup-volume-17bn.png" alt="The World Cup saw $17.04bn in volume in Q2" loading="lazy">
+  <figcaption><span class="idx">13</span><span class="title">The World Cup saw $17.04bn in volume in Q2</span>
+  <div class="desc">Daily World Cup betting volume ramping from kickoff (11 June); $17.04B total split almost evenly between Polymarket (44.3%), Kalshi (43.9%) and Rothera (11.8%). Source: Artemis.</div>
+  <span class="filename">13-world-cup-volume-17bn.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="14-world-cup-share-of-total-volume.png" alt="The World Cup represented 15.3% of total volume in Q2" loading="lazy">
+  <figcaption><span class="idx">14</span><span class="title">The World Cup represented 15.3% of total volume in Q2</span>
+  <div class="desc">Waffle charts showing how concentrated the World Cup was for each venue: 96.1% of Rothera's entire Q2 volume was World Cup contracts, versus 22.5% for Polymarket and 11.4% for Kalshi.</div>
+  <span class="filename">14-world-cup-share-of-total-volume.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="15-mobile-dau-vs-sportsbooks.png" alt="Prediction Markets mobile apps outpaced Sportsbooks in DAUs during World Cup, in the U.S" loading="lazy">
+  <figcaption><span class="idx">15</span><span class="title">Prediction Markets mobile apps outpaced Sportsbooks in DAUs during World Cup, in the U.S</span>
+  <div class="desc">DAU growth since 1 June 2026: Polymarket (+215%) and Kalshi (+170%) app usage outpaced DraftKings Sportsbook (+75%) and FanDuel Sportsbook (-10%) through the tournament. Source: Apptopia.</div>
+  <span class="filename">15-mobile-dau-vs-sportsbooks.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="16-onchain-monthly-active-wallets.png" alt="Monthly active wallets in onchain prediction markets" loading="lazy">
+  <figcaption><span class="idx">16</span><span class="title">Monthly active wallets in onchain prediction markets</span>
+  <div class="desc">Log-scale daily active wallets across 5 on-chain venues, May 2025–Sep 2026: Polymarket leads at 112k, with Predict (19k) and Limitless (6k) growing into Q2 while Myriad declined to 105. Source: Dune @ommiii.</div>
+  <span class="filename">16-onchain-monthly-active-wallets.png</span></figcaption>
+</figure>
+
+<div id="s-fees" class="section-label">17–23 · Revenue, fees &amp; funding</div>
+
+<figure>
+  <img src="17-fee-revenue-by-platform.png" alt="Fee revenue for Q2" loading="lazy">
+  <figcaption><span class="idx">17</span><span class="title">Fee revenue for Q2</span>
+  <div class="desc">Q2 fee revenue by platform: Kalshi ~$671M (est. range up to $887.9M), Polymarket International $99.0M, Polymarket US $51.4M, with much smaller amounts for Limitless, ForecastEx, Predict.fun, Opinion and Myriad. Source: DefiLlama.</div>
+  <span class="filename">17-fee-revenue-by-platform.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="18-polymarket-dynamic-fees.png" alt="Polymarket international introduced dynamic fees" loading="lazy">
+  <figcaption><span class="idx">18</span><span class="title">Polymarket international introduced dynamic fees</span>
+  <div class="desc">Monthly fee revenue jumped from $15.7M (Q1) to $99.0M (Q2) after switching to category-based dynamic fees on 30 March, ranging from 0.07 (crypto, matching Kalshi) down to free (geopolitics). Source: DefiLlama, Artemis.</div>
+  <span class="filename">18-polymarket-dynamic-fees.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="19-fee-schedule-comparison.png" alt="How fees differ across prediction markets" loading="lazy">
+  <figcaption><span class="idx">19</span><span class="title">How fees differ across prediction markets</span>
+  <div class="desc">Six fee-curve shapes across price (1¢–99¢) for Kalshi, Polymarket International, Polymarket US, Limitless, Predict.fun and ForecastEx — bell curves, a table, a triangle, and ForecastEx's unusual flat per-side fee.</div>
+  <span class="filename">19-fee-schedule-comparison.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="20-effective-fee-rates.png" alt="Effective fee rates across prediction markets for Q2" loading="lazy">
+  <figcaption><span class="idx">20</span><span class="title">Effective fee rates across prediction markets for Q2</span>
+  <div class="desc">Modelled effective take rate per platform: ForecastEx (up to 2.00%) and Kalshi (1.02–1.35%) charge well above the market-blended 0.78–0.98%, while Polymarket International (0.37%) and Opinion (0.018%) sit near the bottom.</div>
+  <span class="filename">20-effective-fee-rates.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="21-funding-rounds-scatter.png" alt="Prediction Market funding Q2 2026" loading="lazy">
+  <figcaption><span class="idx">21</span><span class="title">Prediction Market funding Q2 2026</span>
+  <div class="desc">Scatter of every disclosed Q2 funding round by date and amount (log scale) — dominated by Kalshi's two raises ($1,000M, $200M) with a long tail of seed/pre-seed/angel rounds from EDGE Markets down to Robin Markets.</div>
+  <span class="filename">21-funding-rounds-scatter.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="22-venture-funding-table-part1.png" alt="Venture funding in Q2 2026 (1/2)" loading="lazy">
+  <figcaption><span class="idx">22</span><span class="title">Venture funding in Q2 2026 (1/2)</span>
+  <div class="desc">Table of the largest disclosed rounds: Kalshi's $1.2B Series F at a $22B valuation (Coatue, Baillie Gifford), plus EDGE Markets, Onyx Odds, Speed Labs, XO Market, TurboFlow, Pumpcade and IO Trader. 24 rounds tracked, ~$1.29B disclosed.</div>
+  <span class="filename">22-venture-funding-table-part1.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="23-venture-funding-table-part2.png" alt="Venture funding in Q2 2026 (2/2)" loading="lazy">
+  <figcaption><span class="idx">23</span><span class="title">Venture funding in Q2 2026 (2/2)</span>
+  <div class="desc">The long tail of early-stage rounds — Adjacent, Atlasx Protocol, Elastics, K25.ai, Polysights, Prospect Markets, Totalis (YC Spring 2026) and Robin Markets — with a median disclosed round of just $3.2M.</div>
+  <span class="filename">23-venture-funding-table-part2.png</span></figcaption>
+</figure>
+
+<div class="section-label">24–25 · Valuations &amp; new entrants</div>
+
+<figure>
+  <img src="24-polymarket-ai-valuations.png" alt="Polymarket now prices Anthropic at $1.74T and OpenAI at $1.36T, both above their last round" loading="lazy">
+  <figcaption><span class="idx">24</span><span class="title">Polymarket now prices Anthropic at $1.74T and OpenAI at $1.36T, both above their last round</span>
+  <div class="desc">Polymarket's implied valuations (30 June) versus each company's last priced round: Anthropic +80% (from $965B Series H) and OpenAI +59% (from $852B). Source: Polymarket API.</div>
+  <span class="filename">24-polymarket-ai-valuations.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="25-emerging-players-table.png" alt="Emerging players in Q2 2026" loading="lazy">
+  <figcaption><span class="idx">25</span><span class="title">Emerging players in Q2 2026</span>
+  <div class="desc">Status table for newer entrants: PRED and Adjacent went live in Q2; functionSPACE shipped an SDK; Melee and Fact Machine are in beta; Dekant and Spend Market remain waitlisted.</div>
+  <span class="filename">25-emerging-players-table.png</span></figcaption>
+</figure>
+
+<div id="s-incumbents" class="section-label">26–37 · Incumbents &amp; giants</div>
+
+<figure>
+  <img src="26-giants-make-their-moves.png" alt="Giants make their moves in Prediction Markets" loading="lazy">
+  <figcaption><span class="idx">26</span><span class="title">Giants make their moves in Prediction Markets</span>
+  <div class="desc">Grid of moves by Meta (considered buying Kalshi, then built Arena internally), Robinhood (launched Rothera), Kraken ($550M Bitnomial deal), Crypto.com, DraftKings, FanDuel/Flutter, Goldman/JPMorgan and Coinbase.</div>
+  <span class="filename">26-giants-make-their-moves.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="27-big-tech-igaming-crypto-headlines.png" alt="Big Tech, iGaming and Crypto all want in" loading="lazy">
+  <figcaption><span class="idx">27</span><span class="title">Big Tech, iGaming and Crypto all want in</span>
+  <div class="desc">Three news clippings: Reuters on Zuckerberg directing Meta to build a prediction-markets app; Robinhood launching World Cup contracts via Rothera; Onyx Odds raising $20M led by Kraken parent Payward.</div>
+  <span class="filename">27-big-tech-igaming-crypto-headlines.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="28-distribution-stack-matrix.png" alt="Companies with distribution are looking to leverage event contracts" loading="lazy">
+  <figcaption><span class="idx">28</span><span class="title">Companies with distribution are looking to leverage event contracts</span>
+  <div class="desc">Owns/Building/Rents matrix across Kalshi, Polymarket, Robinhood, Coinbase, FanDuel and DraftKings for four layers: distribution, brokerage/FCM, exchange/DCM, and clearing/DCO.</div>
+  <span class="filename">28-distribution-stack-matrix.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="29-clearing-map.png" alt="The Clearing Map: event contract settlement layer" loading="lazy">
+  <figcaption><span class="idx">29</span><span class="title">The Clearing Map: event contract settlement layer</span>
+  <div class="desc">Maps each brand/venue to who actually clears its trades — Kalshi Klear, QC Clearing, ForecastEx, Rothera, CDNA, CME Clearing, OCC, UDX, Bitnomial, The Clearing Company, DKeX and Ludlow Exchange. Source: CFTC filings.</div>
+  <span class="filename">29-clearing-map.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="30-robinhood-q2-revenue.png" alt="Robinhood - Q2 By The Numbers" loading="lazy">
+  <figcaption><span class="idx">30</span><span class="title">Robinhood - Q2 By The Numbers</span>
+  <div class="desc">Robinhood's transaction-based revenue by quarter: event contracts ($156M) passed crypto ($100M) for the first time in Q2 2026, within $776M total transaction revenue. Source: Robinhood Q2 2026 earnings release.</div>
+  <span class="filename">30-robinhood-q2-revenue.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="31-rothera-world-cup-driving-force.png" alt="Robinhood's new exchange, Rothera, was the driving force" loading="lazy">
+  <figcaption><span class="idx">31</span><span class="title">Robinhood's new exchange, Rothera, was the driving force</span>
+  <div class="desc">Rothera (Robinhood's CFTC-licensed exchange/clearing house, a JV with Susquehanna) launched in June and reached 24.4% of World Cup volume on 28 June, with 3.5B+ contracts traded to date.</div>
+  <span class="filename">31-rothera-world-cup-driving-force.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="32-rothera-daily-volume-world-cup.png" alt="Rothera Lit up the World Cup" loading="lazy">
+  <figcaption><span class="idx">32</span><span class="title">Rothera Lit up the World Cup</span>
+  <div class="desc">98% of Rothera's entire Q2 volume came from the World Cup: daily volume and open interest climbed from first trade (21 May) to a peak $167M OI around the tournament.</div>
+  <span class="filename">32-rothera-daily-volume-world-cup.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="33-rothera-economics-sankey.png" alt="Rothera's Economics" loading="lazy">
+  <figcaption><span class="idx">33</span><span class="title">Rothera's Economics</span>
+  <div class="desc">Sankey of Robinhood's 13.6B Q2 contracts: 2.1B cleared on Rothera (own exchange, ~0.8¢/contract) versus 11.5B on partner rails like Kalshi (~1.2¢/contract) — Rothera runs at a lower take.</div>
+  <span class="filename">33-rothera-economics-sankey.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="34-coinbase-revenue-doubled.png" alt="Coinbase's prediction market revenue doubled in Q2" loading="lazy">
+  <figcaption><span class="idx">34</span><span class="title">Coinbase's prediction market revenue doubled in Q2</span>
+  <div class="desc">Coinbase's prediction-markets revenue run-rate passed $100M annualised (+106% QoQ) alongside record crypto trading share, a smaller net loss, and lower adjusted EBITDA.</div>
+  <span class="filename">34-coinbase-revenue-doubled.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="35-coinbase-acquisitions-timeline.png" alt="Coinbase acquisitions point to verticalization" loading="lazy">
+  <figcaption><span class="idx">35</span><span class="title">Coinbase acquisitions point to verticalization</span>
+  <div class="desc">Timeline of Coinbase's Deribit ($2.9B), Echo ($375M), Vector and The Clearing Company deals against its "powered by Kalshi" rented rails — Robinhood earns ~6x more per quarter on rails it owns versus Coinbase on rails it rents.</div>
+  <span class="filename">35-coinbase-acquisitions-timeline.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="36-igaming-stock-performance-yoy.png" alt="YoY, iGaming incumbents have lost half their market cap, Q2 was consolidatory" loading="lazy">
+  <figcaption><span class="idx">36</span><span class="title">YoY, iGaming incumbents have lost half their market cap, Q2 was consolidatory</span>
+  <div class="desc">Indexed stock performance (Jul 2025=100) for Robinhood, DraftKings and Flutter/FanDuel against the S&amp;P 500 and prediction-market monthly notional volume — DraftKings and Flutter both down roughly 40-65% YoY.</div>
+  <span class="filename">36-igaming-stock-performance-yoy.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="37-igaming-strikes-back-timeline.png" alt="But iGaming is trying to strike back" loading="lazy">
+  <figcaption><span class="idx">37</span><span class="title">But iGaming is trying to strike back</span>
+  <div class="desc">Dense two-row timeline (7 April–26 June) of DCM filings, launches and distribution deals from Kalshi, Fanatics, Kraken, Polymarket US, IBKR, Rothera, DraftKings, FanDuel, Coinbase, Cboe, Meta and more.</div>
+  <span class="filename">37-igaming-strikes-back-timeline.png</span></figcaption>
+</figure>
+
+<div id="s-regulation" class="section-label">38–43 · Regulation &amp; integrity</div>
+
+<figure>
+  <img src="38-q2-regulatory-timeline.png" alt="Q2 Regulatory Timeline" loading="lazy">
+  <figcaption><span class="idx">38</span><span class="title">Q2 Regulatory Timeline</span>
+  <div class="desc">Timeline of the quarter's regulatory turns: CFTC sues states after a court ruled gambling law invalid for its event contracts, Wisconsin sues platforms, the 3rd Circuit backs Kalshi, and Kalshi sues Minnesota over its criminalization law.</div>
+  <span class="filename">38-q2-regulatory-timeline.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="39-cftc-sues-eight-states.png" alt="The CFTC sued eight states in Q2" loading="lazy">
+  <figcaption><span class="idx">39</span><span class="title">The CFTC sued eight states in Q2</span>
+  <div class="desc">Six CFTC filings against states in 83 days (AZ/CT/IL, NY, WI, MN, RI, KY), alongside the 3rd Circuit's KalshiEX v. Flaherty ruling that sports event contracts are swaps on a DCM and field-preempt state gambling law.</div>
+  <span class="filename">39-cftc-sues-eight-states.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="40-states-sue-prediction-market-venues.png" alt="Six states came after Prediction Market venues in Q2" loading="lazy">
+  <figcaption><span class="idx">40</span><span class="title">Six states came after Prediction Market venues in Q2</span>
+  <div class="desc">The reverse direction: state actions against venues themselves (OH, WI, MN, RI, KY, MI), including Washington's King County court granting AG Nick Brown a preliminary injunction against Kalshi.</div>
+  <span class="filename">40-states-sue-prediction-market-venues.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="41-q2-us-regulatory-map.png" alt="Q2 US Regulatory Map" loading="lazy">
+  <figcaption><span class="idx">41</span><span class="title">Q2 US Regulatory Map</span>
+  <div class="desc">Choropleth of which states challenged prediction markets (NV, AZ, MN, WI, IL, KY, NY, CT) versus New Jersey, the lone 3rd Circuit win for platforms. Source: CFTC, court and state filings.</div>
+  <span class="filename">41-q2-us-regulatory-map.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="42-q2-global-regulatory-map.png" alt="Q2 Global Regulatory Map" loading="lazy">
+  <figcaption><span class="idx">42</span><span class="title">Q2 Global Regulatory Map</span>
+  <div class="desc">World map of regulatory posture: Canada approved/expanding, the EU under regulatory pressure, India exited/banned, and the US a contested home market.</div>
+  <span class="filename">42-q2-global-regulatory-map.png</span></figcaption>
+</figure>
+
+<figure>
+  <img src="43-insider-trading-headlines.png" alt="Q2 saw insider trading make headline news" loading="lazy">
+  <figcaption><span class="idx">43</span><span class="title">Q2 saw insider trading make headline news</span>
+  <div class="desc">Three integrity cases: a Fort Bragg soldier's $400K Maduro-capture bet led to the first insider-trading prosecution of a prediction market; a Google engineer charged after making $1.2M on Polymarket; Kalshi fined three congressional candidates for betting on their own races.</div>
+  <span class="filename">43-insider-trading-headlines.png</span></figcaption>
+</figure>
+
+<footer>
+  Renamed from generic macOS screenshot filenames (e.g. <code>Screenshot 2026-08-24 at 10.32.02&nbsp;PM.png</code>) to numbered, descriptive names on 2026-08-24. Descriptions were written by reading each slide directly; figures and sourcing are as shown on the slide, not independently verified against underlying data.
+</footer>
+
+</div>
+</body>
+</html>
