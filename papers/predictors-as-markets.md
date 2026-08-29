@@ -1,8 +1,8 @@
 # Predictors as Markets
 
-### One maker, makers in parallel, markets in series
+### One maker, makers in parallel, routing in series
 
-Peter Cotton · *Working draft v0.13* · August 29, 2026
+Peter Cotton · *Working draft v0.14* · August 29, 2026
 
 ---
 
@@ -86,6 +86,22 @@ sections 2–4 treat one maker and sections 5–7 makers in parallel.
 Graphical factorization turns inference into networks of local markets:
 sections 8–11 treat markets in series, with the precise semiring statement
 in section 8. Section 12 states the characterization.
+
+What is and is not new here should be said at the outset, because the
+nearest neighbours are close. That competing makers operate in parallel,
+that their aggregate is an infimal convolution, that conjugates add and
+liquidity adds, and that fees can be levied on the aggregate, are
+established in @bhaskara2023general; the risk-sharing form of the same
+law is @barrieu2005inf, and cost-function markets, their duality and
+their online-learning reading are @abernethy2013efficient and
+@chen2010newunderstanding. Against that background the residue claimed
+here is: coherence without convexity and the contact-set consequences
+(§§2–3); the exact scalar routing formula with fees inside the costs, its
+no-trade bands and sparse participation, and the consolidated-order-book
+reading (§§5–6); arbitrage depth, the friction characterization, and
+accessible coherence (§§4, 12); and the synthesis with regularization
+and incentive closure (§§1, 12). The serial sections contribute an
+architecture and a separation of claims, not a mechanism.
 
 Two payoff regimes appear and must not be conflated. In the *bounded*
 regime a scalar security settles at $\varphi(\omega) = \omega \in [-1,1]$,
@@ -190,9 +206,13 @@ infinity, the language below about flow landing on contact points and
 off-contact states being transient describes a limit that no fill
 realizes.
 
-The maker behaves observationally like its convex envelope. Concave
-stretches are unquotable intermediate *inventory* states that rational
-flow jumps across. Whoever lands inside one (noise) overpays the
+The maker is value-equivalent to its convex envelope for an unconstrained
+one-shot risk-neutral optimizer, and no more than that: the optimal
+endpoints of $C$ are exactly the envelope-optimal endpoints lying in the
+contact set, so $C$ deletes the envelope's off-contact optima, and
+partial trades, tie-breaking, capital constraints and noisy flow
+distinguish the two immediately. Concave stretches are unquotable
+intermediate *inventory* states that rational flow jumps across. Whoever lands inside one (noise) overpays the
 gap at the landing state, and by (ii) the next rational trader recoups it,
 so the maker is a conduit keeping envelope differences over any
 rational-to-rational span, and off-contact states are transient. The
@@ -573,7 +593,10 @@ the two composition laws.
 
 **Proposition 10 (the routing algebra).** *(i) Parallel: merging makers
 multiplies factors, since $(C_1 \square C_2)^* = C_1^* + C_2^*$ and
-potentials add exactly when densities multiply. (ii) Serial: the cheapest
+potentials add exactly when unnormalized factors multiply,
+$p_{\mathrm{merge}} \propto p_1 p_2$, the normalization being an additive
+constant in potential space that cancels in every price. (ii) Serial: the
+cheapest
 route to a terminal position through a chain of stage kernels costs
 $\inf_{z_1,\dots,z_{n-1}} \sum_i \varphi_i(z_{i-1}, z_i)$, the min-plus
 product of the kernels. (iii) On log-quadratic (Gaussian) families,
@@ -658,7 +681,7 @@ plausibly interpolates
 between the two semirings; §12 poses this as the open question of which
 inference algorithm a risk-averse market runs.
 
-## 9. One market per factor
+## 9. One venue per factor
 
 The locality that makes the factorization tradable is Hanson's modularity:
 in a combinatorial logarithmic market scoring rule (LMSR) a bet on
@@ -674,6 +697,19 @@ why approximate designs price over the marginal polytope
 [@dudik2012tractable; @dudik2021logtime]. Securities structured by a
 Bayes-net factorization appear in @pennock2000compact, with the trades
 that preserve the structure characterized by @xia2011structure.
+
+The connection between trading and message passing is also not new.
+@storkey2011machine shows that a market of utility-maximizing agents
+whose interests span subsets of variables has equilibrium prices
+factorizing as a product of local potentials, an undirected graphical
+model, and derives messages from agents' optimized positions with prices
+and buying functions updated iteratively. What is proposed here differs
+in architecture rather than in the observation that trades can carry
+messages: separate conditional venues with settlement boundaries and an
+opening rule, rather than one economy; cost kernels composed in min-plus
+with an explicit conjugate interface, rather than utility equilibrium;
+and the filtering decomposition of §10. The claim is not that trades and
+messages were previously unconnected.
 
 The serial architecture takes the factors as separate venues rather than
 one joint book. Market $i$ opens on $P(x_i \mid \text{parents})$ when its
@@ -811,12 +847,15 @@ universal form.
 The scope of Proposition 13 is in any case one class of consistency
 failure: locally
 quoted beliefs that cannot be embedded in any joint distribution, detected
-here at second moments. Not every loopy-propagation error takes this form,
-but the class it covers is, in a market, free money, and the flow that
-harvests it pushes the quotes back toward the cone. Whether the corrected
-fixed point is the true marginal, a surrogate of the kind loopy
-propagation converges to, or something the liquidity profile selects is
-open.
+here at second moments. Proposition 13 is a second-moment arbitrage
+result, not a theorem about loopy belief propagation in general: not
+every loopy-propagation error takes this form, and the reading of
+arbitrageurs as the loop correction is a conjecture about dynamics that
+this paper does not model. What the proposition does establish is that
+the class it covers is, in a market, free money. Whether flow that
+harvests it converges, and to the true marginal, to a surrogate of the
+kind loopy propagation converges to, or to something the liquidity
+profile selects, is open.
 
 The PSD cone is not special. Coherent price sets are convex (they are
 convex hulls of payoff vectors, or their conic images), and separation
@@ -864,7 +903,12 @@ $$\varepsilon \;=\; \sup_{q,\,s \ne 0} \frac{\big[\inf_{z \in K}
 
 the scalar case of §4 being $\lVert\cdot\rVert = \lvert\cdot\rvert$. A cost-based predictor
 admits a coherent market implementation if and only if its arbitrage depth
-is dominated by the permitted friction; chord coherence is the $f = 0$
+is dominated by the permitted friction. The equivalence is close to
+definitional, arbitrage depth being the maximal normalized violation, and
+it is included to fix vocabulary rather than to carry weight; what does
+carry weight is that the depth is finite for costs no axiom set in the
+literature admits, and that §§2–4 identify what finiteness costs. Chord
+coherence is the $f = 0$
 special case, and convexity is the separate, further property of monotone
 information incorporation. Three words are kept apart throughout:
 *coherence* (chord slopes stay in the payoff hull), *convexity* (marginal
@@ -872,9 +916,14 @@ prices respond monotonically to flow), and *expressiveness* (which
 inventory states rational flow can leave the maker in). Within the
 proper-envelope class, and for beliefs whose response is well posed,
 non-convexity restricts the rationally reachable inventory states to the
-contact set: from a contact state $C$ and $\hat C$ give the same optimal
-value and the same optima, and from an off-contact state the next
-rational trader extracts the gap $g(q)$. Coherence alone promises no
+contact set: $C$ and $\hat C$ give the same optimal value, with
+
+$$\operatorname*{argmax}_x\{\mu x - C(x)\} \;=\;
+\operatorname*{argmax}_x\{\mu x - \hat C(x)\} \cap \{C = \hat C\},$$
+
+so the original cost deletes the envelope's off-contact optimizers, and
+from an off-contact state the next rational trader extracts the gap
+$g(q)$. Coherence alone promises no
 more than this, since $C(q) = -\alpha\lvert q\rvert$ is coherent with
 unbounded speculative profit (§3).
 

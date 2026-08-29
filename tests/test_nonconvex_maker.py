@@ -3,7 +3,7 @@
 Coherence is a chord condition, not convexity; rational flow reads the
 biconjugate (lands on the contact set, with the start gap as a pass-through);
 a proportional fee prices bounded slope excursions; and a deep quadratic
-co-quoter convexifies the merged venue (Moreau).
+co-quoter attenuates the envelope gap without filling it (Moreau).
 """
 
 import numpy as np
@@ -38,7 +38,7 @@ def test_rational_flow_reads_the_biconjugate():
     C = _wiggly_cost()
     env = lower_convex_envelope(XS, C)
     gap = C - env
-    assert gap.max() > 0.3  # the book has real holes
+    assert gap.max() > 0.3  # a genuine excluded inventory range
     rng = np.random.default_rng(0)
     for _ in range(100):
         mu = rng.uniform(-0.9, 0.9)
@@ -61,7 +61,7 @@ def test_off_contact_states_are_a_pass_through():
     env = lower_convex_envelope(XS, C)
     gap = C - env
     i_on = int(np.argmin(gap))          # a contact state
-    j_off = int(np.argmax(gap))         # deep in a hole
+    j_off = int(np.argmax(gap))         # deep in the excluded range
     overpay = (C[j_off] - C[i_on]) - (env[j_off] - env[i_on])
     assert overpay == pytest.approx(gap[j_off] - gap[i_on], abs=1e-12)
     assert overpay > 0.3
@@ -98,8 +98,8 @@ def test_no_trade_interval_is_fee_adjusted_chord_bounds():
     # [sup_{s<0} d_q(s) - f, inf_{s>0} d_q(s) + f] with d_q the chord slope.
     # Convex case: both bounds equal C'(q), recovering the band m -+ f. Off
     # the contact set the frictionless interval is empty (chord gap
-    # Delta_q > 0) and the fee fills the hole exactly when 2f >= Delta_q:
-    # friction can stabilize a state inside a quote hole.
+    # Delta_q > 0) and the interval opens exactly when 2f >= Delta_q:
+    # friction can make a state in the excluded range tenable.
     C = _wiggly_cost()
     env = lower_convex_envelope(XS, C)
     gap = C - env
@@ -254,9 +254,11 @@ def test_fee_can_stabilize_the_sine_hole():
     assert profit(0.0, 0.5 * a) > 0.1
 
 
-def test_deep_quadratic_coquoter_fills_the_gaps():
+def test_deep_coquoter_convexifies_but_does_not_fill():
     # Merging with a quadratic co-quoter of liquidity lam is the Moreau
-    # envelope. A deep co-quoter (large lam) convexifies the merged venue; a
+    # envelope. A deep co-quoter (large lam) can convexify the merged venue
+    # on this cost; it never fills the excluded range (see the double-well
+    # test), and a
     # shallow one leaves it non-convex. The threshold is global (gap
     # geometry): lam near the local weak-convexity scale 1/0.35 is NOT yet
     # enough, which is part of the point.
