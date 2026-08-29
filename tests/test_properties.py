@@ -101,7 +101,7 @@ def test_infinite_one_sided_slope_defeats_every_finite_fee():
     C = -np.sqrt(np.abs(xs))
     s_pos = xs[xs > 1e-12]
     assert ((-np.sqrt(s_pos)) / s_pos).min() < -50         # d_0 diverging
-    assert max_sure_profit(xs, C, stride=40) > 0           # incoherent bare
+    assert max_sure_profit(xs, C) > 0           # incoherent bare
 
     for f in (0.5, 5.0, 50.0, 500.0):
         s_star = 1.0 / (4.0 * f ** 2)                      # analytic optimum
@@ -139,7 +139,7 @@ def test_payoff_regime_decides_whether_a_quadratic_maker_is_admissible():
     xs = np.linspace(-6.0, 6.0, 4001)
     lam = 2.0
     C = xs ** 2 / (2 * lam)
-    assert max_sure_profit(xs, C, stride=8) > 0            # bounded regime: arbitraged
+    assert max_sure_profit(xs, C) > 0            # bounded regime: arbitraged
     # unrestricted regime: worst-case payoff of a position is unbounded below,
     # so no finite position is a sure profit; the chord test is not binding.
     s = xs[xs != 0]

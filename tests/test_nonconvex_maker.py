@@ -31,7 +31,7 @@ def _wiggly_cost():
 def test_coherence_without_convexity():
     C = _wiggly_cost()
     assert np.diff(C, 2).min() < -1e-8            # genuinely non-convex
-    assert max_sure_profit(XS, C, stride=10) <= 0  # yet arbitrage-free
+    assert max_sure_profit(XS, C) <= 0  # yet arbitrage-free
 
 
 def test_rational_flow_reads_the_biconjugate():
@@ -69,8 +69,8 @@ def test_off_contact_states_are_a_pass_through():
 
 def test_slope_excursions_are_priced_by_the_fee():
     C = 1.25 * _wiggly_cost()  # slopes reach ~1.19: excursion ~0.19 beyond the hull
-    assert max_sure_profit(XS, C, stride=10) > 0.1          # arbitrageable bare
-    assert max_sure_profit(XS, C, fee=0.20, stride=10) <= 0  # priced by f >= excursion
+    assert max_sure_profit(XS, C) > 0.1          # arbitrageable bare
+    assert max_sure_profit(XS, C, fee=0.20) <= 0  # priced by f >= excursion
     m = NonconvexMaker(lambda q: 1.25 * float(np.interp(q, XS, _wiggly_cost())), fee=0.20)
     s = 2.0
     assert m.apply_fill(s) + m.apply_fill(-s) == pytest.approx(2 * 0.20 * s, abs=1e-9)
