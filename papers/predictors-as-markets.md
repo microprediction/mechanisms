@@ -598,7 +598,19 @@ procedure specifies how information would be combined if supplied
 honestly; its marketization implements the same operator against
 self-interested sources. In this sense a market is the incentive closure
 of a predictor: the computation, plus the dual certificates of its
-constraints, plus payment to whoever holds one.
+constraints, plus payment to whoever holds one. Duality alone supplies
+the middle column of
+
+$$\begin{array}{lll}
+\text{computation} & \text{certificate} & \text{payment}\\
+\text{primal solve} & \text{dual multiplier} & \text{none}\\
+\text{verified computation} & \text{proof of violation} & \text{none or fixed}\\
+\text{incentive closure} & \text{separating portfolio} & \text{the certificate's value}
+\end{array}$$
+
+and the closure adds the third: a marketized computation is self-policing
+in proportion to the value of its own errors, with friction the exchange
+rate between tolerated error and the cost of participation.
 
 Nothing in the definition mentions prediction. The serial law is the
 min-plus kernel composition of dynamic programming, control, and shortest
@@ -640,8 +652,18 @@ temperature in between would complete the correspondence.
 characterization above is confined to cost-based predictors. Define what
 it means for an arbitrary prediction map $T$, from data sets to forecasts,
 to possess a market representation, and give conditions on $T$ equivalent
-to existence; the cost-based case suggests path independence and a chord
-bound are the shadow of the general condition.
+to existence. A first conjecture: $T$ is representable when it factors
+through a network of cost kernels whose boundary reduction is $T$, with
+the chord bound applying kernel by kernel; path independence and the
+chord condition would then be the image of the general condition in the
+cost-based case.
+
+*Separation economics.* Proposition 14 pays the discoverer of one
+certificate once. Characterize the mechanisms in which the stream of
+certificate payments funds the ongoing computation, and account for the
+complexity of the certificate search: separation can be computationally
+hard, and the economics of a self-policing computation depend on whether
+its own errors are findable at a cost below their value.
 
 *The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
 sparse-signal flow model, does the Bertrand-equilibrium fee reproduce the
