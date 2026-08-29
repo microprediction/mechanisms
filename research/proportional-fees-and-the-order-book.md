@@ -228,8 +228,9 @@ claim:
 a contract and then immediately selling it is without cost" for such makers,
 and introduce volume-based (path-dependent) profit charging to fix it; path
 independence as a design axiom goes back to Hanson (2003), Chen & Pennock
-(2007) and Abernethy, Chen & Wortman Vaughan (2013). Dudík et al. (2014)
-subsume the profit-charging construction in a volume-parameterized framework.
+(2007) and Abernethy, Chen & Wortman Vaughan (2013). Abernethy, Frongillo,
+Li & Wortman Vaughan (2014) subsume the profit-charging construction in a
+volume-parameterized framework.
 No novelty is claimed here.
 
 *The fee is a spread, by conjugation (§2).* Essentially known; the packaging
@@ -345,8 +346,8 @@ as the five nearest neighbours.
   Loss, Vanishing Bid/Ask Spreads, and Unlimited Market Depth." *EC*, 790–807.
 - Othman, A. (2012). *Automated Market Making: Theory and Practice.* PhD
   thesis, CMU.
-- Dudík, M., Lahaie, S., Pennock, D. M. & Rothschild, D. (2014). "A General
-  Volume-Parameterized Market Making Framework." *EC*, 413–430.
+- Abernethy, J., Frongillo, R., Li, X. & Wortman Vaughan, J. (2014). "A
+  General Volume-Parameterized Market Making Framework." *EC*, 413–430.
 - Della Penna, N. & Reid, M. D. (2011). "Bandit Market Makers."
   arXiv:1112.0076.
 - Agrawal, S., Delage, E., Peters, M., Wang, Z. & Ye, Y. (2011). "A Unified

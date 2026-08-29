@@ -39,6 +39,7 @@ PAPERS = [
     "multi-stage-solicitation.md",
     "likelihood-versus-crps.md",
     "combining-linear-fee-market-makers.md",
+    "predictors-as-markets.md",
 ]
 
 PAGE = """<!doctype html>
