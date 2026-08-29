@@ -35,7 +35,7 @@ information source paying to move the state.
 
 ---
 
-## 1. The correspondences, and the question
+## 1. Many predictors are already markets
 
 A cost-function market maker posts a potential $C$ over inventory and
 charges $C(q+s) - C(q)$ for a fill $s$; prices are gradients and, when $C$
@@ -223,7 +223,7 @@ conjugate of Lemma 4, zero on the band around $\hat C'(q)$. On the contact
 set $g(q) = 0$ and the band survives; off it the additive $g(q) > 0$
 leaves no zero. $\blacksquare$
 
-## 6. Makers in parallel: routing, the order book, Moreau
+## 6. Makers in parallel
 
 Let makers $i = 1..n$ hold inventories $q_i$ with convex costs $C_i$,
 liquidities of their choosing, and fees $f_i$ of their choosing.
@@ -322,7 +322,7 @@ the fee) and participant depth ($\ell_2$, capital), lasso and ridge. The
 identification maps the penalty terms, not the statistical procedures; it
 is a dictionary of primitives, not an equivalence of estimators.
 
-## 7. Self-set fees, stabilizers, adaptivity
+## 7. Self-set fees and adaptivity
 
 Nothing requires the fees to be administered. Each maker may quote its own
 $f_i$: a quote inside the aggregate spread earns nothing, a quote too tight
@@ -573,7 +573,7 @@ is paid to act as the separation oracle. Arbitrageurs are decentralized
 separation oracles, and the friction of §4 sets the tolerance below which
 infeasibility is allowed to persist.
 
-## 12. The characterization, and open problems
+## 12. Closing
 
 The characterization is for the cost-based class. Call a predictor
 *cost-based* if it is specified by a path-independent potential $C$ over a
