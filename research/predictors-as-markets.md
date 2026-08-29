@@ -121,14 +121,16 @@ like $1/\lambda$, so the residue is priced by a fee of the same order. The two r
 ridge.
 
 The fee lemma (§5 of the
-[working paper](../papers/predictors-as-markets.md)) is
-absorbed by this picture, because conjugation only ever reads biconjugates:
-for any chord-coherent cost, the fee-bearing maker's dead zone is the band
-of half-width $f$ around the *envelope's* marginal price, it exists exactly
-on the contact set, and at off-contact states there is no band at all;
-every belief profits by at least the gap, which is why such states are
-transient (tested). The convex case, contact set everywhere, is the
-published lemma.
+[working paper](../papers/predictors-as-markets.md)) extends without
+convexity in exact form: the no-trade beliefs at state $q$ are the
+fee-widened interval of one-sided chord bounds,
+$[\sup_{s<0} d_q - f,\ \inf_{s>0} d_q + f]$ with $d_q$ the chord slope.
+For convex $C$ both bounds equal $C'(q)$, the band $m \pm f$. Off the
+contact set the frictionless interval is empty (chord gap $\Delta_q > 0$)
+and the fee fills the hole exactly when $2f \ge \Delta_q$: at small fees
+every belief still profits and the state is transient, while a wide
+enough spread stabilizes a state inside a quote hole (both tested; the
+sine cost at its crest is the worked instance).
 
 Optimization already pays these frictions. A proximal step charges
 $\lVert\Delta\theta\rVert^2/(2\eta)$ per move; a trust region is an

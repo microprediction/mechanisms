@@ -93,30 +93,62 @@ def test_moreau_nonconvexity_is_not_only_crossings():
     assert np.abs(slopes).max() <= a + 1e-6                      # coherence preserved
 
 
-def test_generalized_fee_lemma():
-    # With a fee, the dead zone sits around the ENVELOPE's marginal price and
-    # exists exactly on the contact set; at off-contact states every belief
-    # yields profit at least the gap, so such states are transient. The
-    # convex fee-spread lemma is the special case (contact set everywhere).
+def test_no_trade_interval_is_fee_adjusted_chord_bounds():
+    # The no-trade beliefs at state q are exactly
+    # [sup_{s<0} d_q(s) - f, inf_{s>0} d_q(s) + f] with d_q the chord slope.
+    # Convex case: both bounds equal C'(q), recovering the band m -+ f. Off
+    # the contact set the frictionless interval is empty (chord gap
+    # Delta_q > 0) and the fee fills the hole exactly when 2f >= Delta_q:
+    # friction can stabilize a state inside a quote hole.
     C = _wiggly_cost()
     env = lower_convex_envelope(XS, C)
     gap = C - env
-    f = 0.10
 
-    def max_profit(i0, mu):
+    def max_profit(i0, mu, f):
         return (mu * (XS - XS[i0]) - (C - C[i0]) - f * np.abs(XS - XS[i0])).max()
 
+    # contact state: interval is the convex band around the envelope slope
+    f = 0.10
     contacts = np.flatnonzero(gap[1000:5000] < 1e-10) + 1000
     i_c = int(contacts[len(contacts) // 2])
     dx = XS[1] - XS[0]
-    m = (env[i_c + 5] - env[i_c - 5]) / (10 * dx)  # envelope slope
+    m = (env[i_c + 5] - env[i_c - 5]) / (10 * dx)
     for mu in np.linspace(m - f + 0.02, m + f - 0.02, 9):
-        assert max_profit(i_c, mu) <= 1e-9          # inside the band: no trade
+        assert max_profit(i_c, mu, f) <= 1e-9
     for mu in (m - f - 0.05, m + f + 0.05):
-        assert max_profit(i_c, mu) > 1e-4           # outside: profitable
+        assert max_profit(i_c, mu, f) > 1e-4
+
+    # off-contact state: compute the one-sided chord bounds and the gap
     i_o = int(np.argmax(gap))
+    s = XS - XS[i_o]
+    with np.errstate(divide="ignore", invalid="ignore"):
+        d = (C - C[i_o]) / s
+    lo = np.nanmax(d[s < -1e-9])
+    hi = np.nanmin(d[s > 1e-9])
+    delta = lo - hi
+    assert delta > 0.4  # genuinely off contact
+    # small fee (2f < Delta): every belief still profits; the state is transient
     for mu in np.linspace(-0.9, 0.9, 19):
-        assert max_profit(i_o, mu) > 0.3            # off-contact: no band at all
+        assert max_profit(i_o, mu, 0.10) > 0.3
+    # large fee (2f > Delta): the interval opens up exactly as predicted
+    f_big = delta / 2 + 0.05
+    mu_mid = (lo + hi) / 2
+    assert max_profit(i_o, mu_mid, f_big) <= 1e-9
+    assert max_profit(i_o, lo - f_big - 0.03, f_big) > 1e-3
+    assert max_profit(i_o, hi + f_big + 0.03, f_big) > 1e-3
+
+
+def test_fee_can_stabilize_the_sine_hole():
+    # C(q) = a sin q at q = 0 sits a above its flat envelope; belief mu = 0
+    # admits no profitable trade exactly when f >= a.
+    a = 0.5
+    ys = np.linspace(-40.0, 40.0, 40001)
+
+    def profit(mu, f):
+        return (mu * ys - a * np.sin(ys) - f * np.abs(ys)).max()
+
+    assert profit(0.0, a) == pytest.approx(0.0, abs=1e-9)
+    assert profit(0.0, 0.5 * a) > 0.1
 
 
 def test_deep_quadratic_coquoter_fills_the_gaps():

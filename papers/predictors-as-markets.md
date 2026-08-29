@@ -2,7 +2,7 @@
 
 ### One maker, makers in parallel, markets in series
 
-Peter Cotton · *Working draft v0.9* · August 29, 2026
+Peter Cotton · *Working draft v0.10* · August 29, 2026
 
 ---
 
@@ -215,21 +215,39 @@ $m$ onto the interval, which is $m + T_{f}(p - m)$. $\blacksquare$
 The maker quotes $\mathrm{ask} = m + f$ and $\mathrm{bid} = m - f$ and
 trades nothing in between: a proportional fee is a bid-ask spread, the
 same duality by which a proportional transaction cost confines the pricing
-functional to the bid-ask band [@jouini1995transaction]. Because
-conjugation reads only biconjugates, the lemma survives non-convexity with
-the envelope in place of the cost:
+functional to the bid-ask band [@jouini1995transaction]. Without
+convexity the exact description needs no conjugation at all:
 
-**Lemma 5 (the envelope form).** *For any chord-coherent $C$ with envelope
-$\hat C$, the fee-bearing maker's no-trade band at state $q$ is the
-interval of beliefs within $f$ of the envelope's marginal price, non-empty
-exactly on the contact set; at off-contact states every belief in the hull
-yields profit at least $g(q)$.*
+**Lemma 5 (the no-trade interval, exactly).** *For any cost $C$ (no
+convexity assumed), state $q$, and fee $f \ge 0$, write
+$d_q(s) = [C(q+s) - C(q)]/s$ for the chord slope. A belief $\mu$ admits no
+profitable trade if and only if*
 
-**Proof.** By Proposition 2, profit at belief $\mu$ is the envelope profit
-plus $g(q)$; with the fee the envelope profit is the soft-thresholded
-conjugate of Lemma 4, zero on the band around $\hat C'(q)$. On the contact
-set $g(q) = 0$ and the band survives; off it the additive $g(q) > 0$
-leaves no zero. $\blacksquare$
+$$\sup_{s<0} d_q(s) - f \;\le\; \mu \;\le\; \inf_{s>0} d_q(s) + f,$$
+
+*so the no-trade interval is exactly the fee-widened interval of one-sided
+chord bounds, intersected with the payoff hull. For differentiable convex
+$C$ both bounds equal $C'(q)$ and the interval is Lemma 4's band
+$[m - f, m + f]$. In general, write
+$\Delta_q = \sup_{s<0} d_q - \inf_{s>0} d_q$; off the contact set
+$\Delta_q > 0$ and the interval is non-empty if and only if
+$2f \ge \Delta_q$.*
+
+**Proof.** No profitable trade means $\mu s \le C(q+s) - C(q) +
+f\lvert s\rvert$ for all $s$. Dividing by $s > 0$ gives $\mu \le d_q(s) +
+f$; dividing by $s < 0$ reverses the inequality to $\mu \ge d_q(s) - f$;
+together these are the displayed interval. Off the contact set,
+Proposition 2 gives every belief a strictly positive frictionless profit,
+so the $f = 0$ interval is empty, which is $\Delta_q > 0$. $\blacksquare$
+
+So friction does not merely widen an existing spread: a spread with
+$2f \ge \Delta_q$ fills the quote hole that non-convexity created, and a
+state inside the hole becomes tenable. Non-convexity creates holes,
+frictionless rational flow jumps them (§3), and a large enough spread
+stabilizes points inside them. For $C(q) = a\sin q$ at $q = 0$, a state
+sitting $a$ above its flat envelope, the belief $\mu = 0$ admits no
+profitable trade exactly when $f \ge a$, though every belief profits there
+frictionlessly.
 
 ## 6. Makers in parallel
 
@@ -447,14 +465,17 @@ The proposition divides its labor as follows. The min-plus identities of
 (i) and (ii) are algebraic and hold for arbitrary potentials; the
 generalized distributive law needs no convexity [@aji2000gdl]. What the
 market adds is implementability, and the condition is the one §2
-identified, stated dually: a kernel is tradeable as a path-independent
-maker when its cost's chord slopes respect the payoff hull, equivalently
-when the potential $\varphi = C^*$ has effective domain inside the hull,
-so that $C = \varphi^*$ has subgradients in the hull. Convexity is the
-separate, further property of monotone information incorporation, and it
-is what gives the clean dual representation, not coherence. Under the
-implementability condition the min-plus computation is carried out by
-self-interested trading rather than by a solver.
+identified: a kernel is tradeable as a path-independent maker when its
+cost's chord slopes respect the payoff hull. For closed convex $C$ this
+reads dually as the potential $\varphi = C^*$ having effective domain
+inside the hull, so that $C = \varphi^*$ has subgradients there; a
+non-convex coherent maker is not its own biconjugate,
+$C^{**} = \hat C \ne C$, and instead shares this conjugate representation
+with its envelope, which is exactly the observational equivalence of §3.
+Convexity is the separate, further property of monotone information
+incorporation, and it is what gives the clean dual representation, not
+coherence. Under the implementability condition the min-plus computation
+is carried out by self-interested trading rather than by a solver.
 
 **Corollary (the serial algebra runs Viterbi).** *Take finite state
 spaces and stage potentials $\varphi_t(i,j) = -\log P(X_t = j \mid
@@ -791,7 +812,8 @@ funds the ongoing computation.
 *The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
 flow model where most coefficients are zero and informed trades carry
 signal plus noise, does the fee that survives undercutting reproduce the
-universal threshold $\sigma\sqrt{2\log p}$ of the shrinkage literature?
+universal threshold $\sigma\,(2\log p)^{1/2}$ of the shrinkage
+literature?
 If so, the regularization constant that statistics tunes by
 cross-validation equals the adverse-selection cost of the data source.
 
