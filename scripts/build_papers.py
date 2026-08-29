@@ -38,7 +38,7 @@ PAPERS = [
     "composition-and-the-algebra-of-mechanisms.md",
     "multi-stage-solicitation.md",
     "likelihood-versus-crps.md",
-    "predictors-as-markets.md",
+    "non-convex-market-makers.md",
 ]
 
 PAGE = """<!doctype html>

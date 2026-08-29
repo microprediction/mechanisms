@@ -1,41 +1,37 @@
-# Predictors as Markets
+# Non-Convex Market Makers
 
-### One maker, makers in parallel, routing in series
+### Coherence without convexity, friction, and parallel composition
 
-Peter Cotton · *Working draft v0.15* · August 29, 2026
+Peter Cotton · *Working draft v0.1* · August 29, 2026
 
 ---
 
 ## Abstract
 
-There are two algebraic reasons markets appear inside learning: convex
-duality turns optimization into trading, and graphical factorization turns
-inference into networks of local markets. We develop both. For one maker,
-non-convexity does not obstruct coherence: no-arbitrage is a chord
-condition, rational flow trades the biconjugate, and a proportional fee of
-at least the arbitrage depth (the worst per-unit excursion of chord slopes
-beyond the payoff hull) restores no-arbitrage, the fee being exactly a
-bid-ask spread by conjugation. For makers in parallel, combining
-fee-bearing makers is an infimal convolution solved by one monotone
-clearing-price root-find with sparse fills, and the aggregate supply curve
-is a consolidated limit order book. For markets in series we separate
-three things usually run together: a min-plus routing algebra, in which
-parallel merge multiplies factors and cheapest routing eliminates
-variables for arbitrary potentials; an algebraic market representation, in
-which Gaussian measurement fusion is literally a parallel market merge
-while propagation is computed rather than traded, so that the filtering
-recursion and chain marginals are reproduced exactly; and probabilistic
-sum-product inference, which the routing algebra reproduces on
-log-quadratic families, where partial minimization equals marginalization
-up to a constant. A finite-state chain runs Viterbi in the routing
-algebra. We do not exhibit a serial mechanism in which trading performs
-every elimination, and say precisely what such a mechanism would require.
-A cost-based predictor admits a coherent market implementation if and only
-if its arbitrage depth is dominated by the permitted friction; friction
-extends the construction beyond convexity, and separation turns
-feasibility violations into portfolios that pay their discoverer. The
-resulting object is the incentive closure of the predictor: the same
-operator, with every information source paying to move the state.
+Cost-function market makers are always assumed convex. We show convexity
+is not what makes them coherent. For a path-independent maker, the exact
+no-arbitrage condition is a chord condition, that every chord slope of
+the cost lie in the convex hull of payoffs; convexity enters the standard
+axiomatics through a separate requirement, monotone information
+incorporation, and dropping it leaves coherent non-convex makers.
+Rational flow against such a maker sees the convex envelope: optimal
+fills land on the contact set, and the non-convexity gap at the starting
+state passes through to the next trader, so non-convexity costs
+expressiveness rather than soundness. Bounded incoherence is priced: a
+proportional fee of at least the arbitrage depth restores no-arbitrage,
+and by conjugation that fee is exactly a bid-ask spread, with the exact
+no-trade interval given by fee-widened one-sided chord bounds for any
+cost whatever. Combining fee-bearing makers is an infimal convolution
+solved by a single monotone clearing-price root-find; the fees act as an
+L1 penalty, so participation is sparse and the aggregate supply curve is
+a consolidated limit order book. Adding a deep quadratic co-quoter is
+Moreau smoothing, which preserves coherence at every depth while
+attenuating but never closing the envelope gap. Finally, separation makes
+model inconsistency financially discoverable: any quoted configuration
+outside the coherent hull admits a portfolio priced below its worst
+payoff, so arbitrageurs act as decentralized separation oracles, and
+coherence is relative to friction and to the cost of finding
+certificates.
 
 ---
 
@@ -63,7 +59,8 @@ adds [@bhaskara2023general; @barrieu2005inf]. General least squares with
 regressors is not this one-quantity merge: observation $i$ contributes
 the rank-one potential $(y_i - x_i^\top\beta)^2/(2\sigma_i^2)$ and the
 potentials add in parameter space, which asks for vector securities or
-the network reduction of Remark 15. And a proximal step is a
+for eliminating internal variables from a network of makers, treated in
+the companion paper. And a proximal step is a
 trade against a fee-bearing maker: the proximal operator of
 $f\lvert\cdot\rvert$ is the soft-threshold, which is the optimal response
 to a proportional fee (Lemma 4 below), and the prox of any convex $g$ is
@@ -80,12 +77,13 @@ regularization is robustness to data perturbation [@elghaoui1997robust;
 budget is priced rather than assumed.
 
 We ask the converse: which predictors are markets, and what does the
-market form demand? The answer has two independent parts, and the paper is
-organized around them. Convex duality turns optimization into trading:
-sections 2–4 treat one maker and sections 5–7 makers in parallel.
-Graphical factorization turns inference into networks of local markets:
-sections 8–11 treat markets in series, with the precise semiring statement
-in section 8. Section 12 states the characterization.
+market form demand? Sections 2–4 treat one maker: coherence, the
+biconjugate, and friction. Sections 5–7 treat makers in parallel: fees as
+spreads, routing, the order book. Section 8 turns cross-market
+inconsistency into arbitrage, and section 9 states the characterization
+and its limits. Serial composition, where markets are chained along a
+factorization, is developed in a companion paper; nothing below depends
+on it.
 
 What is and is not new here should be said at the outset, because the
 nearest neighbours are close. That competing makers operate in parallel,
@@ -99,13 +97,11 @@ here is: coherence without convexity and the contact-set consequences
 (§§2–3); the exact scalar routing formula with fees inside the costs, its
 no-trade bands and sparse participation, and the consolidated-order-book
 reading (§§5–6); arbitrage depth, the friction characterization, and
-accessible coherence (§§4, 12); and the synthesis with regularization
-and incentive closure (§§1, 12). The serial sections contribute an
-architecture and a separation of claims, not a mechanism. Results that
-are not new are labelled *Remark* and cited to their sources rather than
-numbered as contributions: Remarks 7, 10 and 15 are the aggregation law,
-the min-plus identities, and convex partial minimization, all used here
-and none claimed.
+accessible coherence (§§4, 9); and the synthesis with regularization
+and incentive closure (§§1, 9). Results that are not new are labelled
+*Remark* and cited to their sources rather than numbered as
+contributions: Remark 7 is the aggregation law, used here and not
+claimed.
 
 Two payoff regimes appear and must not be conflated. In the *bounded*
 regime a scalar security settles at $\varphi(\omega) = \omega \in [-1,1]$,
@@ -115,8 +111,8 @@ and where sections 2–5 live. In the *unrestricted* regime the security
 settles at a real-valued quantity with payoff hull $\mathbb{R}$, so the
 chord condition is vacuous for finite positions and a quadratic maker
 $C(q) = mq + q^2/(2\lambda)$, whose chord slopes are unbounded, is
-admissible; this is the estimation regime of the Gaussian fusion, Kalman
-and tree results (§§6, 10–11) and of Proposition 13. Coherence statements
+admissible; this is the estimation regime of the Gaussian fusion of §6
+and of Proposition 10. Coherence statements
 transfer between the regimes only through the hull that defines them.
 Reference implementations and numerical theorem tests accompany the paper
 in the `mechanisms` repository.
@@ -549,272 +545,14 @@ every desideratum at once [@abernethy2014vpm], and liquidity selection
 itself can be run as online learning [@nueve2026adaptiveliquidity;
 @nueve2025smooth].
 
-## 8. Two operators, one semiring
+## 8. Inconsistency is arbitrage
 
-Sections 5–7 composed makers on one quantity. A model is a factorization,
+Sections 2–7 concern one venue and its aggregate. The same convex
+geometry says when *several* venues, quoting related securities, are
+jointly incoherent, and it turns each incoherence into a portfolio that
+pays whoever finds it.
 
-$$P(\text{everything}) \;=\; \prod_{\text{nodes}} P(x_i \mid
-\text{parents}(x_i)),$$
-
-and the remaining operator runs one market per factor, each pricing its
-conditional given what is upstream. The count of two is structural.
-Message-passing inference is an algorithm over a commutative semiring
-[@aji2000gdl]: one operation combines evidence about a variable (the
-product), one moves evidence between variables (the sum), and sum-product,
-max-product and min-sum are the one algorithm over different semirings.
-
-The correspondence with the market algebra is exact once the objects are
-fixed, and the fixing matters: the two compositions live on the two sides
-of the Legendre transform. Assign each factor its potential, the negative
-log-density $\varphi_i = -\log P(x_i \mid \text{parents})$. For parallel
-composition, identify each maker's factor potential with its *conjugate*,
-$\varphi_i = C_i^*$: infimal convolution of costs in inventory space is
-addition of potentials in price space. For serial composition, the stage
-potentials are the *primal* leg costs of a route. The dictionary is
-
-$$\begin{array}{ccc}
-\text{factor algebra} & \longleftrightarrow & \text{market algebra}\\[2pt]
-\text{density } p_i & \longleftrightarrow & \text{potential } \varphi_i = -\log p_i\\
-\text{multiply factors} & \longleftrightarrow & \text{parallel merge: } \varphi_i = C_i^* \text{ add as costs inf-convolve}\\
-\text{eliminate a variable} & \longleftrightarrow & \text{route through its market: } \inf \text{ over the shared leg}
-\end{array}$$
-
-with the two sides related by the Legendre transform, which is the Laplace
-transform of the min-plus semiring [@litvinov2007idempotent]. The parallel
-law is a commuting square,
-
-$$\begin{array}{ccc}
-C_1,\, C_2 & \xrightarrow{\ \square\ } & C_1 \,\square\, C_2\\[2pt]
-\downarrow{\scriptstyle *} & & \downarrow{\scriptstyle *}\\[2pt]
-C_1^*,\, C_2^* & \xrightarrow{\ +\ } & C_1^* + C_2^*
-\end{array}$$
-
-while serial composition stays primal, obeying the composition law
-$(\varphi_2 \circ \varphi_1)(x,z) = \inf_y [\varphi_1(x,y) +
-\varphi_2(y,z)]$, the min-plus product of kernels (two-argument
-potentials). The Legendre transform is
-not a computational trick here but the change of representation between
-the two composition laws.
-
-**Remark 10 (the routing algebra; classical ingredients).** *(i) Parallel:
-merging makers
-multiplies factors, since $(C_1 \square C_2)^* = C_1^* + C_2^*$ and
-potentials add exactly when unnormalized factors multiply,
-$p_{\mathrm{merge}} \propto p_1 p_2$, the normalization being an additive
-constant in potential space that cancels in every price. (ii) Serial: the
-cheapest
-route to a terminal position through a chain of stage kernels costs
-$\inf_{z_1,\dots,z_{n-1}} \sum_i \varphi_i(z_{i-1}, z_i)$, the min-plus
-product of the kernels. (iii) On log-quadratic (Gaussian) families,
-partial minimization of a potential equals its marginalization up to an
-additive constant independent of the retained variables, so the min-plus
-messages are the sum-product messages.*
-
-**Proof.** (i) is the conjugate-sum identity together with
-$-\log(p_1 p_2) = \varphi_1 + \varphi_2$. (ii) is the definition of the
-cheapest route: the trader chooses intermediate exposures to minimize the
-sum of stage costs. For (iii), write a jointly quadratic potential
-$q(x,y)$ with positive definite $y$-block $Q_{yy}$; completing the square,
-$-\log \int e^{-q(x,y)}\,dy = \min_y q(x,y) + \tfrac12\log\det(Q_{yy}/2\pi)$,
-the Schur-complement identity, and the constant does not depend on $x$.
-$\blacksquare$
-
-Three things must be kept apart here, and the rest of the paper keeps
-them apart. The *routing algebra* is Remark 10: min-plus identities
-that hold for arbitrary potentials, (ii) being little more than the
-definition of a cheapest route, and needing no convexity, as the
-generalized distributive law does not [@aji2000gdl]. *Sum-product
-inference* is what (iii) recovers on the log-quadratic family. A *market
-implementation* is a third thing, and strictly more: it requires each
-kernel to be posted as a path-independent maker with named securities and
-settlements, chord slopes inside the payoff hull, and the property that
-self-interested trades perform the minimization rather than a solver
-performing it. Remark 10 does not supply that, and neither do
-§§10–11: what those sections give is an *algebraic market
-representation*, in which the fusion half of each step is a genuine
-parallel merge executed by trades and the propagation half is computed.
-No serial mechanism in the full sense appears in this paper.
-
-The implementability condition itself is the one §2 identified: a kernel
-is tradeable as a path-independent maker when its cost's chord slopes
-respect the payoff hull. For closed convex $C$ this reads dually as the
-potential $\varphi = C^*$ having effective domain inside the hull, so
-that $C = \varphi^*$ has subgradients there; a non-convex coherent maker
-is not its own biconjugate, $C^{**} = \hat C \ne C$, and instead shares
-this conjugate representation with its envelope, which is exactly the
-observational equivalence of §3. Convexity is the separate, further
-property of monotone information incorporation, and it is what gives the
-clean dual representation, not coherence.
-
-**Corollary (the serial algebra runs Viterbi).** *Take finite state
-spaces and stage potentials $\varphi_t(i,j) = -\log P(X_t = j \mid
-X_{t-1} = i) - \log P(y_t \mid X_t = j)$ for $t \ge 1$ and
-$\varphi_0(j) = -\log P(X_0 = j) - \log P(y_0 \mid X_0 = j)$. The
-cheapest route of Remark 10(ii) is
-$\min_{x_{0:T}} \{\varphi_0(x_0) + \sum_{t \ge 1}
-\varphi_t(x_{t-1}, x_t)\}$, the initial state being minimized over unless
-it is fixed:
-the Viterbi decoding of the hidden Markov model, exactly, with no
-Gaussian structure anywhere. The statement is about the serial algebra;
-a coherent cost-function implementation of arbitrary finite-state
-kernels is not claimed.* The three worked examples of this paper
-now form a progression: precision-weighted estimation is parallel
-composition and is implemented by quadratic makers, Viterbi is serial
-min-plus composition in the routing algebra alone, and the Kalman filter
-of §10 sits at the Gaussian intersection, where the fusion half of each
-step is traded and the computation is also Bayesian.
-
-**Principle (the Gaussian intersection).** *Log-quadratic families are a
-family on which probabilistic inference and min-plus optimization
-coincide, and one closed under both compositions: optimizing traders
-compute min-plus, an inference engine integrates, and Remark 10(iii)
-says the two agree here up to constants that cancel in every price.* The
-Kalman and tree-marginal propositions below live on this intersection and
-are not evidence for a universal serial thesis. The coincidence is not
-peculiar to quadratics: for $q(x,y) = x^2 + (y-x)^4$, minimization and
-marginalization also differ by an $x$-independent constant, so
-"log-quadratic" is sufficient and not necessary. Characterizing the
-families on which the two semirings agree, presumably by closure under a
-rich enough class of products, affine maps and eliminations, is open.
-
-Away from the intersection, min-plus elimination returns the max-marginal
-$x \mapsto \inf_y \varphi(x,y)$, the profile potential, rather than the
-sum-product marginal; the discrepancy is the Laplace-approximation gap.
-Note the max-marginal is a function, not the MAP point, which is its
-argmin. Exponential-utility (entropic) risk aversion applies an
-exponential tilt, and generic risk aversion does not; the entropic case
-plausibly interpolates
-between the two semirings; §12 poses this as the open question of which
-inference algorithm a risk-averse market runs.
-
-## 9. One venue per factor
-
-The locality that makes the factorization tradable is Hanson's modularity:
-in a combinatorial logarithmic market scoring rule (LMSR) a bet on
-$A \mid B$ moves that conditional and provably nothing else, uniquely
-among market scoring rules
-[@hanson2007logarithmic; @hanson2003combinatorial]. Hanson runs one joint
-market over the product space; the substance of pricing it is
-probabilistic inference, which is why exact pricing is #P-hard
-[@chen2008complexity], why tournament markets price by Bayes-net inference
-[@chen2008tournaments], why a deployed combinatorial market ran its price
-and asset updates on the junction-tree algorithm [@sun2012junction], and
-why approximate designs price over the marginal polytope
-[@dudik2012tractable; @dudik2021logtime]. Securities structured by a
-Bayes-net factorization appear in @pennock2000compact, with the trades
-that preserve the structure characterized by @xia2011structure.
-
-The connection between trading and message passing is also not new.
-@storkey2011machine shows that a market of utility-maximizing agents
-whose interests span subsets of variables has equilibrium prices
-factorizing as a product of local potentials, an undirected graphical
-model, and derives messages from agents' optimized positions with prices
-and buying functions updated iteratively. What is proposed here differs
-in architecture rather than in the observation that trades can carry
-messages: separate conditional venues with settlement boundaries and an
-opening rule, rather than one economy; cost kernels composed in min-plus
-with an explicit conjugate interface, rather than utility equilibrium;
-and the filtering decomposition of §10. The claim is not that trades and
-messages were previously unconnected.
-
-The serial architecture takes the factors as separate venues rather than
-one joint book. Market $i$ opens on $P(x_i \mid \text{parents})$ when its
-conditioning information freezes, that is, when the upstream quantities it
-conditions on stop changing; it conditions on upstream quotes while
-upstream is live, and re-references when upstream settles. Settlements
-cascade through the directed acyclic graph like dataflow, and the schedule
-of markets is an unrolling of the graph. Observable nodes carry settled markets, and a latent node becomes one
-only by settling through its observable footprint, a market on a hidden
-state being a market on a functional of future observables scored through
-the model. A latent node with no settlement rule and no payoff hull is
-not a market under Proposition 1 at all; it is an internal model quote,
-and calling it one is a bookkeeping convenience rather than a mechanism.
-
-## 10. The market step is the Kalman update
-
-Take the linear-Gaussian chain $x_{t+1} = a x_t + \varepsilon_t$,
-$y_t = x_t + \eta_t$. For the securities to be markets under
-Proposition 1 the state must settle, so assume in this section that each
-$x_t$ is eventually revealed and that the security on node $t$ settles at
-$x_t$; the payoff hull is then $\mathbb{R}$, the unrestricted regime of
-§1. Where the state is never revealed the fusion below is formally
-identical to a parallel quadratic merge but is not a traded market, since
-no settlement functional has been named. Now alternate two steps: a
-*model step*, propagating
-the current belief through the dynamics in mean-precision form, and a
-*market step*, merging the propagated belief with an observation maker
-quoting $y_t$ whose capital is the observation precision.
-
-**Proposition 11 (the market step is the Kalman update).** *The
-alternation is the Kalman filter [@kalman1960filtering]: after each
-observation the market state equals the filtered mean and variance
-exactly.*
-
-**Proof.** The model step is the standard prediction of mean and variance.
-Merging quadratic makers adds precisions and precision-weights means (the
-fusion form of Remark 7), which is the information-form measurement
-update; the covariance-form update follows by the usual algebra.
-$\blacksquare$
-
-The prediction step is computed and the correction step is traded, with
-capital setting the weight of the data. That asymmetry is the honest
-limit of the construction. By the standard §8 sets, this is an
-*algebraic market representation*, not a serial market mechanism: the
-measurement update is genuinely a parallel market merge, executed by
-trades against the observation maker, while the propagation is performed
-by the operator of the model, not by anyone's self-interested position.
-A serial mechanism would post the edge factor itself as a maker, with
-securities on the pair $(x_t, x_{t+1})$, a settlement rule, and an
-inventory whose optimal adjustment reproduces the propagation. We do not
-construct that here; §12 states what it would take.
-
-The nearest published object is
-the Bayesian market maker of @brahma2012bayesianmm, whose trade update is
-a scalar Gaussian measurement update with covariance inflation for jumps;
-we find no filtering reading, and no alternation with a dynamic model, in
-the literature.
-
-## 11. Trees and loops
-
-On a Gaussian chain with an observation at every node, the posterior at an
-interior node $t$ is the merge of three sources: the *predictive* forward
-message $p(x_t \mid y_{1:t-1})$, which is the filter of §10 run up to but
-not including $y_t$; the local observation $p(y_t \mid x_t)$; and the
-backward message $p(y_{t+1:T} \mid x_t)$, downstream observations pulled
-back through the dynamics, each pull-back a reparametrization and each
-combination a precision addition. Taking the filtered posterior through
-node $t$ as the forward message would count $y_t$ twice.
-
-**Proposition 12 (messages as merges, exact on Gaussian chains).** *Each
-merge is a parallel market operation and the pull-backs are
-reparametrizations, and their combination equals the conditioning of the
-joint at every node of the chain: Gaussian belief propagation
-[@pearl1988probabilistic] with the fusions performed by trades.* The
-arbitrary-tree version follows by leaf elimination and is not written out
-here; as in §10, the reparametrizations are computed rather than traded.
-
-**Proof.** In information form the joint of a Gaussian chain factorizes
-into node and edge potentials. Induct on the chain: the predictive
-message at $t$ is the model step applied to the merge at $t-1$, a
-precision-scaled reparametrization; merging it with the local
-observation's potential adds precisions (Remark 7), which is the
-information-form conditioning identity; the backward recursion is the
-same argument run on the reversed chain, its pull-backs the Schur
-complements of Remark 10(iii). Since each merge is exactly the
-information-form update and the three potentials multiply to the
-conditional, the merge is the posterior. $\blacksquare$
-
-The repository verifies the identity to ten digits. The contrast with the
-deployed combinatorial engines is architectural: there the junction tree
-is the pricing algorithm inside one joint market [@sun2012junction]; here
-the messages pass between venues, and the graph's edges are market
-boundaries.
-
-On loopy graphs belief propagation can double-count evidence and can
-converge to biased or inconsistent fixed points. In a market one class of
-that inconsistency is self-punishing.
-
-**Proposition 13 (quote inconsistency is a sure profit).** *Let $x$ be a
+**Proposition 10 (quote inconsistency is a sure profit).** *Let $x$ be a
 vector of unrestricted real random variables and let separate venues
 quote securities paying the products $x_i x_j$ for every pair, the
 diagonal quoted at one, at fixed linear prices executable in the size
@@ -847,17 +585,17 @@ supported on quoted pairs. If the coordinates are constrained, say binary
 $x_i \in \{\pm 1\}$, the feasible quote set is the cut polytope, a strict
 subset of the PSD body [@deza1997cuts], so quotes can be positive
 semidefinite yet jointly unrealizable. In every case the coherent set is
-the convex hull of attainable payoffs, and Proposition 14 below is the
+the convex hull of attainable payoffs, and Proposition 11 below is the
 universal form.
 
-The scope of Proposition 13 is in any case one class of consistency
+The scope of Proposition 10 is in any case one class of consistency
 failure: locally
 quoted beliefs that cannot be embedded in any joint distribution, detected
-here at second moments. Proposition 13 is a second-moment arbitrage
+here at second moments. Proposition 10 is a second-moment arbitrage
 result, not a theorem about loopy belief propagation in general: not
 every loopy-propagation error takes this form, and the reading of
 arbitrageurs as the loop correction is a conjecture about dynamics that
-this paper does not model. What the proposition does establish is that
+this paper does not model. What it does establish is that
 the class it covers is, in a market, free money. Whether flow that
 harvests it converges, and to the true marginal, to a surrogate of the
 kind loopy propagation converges to, or to something the liquidity
@@ -867,7 +605,7 @@ The PSD cone is not special. Coherent price sets are convex (they are
 convex hulls of payoff vectors, or their conic images), and separation
 turns every exterior point into a trade:
 
-**Proposition 14 (arbitrage is separation).** *Let $K$ be the closed
+**Proposition 11 (arbitrage is separation).** *Let $K$ be the closed
 convex hull of the attainable payoff vectors (or its image under a linear
 security map), so that $\inf_{z \in K} \langle y, z\rangle \le \langle y,
 \varphi(\omega)\rangle$ for every outcome $\omega$ and portfolio $y$, and
@@ -875,7 +613,7 @@ let the venue quote fixed linear prices $x$, executable in the size
 traded. If $x \notin K$, any separating functional $y$ with
 $\langle y, x\rangle < \inf_{z \in K} \langle y, z\rangle$ is a portfolio
 whose price is strictly less than its realized payoff in every state: a
-sure profit. Proposition 13 is the instance $K = \{P \succeq 0\}$.*
+sure profit. Proposition 10 is the instance $K = \{P \succeq 0\}$.*
 
 *For a nonlinear cost-function maker the conclusion is local. There $x$
 is the current gradient and a trade of size $\delta y$ costs
@@ -896,7 +634,7 @@ is paid to act as the separation oracle. Arbitrageurs are decentralized
 separation oracles, and the friction of §4 sets the tolerance below which
 infeasibility is allowed to persist.
 
-## 12. Closing
+## 9. Closing
 
 The characterization is for the cost-based class. Call a predictor
 *cost-based* if it is specified by a path-independent potential $C$ over a
@@ -934,16 +672,17 @@ more than this, since $C(q) = -\alpha\lvert q\rvert$ is coherent with
 unbounded speculative profit (§3).
 
 The target operation throughout is *marketization*, of which this paper
-realizes the single-maker and parallel parts and, in series, only the
-representation of §§10–11. Given an
+realizes the single-maker and parallel parts; the serial part is the
+subject of the companion paper. Given an
 operator $T$ from inputs to outputs, a marketization is a mechanism whose
 clearing computes $T$; whose local contributions compose, in parallel and
 in series, to compute composite operators; in which inconsistent
-contributions create exploitable trades (Proposition 14); in which
+contributions create exploitable trades (Proposition 11); in which
 friction bounds how much inconsistency can persist (Proposition 3); and in
 which every participant pays to perturb the computation. One estimator
-becomes one maker, combining evidence becomes parallel composition,
-composing conditional operators becomes serial composition. A statistical
+becomes one maker and combining evidence becomes parallel composition;
+composing conditional operators is serial composition, developed
+separately. A statistical
 procedure specifies how information would be combined if supplied
 honestly; its marketization implements the same operator against
 self-interested sources. In this sense a market is the incentive closure
@@ -986,49 +725,6 @@ the $\varepsilon$ charged to traders. The connective tissue, the closure
 operation itself, serial composition of mechanisms, and the
 identification of violation certificates with separating portfolios,
 appears unoccupied.
-
-Nothing in the definition mentions prediction. The serial law is the
-min-plus kernel composition of dynamic programming, control, and shortest
-paths; the parallel law is the additive combination of local potentials;
-and the closure of the whole construction is a boundary statement:
-
-**Remark 15 (the effective boundary maker; classical).** *Let a network of
-makers have boundary variables $b$, internal variables $h$, and local
-costs $C_e$, each closed, proper and jointly convex, with
-$\sum_e C_e(b, \cdot)$ coercive in $h$ for each $b$ in the boundary
-domain, and define $C_{\mathrm{eff}}(b) = \inf_h \sum_e C_e(b, h)$. Then
-$C_{\mathrm{eff}}$ is convex, proper and finite there, the infimum is
-attained, and the elimination may be performed variable by variable in
-any order. For quadratic costs with positive definite internal block each
-single-variable elimination is a Schur complement, and on a chain the
-computation is the dynamic program of Remark 10(ii). If in addition
-the chord slopes of $C_{\mathrm{eff}}$ lie in the boundary payoff hull,
-the network is one coherent effective maker at its boundary.*
-
-**Proof.** Partial minimization of a jointly convex function is convex,
-coercivity gives attainment and rules out the value $-\infty$, and
-iterated infima may be taken in any order [@rockafellar1970convex]; the
-quadratic case is the completion of the square in the proof of
-Remark 10(iii), which needs the internal block invertible.
-$\blacksquare$
-
-Both hypotheses earn their place. A single local term linear and
-decreasing in an unconstrained internal variable drives
-$C_{\mathrm{eff}} \equiv -\infty$; and convexity of $C_{\mathrm{eff}}$
-says nothing about coherence against a bounded boundary hull, which is
-why the last clause is separate.
-
-This is the operation that reduces resistor networks to terminal
-impedances, eliminates latent Gaussian variables, and takes Schur
-complements: internal competition disappears into an external price law,
-as internal nodes disappear into a Dirichlet-to-Neumann map. One caution
-attaches to "any order": the effective boundary market is
-elimination-order invariant, but the computational cost of producing it
-is not, and the blowup of intermediate scopes is the treewidth phenomenon
-of variable elimination. Prediction is the application in which beliefs
-and prices share units. We leave the general theory, including the
-categorical formulation in which markets are min-plus kernels composed by
-shared inventory, outside this paper's scope.
 
 One principle deserves separation from the open problems it generates,
 because it qualifies everything above.
@@ -1079,33 +775,13 @@ ordinary participants while arbitrageable to a better-equipped class.
 Three nested notions of coherence result: exact (no sure-profit chord,
 Proposition 1), frictional (violations below the spread survive,
 Proposition 3), and accessible (violations too expensive to discover
-survive). Proposition 14 addresses the existence of arbitrage; whether a
+survive). Proposition 11 addresses the existence of arbitrage; whether a
 procedure in $\mathcal{A}$ can profitably prove $x \notin K$ is its
 accessibility, a different property. The self-policing of the
 marketization table is qualified accordingly: effective self-correction
 is the error's value net of discovery cost and friction.
 
 Open problems, in rough order of tractability:
-
-*Which inference algorithm does a risk-averse market run?* Remark 10
-says risk-neutral routing computes min-plus exactly and sum-product only
-on the Gaussian intersection. Entropic risk aversion applies an
-exponential tilt, suggesting it interpolates between the two semirings;
-whether a
-risk-averse trading population prices the marginal, the mode, or a
-temperature in between would complete the correspondence.
-
-*A serial market mechanism, even in the quadratic case.* Proposition
-10(ii) supplies routing algebra, and §§10–11 an algebraic market
-representation in which Gaussian fusions are traded while propagation and
-pull-back are computed. Construct named securities, settlements and
-inventory adjustments for which self-interested trading performs the
-Gaussian elimination itself; then seek the same for kernels beyond the
-quadratic family, verifying chord coherence stage by stage. The interface between
-the two compositions is part of the problem: parallel merge acts on
-conjugates and serial routing on primal leg costs, so a factor graph
-alternating the two needs an explicit change of representation at each
-junction.
 
 *Market representations of general prediction maps.* The
 characterization above is confined to cost-based predictors. Define what
@@ -1132,20 +808,12 @@ literature?
 If so, the regularization constant that statistics tunes by
 cross-validation equals the adverse-selection cost of the data source.
 
-*Loopy fixed points.* Under a concrete flow model, does
-arbitrage-corrected quoting converge, and to what?
-
 *Arbitrage depth as a capacity measure.* On a specified compact domain,
 with a fixed payoff hull and norm, the arbitrage depth of a trained
 model's loss landscape is well defined and plausibly estimable or
 boundable, though computing it exactly is a global problem; whether it
 tracks quantities learning theory names (sharpness, mode connectivity) is
 open.
-
-*Effective friction.* Remark 15 eliminates frictionless networks.
-With per-maker fees, what are the effective fees and liquidities of the
-reduced boundary maker in terms of the network's, and which fee-bearing
-classes are closed under elimination?
 
 *From endpoint jumps to quoted depth.* Section 3 predicts an inventory
 jump at a single supporting price, and notes the jump is generally lumpy
