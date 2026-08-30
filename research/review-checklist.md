@@ -97,12 +97,24 @@ and its verification are fixed, and cross-checked at the end.
   not merely full support.
 - [x] P6. Finite-ensemble CRPS is not truthful for iid sampling; the fair
   U-statistic form is, and `m = 1` is the counterexample.
-- [ ] P7. Opinion pooling: log pool does not multiply independent evidence
+- [x] P7. Opinion pooling: log pool does not multiply independent evidence
   without a prior correction, is not "sharper than its members", and the
-  linear pool is not intrinsically underconfident.
-- [ ] P8. Local scoring: CRPS needs no density; the log score, not "ordinary
+  linear pool is not intrinsically underconfident. Verified against primary
+  sources. The identity `pi prod (p_i/pi)^{w_i} = pi^{1-sum w_i} prod p_i^{w_i}`
+  shows the correction vanishes exactly when weights sum to one, so the
+  averaging pool and the evidence-multiplying product are different operators.
+  Sharpness counterexample: `(0.98,.01,.01)` and `(.01,0.98,.01)` pool to
+  entropy 0.853 against members' 0.112, and above the linear pool's 0.742; the
+  Gaussian case is the harmonic mean of variances, so never sharper than the
+  sharpest member. Separated the entropy theorem from the calibration one, and
+  fixed the docstring that called the linear pool externally Bayesian.
+- [x] P8. Local scoring: CRPS needs no density; the log score, not "ordinary
   proper rules", is the 0-local one; Fisher-divergence strictness needs
-  regularity and connected support.
+  regularity and connected support. All three corrected. Added that the
+  discrete locality theorem needs more than two outcomes (binary is vacuous,
+  since `p_0 = 1 - p_1`), that PDL's rules exist for even orders only, and a
+  numerical counterexample where the Fisher divergence between two disjoint
+  smooth bumps is 1e-24 while total variation is 0.49.
 - [x] P9. Likelihood-vs-CRPS: score differences telescope for any score, so
   the path-independence uniqueness claim is false; state the narrower
   residual-decomposition claim. The note said in one paragraph that

@@ -65,3 +65,65 @@ def test_fisher_divergence_equals_expected_score_gap():
     mp, sp, mq, sq = 0.1, 1.2, 0.6, 0.9
     gap = _expected_hyvarinen(mp, sp, mq, sq) - _expected_hyvarinen(mp, sp, mp, sp)
     assert ls.fisher_divergence_gaussian(mp, sp, mq, sq) == pytest.approx(gap, rel=1e-9)
+
+
+def _bump(x, centre, radius):
+    """A C-infinity bump supported exactly on (centre - radius, centre + radius)."""
+    z = (x - centre) / radius
+    out = np.zeros_like(x)
+    inside = np.abs(z) < 1
+    out[inside] = np.exp(-1.0 / (1.0 - z[inside] ** 2))
+    return out
+
+
+def test_fisher_divergence_is_blind_to_disconnected_component_weights():
+    # Hyvarinen's Theorem 2 goes from equal gradients to equal densities via
+    # "log p = log q + c", which is a connectedness argument the paper does not
+    # name. On two disjoint bumps the score sees nothing at all.
+    x = np.linspace(-3.0, 8.0, 200_001)
+    dx = x[1] - x[0]
+    a_comp = _bump(x, 0.0, 1.0); a_comp /= np.trapezoid(a_comp, x)
+    b_comp = _bump(x, 5.0, 1.0); b_comp /= np.trapezoid(b_comp, x)
+    p = 0.5 * a_comp + 0.5 * b_comp
+
+    def fisher(p, q):
+        both = (p > 1e-250) & (q > 1e-250)
+        gp = np.gradient(np.where(both, np.log(np.maximum(p, 1e-300)), 0.0), dx)
+        gq = np.gradient(np.where(both, np.log(np.maximum(q, 1e-300)), 0.0), dx)
+        inner = both.copy(); inner[:2] = False; inner[-2:] = False
+        return float(0.5 * np.trapezoid(np.where(inner, p * (gp - gq) ** 2, 0.0), x))
+
+    for weight in (0.5, 0.1, 0.9, 0.01):
+        q = weight * a_comp + (1.0 - weight) * b_comp
+        total_variation = 0.5 * float(np.trapezoid(np.abs(p - q), x))
+        assert fisher(p, q) < 1e-12                      # blind
+        if weight != 0.5:
+            assert total_variation > 0.3                 # while genuinely different
+
+    # The bumps are smooth with compact support, so every boundary term in the
+    # integration by parts vanishes exactly: this is not a boundary artefact.
+    assert ls.hyvarinen_identifies_mixture_weights(support_is_connected=False) is False
+
+    # On a connected support the divergence separates, as advertised.
+    assert ls.hyvarinen_identifies_mixture_weights(support_is_connected=True) is True
+    assert ls.fisher_divergence_gaussian(0.0, 1.0, 0.0, 1.0) == pytest.approx(0.0)
+    assert ls.fisher_divergence_gaussian(0.0, 1.0, 2.5, 1.0) > 3.0
+
+
+def test_only_the_log_score_is_zero_local_and_only_above_two_outcomes():
+    from mechanisms import scoring_rules as sr
+    # With three outcomes, two forecasts agreeing on the realised probability
+    # score differently under Brier, so Brier is not 0-local.
+    p = np.array([0.5, 0.25, 0.25])
+    q = np.array([0.5, 0.5, 0.0])
+    assert p[0] == q[0]
+    assert sr.brier_score(p, 0) != pytest.approx(sr.brier_score(q, 0))
+    # The log score does not distinguish them: that is what 0-local means.
+    assert sr.log_score(p, 0) == pytest.approx(sr.log_score(q, 0))
+
+    # With two outcomes p_0 = 1 - p_1, so agreeing on the realised probability
+    # means being the same forecast. Locality is vacuous, not merely satisfied.
+    for realised in (0, 1):
+        a = np.array([0.3, 0.7])
+        b = np.array([0.3, 0.7])
+        assert sr.brier_score(a, realised) == pytest.approx(sr.brier_score(b, realised))

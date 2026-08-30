@@ -74,15 +74,49 @@
       just the weighted fraction of belief the panel placed there. It preserves the
       support: if any single forecaster assigns positive probability to an outcome,
       so does the pool, which makes it robust to confident dissent and the natural
-      pool when forecasters are exchangeable. The price of that robustness is
-      <strong>under-confidence</strong>: averaging probabilities pulls mass toward
-      the centre and inflates the variance of the consensus, so a linear pool of
-      sharp, agreeing forecasters is typically <em>less</em> sharp than its members.
-      It is also generically multimodal: it can reproduce a panel's clusters as
-      separate bumps rather than reconciling them. In code,
+      pool when forecasters are exchangeable. It is also generically multimodal:
+      it can reproduce a panel's clusters as separate bumps rather than
+      reconciling them. In code,
       <code>linear_opinion_pool(forecasts, weights)</code> in
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/aggregation.py">mechanisms/aggregation.py</a>;
       with $w_i = 1/m$ it is the plain average.
+    </p>
+    <p>
+      The pool's dispersion is usually described as <strong>under-confidence</strong>,
+      and two separate theorems get run together under that heading. Keeping them
+      apart matters, because only one of them is about confidence at all.
+    </p>
+    <p>
+      <em>Entropy.</em> Concavity of entropy gives
+      $\sum_i w_i H(p_i) \le H\!\left(\sum_i w_i p_i\right) \le \sum_i w_i H(p_i) + H(w)$,
+      the gap being the generalized Jensen&ndash;Shannon divergence (Cover &amp;
+      Thomas, Theorem 2.7.3; Lin 1991). So the pool is at least as diffuse as the
+      <em>average</em> member. It is <em>not</em> always at least as diffuse as the
+      sharpest: a uniform forecast on four atoms mixed with a point mass at weights
+      $(0.01, 0.99)$ has entropy $0.076$ bits, below both members. And entropy is a
+      property of the forecast alone.
+    </p>
+    <p>
+      <em>Under-confidence</em> is a property of the joint law of forecast and
+      outcome, so the entropy inequality cannot establish it. The results that do:
+      for binary outcomes, if the components are calibrated and at least two of
+      them differ with positive probability, the pool is not calibrated, not
+      sharp, and beaten by its own recalibration under every strictly proper score
+      (Ranjan &amp; Gneiting 2010, Theorem 2.1). More generally, neutrally
+      dispersed regular components pool to something overdispersed, which is
+      under-confidence in the PIT sense $\operatorname{var}(\mathrm{PIT}) &lt; 1/12$
+      (Gneiting &amp; Ranjan 2013, Definition 2.6(c) and Theorem 3.1(c)).
+    </p>
+    <p>
+      Calling the linear pool <em>intrinsically</em> underconfident overstates it.
+      What linear pooling does is push dispersion up. That overshoots when the
+      inputs are already calibrated, and it <em>helps</em> when they are
+      overconfident, which is the common empirical case and part of why linear
+      pooling performs as well as it does. Extremizing is the standard repair, and
+      it is not guaranteed to help: optimal Bayesian ensembles sometimes
+      anti-extremize when the forecasters share information, and the literature
+      does not even agree on whether extremizing means moving away from $1/2$ or
+      away from the prior predictive.
     </p>
 
     <h2>The logarithmic opinion pool</h2>
@@ -94,18 +128,57 @@
       $\bar p_{\,\mathrm{log},k} = \dfrac{\prod_{i} p_{ik}^{\,w_i}}{\sum_{j} \prod_{i} p_{ij}^{\,w_i}}.$
     </div>
     <p>
-      Where the linear pool averages probabilities, the log pool
-      <strong>multiplies evidence</strong>: adding log-probabilities is combining
-      independent log-likelihoods, so the log pool is the consensus you reach by
-      treating each forecaster as carrying separate evidence about the outcome. It
-      is correspondingly <strong>sharper</strong> than its members: unanimous mass
-      reinforces multiplicatively, and it is unimodal under mild conditions. It is
-      also <em>externally Bayesian</em>: pooling and then applying a shared
+      It is <em>externally Bayesian</em>: pooling and then applying a shared
       likelihood update gives the same answer as updating first and then pooling.
-      The flip side is decisiveness: because any zero probability annihilates the
-      product, the log pool <strong>zeroes out any outcome that any forecaster rules
-      out</strong> (the implementation clips to a small floor before taking logs to
-      keep this numerically stable).
+      And it is decisive, because any zero probability annihilates the product, so
+      the log pool <strong>zeroes out any outcome that any forecaster rules
+      out</strong>. (In floating point the implementation floors the logarithm at
+      $10^{-15}$, so a ruled-out outcome returns as a denormal rather than an exact
+      zero. That is a guard against $-\infty$, not exact annihilation.)
+    </p>
+    <p>
+      Two things this page used to say about it are false, and both are worth
+      correcting because both are widespread.
+    </p>
+    <p>
+      <strong>It does not multiply independent evidence.</strong> Combining
+      conditionally independent evidence under a common prior $\pi$ gives
+      $p \propto \pi^{1-m}\prod_i p_i$, with a prior correction that divides out the
+      $m-1$ extra copies of the shared prior (Genest &amp; Schervish 1985, Theorem
+      4.1; Dietrich 2010, Corollary 1). The identity
+      $\pi\prod_i(p_i/\pi)^{w_i} = \pi^{\,1-\sum_i w_i}\prod_i p_i^{w_i}$ shows that
+      correction vanishes <em>exactly</em> when the weights sum to one, which is
+      the normalisation used here and the one external Bayesianity forces. So the
+      averaging log pool and the evidence-multiplying product are different
+      operators: the product needs $\sum_i w_i = m$, and in that form it is not
+      externally Bayesian (Genest &amp; Zidek 1986, eq. 4.4). Hinton's product of
+      experts is the $w_i = 1$ case, and it escapes the double-counting only
+      because its experts are trained jointly, with no shared prior to divide out.
+    </p>
+    <p>
+      <strong>It is not sharper than its members.</strong> Take
+      $p_1 = (0.98, 0.01, 0.01)$ and $p_2 = (0.01, 0.98, 0.01)$ at equal weights.
+      The pool is $(0.476, 0.476, 0.048)$, whose entropy $0.853$ nats is
+      <em>seven times</em> either member's $0.112$ — and larger than the linear
+      pool's $0.742$, so even the weaker folklore that the log pool is sharper
+      than the linear one fails. The Gaussian case explains it: pooling
+      $\mathcal N(\mu_i,\sigma_i^2)$ gives precision $\sum_i w_i/\sigma_i^2$, so the
+      pooled variance is the weighted <em>harmonic mean</em> of the members' and
+      always lies between the smallest and the largest. The log pool is never
+      sharper than its sharpest member. Sharpening is what the unnormalised
+      product does, and that is the same $\sum_i w_i = m$ that breaks external
+      Bayesianity. Unanimity is the one case where nothing happens at all:
+      identical forecasts pool to themselves.
+    </p>
+    <p>
+      Nor is the logarithmic form the <em>unique</em> externally Bayesian pool.
+      Without a locality axiom the externally Bayesian operators are pinned down
+      only within likelihood-ratio equivalence classes (Genest, McConway &amp;
+      Schervish 1986, Theorem 2.5), and the logarithmic form is recovered only on a
+      sample space partitionable into at least four non-negligible sets; three
+      atoms was open as of 1986, and for two there is an explicit non-logarithmic
+      counterexample. The linear pool's own characterisation, by the
+      marginalization property, needs at least three outcomes (McConway 1981).
     </p>
     <p>
       The log pool is intimately tied to scoring. Its log-domain form is exactly the
@@ -186,7 +259,7 @@
     <h2 id="demo">Try it</h2>
     <p>Two categorical forecasts over outcomes A/B, equally weighted. The
     <em>linear</em> pool is the arithmetic mean; the <em>logarithmic</em> pool is
-    the normalised geometric mean, sharper, and it pulls toward agreement.</p>
+    the normalised geometric mean, which pulls toward agreement and, contrary to folklore, is not generally sharper.</p>
     <div class="demo" id="agg-demo">
       <div class="row"><label>forecast 1 p(A)</label>
         <input type="range" id="agg-p1" min="1" max="99" value="70" step="1">

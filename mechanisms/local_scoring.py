@@ -8,15 +8,31 @@ derivative of ``log p`` drops the constant ``log Z`` — so an *unnormalized*
 density (an energy-based model, an un-normalised mixture) can be scored directly,
 with no partition function in sight.
 
-Genuinely local proper scoring rules on the real line exist iff ``m`` is even
-(Parry, Dawid & Lauritzen, 2012). The ``m = 2`` case is the **Hyvärinen score**,
+Genuinely local proper scoring rules on the real line exist for every even ``m``
+and no odd ``m`` (Parry, Dawid & Lauritzen, 2012). The ``m = 2`` case is the
+**Hyvärinen score**,
 
     S(y, p) = Δ log p(y) + ½ ‖∇ log p(y)‖²        (loss form; lower is better),
 
 whose population minimiser is **score matching** (Hyvärinen, 2005) and whose
 associated divergence is the **Fisher divergence**
-``½ ∫ p_data ‖∇log p − ∇log p_data‖²``. It is strictly proper relative to that
-divergence.
+``½ ∫ p_data ‖∇log p − ∇log p_data‖²``.
+
+Order 0 is the exception worth stating, because it is routinely misstated. The
+only 0-local proper rule is the logarithmic score, up to ``a(x) - λ log p(x)``
+with ``λ > 0`` — and the theorem needs **more than two outcomes** (Dawid,
+Lauritzen & Parry 2012, §3.2). With two outcomes ``p_0 = 1 - p_1``, so the
+probability of the realised outcome already determines the whole forecast,
+0-locality constrains nothing, and every proper binary rule is trivially local.
+At three or more it bites: Brier depends on ``Σ_j p_j^2``, so ``(0.5, 0.25,
+0.25)`` and ``(0.5, 0.5, 0)`` share the realised probability 0.5 and score
+differently. Brier, spherical, CRPS and the energy score are proper and none of
+them is 0-local.
+
+Strict propriety of the Hyvärinen score needs a **connected** support, and the
+condition is easy to miss because the standard sources get it for free by fixing
+the domain as an interval or ``R^k``. See :func:`fisher_divergence_gaussian` and
+:func:`hyvarinen_identifies_mixture_weights`.
 
 Conventions match :mod:`mechanisms.scoring_rules`: loss form, lower is better.
 
@@ -26,6 +42,13 @@ References
   Matching." JMLR 6, 695-709.
 - Parry, M., Dawid, A. P. & Lauritzen, S. (2012). "Proper local scoring rules."
   Annals of Statistics 40(1), 561-592.
+- Dawid, A. P., Lauritzen, S. & Parry, M. (2012). "Proper local scoring rules on
+  discrete sample spaces." Annals of Statistics 40(1), 593-608.
+- Bernardo, J. M. (1979). "Expected Information as Expected Utility." Annals of
+  Statistics 7(3), 686-690. (the continuous locality theorem)
+- Wenliang, L., Sutherland, D., Strathmann, H. & Gretton, A. (2019). "Learning
+  Deep Kernels for Exponential Family Densities." ICML. (§3.1: score matching is
+  blind to the relative mass of disconnected components)
 
 Connections
 -----------
@@ -45,6 +68,7 @@ from __future__ import annotations
 import numpy as np
 
 __all__ = [
+    "hyvarinen_identifies_mixture_weights",
     "hyvarinen_score",
     "hyvarinen_score_fd",
     "gaussian_hyvarinen_score",
@@ -99,8 +123,12 @@ def fisher_divergence_gaussian(mu_p: float, sigma_p: float,
                                mu_q: float, sigma_q: float) -> float:
     r"""Fisher divergence ``½ E_p\|∇log p - ∇log q\|^2`` between two Gaussians.
 
-    This is the divergence the Hyvärinen score induces: non-negative, and zero iff
-    ``p = q``. Equivalently ``E_p[S(\cdot,q)] - E_p[S(\cdot,p)]``.
+    This is the divergence the Hyvärinen score induces. It is non-negative, and
+    here — Gaussians on the whole line — zero iff ``p = q``. Equivalently
+    ``E_p[S(\cdot,q)] - E_p[S(\cdot,p)]``.
+
+    The "iff" is not free, and Gaussians on ``R`` hide the hypothesis. See
+    :func:`hyvarinen_identifies_mixture_weights`.
     """
     sp2, sq2 = float(sigma_p) ** 2, float(sigma_q) ** 2
     # ∇log p - ∇log q = a·y + b  with
@@ -108,3 +136,33 @@ def fisher_divergence_gaussian(mu_p: float, sigma_p: float,
     b = mu_p / sp2 - mu_q / sq2  # note ∇log p = -(y-mu)/σ² = -y/σ² + mu/σ²
     # E_p[(a y + b)^2] = a^2 Var_p + (a·E_p[y] + b)^2
     return float(0.5 * (a * a * sp2 + (a * mu_p + b) ** 2))
+
+
+def hyvarinen_identifies_mixture_weights(support_is_connected: bool) -> bool:
+    r"""Does the Fisher divergence identify a distribution on this support?
+
+    A statement of hypothesis, returned as a boolean so the condition is
+    somewhere executable rather than only in prose.
+
+    Hyvärinen's Theorem 2 argues that ``J(theta) = 0`` forces ``∇log p = ∇log q``
+    pointwise, hence ``log p = log q + c``, hence ``c = 0`` since both integrate
+    to one. The middle step is a connectedness argument, and the paper does not
+    name it: equal gradients make the difference *locally* constant, and globally
+    constant only on a connected set.
+
+    On a support with ``k`` connected components there are ``k`` constants and
+    still only one normalisation equation, leaving ``k - 1`` free mixing weights.
+    Concretely, let ``p`` place mass ``(1/2, 1/2)`` on two smooth bumps supported
+    on disjoint intervals and ``q`` place ``(a, 1-a)`` on the same two bumps. Then
+    ``q = c_A p`` on one component and ``c_B p`` on the other, so ``∇log q =
+    ∇log p`` everywhere on the support and the Fisher divergence is exactly zero
+    for *every* ``a``, while the total variation and KL distances are large. The
+    Hyvärinen score cannot see the relative mass of disconnected components at
+    all (Wenliang et al. 2019, §3.1; Song & Ermon 2019, §3.2.2, where it is the
+    motivation for annealed Langevin sampling).
+
+    Parry, Dawid & Lauritzen are protected from this by their standing setting,
+    which takes the sample space to be an interval on the real line or ``R^k``.
+    Connectedness is doing the work there under another name.
+    """
+    return bool(support_is_connected)

@@ -331,3 +331,55 @@ def test_energy_score_refuses_to_reshape_a_mismatched_ensemble():
     # The 1-D convention still holds: m scalar samples, not one m-vector.
     assert sr.energy_score(np.array([0.0, 1.0]), 0.5) == pytest.approx(
         sr.energy_score(np.array([[0.0], [1.0]]), np.array([0.5])))
+
+
+# --------------------------------------------------------------------------- #
+# opinion pooling: the folklore, refuted
+# --------------------------------------------------------------------------- #
+def _entropy(p):
+    p = np.asarray(p, float)
+    p = p[p > 0]
+    return float(-(p * np.log(p)).sum())
+
+
+def test_log_pool_is_not_sharper_than_its_members():
+    p1 = np.array([0.98, 0.01, 0.01])
+    p2 = np.array([0.01, 0.98, 0.01])
+    pool = aggregation.logarithmic_opinion_pool([p1, p2])
+    np.testing.assert_allclose(pool, [0.47596, 0.47596, 0.048079], atol=1e-5)
+    # Seven times more diffuse than either member...
+    assert _entropy(pool) > 7 * _entropy(p1)
+    # ...and more diffuse than the linear pool too, refuting the weaker folklore.
+    assert _entropy(pool) > _entropy(aggregation.linear_opinion_pool([p1, p2]))
+    # It holds at every interior weight, so it is not a knife-edge.
+    for w in (0.1, 0.3, 0.5, 0.7, 0.9):
+        q = aggregation.logarithmic_opinion_pool([p1, p2], weights=[w, 1 - w])
+        assert _entropy(q) > max(_entropy(p1), _entropy(p2))
+
+
+def test_log_pool_variance_is_the_harmonic_mean_in_the_gaussian_case():
+    # Pooling N(mu_i, s_i^2) gives precision sum_i w_i / s_i^2, so the pooled
+    # variance lies between the members' and is never below the smallest.
+    for variances in [(1.0, 1.0), (1.0, 4.0), (0.25, 9.0), (0.1, 0.2)]:
+        w = (0.5, 0.5)
+        pooled = 1.0 / sum(wi / v for wi, v in zip(w, variances))
+        assert min(variances) <= pooled <= max(variances)
+
+
+def test_linear_pool_entropy_is_bounded_by_concavity_not_by_the_max():
+    rng = np.random.default_rng(11)
+    for _ in range(300):
+        k = int(rng.integers(2, 6))
+        m = int(rng.integers(2, 5))
+        P = rng.dirichlet(np.ones(k) * 0.4, size=m)
+        w = rng.dirichlet(np.ones(m))
+        pool = aggregation.linear_opinion_pool(P, weights=w)
+        avg = sum(wi * _entropy(p) for wi, p in zip(w, P))
+        assert _entropy(pool) >= avg - 1e-9                 # concavity
+        assert _entropy(pool) <= avg + _entropy(w) + 1e-9   # the JS gap
+
+    # But H(pool) >= max_i H(p_i) is false.
+    uniform = np.full(4, 0.25)
+    point = np.array([1.0, 0.0, 0.0, 0.0])
+    pool = aggregation.linear_opinion_pool([uniform, point], weights=[0.01, 0.99])
+    assert _entropy(pool) < _entropy(uniform)

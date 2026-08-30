@@ -35,24 +35,53 @@
     <h1>Local (Hyvärinen) scoring rules</h1>
 
     <p class="lead">
-      The log score and CRPS need a <em>normalized</em> density: you must know
-      the partition function $Z$. A <strong>local</strong> proper scoring rule
-      does not. It depends on the forecast only through the derivatives of
-      $\log p$ at the realised outcome, and since $\log p = \log\tilde p - \log Z$,
-      every derivative drops the constant. An energy-based or un-normalised model
-      can therefore be scored directly, no partition function in sight.
+      The log score needs a <em>normalized</em> density: you must know the
+      partition function $Z$. A <strong>local</strong> proper scoring rule does
+      not. It depends on the forecast only through the derivatives of $\log p$ at
+      the realised outcome, and since $\log p = \log\tilde p - \log Z$, every
+      derivative drops the constant. An energy-based or un-normalised model can
+      therefore be scored directly, no partition function in sight.
+    </p>
+    <p>
+      CRPS does not belong in that first sentence, and this page used to put it
+      there. CRPS needs no density at all: it is defined by
+      $\int (F(z) - \mathbf 1\{y \le z\})^2\,dz$ on <em>all</em> Borel probability
+      measures on $\mathbb R$, which is exactly why it handles a point mass at zero
+      in a precipitation forecast, or a bag of MCMC samples, where a density-based
+      score cannot go (Gneiting &amp; Raftery 2007, §4.2). A finite first moment
+      buys <em>strict</em> propriety, not propriety. What CRPS is not is local: it
+      reads the whole distribution function, and the property it does have is
+      sensitivity to distance (Epstein 1969; Staël von Holstein 1970).
     </p>
 
     <h2>What "m-local" means</h2>
     <p>
       A scoring rule is <strong>$m$-local</strong> if it depends on the quoted
       density only through its value and its first $m$ derivatives at the outcome
-      $y$. Ordinary proper rules are $0$-local (they use $p(y)$ alone). Parry,
-      Dawid &amp; Lauritzen (2012) proved that genuinely local proper rules on the
-      real line exist <em>iff $m$ is even</em>: there is no proper $1$-local
-      rule, but there are proper rules at every even order, trading more
-      derivative information for more modelling freedom while staying free of the
-      normalizing constant.
+      $y$. Parry, Dawid &amp; Lauritzen (2012) proved that genuinely local proper
+      rules on the real line exist for <em>every even $m$ and no odd $m$</em>:
+      there is no proper $1$-local or $3$-local rule, but there are proper rules
+      at every even order, trading more derivative information for more modelling
+      freedom while staying free of the normalizing constant.
+    </p>
+    <p>
+      Order $0$ is where this page was wrong. "Ordinary proper rules are $0$-local"
+      is false. Up to $a(x) - \lambda\log p(x)$ with $\lambda &gt; 0$, the
+      <em>logarithmic score is the only one</em> — that is the classical locality
+      theorem (Bernardo 1979 in the continuous case; Dawid, Lauritzen &amp; Parry
+      2012 §3.2 in the discrete). Brier, spherical, pseudospherical, CRPS and the
+      energy score are all proper and none of them is $0$-local. Brier depends on
+      $\sum_j p_j^2$, so the forecasts $(0.5, 0.25, 0.25)$ and $(0.5, 0.5, 0)$
+      assign the same probability to outcome 1 and score differently, which is
+      precisely what $0$-locality forbids.
+    </p>
+    <p>
+      The discrete theorem carries a hypothesis that is easy to drop and matters
+      here: <em>more than two outcomes</em>. With two, $p_0 = 1 - p_1$, so knowing
+      the probability of the realised outcome already determines the entire
+      forecast. Locality constrains nothing, and every proper binary rule is
+      trivially local. The theorem is not merely tight at two outcomes; it is
+      vacuous there.
     </p>
 
     <h2>The Hyvärinen score ($m = 2$)</h2>
@@ -71,9 +100,33 @@
       $D_F(p_{\text{data}}, p) = \tfrac12\!\int p_{\text{data}}\,\lVert \nabla\log p - \nabla\log p_{\text{data}}\rVert^2,$
     </div>
     <p>
-      non-negative and zero iff $p = p_{\text{data}}$, so the score is strictly
-      proper relative to $D_F$. For a Gaussian $N(\mu,\sigma^2)$ it has the closed
-      form $S = (y-\mu)^2/(2\sigma^4) - 1/\sigma^2$.
+      always non-negative, and for a Gaussian $N(\mu,\sigma^2)$ the score has the
+      closed form $S = (y-\mu)^2/(2\sigma^4) - 1/\sigma^2$.
+    </p>
+    <p>
+      Strict propriety, though, needs hypotheses, and one of them is invisible in
+      the usual statements. Hyvärinen's Theorem 2 assumes a strictly positive model
+      density, differentiability, finite expectations of the squared scores, and a
+      vanishing tail $p(\xi)\psi(\xi)\to 0$. Its proof then goes: $D_F = 0$ forces
+      $\nabla\log p = \nabla\log q$ pointwise, hence $\log p = \log q + c$, hence
+      $c = 0$ because both integrate to one. The middle step is a
+      <strong>connectedness</strong> argument, and neither Hyvärinen nor Parry,
+      Dawid &amp; Lauritzen names it — the latter are protected only by their
+      standing choice of an interval or $\mathbb R^k$ as the sample space.
+    </p>
+    <p>
+      On a disconnected support it fails outright. Equal gradients make the log
+      difference constant on each connected component, so with $k$ components
+      there are $k$ constants and still one normalisation equation, leaving $k-1$
+      mixing weights entirely unidentified. Put half the mass on each of two
+      smooth bumps on disjoint intervals, then reweight to $(0.01, 0.99)$: the
+      Fisher divergence stays at $10^{-24}$, numerically zero, while the total
+      variation distance is $0.49$ and the KL divergence is $1.61$. The bumps are
+      $C^\infty$ with compact support, so every boundary term in the integration by
+      parts vanishes exactly and this is not a boundary artefact. The Hyvärinen
+      score simply cannot see the relative mass of components it cannot travel
+      between (Wenliang et al. 2019, §3.1; Song &amp; Ermon 2019, §3.2.2, where it
+      is the motivation for annealed Langevin sampling).
     </p>
 
     <h2>Why dropping $Z$ matters</h2>
