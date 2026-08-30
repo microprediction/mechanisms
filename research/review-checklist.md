@@ -87,8 +87,9 @@ and its verification are fixed, and cross-checked at the end.
 
 ## Verification architecture
 
-- [ ] V1. Exact piecewise-linear oracles (envelope, Moreau, chord) returning
-  certificates.
+- [x] V1. Exact piecewise-linear oracles (envelope, Moreau, chord) returning
+  certificates. Oracles landed with M9 in `tests/oracles/`; the certificate
+  half is V3.
 - [x] V2. Exact `O(n)` max-sure-profit scan with witness; retire `stride`.
 - [ ] V3. Certificates rather than booleans (witness chord, argmin set, KKT
   residual, primal-dual gap, separating portfolio).
@@ -148,9 +149,13 @@ and its verification are fixed, and cross-checked at the end.
   (Abernethy, Chen & Wortman Vaughan 2013), so the surviving claim is that the
   log score's *increment* is a proper score of the residual, which follows
   from locality; uniqueness under composition is left open.
-- [ ] P10. Label every connection: exact equivalence, equivalence under
+- [x] P10. Label every connection: exact equivalence, equivalence under
   hypotheses, composition identity, equilibrium result, or analogy; and
-  qualify "truthful" with its equilibrium concept.
+  qualify "truthful" with its equilibrium concept. Legend added to the
+  Connections page with each section tagged and the Kelly and parimutuel
+  hypotheses supplied; catalog one-liners fixed; and the map's node notes,
+  which had been missed, corrected for the CMM, CFMM, FBA, decision-market,
+  output-agreement, both pooling and log-score claims.
 - [x] P11. Smaller: LMSR worst-case not expected loss; margining does not
   restore ex-post IR; batching does not remove all MEV; pinball minimizer
   unique only for unique quantiles. All four corrected in place, with the
