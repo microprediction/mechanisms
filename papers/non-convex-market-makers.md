@@ -256,17 +256,19 @@ $q_1$ and $q_2$ are contact points with no contact point between them.
 On that component the envelope is affine with a single supporting slope
 $\mu_0$, and the marginal price is constant across the excluded inventory
 range: as belief crosses $\mu_0$ the optimal inventory jumps from $q_1$
-to $q_2$ while the price does not move. The restriction to a single
-component is needed. Two contact points need not bound a gap at all — the
-envelope agrees with $C$ on the whole contact set, which may be a fat set
-— and two contact points straddling several components are separated by
-several affine pieces with different slopes, so no single $\mu_0$ governs
-the interval between them. The jump statement is a statement about one
-component, and $q_1, q_2$ are its endpoints rather than any two contact
-points. In the convexified
-supply correspondence this is an inventory jump of size $q_2 - q_1$ at
-the supporting price $\mu_0$, a depth spike rather than a missing price
-range. Against the original non-convex cost the jump is generally
+to $q_2$ while the price does not move.
+
+The restriction to a single component is needed. Two contact points need
+not bound a gap at all, since the envelope agrees with $C$ on the whole
+contact set, which may be a fat set. And two contact points straddling
+several components are separated by several affine pieces with different
+slopes, so no single $\mu_0$ governs the interval between them. The jump
+statement is about one component, with $q_1$ and $q_2$ its endpoints
+rather than any two contact points.
+
+In the convexified supply correspondence this is an inventory jump of size
+$q_2 - q_1$ at the supporting price $\mu_0$, a depth spike rather than a
+missing price range. Against the original non-convex cost the jump is generally
 indivisible: for the double well of §6 the full trade from $-c$ to $c$
 costs nothing while the half trade from $-c$ to $0$ costs $\alpha c$, so
 the prefixes of the block are not executable at $\mu_0$ and this is a
@@ -532,18 +534,20 @@ The analogy stops short of sparsity in the allocation, and the distinction
 matters because the lasso is usually invoked for exactly that. What the
 $\ell_1$ term delivers is an *exact dead zone per maker*: maker $i$ trades
 identically zero, not merely a little, whenever $\lvert p^* - m_i\rvert
-\le f_i$. It does not deliver a sparse split. Take $n$ makers with
-identical costs and identical fees. Their bands coincide, so either all of
-them contain $p^*$ and nobody trades, or none does and every one of them
-trades the same amount; the split is $\Delta/n$ across the board, as dense
-as it can be, at every demand. Three distinct-fee makers at $f = 0.05,
-0.20, 0.50$ against a unit log-cosh cost illustrate the general pattern:
-the split is $(0.05, 0, 0)$ at demand $0.05$, $(0.33, 0.17, 0)$ at $0.5$,
-and $(0.56, 0.38, 0.06)$ at $1.0$ — sparse only while the demand is small
-relative to the fee gaps, and dense once it is not. Sparsity in the
-allocation needs the fees to separate the makers *and* the demand to stay
-below the spill-over point; the exact zero needs neither and is what the
-$\ell_1$ term actually buys.
+\le f_i$. It does not deliver a sparse split.
+
+Take $n$ makers with identical costs and identical fees. Their bands
+coincide, so either all of them contain $p^*$ and nobody trades, or none
+does and every one of them trades the same amount. The split is
+$\Delta/n$ across the board, as dense as it can be, at every demand.
+
+Three distinct-fee makers at $f = 0.05, 0.20, 0.50$ against a unit
+log-cosh cost show the general pattern: the split is $(0.05, 0, 0)$ at
+demand $0.05$, $(0.33, 0.17, 0)$ at $0.5$, and $(0.56, 0.38, 0.06)$ at
+$1.0$, sparse only while the demand is small relative to the fee gaps.
+Sparsity in the allocation needs the fees to separate the makers *and* the
+demand to stay below the spill-over point; the exact zero needs neither,
+and is what the $\ell_1$ term actually buys.
 
 **Remark 7 (zero fees; known).** *With $f_i \equiv 0$ the convolution
 reduces to the fee-free merge: conjugate regularisers add, and for a
@@ -769,7 +773,9 @@ triangle inequality $\rho_{12} + \rho_{13} + \rho_{23} \ge -1$, which for a
 common $\rho$ reads $\rho \ge -\tfrac13$. On the interval
 $-\tfrac12 \le \rho < -\tfrac13$ the quote is positive semidefinite and
 still arbitraged, and the separating portfolio is the triangle inequality
-itself: buy $\tfrac13$ of each pairwise security for $\rho$, and collect
+itself.
+
+Buy $\tfrac13$ of each pairwise security for $\rho$, and collect
 $\tfrac13(x_1x_2 + x_1x_3 + x_2x_3)$, which is $1$ when the three signs
 agree and $-\tfrac13$ otherwise. The worst case is $-\tfrac13$, so the
 sure profit is $-\tfrac13 - \rho$ per unit, vanishing exactly at
@@ -930,32 +936,40 @@ in proportion to the value of its own errors, with friction the exchange
 rate between tolerated error and the cost of participation.
 
 The definition has neighbors in four literatures, and each holds one
-column. Markets that compute are old: a combinatorial auction cleared
-airport slots by integer programming [@rassenti1982slots], electricity
-markets pay the dual variables of the dispatch program as nodal prices
+column.
+
+Markets that compute are old. A combinatorial auction cleared airport
+slots by integer programming [@rassenti1982slots], electricity markets pay
+the dual variables of the dispatch program as nodal prices
 [@schweppe1988spot], and market-oriented programming solved distributed
 allocation by computing competitive equilibria of artificial economies
-[@wellman1993market]. Algorithmic mechanism design asks when optimization
-is compatible with incentives [@nisan2001algorithmic], and the
-classification of what can be computed incentive-compatibly was posed as
-a program by @feigenbaum2002distributed. The middle column carries a
-lower bound: any communication protocol realizing an efficient allocation
-must reveal supporting prices [@nisan2006communication], so certificates
-are not optional. The third column exists in practice without the
-duality: fraud-proof systems pay whoever exhibits an invalid state
-transition [@teutsch2019truebit; @kalodner2018arbitrum], for discrete
-transitions rather than convex programs. And the friction bound has an
-incentive-free ancestor: the auction algorithm's
+[@wellman1993market].
+
+Algorithmic mechanism design asks when optimization is compatible with
+incentives [@nisan2001algorithmic], and the classification of what can be
+computed incentive-compatibly was posed as a program by
+@feigenbaum2002distributed. That column carries a lower bound: any
+communication protocol realizing an efficient allocation must reveal
+supporting prices [@nisan2006communication], so certificates are not
+optional.
+
+The third column exists in practice without the duality. Fraud-proof
+systems pay whoever exhibits an invalid state transition
+[@teutsch2019truebit; @kalodner2018arbitrum], for discrete transitions
+rather than convex programs.
+
+The friction bound has an incentive-free ancestor. The auction algorithm's
 $\varepsilon$-complementary slackness permits suboptimality at most
 $n\varepsilon$, vanishing for $\varepsilon < 1/n$ on integer data
-[@bertsekas1992auction]; Proposition 3 is the same shape of bound with
-the $\varepsilon$ charged to traders. The connective tissue, the closure
-operation itself, serial composition of mechanisms, and the
-identification of violation certificates with separating portfolios,
-appears unoccupied.
+[@bertsekas1992auction], and Proposition 3 is the same shape of bound with
+the $\varepsilon$ charged to traders.
 
-One principle deserves separation from the open problems it generates,
-because it qualifies everything above.
+The connective tissue, the closure operation itself, serial composition of
+mechanisms, and the identification of violation certificates with
+separating portfolios, appears unoccupied.
+
+One principle qualifies everything above, so it is stated apart from the
+open problems it generates.
 
 **Principle (accessible arbitrage).** *Market coherence is relative not
 only to friction but to the cost of discovering violations. Write $K$ for
@@ -990,30 +1004,32 @@ K_{\mathcal{A}, f}$: a violation persists whenever every available
 separation procedure costs at least as much, net of friction, as the
 certificate it finds is worth.*
 
-Every feature of $V_f$ does work. The supremum ranges over
-procedures, not certificates: two procedures can find the same portfolio
-at very different costs, so coherence is relative to a class of
-arbitrageurs. The null procedure makes the supremum at least zero, so
-that $K \subseteq K_f \subseteq K_{\mathcal{A}, f}$ holds. The profit is
-a worst case over outcomes, not realized or belief-weighted profit,
-without which exact coherence would not imply that every procedure has
-non-positive value. And the profit must be realizable. A separating
-functional may be scaled by any positive constant, so against fixed
-linear prices its nominal value is unbounded and no finite search cost
-could ever leave a violation standing; it is the nonlinear book, the
-finite executable depth, and the position constraint that make
-$K_f \subsetneq K_{\mathcal{A}, f}$ possible at all. Equivalently one may
-normalize certificates to $\lVert y \rVert \le 1$ and price them against
-available depth. Instantiating $\mathcal{A}$ gives
-polynomial-time coherence, bounded-budget coherence, and
-latency-constrained coherence, and a venue can be arbitrage-free to
-ordinary participants while arbitrageable to a better-equipped class.
-Three nested notions of coherence result: exact (no sure-profit chord,
-Proposition 1), frictional (violations below the spread survive,
-Proposition 3), and accessible (violations too expensive to discover
-survive). Proposition 11 addresses the existence of arbitrage; whether a
-procedure in $\mathcal{A}$ can profitably prove $x \notin K$ is its
-accessibility, a different property. The self-policing of the
+Every feature of $V_f$ does work. The supremum ranges over procedures,
+not certificates: two procedures can find the same portfolio at very
+different costs, so coherence is relative to a class of arbitrageurs. The
+null procedure makes the supremum at least zero, so that
+$K \subseteq K_f \subseteq K_{\mathcal{A}, f}$ holds. And the profit is a
+worst case over outcomes, not realized or belief-weighted profit, without
+which exact coherence would not imply that every procedure has
+non-positive value.
+
+The profit must also be realizable. A separating functional may be scaled
+by any positive constant, so against fixed linear prices its nominal value
+is unbounded and no finite search cost could ever leave a violation
+standing. It is the nonlinear book, the finite executable depth, and the
+position constraint that make $K_f \subsetneq K_{\mathcal{A}, f}$ possible
+at all. Equivalently one may normalize certificates to
+$\lVert y \rVert \le 1$ and price them against available depth.
+
+Instantiating $\mathcal{A}$ gives polynomial-time coherence,
+bounded-budget coherence, and latency-constrained coherence, and a venue
+can be arbitrage-free to ordinary participants while arbitrageable to a
+better-equipped class. Three nested notions of coherence result: exact (no
+sure-profit chord, Proposition 1), frictional (violations below the spread
+survive, Proposition 3), and accessible (violations too expensive to
+discover survive). Proposition 11 addresses the existence of arbitrage;
+whether a procedure in $\mathcal{A}$ can profitably prove $x \notin K$ is
+its accessibility, a different property. The self-policing of the
 marketization table is qualified accordingly: effective self-correction
 is the error's value net of discovery cost and friction.
 
