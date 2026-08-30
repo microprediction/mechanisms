@@ -112,8 +112,14 @@ and its verification are fixed, and cross-checked at the end.
   polytope boundary at `rho = -1/3`) are now bracketed at two scales, with the
   boundary case asserted to be exactly zero margin rather than sampled on one
   side.
-- [ ] V9. Metamorphic tests (shift, tilt, reflect, permute, split a maker,
+- [x] V9. Metamorphic tests (shift, tilt, reflect, permute, split a maker,
   rescale) and the Moreau semigroup `e_λ(e_μ C) = e_{λ+μ} C`.
+  `tests/test_metamorphic.py`: envelope equivariance under translation, tilt,
+  reflection and positive scaling; chord bounds under tilt and scale; router
+  invariance under permutation, oddness under demand reflection, and depth
+  rescaling; splitting a maker in half preserving the aggregate cost (the
+  liquidity-adds law); and the semigroup, asserted as a mesh-refinement rate
+  rather than an equality the grid cannot satisfy.
 - [ ] V10. Structured generators: controlled-violation costs, non-attained
   thresholds, multi-well costs, routing ties, near-singular PSD, binary
   support enumeration.
