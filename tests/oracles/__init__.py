@@ -14,6 +14,14 @@ continuum, the two disagree by a known discretisation error, and the tests say
 which they expect.
 """
 
+from .generators import (
+    binary_support,
+    controlled_violation_cost,
+    multi_well_cost,
+    near_singular_correlation,
+    non_attained_threshold_cost,
+    tied_makers,
+)
 from .finite_lp import (
     ArbitrageCertificate,
     arbitrage_depth_lp,
@@ -28,6 +36,12 @@ from .piecewise_linear import (
 
 __all__ = [
     "ArbitrageCertificate",
+    "binary_support",
+    "controlled_violation_cost",
+    "multi_well_cost",
+    "near_singular_correlation",
+    "non_attained_threshold_cost",
+    "tied_makers",
     "arbitrage_depth_lp",
     "arbitrage_lp",
     "exact_chord_bounds",

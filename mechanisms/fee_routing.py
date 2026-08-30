@@ -51,11 +51,12 @@ and a calibrated prior-art assessment.
 
 from __future__ import annotations
 
-from typing import Sequence
+from typing import NamedTuple, Sequence
 
 import numpy as np
 
-__all__ = ["LogCoshMaker", "route", "consolidated_book"]
+__all__ = ["LogCoshMaker", "RouteCertificate", "route",
+           "route_certificate", "consolidated_book"]
 
 _PRICE_EPS = 1e-12
 
@@ -243,3 +244,67 @@ def consolidated_book(makers: Sequence[LogCoshMaker], prices: np.ndarray) -> np.
     """
     prices = np.asarray(prices, float)
     return np.array([sum(m.supply(p) for m in makers) for p in prices])
+
+
+class RouteCertificate(NamedTuple):
+    """A routing answer with the evidence that it is optimal.
+
+    A boolean or a bare array asserts optimality; these fields let a caller
+    check it. ``duality_gap`` is the primal objective minus the dual objective
+    at the clearing price, which convex duality forces to be zero at an
+    optimum, so a non-zero value measures how far the root-find fell short.
+    ``kkt_residual`` is the largest distance from the clearing price to a
+    maker's subdifferential at its own fill, which is the coordinatewise form
+    of the same statement.
+    """
+
+    fills: np.ndarray
+    clearing_price: float
+    primal_cost: float
+    dual_value: float
+    duality_gap: float
+    kkt_residual: float
+    feasibility_error: float
+
+    def is_optimal(self, tol: float = 1e-8) -> bool:
+        """Do all three certificates clear ``tol``?"""
+        return (abs(self.duality_gap) <= tol
+                and self.kkt_residual <= tol
+                and abs(self.feasibility_error) <= tol)
+
+
+def route_certificate(makers: Sequence[LogCoshMaker], size: float,
+                      tol: float = 1e-12) -> RouteCertificate:
+    r"""Route, and return the primal-dual evidence that the split is optimal.
+
+    The routing problem is ``min sum_i Ct_i(s_i)`` subject to
+    ``sum_i s_i = size``, whose Lagrangian dual in the multiplier ``p`` is
+
+    .. math:: D(p) = p\,\Delta - \sum_i \tilde C_i^*(p).
+
+    Evaluating each conjugate by Fenchel equality at the maker's own optimal
+    fill, ``Ct_i^*(p) = p s_i(p) - Ct_i(s_i(p))``, gives
+    ``D(p) = p (Delta - sum_i s_i(p)) + sum_i Ct_i(s_i(p))``. At the true
+    clearing price the bracket vanishes and the dual equals the primal, so the
+    residual gap is exactly the cost of the root-find's remaining feasibility
+    error — which is why reporting all three together says more than any one.
+    """
+    fills, price = route(makers, size, tol=tol)
+    primal = float(sum(m.trade_cost(s) for m, s in zip(makers, fills)))
+    supplied = float(sum(m.supply(price) for m in makers))
+    at_price = [m.supply(price) for m in makers]
+    dual = float(price * (size - supplied)
+                 + sum(m.trade_cost(s) for m, s in zip(makers, at_price)))
+
+    residual = 0.0
+    for m, s in zip(makers, fills):
+        if abs(s) > 1e-12:
+            slope = np.tanh((m.q + s) / m.b) + m.fee * np.sign(s)
+            residual = max(residual, abs(price - float(slope)))
+        else:
+            lo, hi = m.marginal_price - m.fee, m.marginal_price + m.fee
+            residual = max(residual, max(0.0, lo - price, price - hi))
+
+    return RouteCertificate(fills, float(price), primal, dual,
+                            primal - dual, float(residual),
+                            float(np.sum(fills) - size))

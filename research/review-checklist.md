@@ -95,8 +95,12 @@ and its verification are fixed, and cross-checked at the end.
   certificates. Oracles landed with M9 in `tests/oracles/`; the certificate
   half is V3.
 - [x] V2. Exact `O(n)` max-sure-profit scan with witness; retire `stride`.
-- [ ] V3. Certificates rather than booleans (witness chord, argmin set, KKT
-  residual, primal-dual gap, separating portfolio).
+- [x] V3. Certificates rather than booleans (witness chord, argmin set, KKT
+  residual, primal-dual gap, separating portfolio). Witness chord was
+  `ChordCertificate` (V2); separating portfolio is `ArbitrageCertificate`
+  (V4); `RouteCertificate` now adds the duality gap, the KKT residual and the
+  feasibility error, each checked separately since they say different
+  things; and the Moreau argmin is recorded in the V7 test.
 - [x] V4. LP oracle for finite outcome spaces (Props 1, 3, 11 at once).
   `tests/oracles/finite_lp.py` maximises the worst-case margin over unit-`l1`
   portfolios, returning the separating functional as a checkable witness.
@@ -129,9 +133,14 @@ and its verification are fixed, and cross-checked at the end.
   rescaling; splitting a maker in half preserving the aggregate cost (the
   liquidity-adds law); and the semigroup, asserted as a mesh-refinement rate
   rather than an equality the grid cannot satisfy.
-- [ ] V10. Structured generators: controlled-violation costs, non-attained
+- [x] V10. Structured generators: controlled-violation costs, non-attained
   thresholds, multi-well costs, routing ties, near-singular PSD, binary
-  support enumeration.
+  support enumeration. All six in `tests/oracles/generators.py`, used by
+  `tests/test_generators.py` to sweep the coherence boundary through zero
+  rather than sample near it, confirm the restoring fee equals the excess,
+  exhibit several envelope components, show a non-attained supremum as
+  window-chasing, check ties split evenly with no residual concentration, and
+  enumerate the binary support rather than sampling it.
 
 ## Site review (second report)
 
