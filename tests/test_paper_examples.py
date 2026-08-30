@@ -763,3 +763,32 @@ def test_section9_auction_algorithm_bound_has_the_shape_proposition_3_has():
     # The bound is an upper bound, not a guarantee of loss: a large eps permits
     # suboptimality without forcing it. Check it is not vacuous all the same.
     assert ever_lossy
+
+
+def test_section6_the_moreau_convexification_artifact_is_reproducible():
+    """The remark's numbers: on [-12, 12] the least second difference of
+    e_lam C turns positive past lam ~ 50, at 1e-11 to 1e-9, non-monotone.
+
+    The theorem says the sign cannot turn, so anything positive here is
+    rounding. Pinned because the paper prints the range, and a paper should not
+    print a figure nobody can reproduce.
+    """
+    xs = np.linspace(-12.0, 12.0, 6001)
+    cost = _wiggly(xs)
+
+    block = xs[:, None] - xs[None, :]
+    envelope = lambda lam: (cost[None, :] + block * block / (2 * lam)).min(axis=1)
+
+    # Below the switch the non-convexity is plainly visible.
+    assert float(np.min(np.diff(envelope(10.0), 2))) < -1e-5
+
+    # Above it the least second difference is positive but at rounding scale,
+    # and not monotone in lambda, which is the tell.
+    positives = []
+    for lam in (50.0, 100.0, 200.0, 500.0, 1000.0):
+        least = float(np.min(np.diff(envelope(lam), 2)))
+        assert least > 0
+        assert 1e-12 < least < 1e-8            # the range the paper prints
+        positives.append(least)
+    assert not (positives == sorted(positives) or positives == sorted(positives,
+                                                                     reverse=True))

@@ -274,10 +274,10 @@ costs nothing while the half trade from $-c$ to $0$ costs $\alpha c$, so
 the prefixes of the block are not executable at $\mu_0$ and this is a
 lumpy endpoint trade, not a conventional divisible level. Non-convexity of $C$ also
 does not by itself make an implied density bimodal: $C^*$ is convex, so
-any factor read as $\exp(-C^*)$ is log-concave. Earlier drafts of this
-paper described the gap as a hole in the book and as a multimodal quote;
-both readings were wrong, and no claim about bimodal implied densities
-[@melick1997crude; @clark2017brexit] is made here.
+any factor read as $\exp(-C^*)$ is log-concave. The bimodal implied
+densities documented around binary events [@melick1997crude;
+@clark2017brexit] are a separate phenomenon, and no claim about them is
+made here.
 
 ## 4. Frictions price the remaining failure
 
@@ -676,9 +676,12 @@ $e_\lambda C(x) > e_\lambda(\hat C)(x) = (e_\lambda C)^{**}(x)$ and
 $e_\lambda C$ is not convex. The identity is standard
 [@rockafellar1970convex; @rockafellar1998variational]; it is recorded here
 because it settles a question a numerical study on a finite window cannot.
-A curvature of $+3.6\times10^{-8}$ at large $\lambda$ on a $\pm 12$ window
-is a truncation artifact, not convexification, and no mesh distinguishes
-the two.* Here $\lambda$ is the
+For the wiggly cost of §3 sampled on $[-12, 12]$, the least second
+difference of $e_\lambda C$ turns positive somewhere beyond
+$\lambda \approx 50$, at magnitudes of $10^{-11}$ to $10^{-9}$ that are
+not monotone in $\lambda$. That is rounding, not convexification: the
+theorem says the sign cannot turn, and no refinement of the mesh
+distinguishes the two readings.* Here $\lambda$ is the
 co-quoter's liquidity: its price impact is $1/\lambda$, so large
 $\lambda$ means a deep book, not a strong pull.
 
