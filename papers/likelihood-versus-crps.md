@@ -81,16 +81,26 @@ theorem [@sklar1959] a joint log-density splits into marginal terms plus a copul
 term, one stage each.
 
 What makes this matter for the choice of score is not that the log-likelihood
-telescopes, which any additive bookkeeping of any score's differences would. It
-is that each increment $\log g(z)-\log\varphi(z)$ is itself the logarithmic score
-of the stage's residual refinement, strictly proper for the law of $z$: the stage
-is paid exactly, and only, for the density it added. The market form is Hanson's
-logarithmic market scoring rule, in which a trader who moves the report from $p$
-to $p'$ is paid $S(p',y)-S(p,y)$, a chain of them telescopes to
-$S(p_{\text{final}},y)-S(p_0,y)$, and the logarithmic rule is singled out because
-it alone yields a path-independent, additive cost function [@hanson2007logarithmic].
-Composability under chaining is, in that setting, a defining property of the log
-score, not a new observation.
+telescopes, which any additive bookkeeping of any score's differences would. Nor
+is it path independence, which also fails to separate the two: a market scoring
+rule built from *any* strictly proper score has a path-independent cost function,
+namely the convex conjugate of its expected-score function
+[@abernethy2013efficient], so the property is shared by the whole family rather
+than owned by the logarithm. In Hanson's market form a trader who moves the report
+from $p$ to $p'$ is paid $S(p',y)-S(p,y)$ and a chain of them telescopes to
+$S(p_{\text{final}},y)-S(p_0,y)$ [@hanson2007logarithmic], for the same reason,
+whatever $S$ is.
+
+The narrower claim is the one that does the work. Each increment $\log
+g(z)-\log\varphi(z)$ is itself the logarithmic score of the stage's residual
+refinement, strictly proper for the law of $z$, so the stage is paid exactly, and
+only, for the density it added. Telescoping says the parts sum to the whole;
+this says each part is a proper score of the right object. That is a property of
+the residual construction of §2 and not of the market wrapper, and it follows
+from locality: the increment sees the forecast only through the density at the
+realized point, and the logarithm is essentially the unique local strictly proper
+score [@bernardo1979expected]. Whether the property *characterizes* the log score
+among all proper scores under composition is a question we do not settle here.
 
 Three further constructions are the same identity. A residual chain is gradient
 boosting under log loss: each stage multiplies the running density by a likelihood
@@ -106,9 +116,13 @@ already such a chain, its log-likelihood a sum of a base log-density and per-sta
 change-of-variables terms [@papamakarios2021normalizing].
 
 CRPS has no matching per-stage identity. Its values along a chain telescope, as
-any score's differences do, but the increment is not the CRPS of the stage's
-residual refinement, and there is no path-independent cost of which the chain is
-the sum. This is distinct from the reliability–resolution decomposition of a
+any score's differences do, and its market form has a path-independent cost like
+any other proper score's; what it lacks is the identification of the increment
+with the CRPS of the stage's residual refinement. The composition acts on
+densities by multiplication and on distribution functions not at all simply, so
+the difference of two CRPS values is a quantity about the composed forecasts and
+not a score of what the stage contributed. This is distinct from the
+reliability–resolution decomposition of a
 single CRPS value [@hersbach2000decomposition], which splits one score into
 calibration components rather than a chain into per-stage credit. The point is
 not that CRPS is improper or uninformative, only that it is not the accounting
@@ -200,10 +214,12 @@ probability-integral-transform diagnostics are standard for density forecasts
 log-additivity is what autoregressive and normalizing-flow models exploit
 [@papamakarios2021normalizing]. That the log score is additive under sequential
 prediction is the prequential principle [@dawid1984prequential] and the
-compression view of minimum description length [@gruenwald2019minimum]. That it
-composes under chaining is, in the mechanism-design setting, the defining
-rationale of Hanson's logarithmic market scoring rule [@hanson2007logarithmic],
-and log-score optimization is likewise the natural objective when predictive
+compression view of minimum description length [@gruenwald2019minimum]. That any
+proper score's market form telescopes and has a path-independent cost is Hanson's
+market scoring rule [@hanson2007logarithmic] and its convex-duality account
+[@abernethy2013efficient]; those are the facts that do *not* separate the log
+score from CRPS, and saying otherwise is the mistake this note is careful to
+avoid. Log-score optimization is likewise the natural objective when predictive
 densities are stacked [@yao2018using]. Residual refinement under log loss is
 gradient boosting [@mason1999boosting; @friedman2001greedy], applied to density
 estimation in [@rosset2002boosting]. The conventional log-versus-CRPS axes,

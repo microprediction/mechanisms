@@ -96,9 +96,14 @@ and its verification are fixed, and cross-checked at the end.
 - [ ] P8. Local scoring: CRPS needs no density; the log score, not "ordinary
   proper rules", is the 0-local one; Fisher-divergence strictness needs
   regularity and connected support.
-- [ ] P9. Likelihood-vs-CRPS: score differences telescope for any score, so
+- [x] P9. Likelihood-vs-CRPS: score differences telescope for any score, so
   the path-independence uniqueness claim is false; state the narrower
-  residual-decomposition claim.
+  residual-decomposition claim. The note said in one paragraph that
+  telescoping is generic and in the next that path independence singles out
+  the log score. Every proper score's market form has a path-independent cost
+  (Abernethy, Chen & Wortman Vaughan 2013), so the surviving claim is that the
+  log score's *increment* is a proper score of the residual, which follows
+  from locality; uniqueness under composition is left open.
 - [ ] P10. Label every connection: exact equivalence, equivalence under
   hypotheses, composition identity, equilibrium result, or analogy; and
   qualify "truthful" with its equilibrium concept.
