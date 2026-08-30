@@ -187,3 +187,108 @@ def test_depth_trimmed_mean_drops_outlier():
     plain = aggregation.linear_opinion_pool(forecasts)
     # Dropping the [0.99, 0.01] outlier pulls the pool back toward 0.5.
     assert abs(trimmed[0] - 0.5) < abs(plain[0] - 0.5)
+
+
+# --------------------------------------------------------------------------- #
+# peer prediction: the conditions the guarantees actually need
+# --------------------------------------------------------------------------- #
+def test_output_agreement_truthfulness_needs_more_than_correlation():
+    # Positively correlated, yet an agent seeing 1 maximises agreement with 0.
+    joint = np.array([[0.50, 0.20], [0.20, 0.10]])
+    p_a1, p_b1 = joint[1].sum(), joint[:, 1].sum()
+    assert joint[1, 1] - p_a1 * p_b1 > 0                 # positive correlation
+    assert joint[1, 1] / joint[1].sum() == pytest.approx(1 / 3)
+    assert not pp.output_agreement_is_truthful(joint)
+    # Best response after seeing 1 is to report 0, so truth is not an equilibrium.
+    expected = [joint[1, j] / joint[1].sum() for j in (0, 1)]
+    assert int(np.argmax(expected)) == 0
+
+    # Self-dominant distributions do pass.
+    assert pp.output_agreement_is_truthful(np.array([[0.4, 0.1], [0.1, 0.4]]))
+
+
+def test_ca_sign_matrix_is_zero_one_not_three_valued():
+    # Shnayder et al.'s Sign is 1 for positive and 0 otherwise. A -1 would pay
+    # agents to disagree on pairs that are rarer than chance.
+    rng = np.random.default_rng(0)
+    state = rng.integers(0, 2, 400)
+    reports = state[None, :] ^ (rng.random((4, 400)) > 0.8).astype(int)
+    S = pp._ca_sign_matrix(reports, 2)
+    assert set(np.unique(S)) <= {0.0, 1.0}
+    np.testing.assert_allclose(S, np.eye(2))     # positively correlated: identity
+
+
+def test_ca_punishes_the_uninformative_strategy():
+    rng = np.random.default_rng(1)
+    state = rng.integers(0, 2, 400)
+    reports = state[None, :] ^ (rng.random((6, 400)) > 0.82).astype(int)
+    truthful = pp.correlated_agreement(reports, n_signals=2)[0]
+    deviated = reports.copy(); deviated[0, :] = 0
+    constant = pp.correlated_agreement(deviated, n_signals=2)[0]
+    assert truthful > constant
+    assert abs(constant) < 0.1                   # the constant exploit nets ~0
+
+
+def test_ca_sign_matrix_is_manipulable_when_one_agent_is_half_the_data():
+    # CA assumes Sign(Delta) is fixed. Estimated from two agents' reports, a
+    # constant reporter inverts it and is then paid by the inversion.
+    rng = np.random.default_rng(3)
+    state = rng.integers(0, 2, 400)
+    reports = state[None, :] ^ (rng.random((2, 400)) > 0.82).astype(int)
+    deviated = reports.copy(); deviated[0, :] = 0
+    np.testing.assert_allclose(pp._ca_sign_matrix(reports, 2), np.eye(2))
+    np.testing.assert_allclose(pp._ca_sign_matrix(deviated, 2), 1 - np.eye(2))
+    assert (pp.correlated_agreement(deviated, n_signals=2)[0]
+            > pp.correlated_agreement(reports, n_signals=2)[0])
+
+
+def test_ca_detail_free_matches_ca_on_a_truthful_crowd():
+    rng = np.random.default_rng(4)
+    state = rng.integers(0, 2, 400)
+    reports = state[None, :] ^ (rng.random((6, 400)) > 0.82).astype(int)
+    plain = pp.correlated_agreement(reports, n_signals=2)
+    df = pp.correlated_agreement_df(reports, n_signals=2,
+                                    rng=np.random.default_rng(0))
+    np.testing.assert_allclose(df, plain, atol=0.05)
+
+
+def test_enforced_agreement_fixes_the_report_marginal():
+    rng = np.random.default_rng(5)
+    reports = (rng.random(100) < 0.8).astype(int)     # ~80 ones
+    forced = pp.enforce_marginal(reports, target_ones=50, rng=rng)
+    assert int(forced.sum()) == 50
+    # Only 1s are flipped down, never 0s flipped up, when there is a surplus.
+    assert np.all(forced[reports == 0] == 0)
+
+
+def test_enforced_agreement_beats_the_constant_strategy():
+    rng = np.random.default_rng(6)
+    state = rng.integers(0, 2, 300)
+    reports = state[None, :] ^ (rng.random((5, 300)) > 0.82).astype(int)
+    truthful = pp.enforced_agreement(reports, rng=np.random.default_rng(0))[0]
+    deviated = reports.copy(); deviated[0, :] = 0
+    constant = pp.enforced_agreement(deviated, rng=np.random.default_rng(0))[0]
+    assert truthful > constant
+
+
+def test_bts_rejects_prediction_rows_that_are_not_distributions():
+    # A row of (1, 1) would make the "negative KL" term positive.
+    with pytest.raises(ValueError, match="sum to 1"):
+        pp.bayesian_truth_serum([0, 1], [[1.0, 1.0], [0.5, 0.5]], n_answers=2)
+    with pytest.raises(ValueError, match="non-negative"):
+        pp.bayesian_truth_serum([0, 1], [[1.5, -0.5], [0.5, 0.5]], n_answers=2)
+    with pytest.raises(ValueError, match="index"):
+        pp.bayesian_truth_serum([0, 5], [[0.5, 0.5], [0.5, 0.5]], n_answers=2)
+
+
+def test_bts_prediction_score_is_a_negative_kl_on_valid_input():
+    info = [0, 1, 0, 0]
+    preds = [[0.75, 0.25]] * 4
+    scores = pp.bayesian_truth_serum(info, preds, n_answers=2, alpha=1.0)
+    x_bar = np.array([0.75, 0.25])
+    kl = float(np.sum(x_bar * np.log(x_bar / np.array([0.75, 0.25]))))
+    assert kl == pytest.approx(0.0)              # prediction matches the crowd
+    # With a perfect prediction the prediction score contributes nothing.
+    y_bar = np.exp(np.mean(np.log(np.array(preds)), axis=0))
+    for i, k in enumerate(info):
+        assert scores[i] == pytest.approx(np.log(x_bar[k] / y_bar[k]))

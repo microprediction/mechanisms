@@ -62,27 +62,52 @@
       incentivises them.
     </p>
 
-    <h2>Output agreement and its degenerate equilibrium</h2>
+    <h2>Output agreement, and two ways it fails</h2>
     <p>
       The naive baseline simply pays two agents when their reports match. With
       reports $a$ and $b$ the reward is
     </p>
     <div class="equation-card">$\mathrm{OA}(a,b) = \mathbf{1}[\,a = b\,].$</div>
     <p>
-      Truth-telling is indeed <em>an</em> equilibrium of this game, if I expect
-      you to report truthfully and our signals are correlated, matching your likely
-      answer means reporting my own. But it is not the only one, and not the
-      attractive one. The constant strategy "always report option 0," played by
-      everyone, scores a perfect $1$ on every pairing while revealing no private
-      information at all. This <strong>degenerate equilibrium</strong> dominates:
-      it is risk-free and requires no thought. Any mechanism that rewards raw
-      agreement is therefore exploitable by coordinated, uninformative reporting.
+      The familiar failure is the <strong>uninformative equilibrium</strong>. The
+      constant strategy "always report option 0," played by everyone, scores a
+      perfect $1$ on every pairing while revealing no private information at all.
+      It is risk-free and requires no thought. This is not special to output
+      agreement: an elicitation game without verification has an uninformative
+      equilibrium exactly when its reward matrix, read as a two-player
+      complete-information game, has one (Waggoner &amp; Chen 2014, Theorem 3).
+    </p>
+    <p>
+      The less obvious failure is that truth-telling need not be an equilibrium at
+      all, and correlated signals are <em>not</em> enough to make it one. Take
+      symmetric binary signals with
+      $P(0,0) = 0.50$, $P(0,1) = P(1,0) = 0.20$, $P(1,1) = 0.10$. These are
+      positively correlated, since $P(1,1) - P(A{=}1)P(B{=}1) = 0.10 - 0.09 &gt; 0$.
+      But an agent who observes a $1$ computes
+      $P(B{=}1 \mid A{=}1) = 0.10/0.30 = 1/3$ and maximises expected agreement by
+      reporting $0$. Truth is not even a best response on that signal.
+    </p>
+    <p>
+      The condition that does deliver truthfulness is <strong>self-dominance</strong>:
+      $P(S_k = x \mid S_i = x) &gt; P(S_k = \tilde x \mid S_i = x)$ for every
+      $\tilde x \neq x$, that is, whatever you saw is what you believe your peer
+      most likely saw (Radanovic &amp; Faltings 2013, Proposition 1). Under it,
+      output agreement is the unique truthful mechanism up to positive affine
+      transformation (Frongillo &amp; Witkowski 2016). Do not confuse it with the
+      weaker <em>self-predicting</em> condition
+      $P(S_k = x \mid S_i = x) &gt; P(S_k = x \mid S_i = x')$, which compares down a
+      column rather than across a row, is equivalent to positive correlation in the
+      binary case, and belongs to the Peer Truth Serum instead. And even where
+      truth is an equilibrium, no mechanism without verification can guarantee a
+      strict equilibrium more informative than common knowledge (Waggoner &amp;
+      Chen 2014, Theorem 2).
     </p>
     <p class="muted">
       In code: <code>output_agreement(report_a, report_b)</code> in
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/peer_prediction.py">mechanisms/peer_prediction.py</a>
-      returns $1$ on a match and $0$ otherwise, included to show precisely the
-      failure that the Bayesian Truth Serum repairs.
+      returns $1$ on a match and $0$ otherwise, and
+      <code>output_agreement_is_truthful(joint)</code> checks self-dominance for a
+      joint signal distribution.
     </p>
 
     <h2>Prelec's Bayesian Truth Serum</h2>
@@ -158,26 +183,34 @@
       output agreement.
     </p>
     <p>
-      The guarantees come with assumptions. BTS leans on a <strong>common
-      prior</strong> and, in its original single-question form, on a large
-      population so that empirical frequencies are stable; it is an equilibrium
-      result, not a dominant strategy, so other equilibria can still exist. The
-      multi-task line of work, Dasgupta–Ghosh and especially the
-      <strong>Correlated Agreement</strong> mechanism of Shnayder, Agarwal,
-      Frongillo and Parkes (2016), relaxes these. By scoring agents across many
-      tasks and rewarding agreement only beyond what correlation alone would
-      predict, Correlated Agreement attains <em>informed truthfulness</em>: no
-      strategy beats truthful reporting, and truthful reporting strictly beats every
-      uninformative one, without the mechanism needing to know the prior in
-      advance.
+      The guarantees come with assumptions, and they are strong ones. BTS needs a
+      <strong>common prior</strong>, conditionally independent signals, and, in the
+      original, an <em>infinite</em> population; Prelec notes it survives for
+      suitably large finite $n$ with a prior-dependent threshold. Small populations
+      break it outright rather than degrading: Witkowski and Parkes (2012, Theorem
+      2) show BTS is neither Bayes-Nash incentive compatible nor interim
+      individually rational at $n = 3$, with an explicit counterexample, and its
+      score is unboundedly negative for prediction reports at $0$ or $1$. Their
+      Robust BTS repairs both for every $n \ge 3$ and every admissible prior, at
+      the cost of binary signals; Radanovic and Faltings (2013) extend it to
+      non-binary signals under self-dominance.
+    </p>
+    <p>
+      Truthful reporting is also not the <em>unique</em> equilibrium. What it has
+      beyond existence is payoff dominance: no other equilibrium earns a higher
+      expected information score, and uninformative ones earn strictly less (Kong
+      &amp; Schoenebeck 2019, Theorem 7.8). The multi-task line of work,
+      Dasgupta–Ghosh and especially the <strong>Correlated Agreement</strong>
+      mechanism of Shnayder, Agarwal, Frongillo and Parkes (2016), relaxes the
+      prior requirement by scoring agents across many tasks.
     </p>
 
-    <h2>Correlated Agreement, and enforced (stochastic-dominance) truthfulness</h2>
+    <h2>Correlated Agreement, and what it does and does not guarantee</h2>
     <p>
       Correlated Agreement needs no prediction report at all, only each agent's
       signal on a shared pool of tasks. It scores agent $i$ by agreement with
       peers on the <em>same</em> task, beyond the chance agreement expected from
-      <em>unrelated</em> tasks, read through a sign matrix $S = \operatorname{sign}(\Delta)$,
+      <em>unrelated</em> tasks, read through a sign matrix $S = \operatorname{Sign}(\Delta)$, which is $1$ where $\Delta &gt; 0$ and $0$ otherwise,
       $\Delta_{ab} = P_{\text{same}}(a,b) - P(a)P(b)$:
     </p>
     <div class="equation-card">
@@ -185,21 +218,52 @@
        \;-\; \operatorname{mean}_{j\neq i,\,t}\ \mathbb{E}_{b}\, S[r_{i,t}, b].$
     </div>
     <p>
-      The baseline subtraction is what kills the degenerate equilibrium: a constant
-      report agrees with peers but agrees <em>equally</em> on unrelated tasks, so it
-      nets zero. In the binary case truthful reporting is moreover
-      <strong>stochastically-dominant</strong> truthful (the "Enforced Agreement"
-      property of Schoenebeck et al.): its entire score distribution lies to the right of any deviation's,
-      so truthfulness wins for every risk-averse, monotone utility, not just in
-      expectation. The demo shows the truthful 10th percentile beating 100% of a
-      constant deviator's outcomes.
+      The baseline subtraction is what kills the uninformative equilibrium: a
+      constant report agrees with peers but agrees <em>equally</em> on unrelated
+      tasks, so it nets zero.
+    </p>
+    <p>
+      What CA guarantees is <strong>informed truthfulness</strong>, and it holds
+      for all worlds (their Theorem 5.2): no strategy profile earns more than
+      truthful, and a profile can only tie if both agents play informed strategies.
+      Three qualifications belong with that. It is a strict <em>correlated
+      equilibrium</em>, not a dominant strategy. Truthful is only <em>weakly</em>
+      highest-paying, and the ties are characterised: a non-permutation strategy
+      can tie exactly when signals are <em>clustered</em> (two identical rows or
+      columns in $S$), and asymmetric permutations can tie exactly when the
+      distribution has <em>paired permutations</em>. Absent both, CA is strongly
+      truthful, which the authors report holds in roughly half their empirical
+      worlds.
+    </p>
+    <p>
+      The third qualification corrects what this page previously said. CA is
+      <em>not</em> stochastic-dominance truthful. That property belongs to a
+      different mechanism, <strong>Enforced Agreement</strong> (Zhang, Xu, Pennock
+      &amp; Schoenebeck 2025), which is output agreement preceded by forcing each
+      agent's report marginal to a target, so over-reporting the majority signal
+      buys nothing because the surplus is simply flipped back. Their Theorem 6.1
+      gives SD-truthfulness for binary self-predicting signals; their Example 4.1
+      exhibits a world where a constant strategy is <em>not</em> stochastically
+      dominated under CA, which needs their partition-rounding reduction to get
+      there. First-order stochastic dominance means the truthful score
+      distribution is preferred under <em>every increasing utility</em>, which is
+      stronger than an expectation comparison and stronger than the risk-aversion
+      framing this page used before.
+    </p>
+    <p>
+      One more caveat the demo makes concrete. CA assumes $S$ is fixed, not
+      estimated from the reports it scores. With two agents that assumption fails
+      loudly: a constant reporter is half the data, flips the estimated $S$ from
+      the identity to its opposite, and is then paid by the matrix they inverted.
+      The detail-free variant estimates $S$ on a held-out half of the tasks, which
+      does not help when a single agent is half the population.
     </p>
 
     <h2 id="demo">Try it</h2>
     <p>The simplest peer mechanism: <em>output agreement</em> pays 1 when two
-    agents' reports match, else 0. It rewards truth-telling when private signals
-    are positively correlated, but note the failure mode it motivates the richer
-    mechanisms above: agents can also collude on a constant report and always
+    agents' reports match, else 0. It rewards truth-telling when signals are
+    self-dominant, which is stronger than positive correlation, and it is
+    exploitable regardless: agents can settle on a constant report and always
     score 1 without revealing anything.</p>
     <div class="demo" id="pp-demo">
       <div class="row"><label>agent A reports</label>

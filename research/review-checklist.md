@@ -142,9 +142,15 @@ and its verification are fixed, and cross-checked at the end.
   Second pass added `select` (samples an action, refuses a rule with a
   zero-probability action) and recorded trader positions, so settlement pays
   holders of the realised outcome in the taken market and voids the rest.
-- [ ] A6. Peer prediction: output agreement is not truthful in general;
+- [x] A6. Peer prediction: output agreement is not truthful in general;
   distinguish Correlated Agreement from Enforced Agreement; BTS validation
-  claims need their assumptions.
+  claims need their assumptions. Verified against primary sources. Output
+  agreement needs self-dominance, not correlation, and the counterexample is
+  now a test. Enforced Agreement is a separate mechanism (Zhang, Xu, Pennock &
+  Schoenebeck 2025) and is implemented; CA is informed-truthful, a correlated
+  equilibrium, not SD-truthful. `_ca_sign_matrix` returned numpy's three-valued
+  sign where Shnayder et al.'s is 1-or-0. Added `correlated_agreement_df`, BTS
+  input validation, and BTS's infinite-population and non-uniqueness caveats.
 - [x] A7. Nearest-the-pin truthfulness needs its equilibrium concept
   (price-taking, Kelly, symmetric) stated wherever it is asserted.
 - [x] A8. PDLP delta-hedge section should say which results are the paper's
