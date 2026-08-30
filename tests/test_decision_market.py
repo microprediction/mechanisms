@@ -118,9 +118,55 @@ def test_inverse_selection_score_matches_its_expectation():
 
 def test_settle_scales_the_makers_payoff_and_its_bound():
     market = dm.DecisionMarket(n_actions=2, n_outcomes=2, b=10.0)
-    market.trade(action=0, outcome=0, shares=5.0)
+    market.trade(action=0, outcome=0, shares=5.0, trader="alice")
+    market.trade(action=1, outcome=1, shares=3.0, trader="bob")
     decision = np.array([0.25, 0.75])
     raw = market.markets[0].realized_pnl(0)
-    assert market.settle(0, 0, decision) == pytest.approx(raw / 0.25)
+    maker, payouts = market.settle(0, 0, decision)
+    assert maker == pytest.approx(raw / 0.25)
+    # Alice's five shares of the realised outcome pay 5 / R(P, 0).
+    assert payouts == {"alice": pytest.approx(5.0 / 0.25)}
+    # Bob's position sits in the counterfactual market and is void.
+    assert "bob" not in payouts
     with pytest.raises(ValueError):
         market.settle(0, 0, np.array([0.0, 1.0]))
+
+
+def test_select_draws_from_the_rule_and_refuses_zero_support():
+    market = dm.DecisionMarket(n_actions=3, n_outcomes=2, b=50.0)
+    market.trade(action=1, outcome=0, shares=40.0, trader="alice")
+    rng = np.random.default_rng(3)
+    counts = np.zeros(3)
+    for _ in range(4000):
+        action, decision = market.select([1.0, 0.0], rule="softmax",
+                                         temperature=0.3, rng=rng)
+        counts[action] += 1
+    empirical = counts / counts.sum()
+    target = market.decision([1.0, 0.0], rule="softmax", temperature=0.3)
+    np.testing.assert_allclose(empirical, target, atol=0.03)
+    assert empirical[1] > empirical[0]              # the market that was bought
+    with pytest.raises(ValueError, match="never settles"):
+        market.select([1.0, 0.0], rule="argmax", rng=rng)
+
+
+def test_settlement_is_zero_sum_between_maker_and_traders():
+    rng = np.random.default_rng(17)
+    for _ in range(200):
+        market = dm.DecisionMarket(n_actions=3, n_outcomes=3, b=40.0)
+        paid = 0.0
+        for _ in range(8):
+            paid += market.trade(int(rng.integers(0, 3)), int(rng.integers(0, 3)),
+                                 float(rng.uniform(1, 20)), trader="alice")
+        action, decision = market.select([1.0, 0.5, 0.0], rule="epsilon_greedy",
+                                         epsilon=0.4, rng=rng)
+        outcome = int(rng.integers(0, 3))
+        maker, payouts = market.settle(action, outcome, decision)
+        # The maker's scaled P&L is the negative of what settles out to traders,
+        # net of the cash the maker already collected on the settled market.
+        collected = market.markets[action].cost() - market.markets[action].cost(
+            np.zeros(3))
+        held = market.positions["alice"][action, outcome]
+        assert maker == pytest.approx(
+            (collected - held) / decision[action], rel=1e-9)
+        assert sum(payouts.values()) == pytest.approx(
+            held / decision[action], rel=1e-9)

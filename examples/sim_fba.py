@@ -43,14 +43,16 @@ def simulate(n=60, seed=0):
     costs = rng.uniform(0, 100, n)
 
     auction = BatchAuction()
-    # Each trader submits a single unit at their true reservation price (truthful
-    # is a dominant strategy in a uniform-price batch with many participants).
+    # Each trader submits a single unit at their true reservation price. In a
+    # thick uniform-price batch a single unit barely moves the clearing price,
+    # so bidding value is close to optimal; it is a price-taking approximation,
+    # not a dominant strategy.
     for v in values:
         auction.submit("buy", v, 1.0)
     for c in costs:
         auction.submit("sell", c, 1.0)
 
-    price, qty = auction.clear()
+    price, qty, _, _ = auction.clear()
     eq_price, eq_qty = competitive_equilibrium(values, costs)
 
     section("Frequent batch auction — one batch, one uniform price")

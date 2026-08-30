@@ -55,7 +55,9 @@ expected_decision_score      expected score under the inverse-selection rule
 
 Class
 -----
-DecisionMarket               one LMSR conditional market per action
+DecisionMarket               one LMSR conditional market per action, with action
+                             sampling (``select``), recorded trader positions,
+                             and inverse-selection settlement (``settle``)
 """
 
 from __future__ import annotations
@@ -174,6 +176,8 @@ class DecisionMarket:
         self.n_actions = int(n_actions)
         self.n_outcomes = int(n_outcomes)
         self.markets = [LMSR(self.n_outcomes, b=b) for _ in range(self.n_actions)]
+        # positions[trader][action] is a length-K vector of shares held.
+        self.positions: dict = {}
 
     def conditional_prices(self, action: int) -> np.ndarray:
         """Outcome distribution implied by ``action``'s conditional market."""
@@ -183,9 +187,19 @@ class DecisionMarket:
         """``(A, K)`` matrix of conditional outcome distributions, one row per action."""
         return np.array([m.prices() for m in self.markets])
 
-    def trade(self, action: int, outcome: int, shares: float) -> float:
-        """Buy ``shares`` of ``outcome`` in ``action``'s conditional market; return cost."""
-        return self.markets[int(action)].buy(int(outcome), float(shares))
+    def trade(self, action: int, outcome: int, shares: float,
+              trader: str = None) -> float:
+        """Buy ``shares`` of ``outcome`` in ``action``'s conditional market; return cost.
+
+        Naming a ``trader`` records the position, which is what settlement needs:
+        an unattributed trade still moves the price but nobody is paid for it.
+        """
+        cost = self.markets[int(action)].buy(int(outcome), float(shares))
+        if trader is not None:
+            book = self.positions.setdefault(
+                trader, np.zeros((self.n_actions, self.n_outcomes)))
+            book[int(action), int(outcome)] += float(shares)
+        return cost
 
     def values(self, outcome_values) -> np.ndarray:
         """Per-action ``E[value | a]`` under the current conditional markets."""
@@ -211,18 +225,42 @@ class DecisionMarket:
         """The best action under the current conditional values (plain argmax)."""
         return int(np.argmax(self.values(outcome_values)))
 
-    def settle(self, action_taken: int, outcome: int, decision) -> float:
-        r"""Maker P&L on the taken action's market, scaled by ``1 / R(P, a)``.
+    def select(self, outcome_values, rule: str = "softmax", rng=None, **kwargs):
+        """Draw an action from the decision rule; return ``(action, decision)``.
 
-        Only the taken action settles, so the surviving market's payoff carries
-        the inverse-selection factor and the traders' mirror-image payoffs carry
-        it too. ``decision`` is the choice distribution the rule produced from
-        the reports that were standing when the action was drawn.
-
-        The scaling applies to the maker's downside as well: an LMSR bounded at
-        ``b log K`` becomes bounded at ``b log K / R(P, a)``, so a rule that
-        rarely picks an action needs correspondingly deeper pockets when it does.
+        The decision distribution is returned alongside the draw because
+        settlement needs the probability that *this* action was selected, and it
+        must be the one standing at the moment of the draw. Recomputing it later
+        from a moved market would divide by the wrong number.
         """
-        prob = float(np.asarray(decision, float)[int(action_taken)])
-        raw = self.markets[int(action_taken)].realized_pnl(int(outcome))
-        return inverse_selection_score(raw, prob)
+        decision = self.decision(outcome_values, rule=rule, **kwargs)
+        rng = np.random.default_rng() if rng is None else rng
+        if np.any(decision <= 0):
+            raise ValueError(
+                "decision rule has an action with zero probability; that market "
+                "never settles, so reports in it go unscored (use softmax or "
+                "epsilon_greedy)")
+        return int(rng.choice(self.n_actions, p=decision)), decision
+
+    def settle(self, action_taken: int, outcome: int, decision):
+        r"""Settle the taken action's market; return ``(maker_pnl, trader_payouts)``.
+
+        Only the taken action settles, so its payoffs carry the inverse-selection
+        factor ``1 / R(P, a)``. ``decision`` is the choice distribution that was
+        standing when the action was drawn, which :meth:`select` returns for
+        exactly this purpose.
+
+        A trader holding ``s`` shares of the realised outcome in that action's
+        market collects ``s / R(P, a)``; holdings in the other actions' markets
+        are void, which is the counterfactual structure the factor compensates
+        for. The maker's figure is its own P&L on the settled market, scaled the
+        same way, so an LMSR bounded at ``b log K`` is bounded at
+        ``b log K / R(P, a)``: a rule that rarely picks an action needs
+        correspondingly deeper pockets when it does.
+        """
+        a, k = int(action_taken), int(outcome)
+        prob = float(np.asarray(decision, float)[a])
+        maker = inverse_selection_score(self.markets[a].realized_pnl(k), prob)
+        payouts = {t: inverse_selection_score(float(book[a, k]), prob)
+                   for t, book in self.positions.items() if book[a, k] > 0}
+        return maker, payouts

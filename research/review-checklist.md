@@ -118,7 +118,11 @@ and its verification are fixed, and cross-checked at the end.
 - [x] A1. FBA `clear_uniform_price` returns a price at which the reported
   volume cannot trade (bids 100/1000 against asks 1/99 gave 500.5). Use the
   marginal accepted orders for the band, and add allocations with pro-rata
-  rationing at the margin.
+  rationing at the margin. Second pass: the first allocation fix filled every
+  strictly crossing order completely, so a bid of 10 against an ask of 4 took
+  10 against 4 units of supply. Replaced with a price-priority walk that cuts
+  at the level where volume runs out. `BatchAuction.clear` now consumes the
+  batch and returns fills, with `keep_unfilled` to carry residuals forward.
 - [x] A2. Dynamic parimutuel does not conserve cash (one \$1 buy settles to
   \$0.67) and purchases are path dependent (\$1 buys 2.0 shares, two 50c
   buys 1.75). Replace the pre-trade linear price with the integrated
@@ -135,6 +139,9 @@ and its verification are fixed, and cross-checked at the end.
   `inverse_selection_score`, `expected_decision_score` and
   `DecisionMarket.settle`, and a grid search that exhibits a strictly
   profitable misreport (0.30 reported as 0.15) when the factor is dropped.
+  Second pass added `select` (samples an action, refuses a rule with a
+  zero-probability action) and recorded trader positions, so settlement pays
+  holders of the realised outcome in the taken market and voids the rest.
 - [ ] A6. Peer prediction: output agreement is not truthful in general;
   distinguish Correlated Agreement from Enforced Agreement; BTS validation
   claims need their assumptions.
