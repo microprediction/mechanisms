@@ -161,8 +161,8 @@ producer theory:
   object (Mas-Colell, Whinston & Green, ch. 5), and Proposition 6 of the
   composition paper is its conjugate form.
 
-Two places where the market maker departs from the widget firm, and both are
-load-bearing:
+Two places where the market maker departs from the widget firm, and both
+decide the result:
 
 *Production is reversible.* A widget firm cannot un-produce a widget and
 reclaim full cost; irreversibility is physical, so round trips were never

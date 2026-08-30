@@ -1,8 +1,8 @@
 # Anisotropic (Schur-damped) sliced scoring rules
 
 *Status: a worked development of an open conjecture from the nearest-the-pin
-paper (now §7 and Open Problem 6 of the merged point-cloud scoring paper), with a calibrated novelty assessment and one load-bearing
-technical caveat. Likely novel as a combination; the central properness claim is
+paper (now §7 and Open Problem 6 of the merged point-cloud scoring paper), with a calibrated novelty assessment and one
+technical caveat that decides the result. Likely novel as a combination; the central properness claim is
 false-until-proven and the note is built around that boundary. See §4 and §6.*
 
 ## 1. The conjecture
@@ -37,7 +37,7 @@ the identity `E_u|⟨u, x⟩| = c_d ‖x‖`, so the slice average reconstructs 
 Raftery 2007) and the averaging measure is **fixed**, the sliced quantity is a
 strictly proper score requiring only 1-D evaluations.
 
-The load-bearing words are *uniform* and *fixed*.
+The words doing the work are *uniform* and *fixed*.
 
 ## 3. The generalization
 

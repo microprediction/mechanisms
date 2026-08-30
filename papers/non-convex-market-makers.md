@@ -758,7 +758,7 @@ K_{\mathcal{A}, f}$: a violation persists whenever every available
 separation procedure costs at least as much, net of friction, as the
 certificate it finds is worth.*
 
-Every feature of $V_f$ is load-bearing. The supremum ranges over
+Every feature of $V_f$ does work. The supremum ranges over
 procedures, not certificates: two procedures can find the same portfolio
 at very different costs, so coherence is relative to a class of
 arbitrageurs. The null procedure makes the supremum at least zero, so

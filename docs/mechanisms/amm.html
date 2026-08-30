@@ -140,14 +140,26 @@
     <p>
       A prediction-market maker is a convex potential $C(q)$ with prices
       $\nabla C(q)$; a CFMM is a concave trading function $\varphi(R)$ with spot
-      prices read from the ratio of its partials. Up to sign and a change of
-      variables these are the <em>same object viewed through convex duality</em>:
-      convexity is exactly no-arbitrage, and a bounded conjugate domain is exactly
-      bounded loss. So <a href="./lmsr.html">LMSR</a>, the general
-      <a href="./cmm.html">cost-function maker</a>, and Uniswap/Balancer/Curve are
-      all instances of convex-potential market making, the prediction-market side
-      emphasising bounded-loss information elicitation, the DeFi side emphasising
-      fees, impermanent loss, and capital efficiency.
+      prices read from the ratio of its partials. The two are related through
+      convex duality, but the correspondence is a <em>level-set or perspective</em>
+      construction under monotonicity and reserve-domain assumptions, not the bare
+      Fenchel conjugate; the <a href="./cmm.html">cost-function maker</a> page
+      states it carefully.
+    </p>
+    <p>
+      Two slogans about that duality need care. Convexity of $C$ is <em>not</em>
+      the same as no-arbitrage: buying $\delta$ of every claim from
+      $C(q) = \tfrac{\alpha}{2}\lVert q\rVert^2$ costs
+      $\tfrac{\alpha n}{2}\delta^2$ and returns $\delta$ whichever outcome
+      occurs, a sure profit for small $\delta$ despite a perfectly convex
+      potential. No-arbitrage is prices staying inside the payoff hull, which the
+      construction $C = R^\ast$ delivers and convexity alone does not. Bounded
+      loss is the range of the <em>conjugate</em> on that hull, which for LMSR is
+      $b\log n$; it is not the spread of $C$ itself. With those two repaired,
+      <a href="./lmsr.html">LMSR</a>, the cost-function maker, and
+      Uniswap/Balancer/Curve are readings of one convex object, the
+      prediction-market side emphasising bounded-loss elicitation and the DeFi
+      side fees, impermanent loss, and capital efficiency.
     </p>
 
     <h2 id="demo">Watch impermanent loss accrue</h2>

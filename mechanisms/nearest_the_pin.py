@@ -170,8 +170,19 @@ def pot_split(densities, stakes, b: float = 0.1):
 
     a zero-sum transfer ("nearest the pin"): players whose density beat the
     stake-weighted crowd average gain, the rest lose. The pool is self-funding —
-    no operator subsidy. A log-wealth (Kelly) maximiser's unique optimum is to
-    report its *true* predictive density (see the accompanying paper).
+    no operator subsidy.
+
+    Truthfulness here needs its equilibrium concept stated, because the pot split
+    couples the payoffs through the denominator. In the *price-taking* model —
+    fix the field, write ``r`` for the crowd's stake-weighted aggregate density,
+    and treat the odds ``1/r`` as unmoved by one's own stake — a log-wealth
+    (Kelly) maximiser going all in is uniquely optimal at its true predictive
+    density, and at fractional stakes ``b`` truth is a symmetric equilibrium
+    which degenerates as ``b`` vanishes. Price-taking is a real restriction: a
+    participant's own ``s_i q_i(z)`` sits in that denominator, so a
+    non-infinitesimal player moves their own odds, and the equilibrium without
+    the price-taking assumption is open (§2 and Open Problem 3 of the
+    accompanying paper). Nothing here is a dominant strategy.
 
     Parameters
     ----------

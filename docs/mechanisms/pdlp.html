@@ -135,7 +135,18 @@
       (TWM) keeps the pool near $w^\star$ by paying a <em>discount</em> to LPs
       whose trades push the weights toward target, approximately solving
     </p>
-    <div class="equation-card">$\min_{\Delta}\; \lVert w(p, R+\Delta) - w^\star \rVert \quad\text{s.t.}\quad \Delta \ge -R^A.$</div>
+    <div class="equation-card">$\min_{\Delta}\; \lVert w(p, R+\Delta) - w^\star \rVert \quad\text{s.t.}\quad \Delta \ge -R^A,\; p^\top(R+\Delta) = T'.$</div>
+    <p>
+      The two constraints interact, so they have to be solved together, and
+      clipping the unconstrained solution coordinatewise satisfies neither. The
+      exact target is reachable precisely when the post-trade value clears
+      $T'_{\min} = \max_i p_i (R_i - R^A_i) / w^\star_i$: each asset's locked
+      portion is a floor, and the most over-locked asset alone decides whether a
+      pure rebalance can work or whether the pool must take a deposit first.
+      Below that bound the objective still has a minimiser, the projection of
+      $w^\star$ onto the feasible weights, which water-fills as
+      $x_i = \max(\ell_i, w^\star_i + \theta)$.
+    </p>
     <p>
       GMX's GLP discount function is an explicit, <strong>PID-controller-like</strong>
       instance: it scores each asset $i$ by how a trade changes its gap to target,
@@ -147,7 +158,9 @@
     </p>
     <div class="equation-card">$V_{\text{new}} = \dfrac{p^\top R}{1+F} + f\,p^\top \ell.$</div>
     <p class="muted">
-      In code: <code>gmx_glp_discount()</code>, <code>target_weight_trade()</code>,
+      In code: <code>gmx_glp_discount()</code>, <code>target_weight_trade()</code>
+      (which reports infeasibility rather than returning a trade that misses both
+      constraints), <code>target_weight_min_value()</code>,
       <code>portfolio_dilution_value()</code>.
     </p>
 
@@ -163,7 +176,7 @@
       cheaper to offset than a CFMM's, which is the structural reason
       delta-hedged PDLP strategies proliferate (and why JLP-style shares make good
       collateral elsewhere in DeFi). Under a mean-variance objective the optimal
-      hedge, ignoring transaction costs, is the clean closed form
+      hedge, ignoring transaction costs, is the closed form
     </p>
     <div class="equation-card">$\pi_{\text{new}} = \dfrac{f}{\gamma}\,\Sigma^{-1}\ell - \Delta,$</div>
     <p>
@@ -171,6 +184,19 @@
       fee revenue dominates the delta,
       $f\,\mathbb{E}[p^\top \ell] \ge \gamma\,\lambda_{\max}\,\mathbb{E}[p^\top \Delta]$,
       and the hedge variance is at most $4\times$ the pool variance.
+    </p>
+    <p>
+      Worth separating what is the paper's from what is not. The hedge formula
+      itself is textbook one-period mean-variance: maximising
+      $f\,\ell^\top x - \tfrac{\gamma}{2}(x+\Delta)^\top\Sigma(x+\Delta)$ gives
+      $x + \Delta = (f/\gamma)\Sigma^{-1}\ell$ by setting the gradient to zero, and
+      the transaction-cost version is the same first-order condition with a
+      $\mathrm{Diag}(c)$ ridge. What the paper supplies is the *identification* of
+      the terms — that the PDLP's expected-return vector is the fee revenue
+      $f\ell$ and that its delta $\Delta$ is bounded by Claim 3.4 — plus the
+      Sharpe conditions of Claim 4.1, which are sufficient rather than necessary.
+      The mean-variance step is doing no work the literature has not already done;
+      the bounded delta is why the step is worth taking here at all.
     </p>
     <p class="muted">
       In code: <code>delta_hedge()</code>, <code>sharpe_improves()</code>.

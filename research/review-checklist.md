@@ -131,9 +131,9 @@ and its verification are fixed, and cross-checked at the end.
 - [ ] A6. Peer prediction: output agreement is not truthful in general;
   distinguish Correlated Agreement from Enforced Agreement; BTS validation
   claims need their assumptions.
-- [ ] A7. Nearest-the-pin truthfulness needs its equilibrium concept
+- [x] A7. Nearest-the-pin truthfulness needs its equilibrium concept
   (price-taking, Kelly, symmetric) stated wherever it is asserted.
-- [ ] A8. PDLP delta-hedge section should say which results are the paper's
+- [x] A8. PDLP delta-hedge section should say which results are the paper's
   and which are standard mean-variance.
-- [ ] A9. Homepage and Connections slogans disagree with the corrected
+- [x] A9. Homepage and Connections slogans disagree with the corrected
   mechanism pages.

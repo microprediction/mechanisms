@@ -48,9 +48,12 @@
       The organising idea is a <strong>duality between proper scoring rules and
       market mechanisms</strong>. A proper scoring rule elicits one truthful belief.
       Run it <em>sequentially</em> and it becomes a prediction-market maker
-      (Hanson's LMSR). Run it as a <em>pool</em> and it becomes a parimutuel.
-      Take its <em>convex conjugate</em> and you have a DeFi constant-function
-      market maker. The same mathematics, wearing different institutional clothes.
+      (Hanson's LMSR). Its <em>convex conjugate</em> is the cost function of that
+      maker, and a further level-set construction carries it to a DeFi
+      constant-function market maker. A parimutuel is the same potential again,
+      recovered as the dual of a convex program whose solution is the pool odds.
+      The same mathematics, wearing different institutional clothes, with the
+      hypotheses each step needs spelled out on the pages themselves.
     </p>
 
     <div class="diagram">
@@ -82,7 +85,7 @@
         <text x="410" y="184" text-anchor="middle" font-size="10.5" fill="#9a9a9a">self-funding, endogenous odds</text>
 
         <rect x="552" y="122" width="248" height="74" rx="10" fill="#fff" stroke="#e2e2e2"/>
-        <text x="676" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#0f2730">Convex conjugate</text>
+        <text x="676" y="146" text-anchor="middle" font-size="13" font-weight="600" fill="#0f2730">Reserves side</text>
         <text x="676" y="166" text-anchor="middle" font-size="12" fill="#5a5a5a">Constant-function AMM</text>
         <text x="676" y="184" text-anchor="middle" font-size="10.5" fill="#9a9a9a">x·y=k (Uniswap), Balancer</text>
 

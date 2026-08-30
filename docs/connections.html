@@ -52,17 +52,22 @@
       (Savage 1971; Banerjee et al. 2005; Gneiting &amp; Raftery 2007). Take the
       convex conjugate: $C = G^\ast$ is a
       <a href="./mechanisms/cmm.html">cost-function market maker</a> with prices
-      $\nabla C$, arbitrage-free because $C$ is convex, and worst-case loss equal
-      to the range of the conjugate. Hanson's
+      $\nabla C$, and worst-case loss equal to the range of $G$ over the payoff
+      hull. It is arbitrage-free because that conjugate construction confines
+      prices to the hull, <em>not</em> merely because $C$ is convex: convexity
+      alone permits a sure profit, as the quadratic potential on the
+      <a href="./mechanisms/cmm.html">maker page</a> shows. Hanson's
       <a href="./mechanisms/lmsr.html">LMSR</a> is the entropic case
       $C(q)=b\log\sum_i e^{q_i/b}$ with loss $b\log n$ (Hanson 2007;
       <a href="https://doi.org/10.1145/2465769.2465777">Abernethy, Chen &amp; Wortman Vaughan 2013</a>).
     </p>
     <p>
-      The involution $C \leftrightarrow C^\ast$ <em>is</em> the maker-to-CFMM
-      duality: Uniswap and Balancer are the same potential read from the reserve
-      side, not a different mechanism (Frongillo, Papireddygari &amp; Waggoner 2024).
-      And the same duality reaches the order book: a
+      Convex duality also carries the maker to the CFMM: Uniswap and Balancer are
+      the same potential read from the reserve side rather than a different
+      mechanism (Frongillo, Papireddygari &amp; Waggoner 2024). The map is a
+      level-set or perspective construction under monotonicity and reserve-domain
+      assumptions, though, not the bare involution $C \leftrightarrow C^\ast$.
+      The same duality reaches the order book: a
       <a href="./mechanisms/fba.html">call or batch auction</a>'s uniform clearing
       price is the dual variable of &ldquo;maximise matched volume,&rdquo; and a
       <a href="./mechanisms/parimutuel.html">parimutuel</a> is a convex program
