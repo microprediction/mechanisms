@@ -481,3 +481,125 @@ def test_section4_the_arbitrage_depth_is_the_fee_that_closes_it():
         assert max_sure_profit(xs, cost, fee=0.99 * excess) > 0
         assert max_sure_profit(xs, cost, fee=excess) == pytest.approx(0.0, abs=1e-6)
         assert max_sure_profit(xs, cost, fee=1.01 * excess) <= 1e-9
+
+
+# --------------------------------------------------------------------------- #
+# §1  The dictionary: proximal steps are trades against a fee-bearing maker
+# --------------------------------------------------------------------------- #
+def test_section1_prox_is_the_response_to_a_unit_quadratic_maker():
+    """prox_g(x) = argmax_s {x s - s^2/2 - g(s)}, for any convex g."""
+    fills = np.arange(-10.0, 10.0, 1e-5)
+    for penalty in (lambda s: np.abs(s),            # lasso
+                    lambda s: s ** 2 / 2,           # ridge
+                    lambda s: 0.3 * np.abs(s)):
+        for x in (-1.5, -0.2, 0.4, 2.0):
+            prox = fills[int(np.argmin(0.5 * (fills - x) ** 2 + penalty(fills)))]
+            trade = fills[int(np.argmax(x * fills - fills ** 2 / 2 - penalty(fills)))]
+            assert prox == pytest.approx(trade, abs=1e-4)
+
+
+def test_section1_prox_of_the_absolute_value_is_the_soft_threshold():
+    """The trader's optimal response to a proportional fee, in closed form."""
+    fills = np.arange(-10.0, 10.0, 1e-5)
+    for fee in (0.2, 0.7):
+        soft = lambda x: np.sign(x) * max(abs(x) - fee, 0.0)
+        for x in (-1.5, -0.1, 0.0, 0.3, 2.0):
+            prox = fills[int(np.argmin(0.5 * (fills - x) ** 2 + fee * np.abs(fills)))]
+            assert prox == pytest.approx(soft(x), abs=1e-4)
+
+
+def test_section1_without_the_makers_curvature_the_l1_problem_is_unbounded():
+    """A bare conjugate diverges exactly when |mu| > f, which is why Lemma 4
+    carries the base cost g_q."""
+    fee = 0.3
+    for mu in (0.2, 0.3, 0.5, 1.0):
+        values = []
+        for reach in (10.0, 100.0, 1000.0):
+            grid = np.arange(-reach, reach, 1e-3)
+            values.append(float(np.max(mu * grid - fee * np.abs(grid))))
+        diverges = values[-1] > 10.0
+        assert diverges == (abs(mu) > fee)
+        if diverges:
+            # And it diverges linearly in the reach, so there is no limit.
+            assert values[2] == pytest.approx(10 * values[1], rel=1e-3)
+
+
+# --------------------------------------------------------------------------- #
+# §7  Routing disciplines the posted menu
+# --------------------------------------------------------------------------- #
+def test_section7_quoting_inside_the_spread_takes_the_flow_first():
+    """An entrant inside the prevailing spread takes all of a small trade."""
+    def book(entrant_fee):
+        return [LogCoshMaker(1.0, 0.30), LogCoshMaker(1.0, 0.30),
+                LogCoshMaker(1.0, entrant_fee)]
+
+    inside, _ = route(book(0.10), 0.15)
+    assert inside[2] == pytest.approx(0.15)          # the entrant takes all of it
+    assert inside[0] == inside[1] == 0.0             # incumbents get exactly zero
+
+    tied, _ = route(book(0.30), 0.15)
+    np.testing.assert_allclose(tied, np.full(3, 0.05), atol=1e-9)
+
+    outside, _ = route(book(0.35), 0.15)
+    assert outside[2] < outside[0]                   # quoting wide earns less
+
+
+def test_section7_quoting_behind_earns_nothing_until_the_front_is_consumed():
+    """The back of the book activates exactly at arctanh(0.35), not before."""
+    book = lambda: [LogCoshMaker(1.0, 0.05), LogCoshMaker(1.0, 0.40)]
+    # The back's ask is 0.40; the front alone supplies arctanh(0.40 - 0.05) by
+    # the time the clearing price gets there.
+    threshold = float(np.arctanh(0.40 - 0.05))
+    assert threshold == pytest.approx(0.365443754, abs=1e-9)
+
+    for demand in (0.05, 0.3, threshold * 0.999):
+        fills, _ = route(book(), demand)
+        assert fills[1] == 0.0                       # exactly zero, not small
+        assert fills[0] == pytest.approx(demand, abs=1e-9)
+
+    # Exactly at the threshold the clearing price sits on the back's ask, so the
+    # bisection leaves a rounding residual rather than a clean zero.
+    at_edge, _ = route(book(), threshold)
+    assert abs(at_edge[1]) < 1e-12
+
+    for demand in (threshold * 1.001, 0.6, 1.5):
+        fills, _ = route(book(), demand)
+        assert fills[1] > 1e-9                       # now it genuinely participates
+
+
+def test_section7_quoting_too_tight_is_picked_off_by_informed_flow():
+    """A maker's P&L against 30% informed flow turns on the fee it posts."""
+    rng = np.random.default_rng(0)
+    results = {}
+    for fee in (0.02, 0.10, 0.30):
+        maker = LogCoshMaker(1.0, fee)
+        pnl = 0.0
+        for _ in range(20_000):
+            settlement = rng.choice([-1.0, 1.0])
+            informed = rng.uniform() < 0.3
+            fill = 0.25 * (settlement if informed else rng.choice([-1.0, 1.0]))
+            pnl += maker.trade_cost(fill) - settlement * fill
+        results[fee] = pnl
+    assert results[0.02] < 0                         # too tight: picked off
+    assert results[0.10] < 0
+    assert results[0.30] > 0                         # wide enough to survive
+    assert results[0.02] < results[0.10] < results[0.30]
+
+
+# --------------------------------------------------------------------------- #
+# §9  The argmax identity behind "the market trades the biconjugate"
+# --------------------------------------------------------------------------- #
+def test_section9_argmax_set_identity():
+    """argmax{mu x - C} = argmax{mu x - Chat} intersected with the contact set."""
+    xs = np.linspace(-12.0, 12.0, 24001)
+    cost = _wiggly(xs)
+    env = lower_convex_envelope(xs, cost)
+    contact = set(np.flatnonzero(np.abs(cost - env) <= 1e-9).tolist())
+
+    for mu in np.linspace(-0.55, 0.55, 45):
+        raw = mu * xs - cost
+        smoothed = mu * xs - env
+        left = set(np.flatnonzero(raw >= raw.max() - 1e-9).tolist())
+        right = set(np.flatnonzero(smoothed >= smoothed.max() - 1e-9).tolist()) & contact
+        assert left == right
+        assert left                                  # non-empty inside the domain
