@@ -66,13 +66,22 @@ and its verification are fixed, and cross-checked at the end.
   `L(q) <= U(q)`, with no attainment hypothesis.
 - [x] S2. Lemma 5: exact statewise minimum fee
   `f_min(q) = max{0, L-b, a-U, (L-U)/2}`.
-- [ ] S3. Proposition 3 as an iff in the arbitrage depth.
-- [ ] S4. Coherence does not imply bounded loss; add the worst-case-loss
-  formula and a coherent, non-convex, bounded-loss example.
-- [ ] S5. Moreau identity `(e_λ C)** = e_λ(C**)`, and the theorem that for
-  continuous `C` with proper envelope, `e_λ C` is convex iff `C` is.
-- [ ] S6. Proposition 9(ii) for more than two branches: the jump is
-  `(max P_λ - min P_λ)/λ`.
+- [x] S3. Proposition 3 as an iff in the arbitrage depth. Restated with the
+  depth defined as a supremum and both directions proved, which is what makes
+  the fee a price rather than merely a fee that works.
+- [x] S4. Coherence does not imply bounded loss; add the worst-case-loss
+  formula and a coherent, non-convex, bounded-loss example. Both added.
+  `C(q) = |q|/2` is coherent with slopes `+-1/2` yet loses without bound;
+  `C' = tanh q + (1/2) sin q sech^2 q` is coherent, genuinely non-convex, and
+  bounded at 0.435. Bounded loss is the conjugate being finite at the hull's
+  endpoints, a condition on `C` at infinity, not on curvature.
+- [x] S5. Moreau identity `(e_λ C)** = e_λ(C**)`, and the theorem that for
+  continuous `C` with proper envelope, `e_λ C` is convex iff `C` is. Added as
+  a Remark with proof, and it is what settles the retracted convexification
+  claim that a finite window could not.
+- [x] S6. Proposition 9(ii) for more than two branches: the jump is
+  `(max P_λ - min P_λ)/λ`. Restated for the whole proximal set, noting only
+  its extreme members contribute.
 - [x] S7. Proposition 9(i) is sharp: affine costs attain the chord bound.
 - [x] S8. Proposition 10: signed positions, "profit at least", and a
   PSD-but-binary-incoherent example (cut polytope). Added the closed-form
@@ -80,14 +89,21 @@ and its verification are fixed, and cross-checked at the end.
   binary-realizable only for `rho >= -1/3`, the separating portfolio is the
   triangle inequality, and the profit is `-1/3 - rho` per unit. Verified by
   the LP oracle and bracketed at the boundary.
-- [ ] S9. Proposition 11: quantitative local statement under an
-  `L`-Lipschitz gradient, with the certified step size.
-- [ ] S10. Corollary 8: "strictly increasing on every open interval on which
+- [x] S9. Proposition 11: quantitative local statement under an
+  `L`-Lipschitz gradient, with the certified step size
+  `2(m - f|y|)/(L|y|^2)`, maximal profit `(m - f|y|)^2/(2L|y|^2)` at half of
+  it, replacing "sufficiently small".
+- [x] S10. Corollary 8: "strictly increasing on every open interval on which
   at least one maker is active".
-- [ ] S11. Proposition 9 hypotheses: `λ, c, α > 0`, finite and lsc `C`.
-- [ ] S12. Accessible coherence: make the search randomness explicit and fix
-  units.
-- [ ] S13. Do not claim a universal `1/λ` gap rate; scope it.
+- [x] S11. Proposition 9 hypotheses: `λ, c, α > 0`, finite and lsc `C`.
+- [x] S12. Accessible coherence: make the search randomness explicit and fix
+  units. Both in the numeraire the securities settle in; the expectation is
+  over the procedure's internal randomness only, holding the venue state
+  fixed, and nothing averages over outcomes.
+- [x] S13. Do not claim a universal `1/λ` gap rate; scope it. The double
+  well's gap is `alpha c - lambda alpha^2 / 2` before the deep regime, which
+  is linear in lambda, and `c^2/(2 lambda)` after. No universal rate is
+  claimed.
 
 ## Verification architecture
 

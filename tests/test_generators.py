@@ -177,3 +177,61 @@ def test_chord_bounds_certify_the_contact_test():
     for i in range(50, GRID.size - 50, 137):
         lower, upper = chord_bounds(GRID, cost, i)
         assert (lower <= upper + 1e-9) == bool(gap[i] <= 1e-9)
+
+
+# --------------------------------------------------------------------------- #
+# coherence and bounded loss are different properties (S4)
+# --------------------------------------------------------------------------- #
+def _worst_case_loss(qs, cost, hull=(-1.0, 1.0), q0_index=None):
+    """max over reachable q and omega in the hull of omega(q-q0) - (C(q)-C(q0))."""
+    i0 = qs.size // 2 if q0_index is None else q0_index
+    return max(float(np.max(w * (qs - qs[i0]) - (cost - cost[i0]))) for w in hull)
+
+
+def test_coherence_does_not_imply_bounded_loss():
+    qs = np.linspace(-2000.0, 2000.0, 400001)
+    # Slopes +-1/2, well inside the hull [-1, 1], so the maker is coherent.
+    coherent = 0.5 * np.abs(qs)
+    assert max_sure_profit(qs, coherent) <= 1e-9
+    # Yet the loss grows without bound with the position: 1/2 per unit.
+    loss = _worst_case_loss(qs, coherent)
+    assert loss > 900.0
+    # And it really is linear in the reach, not converging.
+    half = np.linspace(-1000.0, 1000.0, 200001)
+    assert _worst_case_loss(half, 0.5 * np.abs(half)) == pytest.approx(loss / 2,
+                                                                      rel=1e-3)
+
+
+def test_a_coherent_non_convex_maker_can_still_have_bounded_loss():
+    # C' = tanh q + (1/2) sin q sech^2 q: damped so the slope stays in [-1, 1]
+    # exactly, wiggly so C'' goes negative, and asymptotically +-1 so the
+    # conjugate is finite at both hull endpoints.
+    qs = np.linspace(-60.0, 60.0, 1200001)
+    dq = qs[1] - qs[0]
+    slope = np.tanh(qs) + 0.5 * np.sin(qs) / np.cosh(qs) ** 2
+    cost = np.concatenate([[0.0], np.cumsum(0.5 * (slope[1:] + slope[:-1]) * dq)])
+    cost -= cost[qs.size // 2]
+
+    assert slope.min() >= -1.0 and slope.max() <= 1.0        # coherent
+    assert float(np.min(np.diff(slope) / dq)) < -1e-4        # genuinely non-convex
+    assert max_sure_profit(qs, cost) <= 1e-6
+    assert _worst_case_loss(qs, cost) == pytest.approx(0.435, abs=0.02)
+
+
+def test_the_certified_step_size_is_where_the_profit_turns_over():
+    # Prop 11's quantitative form: with an L-Lipschitz gradient the profit of a
+    # trade delta*y is at least delta*(m - f|y|) - (L/2) delta^2 |y|^2, positive
+    # up to delta* = 2(m - f|y|)/(L|y|^2) and maximal at half of it.
+    for margin, fee, lipschitz, norm in ((0.5, 0.0, 2.0, 1.0),
+                                         (1.2, 0.1, 0.5, 2.0),
+                                         (0.3, 0.05, 4.0, 0.5)):
+        net = margin - fee * norm
+        step = 2.0 * net / (lipschitz * norm ** 2)
+        profit = lambda d: d * net - 0.5 * lipschitz * d ** 2 * norm ** 2
+        assert profit(step) == pytest.approx(0.0, abs=1e-12)     # turns over here
+        assert profit(step * 0.999) > 0
+        assert profit(step * 1.001) < 0
+        best = step / 2.0
+        assert profit(best) == pytest.approx(net ** 2 / (2 * lipschitz * norm ** 2))
+        grid = np.linspace(1e-6, step, 5000)
+        assert grid[int(np.argmax(profit(grid)))] == pytest.approx(best, rel=1e-3)

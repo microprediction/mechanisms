@@ -282,14 +282,65 @@ both readings were wrong, and no claim about bimodal implied densities
 
 The failure mode surviving §2 is chord slopes exiting the hull.
 
-**Proposition 3 (fees buy bounded incoherence).** *If chord slopes exit the
-hull by at most $\varepsilon$ per unit, i.e. $C(q+s) - C(q) \ge
-\min_\omega \varphi(\omega)s - \varepsilon\lvert s\rvert$, then a
-proportional fee $f \ge \varepsilon$ restores no-arbitrage.*
+**Proposition 3 (fees buy bounded incoherence, exactly).** *Define the
+arbitrage depth*
 
-**Proof.** Sure profit with the fee is
-$\min_\omega \varphi(\omega)s - \Delta C - f\lvert s\rvert \le
-(\varepsilon - f)\lvert s\rvert \le 0$. $\blacksquare$
+$$\varepsilon \;=\; \sup_{q,\,s \ne 0}
+\frac{\big[\min_\omega \varphi(\omega)s - C(q+s) + C(q)\big]_+}
+{\lvert s\rvert}.$$
+
+*Then a proportional fee $f$ restores no-arbitrage if and only if
+$f \ge \varepsilon$. In particular $\varepsilon$ is the smallest such fee,
+and it is finite exactly when the chord slopes exit the hull by a bounded
+amount per unit.*
+
+**Proof.** ($\Leftarrow$) With the fee, the sure profit of a fill $s$ from
+$q$ is $\min_\omega \varphi(\omega)s - \Delta C - f\lvert s\rvert \le
+(\varepsilon - f)\lvert s\rvert \le 0$ by the definition of
+$\varepsilon$ as a supremum. ($\Rightarrow$) If $f < \varepsilon$ then by
+definition of the supremum there is a pair $(q, s)$ with
+$[\min_\omega \varphi(\omega)s - \Delta C]_+ / \lvert s\rvert > f$, and
+that fill earns $\lvert s\rvert$ times the excess, which is strictly
+positive. $\blacksquare$
+
+The direction usually stated is the sufficiency. The converse is what
+makes $\varepsilon$ a *price*: it is not merely a fee that works but the
+exact toll on the incoherence, so a venue quoting a wider spread than
+$\varepsilon$ is leaving surplus on the table and one quoting a narrower
+spread is being arbitraged, with no ambiguity in between. The affine
+example of §3 is the sharp case: $C(q) = 100q$ has $\varepsilon = 99$,
+and the interval of tenable beliefs is empty for every $f < 99$ and
+non-empty for every $f \ge 99$.
+
+Coherence and bounded loss are different properties, and it is worth
+saying so because the convex axiomatics deliver them together. Starting
+from $q_0$ and settling at $\omega$ in the hull $[a,b]$, the maker's loss
+is $\omega(q - q_0) - [C(q) - C(q_0)]$, so its worst case over reachable
+states and outcomes is
+
+$$L(q_0) \;=\; \max_{\omega \in \{a,\,b\}}
+\big[\, C^*(\omega) + C(q_0) - \omega q_0 \,\big],$$
+
+by convexity of $C^*$ in $\omega$. Coherence asks that every chord slope
+lie *in* $[a,b]$; bounded loss asks that $C^*$ be *finite at* $a$ and $b$.
+These are different conditions and neither implies the other.
+
+$C(q) = \tfrac12\lvert q\rvert$ is the counterexample in one direction.
+Its chord slopes are $\pm\tfrac12$, comfortably inside $[-1,1]$, so it is
+coherent; but $C^*(\omega) = +\infty$ for $\lvert\omega\rvert > \tfrac12$,
+so a trader who buys $q$ units and settles at $\omega = 1$ takes
+$\tfrac12 q$ from the maker, without bound. Coherence bounds the loss
+*per unit* and says nothing about the number of units.
+
+In the other direction, coherent non-convex makers with bounded loss do
+exist, so nothing here forces a choice. Take $C' (q) = \tanh q +
+\tfrac12 \sin q \operatorname{sech}^2 q$. The damping keeps the slope in
+$[-1, 1]$ exactly, so the maker is coherent; the wiggle makes $C''$
+negative on infinitely many intervals, so it is genuinely non-convex; and
+because $C' \to \pm 1$ at $\pm\infty$ the conjugate is finite at both hull
+endpoints, giving $L(0) \approx 0.435$. What bounded loss really requires
+is that the *asymptotic* slopes reach the hull's edges, which is a
+condition on $C$ at infinity and not on its curvature anywhere.
 
 This is the mechanism-level counterpart of a theorem of mathematical
 finance: under regularity conditions such as sticky paths or full
@@ -507,8 +558,8 @@ quotes and the merged liquidity the sum of their precisions.*
 $S(p) = \sum_i s_i(p)$ is non-decreasing, identically zero on
 $\big(\max_i \mathrm{bid}_i,\ \min_i \mathrm{ask}_i\big)$ when that
 interval is non-empty, flat on any open interval contained in the
-interiors of all the bands, and continuous and strictly increasing
-wherever some maker is active. If the active makers are in addition
+interiors of all the bands, and continuous and strictly increasing on every
+open interval on which at least one maker is active. If the active makers are in addition
 $C^2$ with $C_i'' > 0$ and $p$ is away from band boundaries, the local
 depth is $S'(p) = \sum_{i\ \mathrm{active}} 1/C_i''(q_i + s_i(p))$.*
 Differentiability needs that extra hypothesis: the maker
@@ -525,18 +576,28 @@ patched by the fee. The economics of the book assembled from competing
 liquidity suppliers is @glosten1994limit, with convergence of strategic
 schedules in @biais2000competing.
 
-**Proposition 9 (a deep co-quoter is Moreau smoothing).** *Merging a
-maker with cost $C$ with a quadratic co-quoter of cost $s^2/(2\lambda)$
-yields the venue with cost the Moreau envelope
-$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$. Then:
+**Proposition 9 (a deep co-quoter is Moreau smoothing).** *Let $C$ be
+finite, lower semicontinuous and minorized by an affine function, and let
+$\lambda > 0$. Merging a maker with cost $C$ with a quadratic co-quoter of
+cost $s^2/(2\lambda)$ yields the venue with cost the Moreau envelope
+$e_\lambda C(x) = \min_y C(y) + (x-y)^2/(2\lambda)$, the minimum being
+attained under those hypotheses. Then:
 (i) coherence is preserved: if the chord slopes of $C$ lie in $[a, b]$,
-so do those of $e_\lambda C$, for every $\lambda$; (ii) at any point where
-two distinct minimizing branches coexist (a crossing), the downward jump
-in marginal price is exactly the separation of the competing minimizers
-divided by $\lambda$, at most $D/\lambda$ when all competing minimizers
-lie in an interval of diameter $D$; (iii) for the symmetric double well
+so do those of $e_\lambda C$, for every $\lambda$; (ii) at any point where several distinct minimizing branches coexist (a
+crossing), writing $P_\lambda(x) = \arg\min_y \{C(y) + (x-y)^2/2\lambda\}$
+for the (possibly non-singleton) proximal set, the downward jump in
+marginal price is exactly*
+
+$$\frac{\max P_\lambda(x) - \min P_\lambda(x)}{\lambda},$$
+
+*which for two branches is their separation divided by $\lambda$ and in
+general is at most $D/\lambda$ when the competing minimizers lie in an
+interval of diameter $D$. Only the extreme members of $P_\lambda(x)$
+matter: the marginal price is $(x - y)/\lambda$ evaluated at the smallest
+and largest minimizer, so intermediate branches contribute nothing to the
+jump;* (iii) for the symmetric double well
 $C(y) = \alpha \min(\lvert y - c\rvert, \lvert y + c\rvert)$ with
-$\alpha < 1$, the jump at $x = 0$ equals $2\alpha$ while
+$c > 0$ and $0 < \alpha < 1$, the jump at $x = 0$ equals $2\alpha$ while
 $\lambda\alpha < c$ and $2c/\lambda$ thereafter, so it is constant in the
 depth until the co-quoter is deep enough to reach across the wells. The
 bound in (ii) measures crossing defects only: the
@@ -572,14 +633,48 @@ $e_\lambda C(0) = \alpha c - \lambda\alpha^2/2$ for $\lambda\alpha < c$
 and $c^2/(2\lambda)$ after, strictly positive for every finite $\lambda$;
 since $e_\lambda C \ge 0$ vanishes at $\pm c$, its convex envelope is
 zero at the midpoint, so the midpoint stays strictly off contact at every
-depth and the gap merely decays like $1/\lambda$. The accurate statement
-is that depth attenuates the envelope gap and regularizes crossing
-geometry without creating chord incoherence; it does not close the
-off-contact interval, restore convexity, or make every state reachable. Crossing kinks close at rate $1/\lambda$ only
-where the competing minimizers stay within a $\lambda$-independent
-diameter; the double well shows what happens otherwise, its jump holding
-at $2\alpha$ until the depth exceeds $c/\alpha$. Smooth concave stretches
-lie outside the bound's scope entirely. Here $\lambda$ is the
+depth. For *this* cost the gap eventually decays like $c^2/(2\lambda)$,
+and that rate is a fact about the double well rather than a general one:
+it is the deep regime $\lambda\alpha \ge c$, and before it the gap is
+$\alpha c - \lambda\alpha^2/2$, which is linear in $\lambda$ and not
+$1/\lambda$ at all. No universal rate is claimed here, and none should
+be: the decay is set by how far apart the competing minimizers sit, which
+is a property of $C$.
+
+The accurate statement is that depth attenuates the envelope gap and
+regularizes crossing geometry without creating chord incoherence; it does
+not close the off-contact interval, restore convexity, or make every
+state reachable. Crossing kinks close at rate $1/\lambda$ only where the
+competing minimizers stay within a $\lambda$-independent diameter; the
+double well shows what happens otherwise, its jump holding at $2\alpha$
+until the depth exceeds $c/\alpha$. Smooth concave stretches lie outside
+the bound's scope entirely.
+
+That convexity is never restored is a theorem, not an observation about
+this example.
+
+**Remark (Moreau does not convexify; known).** *For $C$ proper, lower
+semicontinuous and minorized by an affine function, conjugation turns
+inf-convolution into addition, so
+$(e_\lambda C)^* = C^* + \tfrac{\lambda}{2}\lVert\cdot\rVert^2$ and
+hence*
+
+$$(e_\lambda C)^{**} \;=\; e_\lambda(C^{**}).$$
+
+*Consequently $e_\lambda C$ is convex if and only if $C$ is. One direction
+is immediate. For the other, suppose $C(x_0) > \hat C(x_0)$ at some
+$x_0$, let $\mu_0$ be the slope of $\hat C$ on the component containing
+$x_0$, and take $x = x_0 + \lambda\mu_0$. The map
+$y \mapsto \hat C(y) + (x-y)^2/2\lambda$ is strictly convex with unique
+minimizer $x_0$, so for $y \ne x_0$ it strictly exceeds its value there,
+while at $y = x_0$ we have $C(x_0) > \hat C(x_0)$; hence
+$e_\lambda C(x) > e_\lambda(\hat C)(x) = (e_\lambda C)^{**}(x)$ and
+$e_\lambda C$ is not convex. The identity is standard
+[@rockafellar1970convex; @rockafellar1998variational]; it is recorded here
+because it settles the question a numerical study of $e_\lambda C$ on a
+finite window cannot: an earlier draft read a curvature of
+$+3.6\times10^{-8}$ at $\lambda$ large on a $\pm 12$ window as
+convexification, and it was a truncation artifact.* Here $\lambda$ is the
 co-quoter's liquidity: its price impact is $1/\lambda$, so large
 $\lambda$ means a deep book, not a strong pull.
 
@@ -726,6 +821,27 @@ $f\lVert y\rVert$ yields sure profit for all sufficiently small $\delta$,
 at a rate rather than in the size of $y$; market impact then sets how
 large a position the certificate supports.*
 
+*Quantitatively, if $\nabla C$ is $L$-Lipschitz then
+$C(q + \delta y) - C(q) \le \delta\langle y, x\rangle +
+\tfrac{L}{2}\delta^2\lVert y\rVert^2$, so with separating margin
+$m = \inf_{z \in K}\langle y, z\rangle - \langle y, x\rangle$ the profit
+of a trade $\delta y$ is at least*
+
+$$\delta\big(m - f\lVert y\rVert\big)
+- \tfrac{L}{2}\delta^2\lVert y\rVert^2,$$
+
+*which is strictly positive for every*
+
+$$0 \;<\; \delta \;<\; \delta^\star \;=\;
+\frac{2\big(m - f\lVert y\rVert\big)}{L\lVert y\rVert^2},$$
+
+*and is maximized at $\delta^\star/2$, where it equals
+$(m - f\lVert y\rVert)^2 / (2L\lVert y\rVert^2)$. So the certificate
+comes with a certified step size rather than an unquantified "sufficiently
+small", and the harvest is quadratic in the net margin and inversely
+proportional to the curvature: a deeper book, meaning smaller $L$, is
+worth more to the arbitrageur, not less.*
+
 The converse needs care, and an earlier version overstated it. A
 separating margin *below* $f\lVert y\rVert$ does not mean the venue is
 arbitrage-free. What Proposition 3 rules out is the first-order local
@@ -855,9 +971,17 @@ $$V_f(\pi; x) \;=\; \inf_\omega\big[\,\mathrm{payoff}_\omega(\pi) -
 \mathrm{executionCost}_x(\pi) - \mathrm{fees}_f(\pi)\,\big]$$
 
 *be the guaranteed profit, maximized over the positions the arbitrageur's
-depth, capital and position limits allow, with $C_A(x)$ the search cost
-and the expectation below taken over the randomness of the search
-procedure alone. The accessible-coherence set is*
+depth, capital and position limits allow. Both $V_f$ and the search cost
+$C_A(x)$ are in units of the numeraire the securities settle in, so the
+difference below is a currency amount and not a ratio; a class stated in
+units of computation must be converted at a price of compute before it
+can be compared. The procedure $A$ may randomize, and $C_A(x)$ is then the
+expected cost of running it; the expectation in the display is taken over
+that internal randomness only, holding $x$ fixed, so the definition is a
+statement about a given venue state rather than an average over states.
+Nothing here averages over outcomes: $V_f$ is already an infimum over
+$\omega$, which is what keeps the notion a sure-profit one. The
+accessible-coherence set is*
 
 $$K_{\mathcal{A}, f} \;=\; \Big\{\, x :\ \sup_{A \in \mathcal{A}}
 \mathbb{E}\big[\, V_f(A(x); x) - C_A(x) \,\big] \le 0 \,\Big\}.$$
