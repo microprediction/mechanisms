@@ -47,8 +47,18 @@ and its verification are fixed, and cross-checked at the end.
   The clause is out; the paragraph now says what is actually ruled out (the
   infinitesimal trade in that one direction) and what is not (other
   directions, and trades large enough for curvature to repay the fee).
-- [ ] M9. Independent exact oracles instead of comparing a discretization
-  with itself.
+- [x] M9. Independent exact oracles instead of comparing a discretization
+  with itself. Added `tests/oracles/piecewise_linear.py`: the convex envelope
+  by enumerating the LP's basic solutions (against a monotone chain), the
+  Moreau envelope analytically per linear piece (against a grid minimisation),
+  chord bounds and max sure profit by exhaustive pair enumeration (against an
+  `O(n)` scan). `tests/test_oracles.py` checks all four, asserts the Moreau
+  grid error is one-sided and closes quadratically rather than pretending it
+  is zero, verifies the certificate witness reproduces its own claim, and
+  includes a deliberately broken input so the comparison is known to have
+  teeth. Writing the oracle immediately caught a semantic mismatch: the
+  library reports a negative max sure profit as the coherence margin, which a
+  floored oracle would have silently discarded.
 
 ## Strengthenings offered by the review
 

@@ -120,7 +120,9 @@ def lower_convex_envelope(xs, ys) -> np.ndarray:
 
     ``xs`` must be strictly increasing. Andrew's monotone-chain lower hull
     of the sampled points, which is the envelope of the sample rather than
-    of the underlying continuous function.
+    of the underlying continuous function. For a piecewise-linear cost the
+    two coincide, and ``tests/oracles/piecewise_linear.py`` confirms it by
+    solving the defining linear program instead of walking a hull.
     """
     xs, ys = _validated_grid(xs, ys)
     hull: list[tuple[float, float]] = []
@@ -258,10 +260,12 @@ def moreau_envelope(xs, ys, lam: float) -> np.ndarray:
     """Numeric Moreau envelope ``min_y ys(y) + (x - y)^2 / (2 lam)`` on ``xs``.
 
     The merged venue of the ``ys`` maker and a quadratic co-quoter of depth
-    ``lam`` (their infimal convolution). Minimizes over the *sampled* grid,
-    so it is the envelope of the sample, not of the underlying continuous
-    function; ``tests/oracles/piecewise_linear.py`` supplies the exact
-    piecewise-linear oracle used to check it.
+    ``lam`` (their infimal convolution). Minimizes over the *sampled* grid, so
+    it is the envelope of the sample rather than of the underlying continuous
+    function, and therefore an upper bound on the true envelope.
+    ``tests/oracles/piecewise_linear.py`` minimises analytically on each linear
+    piece instead, giving the exact value the tests compare against; the gap
+    between them is ``O(dx^2 / lam)`` and closes as the mesh refines.
     """
     xs, ys = _validated_grid(xs, ys)
     lam = float(lam)
