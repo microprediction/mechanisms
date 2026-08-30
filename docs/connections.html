@@ -37,7 +37,22 @@
     the repository together. The <a href="./map.html">map</a> shows the edges;
     this page states the theorems.</p>
 
-    <h2>1. Convex duality</h2>
+    <p>
+      A word on how strong each claim is, because "connection" covers a wide range
+      and the differences are the interesting part. Five kinds appear below and
+      each is named where it is used. An <em>exact equivalence</em> is an identity
+      between two objects with no side conditions. An <em>equivalence under
+      hypotheses</em> holds once stated assumptions are met and fails without them;
+      the hypotheses are given. A <em>composition identity</em> says an operation
+      on one side corresponds to an operation on the other. An <em>equilibrium
+      result</em> is a statement about what strategic agents do, and carries its
+      solution concept — dominant strategy, Bayes-Nash, or a price-taking
+      approximation — because those are not interchangeable. An <em>analogy</em> is
+      a structural resemblance worth noticing that is not a theorem, and is labelled
+      as such rather than dressed up.
+    </p>
+
+    <h2>1. Convex duality <span class="muted">— exact equivalence, then equivalence under hypotheses</span></h2>
     <p>
       Fix outcomes $\{1,\dots,n\}$ and a convex function $G$ on the probability
       simplex. Savage's characterisation says a strictly proper
@@ -72,12 +87,15 @@
       price is the dual variable of &ldquo;maximise matched volume,&rdquo; and a
       <a href="./mechanisms/parimutuel.html">parimutuel</a> is a convex program
       whose dual yields the implied odds
-      (<a href="https://doi.org/10.1287/opre.1110.0922">Agrawal et al. 2011</a>).
-      So scoring rules, market makers, CFMMs, batch auctions, and parimutuels are
-      conjugate views of one convex potential.
+      (<a href="https://doi.org/10.1287/opre.1110.0922">Agrawal et al. 2011</a>) —
+      that one is for the parimutuel <em>call auction</em> with limit orders over
+      state claims, not for a plain pool, whose odds are a bookkeeping ratio and
+      need no program. So scoring rules, market makers, CFMMs, batch auctions, and
+      parimutuels are conjugate views of one convex potential, with each arrow
+      carrying the hypotheses named above.
     </p>
 
-    <h2>2. Infimal convolution is composition</h2>
+    <h2>2. Infimal convolution is composition <span class="muted">— composition identity</span></h2>
     <p>
       The operation that <em>combines</em> two of these objects is the
       <strong>infimal convolution</strong>
@@ -115,7 +133,7 @@
       next section.
     </p>
 
-    <h2>3. Exponential weights is the engine</h2>
+    <h2>3. Exponential weights is the engine <span class="muted">— exact equivalence of updates</span></h2>
     <p>
       Three mechanisms in three different clusters are one update in disguise,
       mirror descent with the negative-entropy mirror:
@@ -130,7 +148,11 @@
         $w \leftarrow w\cdot p(y)/\pi$ is the Hedge update.</li>
       <li><strong>Kelly</strong> sizing maximises log-wealth growth
         $\sum_i p_i\log(p_i/\pi_i) = \mathrm{KL}(p\,\Vert\,\pi)$, which is exactly
-        the regret of the log score, by that same multiplicative step.</li>
+        the regret of the log score, by that same multiplicative step. The identity
+        needs its hypotheses: a complete set of state claims at prices $\pi$
+        summing to one, and full-Kelly staking of the whole bankroll. Fractional
+        staking or an incomplete market keeps the direction of the result and
+        loses the equality.</li>
     </ul>
     <p>
       The softmax that prices LMSR is $\nabla$ of the log-sum-exp, the gradient of
@@ -138,7 +160,7 @@
       rule are reading the same object off different faces.
     </p>
 
-    <h2>4. The scoring substrate</h2>
+    <h2>4. The scoring substrate <span class="muted">— exact equivalence, with one equilibrium result</span></h2>
     <p>
       Underneath all of it is the dictionary <em>proper scoring rule
       &harr; convex generator &harr; Bregman divergence</em> (Savage 1971;
