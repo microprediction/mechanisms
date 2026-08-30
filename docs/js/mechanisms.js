@@ -256,8 +256,21 @@
       if (vol > bestVol + 1e-12) { bestP = p; bestVol = vol; }
     }
     if (bestVol <= 0) return [null, 0.0];
-    const hi = Math.max.apply(null, bids.filter((b) => b[0] >= bestP).map((b) => b[0]));
-    const lo = Math.min.apply(null, asks.filter((a) => a[0] <= bestP).map((a) => a[0]));
+    // The executable band is set by the *marginal* accepted orders, not the
+    // extreme ones: with bids at 100 and 1000 against asks at 1 and 99, the
+    // midpoint of (1, 1000) is a price where the claimed volume cannot trade.
+    const marginal = (orders, desc) => {
+      const sorted = orders.slice().sort((x, y) => (desc ? y[0] - x[0] : x[0] - y[0]));
+      let cum = 0, price = sorted[sorted.length - 1][0];
+      for (const [p, q] of sorted) {
+        cum += q;
+        price = p;
+        if (cum >= bestVol - 1e-12) break;
+      }
+      return price;
+    };
+    const hi = marginal(bids, true);    // lowest accepted bid
+    const lo = marginal(asks, false);   // highest accepted ask
     return [0.5 * (lo + hi), bestVol];
   }
 

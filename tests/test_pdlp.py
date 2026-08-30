@@ -88,6 +88,71 @@ def test_target_weight_trade_hits_target():
     np.testing.assert_allclose(w_after, target, atol=1e-9)
 
 
+def test_target_weight_trade_refuses_the_unreachable():
+    # Everything is locked, so a pure rebalance cannot move a single unit.
+    # Coordinatewise clipping used to answer (0, 50): weights (2/3, 1/3) at
+    # value 150, when (1/2, 1/2) at value 100 was asked for.
+    prices, R, avail = np.ones(2), np.array([100.0, 0.0]), np.zeros(2)
+    target = np.array([0.5, 0.5])
+    assert pdlp.target_weight_min_value(prices, R, avail, target) == pytest.approx(200.0)
+    with pytest.raises(pdlp.TargetWeightInfeasible) as exc:
+        pdlp.target_weight_trade(prices, R, avail, target)
+    assert exc.value.min_value == pytest.approx(200.0)
+    delta = pdlp.target_weight_trade(prices, R, avail, target, strict=False)
+    np.testing.assert_allclose(delta, np.zeros(2), atol=1e-9)
+    # A deposit up to the minimum value reaches the target exactly.
+    delta = pdlp.target_weight_trade(prices, R, avail, target, new_value=200.0)
+    np.testing.assert_allclose(pdlp.weights(prices, R + delta), target, atol=1e-12)
+
+
+def test_target_weight_trade_respects_constraints():
+    rng = np.random.default_rng(4)
+    exact = projected = 0
+    for _ in range(400):
+        n = int(rng.integers(2, 6))
+        prices = rng.uniform(0.2, 5.0, n)
+        R = rng.uniform(0.0, 50.0, n)
+        avail = R * rng.uniform(0.0, 1.0, n)
+        target = rng.dirichlet(np.ones(n))
+        value = float(rng.uniform(0.2, 3.0) * (prices @ R))
+        try:
+            delta = pdlp.target_weight_trade(prices, R, avail, target,
+                                             new_value=value, strict=False)
+        except pdlp.TargetWeightInfeasible:
+            continue                       # value below the locked reserves
+        # Whatever the regime, the two hard constraints always hold.
+        assert np.all(delta >= -avail - 1e-8)
+        assert float(prices @ (R + delta)) == pytest.approx(value, rel=1e-9)
+        if value >= pdlp.target_weight_min_value(prices, R, avail, target):
+            np.testing.assert_allclose(pdlp.weights(prices, R + delta),
+                                       target, atol=1e-9)
+            exact += 1
+        else:
+            projected += 1
+    assert exact > 20 and projected > 20
+
+
+def test_target_weight_projection_is_the_closest_feasible():
+    rng = np.random.default_rng(5)
+    prices = np.array([1.0, 2.0, 4.0])
+    R = np.array([30.0, 10.0, 5.0])
+    avail = np.array([1.0, 10.0, 5.0])       # asset 0 almost entirely locked
+    target = np.array([0.2, 0.4, 0.4])
+    value = float(prices @ R)
+    assert value < pdlp.target_weight_min_value(prices, R, avail, target)
+    delta = pdlp.target_weight_trade(prices, R, avail, target,
+                                     new_value=value, strict=False)
+    best = pdlp.weights(prices, R + delta)
+    gap = float(np.sum((best - target) ** 2))
+    floor = prices * np.maximum(R - avail, 0.0) / value
+    for _ in range(20000):                   # no feasible weight vector is closer
+        y = np.maximum(floor, rng.dirichlet(np.ones(3)))
+        y = y / y.sum()
+        if np.any(y < floor - 1e-12):
+            continue
+        assert float(np.sum((y - target) ** 2)) >= gap - 1e-9
+
+
 def test_gmx_discount_rewards_rebalancing():
     target = np.array([0.5, 0.5])
     w_before = np.array([0.3, 0.7])          # underweight asset 0

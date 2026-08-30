@@ -95,3 +95,34 @@ def test_stein_loss_is_the_gaussian_bregman_divergence():
     # so a trader moving the quote from v to their belief w collects
     # D_A(theta_v, theta_w) = KL(belief || standing quote), which is the
     # orientation covariance_market.py implements.
+
+
+def test_target_weight_projection_satisfies_kkt():
+    # The constrained TWM rebalance projects w* onto {sum x = 1, x >= l}.
+    # Verify the water-filling form x_i = max(l_i, w*_i + theta) is the KKT
+    # point on a case where exactly one bound binds, so the answer is a
+    # closed-form expression rather than a numerical fixed point.
+    w1, w2, l1, th = sp.symbols("w1 w2 l1 theta", real=True)
+    # asset 1's floor binds, asset 2's does not
+    x1, x2 = l1, w2 + th
+    theta_star = sp.solve(sp.Eq(x1 + x2, 1), th)[0]
+    assert sp.simplify(theta_star - (1 - l1 - w2)) == 0
+
+    # Stationarity: grad of (1/2)||x - w*||^2 minus the multipliers vanishes.
+    mu1 = x1 - w1 - theta_star            # multiplier on the binding floor
+    mu2 = x2.subs(th, theta_star) - w2 - theta_star
+    assert sp.simplify(mu2) == 0                       # inactive bound
+    assert sp.simplify(mu1 - (l1 - w1 - (1 - l1 - w2))) == 0
+    # Dual feasibility mu1 >= 0 is exactly "the floor pushed asset 1 up",
+    # l1 >= w1 + theta, and with w1 + w2 = 1 it reduces to l1 >= w1.
+    assert sp.simplify(mu1.subs(w2, 1 - w1) - 2 * (l1 - w1)) == 0
+
+    # And the objective really is minimised there: perturb along the only
+    # feasible direction (+d, -d), which keeps the sum at 1 and respects the
+    # floor. The increase is 2d^2 + 4d(l1 - w1), positive precisely when the
+    # floor binds, which is the same condition as dual feasibility above.
+    d = sp.Symbol("d", positive=True)
+    def obj(a, b):
+        return (a - w1) ** 2 + (b - (1 - w1)) ** 2
+    increase = sp.expand(obj(l1 + d, 1 - l1 - d) - obj(l1, 1 - l1))
+    assert sp.simplify(increase - (2 * d ** 2 + 4 * d * (l1 - w1))) == 0

@@ -34,30 +34,84 @@ def clear_uniform_price(bids: List[Tuple[float, float]],
     ``bids`` and ``asks`` are lists of ``(price, qty)``. Demand at price ``p`` is
     the total quantity of bids with price ``>= p``; supply is the total asks with
     price ``<= p``. The clearing price maximises matched volume
-    ``min(demand, supply)``; we report the midpoint of the overlap between the
-    highest matched bid and lowest matched ask.
+    ``min(demand, supply)``, and is the midpoint of the executable band, the
+    interval of prices at which that volume can actually trade.
+
+    The band is set by the *marginal* accepted orders, not the extreme ones.
+    Taking the highest crossing bid and lowest crossing ask returns a price at
+    which the claimed volume cannot trade: with bids at 100 and 1000 and asks at
+    1 and 99, two units cross, but the midpoint of (1, 1000) is 500.5, where
+    demand is only one unit. The marginal accepted bid is 100 and the marginal
+    accepted ask is 99, so the executable band is [99, 100].
     """
     if not bids or not asks:
         return None, 0.0
-    # Candidate prices: all submitted limit prices.
     candidates = sorted({p for p, _ in bids} | {p for p, _ in asks})
-    best = (None, 0.0, 0.0)  # (price, volume, -spreadiness)
+    best_price, vol = None, 0.0
     for p in candidates:
         demand = sum(q for bp, q in bids if bp >= p)
         supply = sum(q for ap, q in asks if ap <= p)
-        vol = min(demand, supply)
-        if vol > best[1] + 1e-12:
-            best = (p, vol, 0.0)
-    price, vol, _ = best
+        v = min(demand, supply)
+        if v > vol + 1e-12:
+            best_price, vol = p, v
     if vol <= 0:
         return None, 0.0
-    # Refine to the midpoint of the executable band: highest bid and lowest ask
-    # that can transact `vol`.
-    crossing_bids = sorted((bp for bp, _ in bids if bp >= price), reverse=True)
-    crossing_asks = sorted(ap for ap, _ in asks if ap <= price)
-    lo = crossing_asks[0]
-    hi = crossing_bids[0]
-    return float(0.5 * (lo + hi)), float(vol)
+
+    lo_band, hi_band = _executable_band(bids, asks, vol)
+    return float(0.5 * (lo_band + hi_band)), float(vol)
+
+
+def _executable_band(bids, asks, vol: float):
+    """Prices at which ``vol`` units can trade: [marginal ask, marginal bid].
+
+    Walk demand down from the best bid and supply up from the best ask until
+    each reaches ``vol``; the prices at which they get there are the marginal
+    accepted orders, and any price between them supports the full volume.
+    """
+    def marginal(orders, reverse):
+        cum = 0.0
+        for price, qty in sorted(orders, key=lambda t: t[0], reverse=reverse):
+            cum += qty
+            if cum >= vol - 1e-12:
+                return price
+        return price
+
+    marginal_bid = marginal(bids, reverse=True)    # lowest accepted bid
+    marginal_ask = marginal(asks, reverse=False)   # highest accepted ask
+    return float(marginal_ask), float(marginal_bid)
+
+
+def clear_with_allocations(bids, asks):
+    """Clear and return ``(price, volume, bid_fills, ask_fills)``.
+
+    Orders strictly better than the clearing price fill completely; orders at
+    the price are rationed pro rata over the residual, which is the usual
+    convention when the marginal price is tied. ``bid_fills`` and ``ask_fills``
+    align with the input order lists.
+    """
+    price, vol = clear_uniform_price(bids, asks)
+    if price is None:
+        return None, 0.0, [0.0] * len(bids), [0.0] * len(asks)
+
+    def fills(orders, crosses_strictly, at_price):
+        out = [0.0] * len(orders)
+        inside = [i for i, (p, _) in enumerate(orders) if crosses_strictly(p)]
+        marginal = [i for i, (p, _) in enumerate(orders) if at_price(p)]
+        taken = 0.0
+        for i in inside:
+            out[i] = orders[i][1]
+            taken += orders[i][1]
+        residual = max(0.0, vol - taken)
+        pool = sum(orders[i][1] for i in marginal)
+        if pool > 0 and residual > 0:
+            for i in marginal:                      # pro-rata rationing
+                out[i] = residual * orders[i][1] / pool
+        return out
+
+    tol = 1e-12
+    bid_fills = fills(bids, lambda p: p > price + tol, lambda p: abs(p - price) <= tol)
+    ask_fills = fills(asks, lambda p: p < price - tol, lambda p: abs(p - price) <= tol)
+    return price, vol, bid_fills, ask_fills
 
 
 @dataclass

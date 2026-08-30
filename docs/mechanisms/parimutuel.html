@@ -145,25 +145,44 @@
       <strong>dynamic parimutuel market</strong> (DPM, ACM EC'04) keeps the
       self-funding, no-operator-risk property of a pool but adds continuous price
       discovery, hybridising the pool with order-book-style pricing. Traders buy
-      <em>shares</em> of outcomes; an outcome's instantaneous price is its share of
-      the money in the pool,
+      <em>shares</em> of outcomes, priced by the cost function
     </p>
-    <div class="equation-card">$p_i = \dfrac{s_i}{\sum_k s_k},$</div>
+    <div class="equation-card">$C(s) = \kappa\,\lVert s\rVert_2, \qquad
+      p_i = \frac{\partial C}{\partial s_i} = \frac{\kappa\, s_i}{\lVert s\rVert_2},$</div>
     <p>
-      and shares are priced by a cost function so the price rises as an outcome is
-      bought. An early buyer at a low price therefore profits when later buying
-      lifts the price, a live mark-to-market that a static pool cannot offer. On
-      resolution the whole money pool is divided among holders of winning shares
-      pro rata. The DPM powered the <em>Yahoo! Buzz</em> market and is a direct
-      precursor to Hanson's market scoring rules and the
+      whose gradient gives the <em>share-ratio</em> property $p_i/p_j = s_i/s_j$.
+      Moving the state from $s$ to $s'$ costs $C(s') - C(s)$, so the price rises as
+      an outcome is bought and an early buyer at a low price profits when later
+      buying lifts it, a live mark-to-market a static pool cannot offer. Note that
+      the prices satisfy $\sum_i p_i^2 = \kappa^2$ rather than summing to one;
+      $s_i / \sum_k s_k$ is the renormalisation that reads as a probability.
+    </p>
+    <p>
+      Charging the integral rather than the pre-trade price is what makes the
+      mechanism coherent. Because $C$ is homogeneous of degree one, the cash in the
+      pool equals $C(s)$ at every instant, and paying the whole pool out at
+      $C(s)/s_i$ per winning share balances exactly. It also makes purchases
+      path-independent: buying \$1 in one go and in two 50&cent; halves must give the
+      same shares, which a pre-trade linear price does not (2.0 against 1.75 from a
+      uniform start, a free lunch for whoever slices differently).
+    </p>
+    <p>
+      One thing a DPM share is not, is an Arrow security. Its payoff is
+      $C(s)/s_i = 1/p_i$, which depends on the state <em>at settlement</em> and not
+      only on which outcome occurred. The operator seeds the market with $s_0$ and
+      the subsidy $C(s_0)$, redeems those seed shares alongside everyone else's, and
+      so risks at most the subsidy. The DPM powered the <em>Yahoo! Buzz</em> market
+      and is a direct precursor to Hanson's market scoring rules and the
       <a href="./lmsr.html">LMSR</a>.
     </p>
     <p class="muted">
       In code: <code>DynamicParimutuelMarket</code> in
       <a href="https://github.com/microprediction/mechanisms/blob/main/mechanisms/parimutuel.py">mechanisms/parimutuel.py</a>
-      exposes <code>prices()</code>, <code>buy()</code>, and <code>settle()</code>;
-      the teaching variant uses the instantaneous share-ratio price above with a
-      linear cost approximation.
+      exposes <code>cost()</code>, <code>prices()</code>, <code>buy()</code>,
+      <code>sell()</code>, <code>settle()</code> and <code>house_settlement()</code>.
+      The share count for a given spend has a closed form,
+      $\delta = \sqrt{(C_0/\kappa + \text{spend}/\kappa)^2 - (C_0/\kappa)^2 + s_i^2} - s_i$,
+      so no root-find is needed.
     </p>
 
     <h2 id="demo">Watch the pool find the odds</h2>

@@ -105,3 +105,32 @@ and its verification are fixed, and cross-checked at the end.
 - [ ] P11. Smaller: LMSR worst-case not expected loss; margining does not
   restore ex-post IR; batching does not remove all MEV; pinball minimizer
   unique only for unique quantiles.
+
+## Implementation audit (third report, at 0c4b878)
+
+- [x] A1. FBA `clear_uniform_price` returns a price at which the reported
+  volume cannot trade (bids 100/1000 against asks 1/99 gave 500.5). Use the
+  marginal accepted orders for the band, and add allocations with pro-rata
+  rationing at the margin.
+- [x] A2. Dynamic parimutuel does not conserve cash (one \$1 buy settles to
+  \$0.67) and purchases are path dependent (\$1 buys 2.0 shares, two 50c
+  buys 1.75). Replace the pre-trade linear price with the integrated
+  share-ratio cost `C(s) = kappa ||s||_2`.
+- [x] A3. `brier_decomposition` is not an identity when a bin holds distinct
+  forecasts: `([0.1, 0.9], [0, 1], n_bins=1)` implies 0.25 against an actual
+  0.01. Return the within-bin residual and offer exact grouping.
+- [x] A4. `target_weight_trade` clips coordinatewise, which satisfies neither
+  the weights nor the value: `R = (100, 0)` fully locked answered `(2/3, 1/3)`
+  at value 150 when asked for `(1/2, 1/2)` at 100. Solve the constrained
+  program; report infeasibility with the minimum feasible value.
+- [ ] A5. `decision_market.py` does not implement the `1/R(P, a)`
+  inverse-selection settlement the page now describes.
+- [ ] A6. Peer prediction: output agreement is not truthful in general;
+  distinguish Correlated Agreement from Enforced Agreement; BTS validation
+  claims need their assumptions.
+- [ ] A7. Nearest-the-pin truthfulness needs its equilibrium concept
+  (price-taking, Kelly, symmetric) stated wherever it is asserted.
+- [ ] A8. PDLP delta-hedge section should say which results are the paper's
+  and which are standard mean-variance.
+- [ ] A9. Homepage and Connections slogans disagree with the corrected
+  mechanism pages.

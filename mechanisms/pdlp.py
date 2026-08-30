@@ -54,6 +54,8 @@ __all__ = [
     "weights",
     "gmx_glp_discount",
     "target_weight_trade",
+    "target_weight_min_value",
+    "TargetWeightInfeasible",
     "portfolio_dilution_value",
     # §4 hedged PDLPs
     "delta_hedge",
@@ -309,15 +311,67 @@ def gmx_glp_discount(w_before, w_after, w_star,
     return float(max(0.0, gamma_b + float(np.max(gs))))
 
 
-def target_weight_trade(prices, R, available, target, new_value=None):
+class TargetWeightInfeasible(ValueError):
+    """The target weights cannot be reached at the requested portfolio value.
+
+    Carries ``min_value``, the smallest post-trade value at which the target
+    *is* exactly reachable, and ``locked_value``, below which no portfolio
+    satisfying the reserve constraint exists at all.
+    """
+
+    def __init__(self, message: str, min_value: float, locked_value: float):
+        super().__init__(message)
+        self.min_value = min_value
+        self.locked_value = locked_value
+
+
+def target_weight_min_value(prices, R, available, target) -> float:
+    r"""Smallest post-trade value at which ``w*`` is exactly reachable.
+
+    Reaching the target demands ``R_i + Delta_i = w^*_i T' / p_i``, and the
+    constraint ``Delta_i >= -R^A_i`` says asset ``i`` cannot fall below its
+    locked amount ``R_i - R^A_i``. Combining, ``T' >= p_i (R_i - R^A_i) / w^*_i``
+    for every ``i``, so the binding requirement is
+
+    .. math:: T'_{\min} = \max_i \frac{p_i (R_i - R^A_i)}{w^*_i}.
+
+    A pure rebalance (``T' = p^T R``) is feasible only when it clears this bound;
+    otherwise the pool must take a deposit, because the single most over-locked
+    asset already exceeds its target share.
+    """
+    p, R, avail, ws = (np.asarray(v, float) for v in (prices, R, available, target))
+    locked = R - avail
+    with np.errstate(divide="ignore", invalid="ignore"):
+        bounds = np.where(ws > 0, p * locked / np.where(ws > 0, ws, 1.0), 0.0)
+    if np.any((ws <= 0) & (locked > 0)):
+        return float("inf")           # an asset must be zero but cannot be sold
+    return float(max(0.0, bounds.max()))
+
+
+def target_weight_trade(prices, R, available, target, new_value=None,
+                        strict: bool = True):
     r"""Solve the TWM rebalancing program (paper eq 6) to hit the target weights.
 
-    Returns the reserve change ``Delta`` that makes ``w(p, R + Delta) = w*`` for a
-    chosen post-trade portfolio value, subject to ``Delta >= -R_available`` (you
-    cannot remove utilised, loan-backing assets). To reach the target exactly,
-    each asset must hold ``R_i + Delta_i = w*_i * T' / p_i`` where ``T'`` is the
-    new total value; we default ``T'`` to the current value (a pure rebalance) and
-    clip removals at the available reserves.
+    Returns the reserve change ``Delta`` achieving ``w(p, R + Delta) = w*`` at a
+    chosen post-trade value ``T'``, subject to ``Delta >= -R^A`` (utilised,
+    loan-backing assets cannot be removed).
+
+    Clipping the unconstrained solution coordinatewise does *not* solve this. It
+    leaves both the weights and the value wrong: from ``R = (100, 0)`` with
+    nothing available, unit prices and ``w* = (1/2, 1/2)``, clipping buys 50 units
+    of the second asset and reports weights ``(2/3, 1/3)`` at value 150, having
+    been asked for ``(1/2, 1/2)`` at value 100. The two constraints interact, so
+    they have to be solved together.
+
+    They can be, exactly. If ``T' >= T'_min`` (see
+    :func:`target_weight_min_value`) the target is reachable and ``Delta`` is the
+    unconstrained solution, which already satisfies the bounds. Below that the
+    target is unreachable, and with ``strict=False`` this returns the closest
+    feasible portfolio instead: the Euclidean projection of ``w*`` onto
+    ``{x : sum_i x_i = 1, x_i >= l_i}`` with ``l_i = p_i (R_i - R^A_i) / T'``,
+    which water-fills as ``x_i = max(l_i, w*_i + theta)`` for the ``theta``
+    that makes the weights sum to one. That projection exists as long as ``T'``
+    covers the locked value ``sum_i p_i (R_i - R^A_i)``.
 
     Parameters
     ----------
@@ -325,17 +379,53 @@ def target_weight_trade(prices, R, available, target, new_value=None):
     available   : per-asset unutilised reserves ``R^A`` (max removable).
     target      : target weights ``w*``.
     new_value   : desired post-trade value ``T'`` (defaults to current value).
+    strict      : raise :class:`TargetWeightInfeasible` when ``w*`` is out of
+                  reach; if ``False``, return the closest feasible trade.
     """
-    p = np.asarray(prices, float)
-    R = np.asarray(R, float)
-    avail = np.asarray(available, float)
-    ws = np.asarray(target, float)
+    p, R, avail, ws = (np.asarray(v, float) for v in (prices, R, available, target))
+    if np.any(p <= 0):
+        raise ValueError("prices must be positive")
+    if np.any(avail < -1e-12) or np.any(avail > R + 1e-12):
+        raise ValueError("available reserves must lie in [0, R]")
+    if not np.isclose(ws.sum(), 1.0) or np.any(ws < 0):
+        raise ValueError("target weights must be non-negative and sum to 1")
+
     T = float(p @ R) if new_value is None else float(new_value)
-    desired_R = ws * T / p                 # reserves that realise w* at value T
-    delta = desired_R - R
-    # Constraint: cannot remove more than available (Delta_i >= -avail_i).
-    delta = np.maximum(delta, -avail)
-    return delta
+    if T <= 0:
+        raise ValueError("post-trade value must be positive")
+
+    locked = np.maximum(R - avail, 0.0)
+    t_min = target_weight_min_value(p, R, avail, ws)
+    if T >= t_min - 1e-12:
+        return ws * T / p - R                  # exact; bounds already satisfied
+
+    locked_value = float(p @ locked)
+    if strict:
+        raise TargetWeightInfeasible(
+            f"target weights unreachable at value {T:g}; the locked reserves "
+            f"require at least {t_min:g}", min_value=t_min,
+            locked_value=locked_value)
+    if T < locked_value - 1e-12:
+        raise TargetWeightInfeasible(
+            f"no portfolio of value {T:g} satisfies the reserve constraint; "
+            f"locked reserves alone are worth {locked_value:g}",
+            min_value=t_min, locked_value=locked_value)
+
+    lo_w = p * locked / T
+    theta_lo, theta_hi = -1.0, 1.0
+    while np.sum(np.maximum(lo_w, ws + theta_hi)) < 1.0:
+        theta_hi *= 2.0
+    while np.sum(np.maximum(lo_w, ws + theta_lo)) > 1.0:
+        theta_lo *= 2.0
+    for _ in range(200):
+        theta = 0.5 * (theta_lo + theta_hi)
+        if np.sum(np.maximum(lo_w, ws + theta)) > 1.0:
+            theta_hi = theta
+        else:
+            theta_lo = theta
+    x = np.maximum(lo_w, ws + 0.5 * (theta_lo + theta_hi))
+    x = x / x.sum()
+    return x * T / p - R
 
 
 def portfolio_dilution_value(prices, R, ell: float, fee: float, F: float) -> float:

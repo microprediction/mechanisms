@@ -117,10 +117,29 @@ def test_perp_parity():
 
 def test_fba_parity():
     from mechanisms import fba
-    bids = [[101.0, 5.0], [100.0, 3.0], [99.0, 2.0]]
-    asks = [[98.0, 4.0], [100.0, 3.0], [102.0, 5.0]]
-    py = fba.clear_uniform_price([tuple(b) for b in bids], [tuple(a) for a in asks])
-    np.testing.assert_allclose(run_js("clearUniformPrice", [bids, asks]), list(py), atol=1e-9)
+    books = [
+        ([[101.0, 5.0], [100.0, 3.0], [99.0, 2.0]],
+         [[98.0, 4.0], [100.0, 3.0], [102.0, 5.0]]),
+        # Extreme orders far from the margin: the band must come from the
+        # marginal accepted pair (99, 100), not from (1, 1000).
+        ([[1000.0, 1.0], [100.0, 1.0]], [[1.0, 1.0], [99.0, 1.0]]),
+    ]
+    rng = np.random.default_rng(3)
+    for _ in range(25):
+        books.append((
+            [[float(p), float(q)] for p, q in
+             zip(rng.uniform(90, 110, 4), rng.uniform(1, 6, 4))],
+            [[float(p), float(q)] for p, q in
+             zip(rng.uniform(90, 110, 4), rng.uniform(1, 6, 4))],
+        ))
+    for bids, asks in books:
+        price, vol = fba.clear_uniform_price([tuple(b) for b in bids],
+                                             [tuple(a) for a in asks])
+        js_price, js_vol = run_js("clearUniformPrice", [bids, asks])
+        assert (price is None) == (js_price is None), (bids, asks)
+        np.testing.assert_allclose(js_vol, vol, atol=1e-9)
+        if price is not None:
+            np.testing.assert_allclose(js_price, price, atol=1e-9)
 
 
 def test_local_scoring_parity():

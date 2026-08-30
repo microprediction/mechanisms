@@ -62,17 +62,20 @@ def simulate(n=20000, seed=0):
     section("Overconfident forecaster — reliability diagram")
     reliability_table(forecasts, outcomes)
     ece = expected_calibration_error(forecasts, outcomes)
-    rel, res, unc = brier_decomposition(forecasts, outcomes)
+    d = brier_decomposition(forecasts, outcomes)
+    rel, res = d.reliability, d.resolution
     print(f"\n  ECE = {ece:.4f}   (0 = perfectly calibrated)")
-    print(f"  Brier = reliability − resolution + uncertainty")
-    print(f"        = {rel:.4f} − {res:.4f} + {unc:.4f} = {rel - res + unc:.4f}")
+    print(f"  Brier = reliability − resolution + uncertainty + within-bin")
+    print(f"        = {rel:.4f} − {res:.4f} + {d.uncertainty:.4f} "
+          f"+ {d.within_bin:.4f} = {d.brier:.4f}")
     print("  reliability is large: the forecasts are systematically off the diagonal.")
 
     section("After temperature recalibration (T = 2.2)")
     fixed = recalibrate(forecasts, T=2.2)
     reliability_table(fixed, outcomes)
     ece2 = expected_calibration_error(fixed, outcomes)
-    rel2, res2, unc2 = brier_decomposition(fixed, outcomes)
+    d2 = brier_decomposition(fixed, outcomes)
+    rel2, res2 = d2.reliability, d2.resolution
     print(f"\n  ECE  {ece:.4f} -> {ece2:.4f}")
     print(f"  reliability {rel:.4f} -> {rel2:.4f}   (resolution preserved: {res:.4f} -> {res2:.4f})")
     print("  recalibration fixes calibration without sacrificing sharpness.")

@@ -17,11 +17,12 @@ References
 
 from __future__ import annotations
 
-from typing import List, Tuple
+from typing import NamedTuple
 
 import numpy as np
 
-__all__ = ["reliability_diagram", "expected_calibration_error", "brier_decomposition"]
+__all__ = ["BrierDecomposition", "reliability_diagram",
+           "expected_calibration_error", "brier_decomposition"]
 
 
 def reliability_diagram(probs, outcomes, n_bins: int = 10):
@@ -59,31 +60,79 @@ def expected_calibration_error(probs, outcomes, n_bins: int = 10) -> float:
     return float(np.sum(counts[mask] * gap[mask]) / total)
 
 
-def brier_decomposition(probs, outcomes, n_bins: int = 10):
-    r"""Murphy's reliability-resolution-uncertainty decomposition of the Brier score.
+class BrierDecomposition(NamedTuple):
+    """Murphy decomposition with the term that makes it close exactly."""
 
-    ``BS = reliability - resolution + uncertainty`` (for binary outcomes). Lower
-    reliability is better (perfect calibration => 0); higher resolution is better.
-    Returns ``(reliability, resolution, uncertainty)``.
+    reliability: float
+    resolution: float
+    uncertainty: float
+    within_bin: float
+
+    @property
+    def brier(self) -> float:
+        return self.reliability - self.resolution + self.uncertainty + self.within_bin
+
+
+def brier_decomposition(probs, outcomes, n_bins=10) -> BrierDecomposition:
+    r"""Murphy's reliability-resolution-uncertainty decomposition, plus residual.
+
+    ``BS = reliability - resolution + uncertainty + within_bin`` exactly, for
+    binary outcomes. Lower reliability is better (perfect calibration gives 0);
+    higher resolution is better.
+
+    The three-term identity holds when every forecast in a bin is equal. With
+    distinct forecasts grouped into a bin, a within-bin term remains, and it is
+    not small: ``probs = [0.1, 0.9]`` with ``outcomes = [0, 1]`` in one bin has
+    reliability 0, resolution 0, uncertainty 0.25, implying a Brier score of
+    0.25, while the actual score is 0.01. Writing
+    :math:`\delta_i = p_i - \bar p_{k(i)}` for the deviation from a forecast's
+    own bin mean, the missing term is
+    :math:`n^{-1}\sum_i (\delta_i^2 - 2\delta_i y_i)`, returned here as
+    ``within_bin``.
+
+    Pass ``n_bins=None`` to group by distinct forecast values instead, which
+    makes ``within_bin`` exactly zero and the classical three-term identity
+    exact.
     """
     p = np.asarray(probs, float)
     y = np.asarray(outcomes, float)
+    if p.shape != y.shape or p.ndim != 1:
+        raise ValueError("probs and outcomes must be 1-D of the same length")
+    if p.size == 0:
+        raise ValueError("need at least one observation")
+    if not np.all(np.isfinite(p)) or not np.all((p >= 0) & (p <= 1)):
+        raise ValueError("probs must be finite and in [0, 1]")
+    if not np.all((y == 0) | (y == 1)):
+        raise ValueError("outcomes must be binary")
+
     n = len(y)
     base = y.mean()
-    edges = np.linspace(0.0, 1.0, n_bins + 1)
-    idx = np.clip(np.digitize(p, edges[1:-1]), 0, n_bins - 1)
-    reliability = 0.0
-    resolution = 0.0
-    for b in range(n_bins):
+    if n_bins is None:
+        _, idx = np.unique(p, return_inverse=True)
+        n_groups = idx.max() + 1
+    else:
+        n_bins = int(n_bins)
+        if n_bins < 1:
+            raise ValueError("n_bins must be a positive integer or None")
+        edges = np.linspace(0.0, 1.0, n_bins + 1)
+        idx = np.clip(np.digitize(p, edges[1:-1]), 0, n_bins - 1)
+        n_groups = n_bins
+
+    reliability = resolution = 0.0
+    deviations = np.zeros_like(p)
+    for b in range(n_groups):
         mask = idx == b
-        nk = mask.sum()
+        nk = int(mask.sum())
         if nk == 0:
             continue
         pk = p[mask].mean()
         ok = y[mask].mean()
         reliability += nk * (pk - ok) ** 2
         resolution += nk * (ok - base) ** 2
+        deviations[mask] = p[mask] - pk
     reliability /= n
     resolution /= n
     uncertainty = base * (1.0 - base)
-    return float(reliability), float(resolution), float(uncertainty)
+    within = float(np.mean(deviations ** 2 - 2.0 * deviations * y))
+    return BrierDecomposition(float(reliability), float(resolution),
+                              float(uncertainty), within)

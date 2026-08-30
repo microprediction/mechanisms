@@ -97,6 +97,60 @@ def test_dynamic_parimutuel_early_buyer_advantage():
     assert early > late
 
 
+def test_dynamic_parimutuel_money_is_the_cost_function():
+    rng = np.random.default_rng(11)
+    m = parimutuel.DynamicParimutuelMarket(n_outcomes=4, kappa=1.7)
+    for _ in range(40):
+        m.buy("t", int(rng.integers(0, 4)), float(rng.uniform(0.1, 5)))
+        assert m.money == pytest.approx(m.cost(), rel=1e-12)
+
+
+def test_dynamic_parimutuel_purchases_are_path_independent():
+    one = parimutuel.DynamicParimutuelMarket(n_outcomes=3)
+    bulk = one.buy("a", 0, spend=6.0)
+    sliced = parimutuel.DynamicParimutuelMarket(n_outcomes=3)
+    total = sum(sliced.buy("a", 0, spend=6.0 / 100) for _ in range(100))
+    assert total == pytest.approx(bulk, rel=1e-9)
+    assert sliced.shares[0] == pytest.approx(one.shares[0], rel=1e-9)
+
+
+def test_dynamic_parimutuel_settlement_conserves_cash():
+    rng = np.random.default_rng(12)
+    for _ in range(200):
+        n = int(rng.integers(2, 6))
+        m = parimutuel.DynamicParimutuelMarket(n_outcomes=n)
+        paid = 0.0
+        for _ in range(15):
+            spend = float(rng.uniform(0.01, 8))
+            m.buy(f"t{rng.integers(0, 4)}", int(rng.integers(0, n)), spend)
+            paid += spend
+        assert m.money == pytest.approx(m.subsidy + paid, rel=1e-10)
+        w = int(rng.integers(0, n))
+        out = sum(m.settle(w).values()) + m.house_settlement(w)
+        assert out == pytest.approx(m.money, rel=1e-10)
+        # The house can lose at most what it staked to seed the market.
+        assert m.subsidy - m.house_settlement(w) <= m.subsidy + 1e-12
+
+
+def test_dynamic_parimutuel_share_ratio_and_payoff():
+    m = parimutuel.DynamicParimutuelMarket(n_outcomes=3)
+    m.buy("a", 0, 3.0)
+    m.buy("b", 2, 1.0)
+    p = m.prices()
+    assert p[0] / p[1] == pytest.approx(m.shares[0] / m.shares[1])
+    assert float(np.sum(p ** 2)) == pytest.approx(1.0)
+    # A DPM share pays 1/p_i, not $1: it is not an Arrow security.
+    assert m.payoff_per_share(0) == pytest.approx(1.0 / p[0])
+
+
+def test_dynamic_parimutuel_round_trip_sale():
+    m = parimutuel.DynamicParimutuelMarket(n_outcomes=2)
+    bought = m.buy("a", 0, spend=4.0)
+    back = m.sell("a", 0, bought)
+    assert back == pytest.approx(4.0, rel=1e-12)
+    assert m.shares[0] == pytest.approx(1.0)
+
+
 # --------------------------------------------------------------------------- #
 # LMSR
 # --------------------------------------------------------------------------- #
@@ -246,6 +300,22 @@ def test_brier_decomposition_identity():
     rng = np.random.default_rng(8)
     probs = rng.uniform(size=5000)
     outcomes = (rng.uniform(size=5000) < probs).astype(int)
-    rel, res, unc = calibration.brier_decomposition(probs, outcomes, n_bins=10)
     bs = np.mean((probs - outcomes) ** 2)
-    assert rel - res + unc == pytest.approx(bs, abs=0.02)
+    for n_bins in (1, 2, 3, 10, 50, None):
+        d = calibration.brier_decomposition(probs, outcomes, n_bins=n_bins)
+        assert d.brier == pytest.approx(bs, rel=1e-12, abs=1e-12)
+
+
+def test_brier_within_bin_vanishes_on_exact_grouping():
+    rng = np.random.default_rng(9)
+    probs = rng.choice([0.1, 0.4, 0.9], size=500)
+    outcomes = (rng.uniform(size=500) < probs).astype(int)
+    d = calibration.brier_decomposition(probs, outcomes, n_bins=None)
+    assert d.within_bin == pytest.approx(0.0, abs=1e-12)
+
+
+def test_brier_within_bin_is_not_negligible_when_coarse():
+    # Two forecasts in one bin: the three-term identity implies 0.25, actual 0.01.
+    d = calibration.brier_decomposition([0.1, 0.9], [0, 1], n_bins=1)
+    assert d.reliability - d.resolution + d.uncertainty == pytest.approx(0.25)
+    assert d.brier == pytest.approx(0.01)
