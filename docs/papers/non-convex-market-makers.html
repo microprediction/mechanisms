@@ -139,9 +139,33 @@ partial one ([Grone et al. 1984](#ref-grone1984completions)), and the arbitrage 
 supported on quoted pairs. If the coordinates are constrained, say binary
 $x_i \in \{\pm 1\}$, the feasible quote set is the cut polytope, a strict
 subset of the PSD body ([Deza &amp; Laurent 1997](#ref-deza1997cuts)), so quotes can be positive
-semidefinite yet jointly unrealizable. In every case the coherent set is
-the convex hull of attainable payoffs, and Proposition 11 below is the
-universal form.
+semidefinite yet jointly unrealizable.
+
+Three coordinates already exhibit the gap, and exhibit it in closed form.
+Quote the three pairwise products at a common $\rho$. The matrix with unit
+diagonal and off-diagonal $\rho$ has eigenvalues $1 - \rho$ (twice) and
+$1 + 2\rho$, so it is PSD exactly for $\rho \ge -\tfrac12$. Binary
+realizability is stronger: the products of $\pm 1$ variables satisfy the
+triangle inequality $\rho_{12} + \rho_{13} + \rho_{23} \ge -1$, which for a
+common $\rho$ reads $\rho \ge -\tfrac13$. On the interval
+$-\tfrac12 \le \rho &lt; -\tfrac13$ the quote is positive semidefinite and
+still arbitraged, and the separating portfolio is the triangle inequality
+itself: buy $\tfrac13$ of each pairwise security for $\rho$, and collect
+$\tfrac13(x_1x_2 + x_1x_3 + x_2x_3)$, which is $1$ when the three signs
+agree and $-\tfrac13$ otherwise. The worst case is $-\tfrac13$, so the
+sure profit is $-\tfrac13 - \rho$ per unit, vanishing exactly at
+$\rho = -\tfrac13$. At $\rho = -0.49$, comfortably inside the PSD cone,
+it is $0.157$.
+
+Note that the fill is a *signed* position, and that the guarantee is
+"profit at least", not "profit exactly": the bundle pays $-\tfrac13$ in
+the worst case and $1$ in the best, so the arbitrageur's realized profit
+depends on the outcome and the stated figure is its floor. The same is
+true of the eigenvector bundle of the proposition, which pays
+$(w^\top x)^2 \ge 0$ with equality only on the nullspace.
+
+In every case the coherent set is the convex hull of attainable payoffs,
+and Proposition 11 below is the universal form.
 
 The scope of Proposition 10 is in any case one class of consistency
 failure: locally

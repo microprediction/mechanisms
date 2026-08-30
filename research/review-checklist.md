@@ -74,8 +74,12 @@ and its verification are fixed, and cross-checked at the end.
 - [ ] S6. Proposition 9(ii) for more than two branches: the jump is
   `(max P_λ - min P_λ)/λ`.
 - [x] S7. Proposition 9(i) is sharp: affine costs attain the chord bound.
-- [ ] S8. Proposition 10: signed positions, "profit at least", and a
-  PSD-but-binary-incoherent example (cut polytope).
+- [x] S8. Proposition 10: signed positions, "profit at least", and a
+  PSD-but-binary-incoherent example (cut polytope). Added the closed-form
+  three-coordinate example: equicorrelation is PSD for `rho >= -1/2` but
+  binary-realizable only for `rho >= -1/3`, the separating portfolio is the
+  triangle inequality, and the profit is `-1/3 - rho` per unit. Verified by
+  the LP oracle and bracketed at the boundary.
 - [ ] S9. Proposition 11: quantitative local statement under an
   `L`-Lipschitz gradient, with the certified step size.
 - [ ] S10. Corollary 8: "strictly increasing on every open interval on which
@@ -93,14 +97,21 @@ and its verification are fixed, and cross-checked at the end.
 - [x] V2. Exact `O(n)` max-sure-profit scan with witness; retire `stride`.
 - [ ] V3. Certificates rather than booleans (witness chord, argmin set, KKT
   residual, primal-dual gap, separating portfolio).
-- [ ] V4. LP oracle for finite outcome spaces (Props 1, 3, 11 at once).
+- [x] V4. LP oracle for finite outcome spaces (Props 1, 3, 11 at once).
+  `tests/oracles/finite_lp.py` maximises the worst-case margin over unit-`l1`
+  portfolios, returning the separating functional as a checkable witness.
+  `tests/test_lp_oracle.py` settles Props 1, 3, 10 and 11 against it.
 - [x] V5. Input-domain validation (lengths, sortedness, finiteness,
   `lam > 0`, stride, fees).
 - [ ] V6. Wiggly contact test splits by dual domain (`|mu| <= 0.55` vs
   `|mu| > 0.6` with expanding domain).
 - [ ] V7. Fixed-mesh expanding-window Moreau test with argmin recorded and
   boundary minimizers flagged; curvature normalized by `dx^2`.
-- [ ] V8. Threshold bracketing everywhere: `eps - d`, `eps`, `eps + d`.
+- [x] V8. Threshold bracketing everywhere: `eps - d`, `eps`, `eps + d`.
+  Both LP thresholds (the fee equal to the arbitrage depth, and the cut
+  polytope boundary at `rho = -1/3`) are now bracketed at two scales, with the
+  boundary case asserted to be exactly zero margin rather than sampled on one
+  side.
 - [ ] V9. Metamorphic tests (shift, tilt, reflect, permute, split a maker,
   rescale) and the Moreau semigroup `e_λ(e_μ C) = e_{λ+μ} C`.
 - [ ] V10. Structured generators: controlled-violation costs, non-attained

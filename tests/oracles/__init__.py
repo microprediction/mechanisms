@@ -14,6 +14,11 @@ continuum, the two disagree by a known discretisation error, and the tests say
 which they expect.
 """
 
+from .finite_lp import (
+    ArbitrageCertificate,
+    arbitrage_depth_lp,
+    arbitrage_lp,
+)
 from .piecewise_linear import (
     exact_chord_bounds,
     exact_lower_convex_envelope,
@@ -22,6 +27,9 @@ from .piecewise_linear import (
 )
 
 __all__ = [
+    "ArbitrageCertificate",
+    "arbitrage_depth_lp",
+    "arbitrage_lp",
     "exact_chord_bounds",
     "exact_lower_convex_envelope",
     "exact_max_sure_profit",
