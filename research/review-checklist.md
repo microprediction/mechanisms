@@ -107,9 +107,11 @@ and its verification are fixed, and cross-checked at the end.
 - [ ] P10. Label every connection: exact equivalence, equivalence under
   hypotheses, composition identity, equilibrium result, or analogy; and
   qualify "truthful" with its equilibrium concept.
-- [ ] P11. Smaller: LMSR worst-case not expected loss; margining does not
+- [x] P11. Smaller: LMSR worst-case not expected loss; margining does not
   restore ex-post IR; batching does not remove all MEV; pinball minimizer
-  unique only for unique quantiles.
+  unique only for unique quantiles. All four corrected in place, with the
+  batching one rewritten as ordering-game-to-inclusion-game rather than
+  removal, and the margining one as a probabilistic enforcement bound.
 
 ## Implementation audit (third report, at 0c4b878)
 

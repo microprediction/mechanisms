@@ -127,6 +127,16 @@
       <strong>MEV</strong>, loses its value, because intra-batch position no
       longer determines execution price.
     </p>
+    <p>
+      That is narrower than "batching removes MEV", and the difference matters.
+      What uniform-price batching kills is the value of ordering <em>within</em> a
+      batch. It leaves untouched the choice of which orders enter a batch and which
+      are delayed to the next one, the ability to submit an order into a batch
+      after seeing others, and cross-batch or cross-venue extraction; and a
+      validator who can censor still moves the clearing price by deciding what
+      clears. Batching converts an ordering game into an inclusion game rather than
+      ending the game.
+    </p>
 
     <h2>Relation to the continuous and the single call auction</h2>
     <p>

@@ -135,11 +135,21 @@
       it can actually be collected. Margining is the layer that makes the promise
       credible: it has no aggregation step, it turns no beliefs into a price, but
       it supplies the enforcement leg that every mechanism paying out over time
-      relies on. In mechanism-design terms it restores <em>limited liability</em> and
-      ex-post individual rationality, the constraints pure designs assume away, by
-      demanding skin in the game. Call it a <strong>partial mechanism</strong>: one
-      half of the aggregation-plus-reward pair, the half that guarantees the reward
-      is real.
+      relies on. Call it a <strong>partial mechanism</strong>: one half of the
+      aggregation-plus-reward pair, the half that makes the reward collectible.
+    </p>
+    <p>
+      Be careful about what it delivers. Margining <em>bounds</em> a counterparty's
+      shortfall; it does not restore ex-post individual rationality, which would
+      mean no participant ever regrets having traded once the outcome is known.
+      A liquidated trader has a strictly negative realised payoff and would have
+      preferred to stay out — that is the mechanism working, not failing. Nor is
+      the bound absolute: a gap move through the liquidation price, or an unwind
+      into a book too thin to absorb it, leaves a deficit that someone else
+      absorbs, which is why venues carry insurance funds and auto-deleveraging.
+      What margining supplies is limited liability plus a collateral buffer sized
+      to make default rare, which is a probabilistic enforcement guarantee rather
+      than an ex-post participation constraint.
     </p>
     <p>
       Its moving parts are themselves small mechanisms. Initial and maintenance

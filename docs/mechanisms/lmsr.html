@@ -119,8 +119,10 @@
 
     <h2>Liquidity-sensitive LMSR (Othman–Sandholm)</h2>
     <p>
-      Plain LMSR fixes $b$ up front and runs at a guaranteed expected loss; it is
-      a <em>subsidised</em> device. Othman, Pennock, Reeves &amp; Sandholm
+      Plain LMSR fixes $b$ up front and accepts a <em>bounded worst-case</em> loss
+      of $b\log n$; what it actually loses depends on where the market ends up and
+      can be anything from a profit to that bound, so the guarantee is a ceiling
+      rather than an expectation. It is a <em>subsidised</em> device. Othman, Pennock, Reeves &amp; Sandholm
       (2010/2013) make liquidity respond to activity by replacing the constant with
       a volume-dependent
     </p>

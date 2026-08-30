@@ -135,12 +135,19 @@
     <p>
       Not every forecast is a full distribution. To elicit a single
       <strong>quantile</strong> rather than a probability, the right loss is the
-      <strong>pinball</strong> (tick) loss, whose unique minimiser is the true
-      $\tau$-quantile of the predictive distribution:
+      <strong>pinball</strong> (tick) loss, minimised at the true $\tau$-quantile of
+      the predictive distribution:
     </p>
     <div class="equation-card">
       $L_\tau(z, y) = (y - z)\big(\tau - \mathbf 1\{y \lt z\}\big), \qquad \tau \in (0, 1).$
     </div>
+    <p>
+      The minimiser is unique only when the $\tau$-quantile is: where $F$ is flat
+      at level $\tau$ the whole interval $[F^{-1}(\tau^-), F^{-1}(\tau)]$ attains
+      the same expected loss, and any point in it is an optimal report. Elicitation
+      is of the quantile <em>set</em>; a discrete or gappy predictive distribution
+      is the ordinary case where that set is not a point.
+    </p>
     <p>
       It penalises over- and under-prediction asymmetrically in proportion to
       $\tau$; at $\tau = \tfrac12$ it reduces to (half) the absolute error and
