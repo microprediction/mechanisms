@@ -103,6 +103,17 @@
       probability. A market that can never lose more than $b\log n$ is one whose
       cost of running is known in advance.
     </p>
+    <p>
+      One bookkeeping subtlety, because it decides whether that bound applies at
+      all. Opening a market at a non-zero state $q_0$ has two readings.
+      <code>realized_pnl</code> measures revenue from the <em>empty</em> book,
+      $C(q) - C(0)$, which reads $q_0$ as shares sold earlier whose revenue was
+      banked at the time; on that reading the $b\log n$ bound holds and
+      <code>bounded_loss_holds</code> checks it. If instead $q_0$ was granted
+      without collecting anything for it, the operator also owes $q_{0,w}$ it was
+      never paid for, the bound does not apply, and <code>session_pnl</code> is
+      the figure that reflects it. The two agree when $q_0 = 0$.
+    </p>
 
     <h2>The liquidity parameter $b$</h2>
     <p>

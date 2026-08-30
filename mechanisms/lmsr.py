@@ -46,6 +46,9 @@ class LMSR:
         self.q = np.zeros(self.n) if q0 is None else np.asarray(q0, float).copy()
         if self.q.shape != (self.n,):
             raise ValueError("q0 must have shape (n_outcomes,)")
+        if not np.all(np.isfinite(self.q)):
+            raise ValueError("q0 must be finite")
+        self.q_start = self.q.copy()
 
     # -- core cost function ------------------------------------------------
     def cost(self, q=None) -> float:
@@ -111,10 +114,34 @@ class LMSR:
         return float(self.q[int(winning_outcome)])
 
     def realized_pnl(self, winning_outcome: int) -> float:
-        """Market-maker profit/loss: revenue collected minus payout.
+        """Market-maker profit/loss since inception: ``C(q) - C(0) - q[winner]``.
 
-        Revenue collected so far is ``C(q) - C(0)``; payout is ``q[winner]``.
-        The loss is bounded below by ``-max_loss``.
+        Revenue is measured from the *empty* book, not from ``q0``, so a market
+        opened with ``q0 != 0`` is being read as one where those shares were sold
+        earlier and their revenue ``C(q0) - C(0)`` was banked at the time. Under
+        that reading the loss is bounded below by ``-max_loss``, and
+        :meth:`bounded_loss_holds` checks it.
+
+        If instead ``q0`` was granted without collecting anything for it — a
+        seeded position rather than prior issuance — the maker also owes
+        ``q0[winner]`` it was never paid for, the bound does not apply, and
+        :meth:`session_pnl` is the figure you want.
         """
         revenue = self.cost(self.q) - self.cost(np.zeros(self.n))
         return float(revenue - self.payout(winning_outcome))
+
+    def session_pnl(self, winning_outcome: int) -> float:
+        """P&L over this object's own trades only: ``C(q) - C(q0) - (q - q0)[winner]``.
+
+        The right figure when ``q0`` is a seeded starting inventory rather than
+        prior issuance whose revenue was collected. Equal to
+        :meth:`realized_pnl` when ``q0`` is zero.
+        """
+        revenue = self.cost(self.q) - self.cost(self.q_start)
+        issued = float(self.q[int(winning_outcome)]
+                       - self.q_start[int(winning_outcome)])
+        return float(revenue - issued)
+
+    def bounded_loss_holds(self, winning_outcome: int) -> bool:
+        """Is the inception-to-date loss within the ``b log n`` bound?"""
+        return self.realized_pnl(winning_outcome) >= -self.max_loss - 1e-9

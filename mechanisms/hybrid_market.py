@@ -3,8 +3,17 @@
 An automated market maker guarantees liquidity but charges slippage on every
 trade (the price moves as you sweep the curve). A central limit order book offers
 zero-slippage fills but only when a counterparty happens to be resting. A *hybrid*
-takes the best of both: match a taker against resting limit orders first, and use
-the AMM only for the unmatched remainder.
+combines them by priority: match a taker against resting limit orders first, and
+use the AMM only for the unmatched remainder.
+
+Book-first priority is not best execution, and this module does not claim to be.
+The router never compares the resting book price with the AMM's quote, so a taker
+whose order crosses a poor resting bid pays it even when the AMM would have been
+cheaper. Fixing that means quoting both legs and filling in price order, which is
+a different mechanism with its own subtleties (the AMM's price moves as it fills,
+so the comparison is against a marginal price that the fill itself changes). What
+book-first does buy is a simple, predictable rule that leaves resting liquidity
+with a reason to rest.
 
 For a binary market the matchable counterparties are *complementary*: a buyer of
 YES at price $a$ and a buyer of NO at price $b$ can be paired whenever

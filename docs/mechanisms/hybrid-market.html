@@ -37,7 +37,8 @@
     <p class="lead">
       An <a href="./amm.html">AMM</a> guarantees liquidity but charges slippage on
       every trade; a <a href="./cda.html">limit order book</a> offers zero-slippage
-      fills but only when a counterparty happens to be resting. A hybrid takes both:
+      fills but only when a counterparty happens to be resting. A hybrid combines
+      them by priority:
       match a taker against resting limit orders first, and route only the unmatched
       remainder to the AMM backstop: the book removes the spread that deters size;
       the AMM removes the empty-book problem.
@@ -59,6 +60,17 @@
       which always quotes a price. Because the two sides are complementary, taking
       the short side of one outcome is just buying the other, so the book needs only
       buy orders on each side.
+    </p>
+    <p>
+      Note what "book first" is and is not. It is a <em>priority</em> rule, not
+      best execution: the router does not compare the resting book price against
+      the AMM's quote, so a taker crossing a poor resting bid pays it even where
+      the AMM would have been cheaper. Making it best execution means quoting both
+      legs and filling in price order, which is a different mechanism with a
+      wrinkle of its own, since the AMM's marginal price moves as it fills, so the
+      comparison is against a number the fill itself changes. What book-first buys
+      instead is a simple, predictable rule that gives resting liquidity a reason
+      to rest.
     </p>
 
     <h2>Why the split matters</h2>

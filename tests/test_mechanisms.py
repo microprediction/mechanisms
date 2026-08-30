@@ -177,6 +177,30 @@ def test_lmsr_bounded_loss():
     assert worst >= -m.max_loss - 1e-6
 
 
+def test_lmsr_pnl_distinguishes_prior_issuance_from_a_seeded_position():
+    rng = np.random.default_rng(0)
+    session_shortfall = 0.0
+    for _ in range(500):
+        n = int(rng.integers(2, 6))
+        b = float(rng.uniform(5, 200))
+        m = lmsr.LMSR(n, b=b, q0=rng.normal(0, 50, n))
+        for _ in range(int(rng.integers(1, 10))):
+            m.buy(int(rng.integers(0, n)), float(rng.normal(0, 60)))
+        for w in range(n):
+            # Read q0 as prior issuance whose revenue was banked: bound holds.
+            assert m.bounded_loss_holds(w)
+            # Read it as a seeded grant: the maker owes shares it was never paid
+            # for, and the b log n bound simply does not apply.
+            session_shortfall = min(session_shortfall,
+                                    m.session_pnl(w) + m.max_loss)
+    assert session_shortfall < -1.0
+
+    # With no prior state the two readings coincide.
+    m = lmsr.LMSR(3, b=50.0)
+    m.buy(0, 30.0)
+    assert m.realized_pnl(0) == pytest.approx(m.session_pnl(0))
+
+
 def test_lmsr_shares_for_budget_inverts_cost():
     m = lmsr.LMSR(n_outcomes=3, b=75)
     budget = 40.0
