@@ -603,3 +603,110 @@ def test_section9_argmax_set_identity():
         right = set(np.flatnonzero(smoothed >= smoothed.max() - 1e-9).tolist()) & contact
         assert left == right
         assert left                                  # non-empty inside the domain
+
+
+# --------------------------------------------------------------------------- #
+# Abstract-level claims that deserve their own example
+# --------------------------------------------------------------------------- #
+def test_corollary8_aggregate_is_a_consolidated_limit_order_book():
+    """Non-decreasing, zero on the common band, strictly rising where active."""
+    from mechanisms.fee_routing import consolidated_book
+
+    makers = [LogCoshMaker(1.0, 0.10), LogCoshMaker(2.0, 0.25),
+              LogCoshMaker(0.5, 0.40)]
+    best_bid = max(m.bid for m in makers)
+    best_ask = min(m.ask for m in makers)
+    assert (best_bid, best_ask) == pytest.approx((-0.10, 0.10))
+
+    prices = np.linspace(-0.9, 0.9, 20001)
+    supply = consolidated_book(makers, prices)
+
+    assert np.all(np.diff(supply) >= -1e-12)                 # non-decreasing
+    inside = (prices > best_bid) & (prices < best_ask)
+    assert inside.sum() > 1000
+    assert np.all(np.abs(supply[inside]) < 1e-15)            # identically zero
+
+    active = np.array([sum(1 for m in makers if not (m.bid < p < m.ask))
+                       for p in prices])
+    both_active = (active[:-1] > 0) & (active[1:] > 0)
+    assert np.all(np.diff(supply)[both_active] > 0)          # strictly increasing
+    both_idle = (active[:-1] == 0) & (active[1:] == 0)
+    assert np.all(np.abs(np.diff(supply)[both_idle]) < 1e-15)   # flat
+
+    # Six price levels, one per band edge: the book a large order walks.
+    levels = sorted({round(m.bid, 6) for m in makers} | {round(m.ask, 6) for m in makers})
+    assert levels == [-0.4, -0.25, -0.1, 0.1, 0.25, 0.4]
+
+
+def test_abstract_moreau_attenuates_the_gap_without_ever_closing_it():
+    """The double well's midpoint gap shrinks over five decades of lambda, and
+    stays strictly positive at every one."""
+    previous = np.inf
+    for lam in (0.1, 0.5, 1.0, 2.0, 5.0, 10.0, 50.0, 200.0, 1000.0, 10000.0):
+        value, _ = _double_well_prox(0.0, lam)
+        # The wells stay at zero, so the envelope of e_lam C is zero at the
+        # midpoint and the gap is exactly the value there.
+        assert _double_well_prox(WELL_C, lam)[0] == pytest.approx(0.0, abs=1e-9)
+        assert value > 0.0                       # never closes
+        assert value < previous                  # but always attenuating
+        previous = value
+    assert previous == pytest.approx(WELL_C ** 2 / (2 * 10000.0), abs=1e-9)
+
+
+def test_lemma5_holds_for_a_genuinely_non_convex_cost():
+    """"For any cost C (no convexity assumed)" — checked on a wiggly one.
+
+    The belief perturbation has to clear the grid: the binding fill can be a
+    single step of width dx, so a perturbation delta shows up as a profit of
+    only delta*dx. Bracketing closer than that measures the mesh, not the claim.
+    """
+    from mechanisms.nonconvex_maker import chord_bounds
+
+    xs = np.linspace(-12.0, 12.0, 24001)
+    step = xs[1] - xs[0]
+    cost = _wiggly(xs)
+    assert float(np.min(np.diff(cost, 2))) < -1e-9          # genuinely non-convex
+
+    delta, slack = 1e-3, 1e-12
+    assert delta >= step                                     # resolvable
+
+    rng = np.random.default_rng(1)
+    checked = 0
+    for _ in range(400):
+        i = int(rng.integers(2000, xs.size - 2000))
+        lower, upper = chord_bounds(xs, cost, i)
+        fee = float(rng.uniform(0.0, 0.6))
+        lo, hi = lower - fee, upper + fee
+        if lo > hi:
+            continue
+        fills = np.delete(xs - xs[i], i)
+        deltas = np.delete(cost - cost[i], i)
+        profit = lambda mu: float(np.max(mu * fills - deltas - fee * np.abs(fills)))
+        for mu, no_trade in ((lo - delta, False), (lo, True),
+                             (0.5 * (lo + hi), True), (hi, True),
+                             (hi + delta, False)):
+            assert (profit(mu) <= slack) == no_trade
+            checked += 1
+    assert checked > 1000
+
+
+def test_lemma5_non_emptiness_criterion_and_the_off_contact_claim():
+    """Non-empty iff 2f >= Delta_q; and off the contact set Delta_q > 0."""
+    from mechanisms.nonconvex_maker import chord_bounds
+
+    xs = np.linspace(-12.0, 12.0, 24001)
+    cost = _wiggly(xs)
+    gap = cost - lower_convex_envelope(xs, cost)
+
+    rng = np.random.default_rng(1)
+    for _ in range(400):
+        i = int(rng.integers(2000, xs.size - 2000))
+        lower, upper = chord_bounds(xs, cost, i)
+        fee = float(rng.uniform(0.0, 0.6))
+        assert ((lower - fee) <= (upper + fee)) == (2 * fee >= lower - upper - 1e-12)
+
+    off_contact = np.flatnonzero(gap > 1e-7)
+    assert off_contact.size > 100
+    for i in off_contact[::200]:
+        lower, upper = chord_bounds(xs, cost, int(i))
+        assert lower - upper > 0                 # Delta_q > 0 off the contact set
