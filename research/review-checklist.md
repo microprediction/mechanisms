@@ -20,8 +20,11 @@ and its verification are fixed, and cross-checked at the end.
   coercive alone is not enough. Both hypotheses now stated, with the punctured
   parabola `h(x) = x^2` off zero and `1` at zero as the counterexample, and the
   two failure modes (escape to infinity, escape at a point) separated.
-- [ ] M4. "Between contact points the envelope is affine" is too broad;
+- [x] M4. "Between contact points the envelope is affine" is too broad;
   restrict to a connected component of `{C > C**}`, and qualify the jump.
+  Restated for one component with its endpoints, noting that two contact
+  points need not bound a gap and that straddling several components gives
+  several affine pieces with different slopes.
 - [x] M5. Sparsity is not guaranteed: exact dead zones yes, sparse
   allocation no (identical makers split evenly). Fix abstract, Lemma 6(iii),
   the lasso analogy, and the module's "fee order" claim. All four fixed. The
@@ -39,8 +42,11 @@ and its verification are fixed, and cross-checked at the end.
   Added `dual_domain(p)` returning that trichotomy, and `supply` now returns
   `+-inf` outside rather than the arctanh of `1 - eps`, which looked like a
   capacity and was only a statement about floating point.
-- [ ] M8. Proposition 11's "below the fee is suppressed by Proposition 3"
+- [x] M8. Proposition 11's "below the fee is suppressed by Proposition 3"
   overreaches; a below-fee local margin only kills first-order local trades.
+  The clause is out; the paragraph now says what is actually ruled out (the
+  infinitesimal trade in that one direction) and what is not (other
+  directions, and trades large enough for curvature to repay the fee).
 - [ ] M9. Independent exact oracles instead of comparing a discretization
   with itself.
 

@@ -251,11 +251,20 @@ an arbitrary invariant is behaviorally equivalent to a concave one
 [@angeris2024geometry], with the limits of concavification mapped by
 @frongillo2024axiomatic.
 
-What the gap does to the book is the opposite of a gap in prices. Between
-contact points $q_1 < q_2$ the envelope is affine with a single supporting
-slope $\mu_0$, so the marginal price is constant across the excluded
-inventory range: as belief crosses $\mu_0$ the optimal inventory jumps
-from $q_1$ to $q_2$ while the price does not move. In the convexified
+What the gap does to the book is the opposite of a gap in prices. Fix a
+connected component $(q_1, q_2)$ of the open set $\{C > \hat C\}$, so that
+$q_1$ and $q_2$ are contact points with no contact point between them.
+On that component the envelope is affine with a single supporting slope
+$\mu_0$, and the marginal price is constant across the excluded inventory
+range: as belief crosses $\mu_0$ the optimal inventory jumps from $q_1$
+to $q_2$ while the price does not move. The restriction to a single
+component is needed. Two contact points need not bound a gap at all — the
+envelope agrees with $C$ on the whole contact set, which may be a fat set
+— and two contact points straddling several components are separated by
+several affine pieces with different slopes, so no single $\mu_0$ governs
+the interval between them. The jump statement is a statement about one
+component, and $q_1, q_2$ are its endpoints rather than any two contact
+points. In the convexified
 supply correspondence this is an inventory jump of size $q_2 - q_1$ at
 the supporting price $\mu_0$, a depth spike rather than a missing price
 range. Against the original non-convex cost the jump is generally
@@ -690,9 +699,19 @@ is the current gradient and a trade of size $\delta y$ costs
 $\delta \langle y, x \rangle + o(\delta)$, since the marginal price moves
 as the trade is filled, so a separating margin exceeding
 $f\lVert y\rVert$ yields sure profit for all sufficiently small $\delta$,
-at a rate rather than in the size of $y$; a margin below that is
-suppressed by Proposition 3, and market impact then sets how large a
-position the certificate supports.*
+at a rate rather than in the size of $y$; market impact then sets how
+large a position the certificate supports.*
+
+The converse needs care, and an earlier version overstated it. A
+separating margin *below* $f\lVert y\rVert$ does not mean the venue is
+arbitrage-free. What Proposition 3 rules out is the first-order local
+trade in the direction $y$: for small $\delta$ the fee $f\delta\lVert
+y\rVert$ dominates the margin $\delta \cdot (\text{margin})$, so that
+particular infinitesimal trade loses money. It says nothing about
+directions other than $y$, and nothing about trades large enough for the
+$o(\delta)$ curvature term to matter, where a cost that curves the right
+way can repay the fee that the linearization could not. Suppression is of
+a family of trades, not of arbitrage.
 
 The proof is the separating-hyperplane theorem read as a trade
 [@nau1991arbitrage; @daspremont2005market]; the payoff-hull hypothesis is
