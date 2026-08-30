@@ -103,10 +103,19 @@ and its verification are fixed, and cross-checked at the end.
   `tests/test_lp_oracle.py` settles Props 1, 3, 10 and 11 against it.
 - [x] V5. Input-domain validation (lengths, sortedness, finiteness,
   `lam > 0`, stride, fees).
-- [ ] V6. Wiggly contact test splits by dual domain (`|mu| <= 0.55` vs
-  `|mu| > 0.6` with expanding domain).
-- [ ] V7. Fixed-mesh expanding-window Moreau test with argmin recorded and
-  boundary minimizers flagged; curvature normalized by `dx^2`.
+- [x] V6. Wiggly contact test splits by dual domain (`|mu| <= 0.55` vs
+  `|mu| > 0.6` with expanding domain). The edge is the *asymptotic* slope 0.6,
+  not the maximum slope 0.95: `C' = 0.6 tanh + 0.35 sin` oscillates about 0.6
+  at infinity, so `mu x - C(x) ~ (mu - 0.6) x` and beliefs between 0.6 and
+  0.95 have no maximiser. The old test sampled `+-0.9`, putting 80 of 200
+  draws on the window boundary; it now samples `+-0.55` and asserts the
+  optimum is interior. `tests/test_domain_regimes.py` covers both regimes.
+- [x] V7. Fixed-mesh expanding-window Moreau test with argmin recorded and
+  boundary minimizers flagged; curvature normalized by `dx^2`. Done in
+  `test_moreau_curvature_is_measured_on_a_fixed_mesh_with_boundary_flagged`,
+  which records where the grid minimisation actually put each minimiser,
+  excludes points whose minimiser sits at the edge, and checks the verdict is
+  stable across three windows.
 - [x] V8. Threshold bracketing everywhere: `eps - d`, `eps`, `eps + d`.
   Both LP thresholds (the fee equal to the arbitrage depth, and the cut
   polytope boundary at `rho = -1/3`) are now bracketed at two scales, with the

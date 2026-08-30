@@ -41,11 +41,16 @@ def test_rational_flow_reads_the_biconjugate():
     assert gap.max() > 0.3  # a genuine excluded inventory range
     rng = np.random.default_rng(0)
     for _ in range(100):
-        mu = rng.uniform(-0.9, 0.9)
+        # Sample strictly inside the dual domain. C' -> 0.6 at infinity while
+        # its supremum is 0.95, so beliefs between the two have no maximiser at
+        # all and a finite window would answer with its own boundary. See
+        # tests/test_domain_regimes.py.
+        mu = rng.uniform(-0.55, 0.55)
         i0 = rng.integers(500, len(XS) - 500)
         prof_c = mu * (XS - XS[i0]) - (C - C[i0])
         prof_e = mu * (XS - XS[i0]) - (env - env[i0])
         j = int(np.argmax(prof_c))
+        assert 3 < j < len(XS) - 4, "optimum ran out of window"
         # optimal fill lands on the contact set: the maker trades C**
         assert gap[j] == pytest.approx(0.0, abs=1e-9)
         # profit identity: envelope profit plus the gap at the start state
