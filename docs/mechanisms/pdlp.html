@@ -164,7 +164,7 @@
       <code>portfolio_dilution_value()</code>.
     </p>
 
-    <h2>Why a PDLP bounds the LP's delta</h2>
+    <h2>Why a PDLP is claimed to bound the LP's delta</h2>
     <p>
       Here is the payoff. An ordinary CFMM LP is short volatility with an
       unbounded, path-dependent delta, the very thing that makes
@@ -175,7 +175,15 @@
       <em>tightens</em> as the fee rises. A bounded, fee-shrinkable delta is far
       cheaper to offset than a CFMM's, which is the structural reason
       delta-hedged PDLP strategies proliferate (and why JLP-style shares make good
-      collateral elsewhere in DeFi). Under a mean-variance objective the optimal
+      collateral elsewhere in DeFi).
+    </p>
+    <p>
+      That claim is disputed and this page does not adjudicate it.
+      <a href="https://arxiv.org/abs/2604.16467">Jiang and Wen (2026)</a> argue
+      that the sufficient condition behind Claim 3.4 is self-contradictory, and
+      prove an impossibility result that no target weight mechanism lowers the
+      delta uniformly. Read the bounded-delta story below as the original paper's
+      position with an open challenge against it, not as settled. Under a mean-variance objective the optimal
       hedge, ignoring transaction costs, is the closed form
     </p>
     <div class="equation-card">$\pi_{\text{new}} = \dfrac{f}{\gamma}\,\Sigma^{-1}\ell - \Delta,$</div>
@@ -193,7 +201,8 @@
       the transaction-cost version is the same first-order condition with a
       $\mathrm{Diag}(c)$ ridge. What the paper supplies is the *identification* of
       the terms — that the PDLP's expected-return vector is the fee revenue
-      $f\ell$ and that its delta $\Delta$ is bounded by Claim 3.4 — plus the
+      $f\ell$ and that its delta $\Delta$ is bounded by Claim 3.4, which is the
+      part Jiang and Wen dispute — plus the
       Sharpe conditions of Claim 4.1, which are sufficient rather than necessary.
       The mean-variance step is doing no work the literature has not already done;
       the bounded delta is why the step is worth taking here at all.
@@ -215,8 +224,8 @@
       <a href="./amm.html">CFMM</a> loss-versus-rebalancing; the PDLP simply
       inherits a CFMM's curve for the swap leg. What is genuinely new is the
       target-weight controller bolted on top: it is the ingredient that turns an
-      otherwise CFMM-like, hard-to-hedge book into one with a provably bounded
-      delta.
+      otherwise CFMM-like, hard-to-hedge book into one the original paper argues
+      has a bounded delta, subject to the challenge noted above.
     </p>
 
     <h2 id="demo">Try it</h2>

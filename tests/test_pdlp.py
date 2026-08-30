@@ -195,3 +195,23 @@ def test_sharpe_conditions_return_bools():
     Delta = np.array([1.0, 0.1])
     exp_ok, var_ok = pdlp.sharpe_improves(0.01, ell, Delta, Sigma, [2000.0, 60000.0], 1.0)
     assert isinstance(exp_ok, (bool, np.bool_)) and isinstance(var_ok, (bool, np.bool_))
+
+
+def test_pdlp_rejects_degenerate_inputs():
+    # Each of these silently divided by zero before.
+    with pytest.raises(ValueError, match="leverage"):
+        pdlp.min_collateral(1.0, eta=0.0, p0=2000.0)
+    with pytest.raises(ValueError, match="leverage"):
+        pdlp.collateral_ok(10.0, 1.0, eta=0.0, p0=2000.0)
+    with pytest.raises(ValueError, match="zero position"):
+        pdlp.liquidation_price(delta=0.0, eta=4.0, p0=2000.0)
+    with pytest.raises(ValueError, match="open interest"):
+        pdlp.funding_fee_upper_bound(kappa=1.0, L0=0.0, p=2.0, p0=1.0)
+    with pytest.raises(ValueError, match="reserves"):
+        pdlp.UniswapV2Forward(R1=0.0, R2=0.0)
+    # gamma = 0 was documented as admissible while being a divisor.
+    with pytest.raises(ValueError, match="gamma must be positive"):
+        pdlp.delta_hedge(0.01, gamma=0.0, Sigma=np.eye(2), ell=[1.0, 1.0],
+                         Delta=[0.0, 0.0])
+    # The paper's worked ETH example still runs.
+    assert pdlp.liquidation_price(1.0, 4.0, 2000.0) == pytest.approx(1500.0)

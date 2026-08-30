@@ -154,6 +154,11 @@ and its verification are fixed, and cross-checked at the end.
 - [x] A7. Nearest-the-pin truthfulness needs its equilibrium concept
   (price-taking, Kelly, symmetric) stated wherever it is asserted.
 - [x] A8. PDLP delta-hedge section should say which results are the paper's
-  and which are standard mean-variance.
+  and which are standard mean-variance. Also added the Jiang & Wen (2026,
+  arXiv:2604.16467) challenge, verified against the arXiv record: they prove
+  the sufficient condition behind Claim 3.4 is self-contradictory and that no
+  target weight mechanism lowers the delta uniformly. And validated the
+  module's degenerate inputs (zero leverage, zero position, zero gamma, zero
+  open interest, zero reserves), each of which divided by zero.
 - [x] A9. Homepage and Connections slogans disagree with the corrected
   mechanism pages.

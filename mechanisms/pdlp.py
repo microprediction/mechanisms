@@ -25,6 +25,12 @@ contributions, all implemented below with equation numbers from the paper:
   §4    Hedged PDLPs: the mean-variance delta hedge (eq 12-13) and the
         Sharpe-ratio improvement conditions (Claim 4.1).
 
+The paper's delta-reduction result is disputed. Jiang & Wen (2026,
+arXiv:2604.16467) prove that the sufficient condition behind Claim 3.4 is
+self-contradictory and give an impossibility result: no target weight mechanism
+lowers the delta uniformly. This module implements the original paper; treat the
+delta bound as a contested claim rather than a settled one.
+
 numpy only. Functions are written to be read alongside the paper.
 """
 
@@ -85,11 +91,19 @@ def collateral_ok(c: float, delta: float, eta: float, p0: float) -> bool:
     A trader posting collateral ``c`` may open a notional ``delta * p0`` up to
     ``|eta|`` times larger. ``eta`` is the leverage (``< 0`` for a short).
     """
+    if eta == 0:
+        raise ValueError("leverage must be non-zero")
+    if c < 0 or p0 <= 0:
+        raise ValueError("collateral must be non-negative and p0 positive")
     return p0 * abs(delta) <= abs(eta) * c + 1e-12
 
 
 def min_collateral(delta: float, eta: float, p0: float) -> float:
     """Smallest collateral that satisfies eq (1): ``p0 |delta| / |eta|``."""
+    if eta == 0:
+        raise ValueError("leverage must be non-zero (zero leverage opens nothing)")
+    if p0 <= 0:
+        raise ValueError("p0 must be positive")
     return float(p0 * abs(delta) / abs(eta))
 
 
@@ -103,6 +117,10 @@ def liquidation_price(delta: float, eta: float, p0: float,
     clean form ``p0 (1 - 1/eta)`` for a long (paper's worked ETH example:
     ``p0 = 2000, eta = 4`` -> ``1500``).
     """
+    if delta == 0:
+        raise ValueError("a zero position has no liquidation price")
+    if eta == 0:
+        raise ValueError("leverage must be non-zero")
     if c is None:
         c = min_collateral(delta, eta, p0)
     if eta > 0:  # long
@@ -133,8 +151,16 @@ def funding_fee_upper_bound(kappa: float, L0: float, p: float, p0: float,
     ``kappa (1 - B^{-1}) / L0`` instead. Note the fee must fall as open interest
     ``L0`` grows.
     """
+    if L0 <= 0:
+        raise ValueError("open interest L0 must be positive")
+    if kappa <= 0:
+        raise ValueError("kappa must be positive")
     if B is not None:
+        if B <= 0:
+            raise ValueError("the price bound B must be positive")
         return float(kappa * (1.0 - 1.0 / B) / L0)
+    if p <= 0 or p0 <= 0:
+        raise ValueError("prices must be positive")
     return float((kappa / L0) * (1.0 - p0 / p))
 
 
@@ -164,11 +190,18 @@ class UniswapV2Forward:
         """The price the pool initially quotes, ``1 / G'(0) = R1 / R2``."""
         return float(self.R1 / self.R2)
 
+    def __post_init__(self):
+        if self.R1 <= 0 or self.R2 <= 0:
+            raise ValueError("reserves must be positive")
+
     def optimal_x(self, p: float) -> float:
         r"""Most profitable numeraire input, from ``G'(x*) = 1/p`` (closed form).
 
-        ``x* = sqrt(p R1 R2) - R1``.
+        ``x* = sqrt(p R1 R2) - R1``. Negative when the pool already quotes above
+        ``p``, meaning the profitable trade runs the other way.
         """
+        if p <= 0:
+            raise ValueError("price must be positive")
         return float(math.sqrt(p * self.R1 * self.R2) - self.R1)
 
     def lp_loss(self, p: float) -> float:
@@ -460,7 +493,7 @@ def delta_hedge(fee: float, gamma: float, Sigma, ell, Delta, costs=None) -> np.n
     Parameters
     ----------
     fee    : loan fee ``f``.
-    gamma  : risk-aversion ``gamma >= 0``.
+    gamma  : risk-aversion, strictly positive (the closed form divides by it).
     Sigma  : (n, n) covariance of the risky assets (SPD).
     ell    : (n,) lent amounts (loan demand) per asset.
     Delta  : (n,) current portfolio delta to offset.
@@ -469,6 +502,10 @@ def delta_hedge(fee: float, gamma: float, Sigma, ell, Delta, costs=None) -> np.n
     Sigma = np.asarray(Sigma, float)
     ell = np.asarray(ell, float)
     Delta = np.asarray(Delta, float)
+    if gamma <= 0:
+        raise ValueError(
+            "risk aversion gamma must be positive; a risk-neutral LP has no "
+            "finite mean-variance optimum, the hedge diverges as gamma -> 0")
     if costs is None:
         return (fee / gamma) * np.linalg.solve(Sigma, ell) - Delta
     C = np.diag(np.asarray(costs, float))
