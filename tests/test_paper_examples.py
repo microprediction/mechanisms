@@ -710,3 +710,56 @@ def test_lemma5_non_emptiness_criterion_and_the_off_contact_claim():
     for i in off_contact[::200]:
         lower, upper = chord_bounds(xs, cost, int(i))
         assert lower - upper > 0                 # Delta_q > 0 off the contact set
+
+
+def test_section9_auction_algorithm_bound_has_the_shape_proposition_3_has():
+    """The incentive-free ancestor: eps-complementary slackness costs at most
+    n*eps, and nothing at all once eps < 1/n on integer data.
+
+    The paper cites this as the same shape of bound as Proposition 3, with the
+    eps charged to traders rather than tolerated by the solver. Worth checking
+    the cited bound actually holds, since the analogy is doing real work.
+    """
+    def auction(benefit, eps, iterations=100_000):
+        n = benefit.shape[0]
+        prices = np.zeros(n)
+        owner = -np.ones(n, int)
+        assignment = -np.ones(n, int)
+        unassigned = list(range(n))
+        for _ in range(iterations):
+            if not unassigned:
+                break
+            bidder = unassigned.pop()
+            value = benefit[bidder] - prices
+            j = int(np.argmax(value))
+            best = value[j]
+            second = np.partition(value, -2)[-2] if n > 1 else best
+            prices[j] += (best - second) + eps
+            if owner[j] != -1:
+                assignment[owner[j]] = -1
+                unassigned.append(owner[j])
+            owner[j] = bidder
+            assignment[bidder] = j
+        return assignment
+
+    rng = np.random.default_rng(0)
+    ever_lossy = False
+    for n in (4, 5):
+        for eps in (1.0, 0.5, 0.9 / n, 0.5 / n):
+            all_exact = True
+            for _ in range(40):
+                benefit = rng.integers(0, 20, (n, n)).astype(float)   # integer data
+                optimum = max(sum(benefit[i, p[i]] for i in range(n))
+                              for p in itertools.permutations(range(n)))
+                found = auction(benefit, eps)
+                if -1 in found:
+                    continue
+                gap = optimum - sum(benefit[i, found[i]] for i in range(n))
+                assert gap <= n * eps + 1e-9          # the n*eps bound
+                all_exact &= gap <= 1e-9
+                ever_lossy |= gap > 1e-9
+            if eps < 1.0 / n:
+                assert all_exact                       # exact below 1/n
+    # The bound is an upper bound, not a guarantee of loss: a large eps permits
+    # suboptimality without forcing it. Check it is not vacuous all the same.
+    assert ever_lossy
