@@ -232,8 +232,7 @@ $$h(x) = \begin{cases} x^2, & x \neq 0 \\ 1, & x = 0\end{cases}$$
 has infimum $0$ and no minimizer, because it is not lower semicontinuous
 at the one point where the infimum would sit. Coercivity controls the
 behaviour at infinity and says nothing about a puncture. Both hypotheses
-are needed, which is why they appear together in (i); an earlier version
-cited coercivity alone.
+are needed, which is why they appear together in (i).
 
 The maker is value-equivalent to its convex envelope for an unconstrained
 one-shot risk-neutral optimizer, and no more than that: the optimal
@@ -308,9 +307,10 @@ makes $\varepsilon$ a *price*: it is not merely a fee that works but the
 exact toll on the incoherence, so a venue quoting a wider spread than
 $\varepsilon$ is leaving surplus on the table and one quoting a narrower
 spread is being arbitraged, with no ambiguity in between. The affine
-example of §3 is the sharp case: $C(q) = 100q$ has $\varepsilon = 99$,
-and the interval of tenable beliefs is empty for every $f < 99$ and
-non-empty for every $f \ge 99$.
+maker of §5 is the sharp case: $C(q) = 100q$ has $\varepsilon = 99$, the
+excursion attained by a *sell*, since a seller's worst outcome is the
+hull's upper end. The interval of tenable beliefs is empty for every
+$f < 99$ and non-empty for every $f \ge 99$.
 
 Coherence and bounded loss are different properties, and it is worth
 saying so because the convex axiomatics deliver them together. Starting
@@ -349,11 +349,11 @@ no-arbitrage for a large class of processes that are arbitrageable
 frictionlessly, with a consistent price system inside the spread as
 certificate [@guasoni2006transaction; @guasoni2010ftap]. In prediction markets the
 precedent is fees sized to expected arbitrage profit restoring bounded loss
-under privacy noise [@cummings2016privacy; @frongillo2018private]. Call
-the smallest $\varepsilon$ for which the hypothesis of Proposition 3
-holds the cost's *arbitrage depth*: the worst per-unit excursion of its
-chord slopes beyond the payoff hull, and so the minimum viable half-spread
-(the quoted spread being $2f$, since bid and ask sit at $m \mp f$). A
+under privacy noise [@cummings2016privacy; @frongillo2018private]. The
+$\varepsilon$ of Proposition 3 is the worst per-unit excursion of the
+cost's chord slopes beyond the payoff hull, and so the minimum viable
+half-spread (the quoted spread being $2f$, since bid and ask sit at
+$m \mp f$). A
 venue quoting a wide spread to cover a deeply incoherent cost is
 arbitrage-free but uninformative in proportion: the market prices the
 model's incoherence as uncertainty.
@@ -445,10 +445,10 @@ The threshold is $f = 99$, where the interval first touches the hull at
 the single belief $\mu = 1$. Below it no admissible belief declines to
 trade and the maker is arbitraged from every state; at or above it the
 maker can rest. The threshold is exactly the arbitrage depth, the amount
-by which the quote $100$ exits the hull. A previous version of this
-paragraph asserted that no fee suffices, which confused the untruncated
-interval's non-emptiness with the truncated one's, and mislaid the
-finite threshold that separates the two regimes.
+by which the quote $100$ exits the hull. Note which interval decides it:
+the untruncated one is non-empty at every $f \ge 0$, so reading its
+non-emptiness as tenability would mislay the finite threshold that
+separates the two regimes.
 
 So friction does not merely widen an existing spread: at
 $2f \ge \Delta_q$ a state in the excluded inventory range becomes
@@ -671,10 +671,10 @@ while at $y = x_0$ we have $C(x_0) > \hat C(x_0)$; hence
 $e_\lambda C(x) > e_\lambda(\hat C)(x) = (e_\lambda C)^{**}(x)$ and
 $e_\lambda C$ is not convex. The identity is standard
 [@rockafellar1970convex; @rockafellar1998variational]; it is recorded here
-because it settles the question a numerical study of $e_\lambda C$ on a
-finite window cannot: an earlier draft read a curvature of
-$+3.6\times10^{-8}$ at $\lambda$ large on a $\pm 12$ window as
-convexification, and it was a truncation artifact.* Here $\lambda$ is the
+because it settles a question a numerical study on a finite window cannot.
+A curvature of $+3.6\times10^{-8}$ at large $\lambda$ on a $\pm 12$ window
+is a truncation artifact, not convexification, and no mesh distinguishes
+the two.* Here $\lambda$ is the
 co-quoter's liquidity: its price impact is $1/\lambda$, so large
 $\lambda$ means a deep book, not a strong pull.
 
@@ -842,9 +842,8 @@ small", and the harvest is quadratic in the net margin and inversely
 proportional to the curvature: a deeper book, meaning smaller $L$, is
 worth more to the arbitrageur, not less.*
 
-The converse needs care, and an earlier version overstated it. A
-separating margin *below* $f\lVert y\rVert$ does not mean the venue is
-arbitrage-free. What Proposition 3 rules out is the first-order local
+The converse needs care. A separating margin *below* $f\lVert y\rVert$
+does not mean the venue is arbitrage-free. What Proposition 3 rules out is the first-order local
 trade in the direction $y$: for small $\delta$ the fee $f\delta\lVert
 y\rVert$ dominates the margin $\delta \cdot (\text{margin})$, so that
 particular infinitesimal trade loses money. It says nothing about
