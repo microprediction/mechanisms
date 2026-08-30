@@ -1,8 +1,29 @@
-# Review checklist (adversarial review at eeb63ae)
+# Review checklist (three adversarial reviews, eeb63ae through 0c4b878)
 
 Working list for the mathematical review of *Non-Convex Market Makers* and
 its reference implementations. Each item is marked DONE when both the claim
 and its verification are fixed, and cross-checked at the end.
+
+**Status: all 53 items closed.** Every counterexample from the three reviews
+was reproduced before being fixed and re-run afterwards at the head; the
+cross-check is in the session log and each one is now a test. The suite went
+from 25 tests to 273. What changed structurally, beyond the individual fixes:
+
+- `tests/oracles/` holds independent exact oracles, so a claim is checked
+  against a separate implementation from the definition rather than against a
+  refinement of itself. That was the shape of every error that got through.
+- Certificates replaced booleans: a witness chord, a separating portfolio, a
+  duality gap and a KKT residual, each checkable by re-pricing.
+- Thresholds are bracketed at `eps - d`, `eps`, `eps + d` rather than sampled
+  on one side, and tests split by dual domain rather than across it.
+- Metamorphic tests assert relations between runs, needing no ground truth.
+- Structured generators build the cases uniform sampling never reaches.
+
+Two findings that came out of the fixing rather than the reviews: the
+allocation routine added for A1 had its own imbalance bug, caught by the
+property test written alongside it; and the max-sure-profit oracle caught a
+semantic mismatch on the first run, the library reporting a negative value as
+the coherence margin.
 
 ## Mandatory corrections
 
