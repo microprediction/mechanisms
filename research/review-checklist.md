@@ -19,10 +19,17 @@ and its verification are fixed, and cross-checked at the end.
 - [ ] M5. Sparsity is not guaranteed: exact dead zones yes, sparse
   allocation no (identical makers split evenly). Fix abstract, Lemma 6(iii),
   the lasso analogy, and the module's "fee order" claim.
-- [ ] M6. `route` bypasses internal clearing at zero demand; the special
-  case must go and the root-find must run.
-- [ ] M7. `supply` silently clips outside its dual domain; distinguish
+- [x] M6. `route` bypasses internal clearing at zero demand; the special
+  case must go and the root-find must run. Removed. Two symmetric makers at
+  `q = +-1.5` with `f = 0.05` quote `[0.855, 0.955]` and `[-0.955, -0.855]`;
+  the root-find crosses them at 1.45 units for a total effective cost of
+  `-1.56` against `0` for doing nothing. Consistent quotes still give exact
+  zeros.
+- [x] M7. `supply` silently clips outside its dual domain; distinguish
   finite optimizer, finite value with no finite optimizer, and unbounded.
+  Added `dual_domain(p)` returning that trichotomy, and `supply` now returns
+  `+-inf` outside rather than the arctanh of `1 - eps`, which looked like a
+  capacity and was only a statement about floating point.
 - [ ] M8. Proposition 11's "below the fee is suppressed by Proposition 3"
   overreaches; a below-fee local margin only kills first-order local trades.
 - [ ] M9. Independent exact oracles instead of comparing a discretization

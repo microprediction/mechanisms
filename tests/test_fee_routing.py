@@ -111,3 +111,50 @@ def test_consolidated_book_is_monotone_and_flat_on_quote_bands():
 def test_capacity_error():
     with pytest.raises(ValueError):
         route([LogCoshMaker(b=1.0, fee=0.0)], 1e6)
+
+
+def test_zero_demand_still_clears_makers_against_each_other():
+    # Inconsistent quotes: one maker's bid sits above the other's ask, so there
+    # is a profitable internal cross that nets to zero externally. The old code
+    # short-circuited size == 0 and returned zeros, leaving it on the table.
+    a = LogCoshMaker(b=1.0, fee=0.05, q0=+1.5)
+    b = LogCoshMaker(b=1.0, fee=0.05, q0=-1.5)
+    assert b.bid > a.ask or a.bid > b.ask          # the quotes really do cross
+
+    fills, price = route([a, b], 0.0)
+    assert fills.sum() == pytest.approx(0.0, abs=1e-9)
+    assert abs(fills[0]) > 1.0                     # a real cross, not a rounding wobble
+    assert fills[0] == pytest.approx(-fills[1])
+    total = a.trade_cost(fills[0]) + b.trade_cost(fills[1])
+    assert total < -1.0                            # strictly better than doing nothing
+
+    # Consistent quotes leave nothing to cross, and the same path returns zeros.
+    c = LogCoshMaker(b=1.0, fee=0.05, q0=0.2)
+    d = LogCoshMaker(b=1.0, fee=0.05, q0=0.2)
+    fills, _ = route([c, d], 0.0)
+    np.testing.assert_allclose(fills, np.zeros(2), atol=1e-9)
+
+
+def test_supply_reports_the_dual_domain_trichotomy():
+    m = LogCoshMaker(b=2.0, fee=0.1, q0=0.0)
+    # Interior: a finite optimiser exists and the supply inverts the price.
+    assert m.dual_domain(0.5) == "interior"
+    s = m.supply(0.5)
+    assert np.isfinite(s)
+    assert np.tanh((m.q + s) / m.b) == pytest.approx(0.5 - m.fee)
+
+    # Boundary: the conjugate's value is finite (b log 2) but no finite fill
+    # attains it, so the supply is infinite rather than a large number.
+    assert m.dual_domain(1.0 + m.fee) == "boundary"
+    assert m.supply(1.0 + m.fee) == float("inf")
+    assert m.supply(-1.0 - m.fee) == float("-inf")
+    assert m.worst_case_loss() == pytest.approx(m.b * np.log(2.0))
+
+    # Outside: unbounded.
+    assert m.dual_domain(5.0) == "outside"
+    assert m.supply(5.0) == float("inf")
+    assert m.supply(-5.0) == float("-inf")
+
+    # Inside the quote band the maker sits out.
+    assert m.dual_domain(0.0) == "interior"
+    assert m.supply(0.0) == 0.0

@@ -98,20 +98,52 @@ class LogCoshMaker:
         """Bound ``b log 2`` on the maker's loss for settlements in [-1, 1]."""
         return float(self.b * np.log(2.0))
 
+    def dual_domain(self, p: float) -> str:
+        r"""Where the fee-shifted price sits relative to ``dom C^*``: the trichotomy.
+
+        The conjugate of ``C(q) = b log cosh(q/b)`` is finite exactly on
+        ``[-1, 1]``, and the three cases behave differently:
+
+        ``"interior"`` (``|t| < 1``)
+            The supremum ``sup_s [t s - C(s)]`` is attained at the finite
+            ``s = b arctanh(t)``. This is the only case with a well-defined fill.
+        ``"boundary"`` (``|t| = 1``)
+            The supremum is finite, equal to ``b log 2``, but attained by no
+            finite ``s``: the optimal fill is ``+-inf``. A finite answer here is
+            an artefact, not a quantity.
+        ``"outside"`` (``|t| > 1``)
+            The supremum is ``+inf``. The maker would sell without limit.
+
+        ``t`` is ``p - fee`` on the sell side and ``p + fee`` on the buy side.
+        """
+        if self.bid < p < self.ask:
+            return "interior"
+        t = p - self.fee if p >= self.ask else p + self.fee
+        if abs(t) < 1.0:
+            return "interior"
+        return "boundary" if abs(t) == 1.0 else "outside"
+
     def supply(self, p: float) -> float:
-        """Fill the maker optimally provides at clearing price ``p``.
+        r"""Fill the maker optimally provides at clearing price ``p``.
 
         Zero inside the quote band ``[bid, ask]``; otherwise the closed-form
         inverse of the fee-shifted marginal price, ``b arctanh(p -+ f) - q``.
         Monotone non-decreasing in ``p``.
+
+        Outside the dual domain the answer is ``+-inf``, not a large finite
+        number. Clipping the arctanh argument to ``1 - eps`` returns a fill that
+        looks like a capacity but is only a statement about floating point:
+        the maker's supply genuinely diverges there, and a caller that treats
+        the clipped value as a limit will believe a finite demand cannot clear
+        when it can. See :meth:`dual_domain` for the three cases.
         """
+        if self.bid < p < self.ask:
+            return 0.0
         if p >= self.ask:
-            target = min(p - self.fee, 1.0 - _PRICE_EPS)
-            return float(self.b * np.arctanh(target) - self.q)
-        if p <= self.bid:
-            target = max(p + self.fee, -1.0 + _PRICE_EPS)
-            return float(self.b * np.arctanh(target) - self.q)
-        return 0.0
+            t = p - self.fee
+            return float(self.b * np.arctanh(t)) - self.q if t < 1.0 else float("inf")
+        t = p + self.fee
+        return float(self.b * np.arctanh(t)) - self.q if t > -1.0 else float("-inf")
 
     def apply_fill(self, s: float) -> float:
         """Execute a fill, mutating inventory; return the charge collected."""
@@ -129,6 +161,17 @@ def route(makers: Sequence[LogCoshMaker], size: float, tol: float = 1e-12):
     of the effective costs, evaluated by bisection on the clearing price.
 
     Does not mutate the makers; call ``apply_fill`` on each to execute.
+
+    Zero external demand is not a no-op and is not special-cased. When the
+    makers' quotes are inconsistent — one maker's bid above another's ask, which
+    happens whenever their inventories have drifted apart — there is a profitable
+    internal cross that nets to zero externally. Two symmetric log-cosh makers at
+    ``q = +1.5`` and ``q = -1.5`` with ``f = 0.05`` quote ``[0.855, 0.955]`` and
+    ``[-0.955, -0.855]``: the root-find clears them against each other at 1.45
+    units for a total effective cost of ``-1.56``, against ``0`` for doing
+    nothing. Returning zero fills there would leave that on the table. With
+    consistent quotes the same root-find returns exact zeros, so the general path
+    is correct in both cases.
 
     The bracket accounts for fees. Maker ``i`` sells at prices above
     ``ask_i`` by solving ``tanh((q+s)/b) = p - f_i``, so its supply is finite
@@ -151,8 +194,6 @@ def route(makers: Sequence[LogCoshMaker], size: float, tol: float = 1e-12):
     """
     if not makers:
         raise ValueError("need at least one maker")
-    if size == 0.0:
-        return np.zeros(len(makers)), float(np.mean([m.marginal_price for m in makers]))
 
     # Finite-supply range: the tightest maker bound binds at each end.
     lo = max(-1.0 - m.fee for m in makers) + _PRICE_EPS
