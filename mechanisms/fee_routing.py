@@ -18,9 +18,17 @@ the clearing price: each maker supplies
     s_i(p) = (C_i')^{-1}(p - f_i * sign(s_i)) - q_i,   or 0 inside the band,
 
 and ``p*`` solves ``sum_i s_i(p*) = size``. The ``|s|`` term is an L1 penalty,
-so the optimal split is sparse — makers whose quote band contains ``p*``
-contribute exactly zero, and a growing trade eats through makers in fee order
-like walking the levels of a limit order book.
+so every maker gets an *exact dead zone*: a maker whose quote band contains
+``p*`` contributes identically zero, not merely a little. A growing trade eats
+through makers in *quote-price* order, like walking the levels of a limit order
+book — which is fee order only when their marginal prices agree.
+
+Note what this does not say. An exact zero per maker is not a sparse split.
+Give ``n`` makers identical costs and identical fees and their bands coincide,
+so either all of them contain ``p*`` and nobody trades or none does and all
+``n`` trade ``size/n``, which is as dense as an allocation gets, at every
+demand. Sparsity in the allocation needs the fees to separate the makers *and*
+the demand to stay below the spill-over point; the exact zero needs neither.
 
 The bounded maker used here is the log-cosh family ``C(q) = b log cosh(q/b)``,
 whose marginal price ``tanh(q/b)`` lives in ``(-1, 1)`` (a settlement in

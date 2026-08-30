@@ -23,8 +23,8 @@ and by conjugation that fee is exactly a bid-ask spread, with the exact
 no-trade interval given by fee-widened one-sided chord bounds for any
 cost whatever. Combining fee-bearing makers is an infimal convolution
 solved by a single monotone clearing-price root-find; the fees act as an
-L1 penalty, so participation is sparse and the aggregate supply curve is
-a consolidated limit order book. Adding a deep quadratic co-quoter is
+L1 penalty, giving each maker an exact no-trade band, and the aggregate
+supply curve is a consolidated limit order book. Adding a deep quadratic co-quoter is
 Moreau smoothing, which preserves coherence at every depth while
 attenuating but never closing the envelope gap. Finally, separation makes
 model inconsistency financially discoverable: any quoted configuration
@@ -96,7 +96,7 @@ their online-learning reading are @abernethy2013efficient and
 @chen2010newunderstanding. Against that background the residue claimed
 here is: coherence without convexity and the contact-set consequences
 (§§2–3); the exact scalar routing formula with fees inside the costs, its
-no-trade bands and sparse participation, and the consolidated-order-book
+no-trade bands, and the consolidated-order-book
 reading (§§5–6); arbitrage depth, the friction characterization, and
 accessible coherence (§§4, 9); and the synthesis with regularization
 and incentive closure (§§1, 9). Results that are not new are labelled
@@ -128,9 +128,10 @@ profitable, breaking even on the outcomes that attain the boundary payoff
 and gaining on the rest. Readers importing the
 nonnegative-payoff convention should add relative interiors throughout.
 
-**Proposition 1 (no-arbitrage without convexity).** *For a
-path-independent maker (one whose charge depends only on the inventory
-endpoints) with cost $C$, no convexity assumed, there is no
+**Proposition 1 (no-arbitrage without convexity).** *Let the payoff map
+$\varphi$ have compact range, so that $\min_\omega \varphi(\omega)$ is
+attained. For a path-independent maker (one whose charge depends only on
+the inventory endpoints) with cost $C$, no convexity assumed, there is no
 outcome-independent strictly profitable fill from any state if and only
 if every chord slope $[C(q+s) - C(q)]/s$ lies in the convex hull of
 payoffs: for all $q, s$,*
@@ -143,6 +144,19 @@ $\min_\omega \varphi(\omega) s - [C(q+s) - C(q)]$; positivity for some pair
 $(q,s)$ is exactly the failure of the displayed inequality, and the
 inequality for all pairs says every chord slope is supported by the hull.
 $\blacksquare$
+
+Compactness is a real hypothesis, and dropping it splits the notion of
+arbitrage in two. Over a non-compact outcome set a fill can be
+*pointwise* strictly profitable, $\varphi(\omega) s - [C(q+s) - C(q)] > 0$
+for every $\omega$, while its infimum over $\omega$ is zero, so no
+positive margin is ever collected. Pointwise strictness and a positive
+worst-case margin coincide when the minimum is attained and part company
+when it is not. Readers working over a non-compact $\Omega$ should replace
+"strictly profitable" throughout with the *uniform-margin* definition,
+that there exists $\epsilon > 0$ with
+$\inf_\omega \varphi(\omega) s - [C(q+s) - C(q)] \ge \epsilon$, under
+which the proposition and everything downstream go through verbatim with
+$\min$ read as $\inf$.
 
 Round trips are refunds for any $C$, convex or not, because the charge
 telescopes over closed paths. When the chord condition fails the exploit is
@@ -182,7 +196,8 @@ a myopic risk-neutral trader have believed mean $\mu$ in the hull with
 $C^*(\mu) < \infty$, facing the maker at state $q$. Then the trader:
 (i) has every attained optimal fill landing on the contact set
 $\{C = \hat C\}$, an optimum existing whenever $x \mapsto C(x) - \mu x$
-attains its infimum (for instance when it is coercive); and
+attains its infimum (for instance when it is both coercive and lower
+semicontinuous); and
 (ii) earns maximal expected profit*
 
 $$\Pi_C(q,\mu) \;=\; \Pi_{\hat C}(q,\mu) + g(q)$$
@@ -199,13 +214,26 @@ $\hat C(q)$. For (i), a maximizer of an affine function minus $C$ is a
 point where an affine minorant touches $C$, hence touches $\hat C$, so
 any attained optimum lies in the contact set. $\blacksquare$
 
-Attainment is a genuine hypothesis, not a formality. The chord-coherent
-cost $C(x) = \arctan x$ has lower convex envelope the constant
-$-\pi/2$ and hence empty contact set; at $\mu = 0$ the supremum $\pi/2$ is
-approached only as $x \to -\infty$. Where the relevant contact sits at
-infinity, the language below about flow landing on contact points and
-off-contact states being transient describes a limit that no fill
-realizes.
+Attainment is a genuine hypothesis, not a formality, and it fails in two
+separate ways worth keeping apart.
+
+*The infimum can escape to infinity.* The chord-coherent cost
+$C(x) = \arctan x$ has lower convex envelope the constant $-\pi/2$ and
+hence empty contact set; at $\mu = 0$ the supremum $\pi/2$ is approached
+only as $x \to -\infty$. Where the relevant contact sits at infinity, the
+language below about flow landing on contact points and off-contact
+states being transient describes a limit that no fill realizes.
+
+*Or it can escape at a point.* Coercivity alone does not deliver
+attainment: the coercive
+
+$$h(x) = \begin{cases} x^2, & x \neq 0 \\ 1, & x = 0\end{cases}$$
+
+has infimum $0$ and no minimizer, because it is not lower semicontinuous
+at the one point where the infimum would sit. Coercivity controls the
+behaviour at infinity and says nothing about a puncture. Both hypotheses
+are needed, which is why they appear together in (i); an earlier version
+cited coercivity alone.
 
 The maker is value-equivalent to its convex envelope for an unconstrained
 one-shot risk-neutral optimizer, and no more than that: the optimal
@@ -337,10 +365,30 @@ the last claim, off the contact set Proposition 2 gives every belief a
 strictly positive frictionless profit, so the $f = 0$ interval is empty.
 $\blacksquare$
 
-The hull intersection is not decoration. Without chord coherence
-$C(q) = 100q$ has $\Delta_q = 0$, so the untruncated interval $\{100\}$
-is non-empty for every $f \ge 0$, yet no admissible belief in $[-1,1]$
-declines to trade: the maker is arbitraged from every state.
+The hull intersection is not decoration, and the affine maker shows why.
+Without chord coherence, $C(q) = 100q$ has every chord slope equal to
+$100$, so $L(q) = U(q) = 100$ and the untruncated fee-adjusted interval is
+$[100 - f,\, 100 + f]$ — not the singleton $\{100\}$, which is only the
+$f = 0$ case. That interval is non-empty for every $f \ge 0$, but what
+matters is its intersection with the payoff hull $[-1, 1]$:
+
+| $f$ | untruncated $[100-f,\,100+f]$ | $\cap\,[-1,1]$ |
+|---|---|---|
+| $0$ | $[100,\,100]$ | empty |
+| $50$ | $[50,\,150]$ | empty |
+| $98.9$ | $[1.1,\,198.9]$ | empty |
+| $99$ | $[1,\,199]$ | $\{1\}$ |
+| $100$ | $[0,\,200]$ | $[0,\,1]$ |
+| $101$ | $[-1,\,201]$ | $[-1,\,1]$ |
+
+The threshold is $f = 99$, where the interval first touches the hull at
+the single belief $\mu = 1$. Below it no admissible belief declines to
+trade and the maker is arbitraged from every state; at or above it the
+maker can rest. The threshold is exactly the arbitrage depth, the amount
+by which the quote $100$ exits the hull. A previous version of this
+paragraph asserted that no fee suffices, which confused the untruncated
+interval's non-emptiness with the truncated one's, and mislaid the
+finite threshold that separates the two regimes.
 
 So friction does not merely widen an existing spread: at
 $2f \ge \Delta_q$ a state in the excluded inventory range becomes
@@ -394,8 +442,9 @@ price $p^*$ with $\sum_i s_i(p^*) = \Delta$ exists. Then:
 functions; (ii) the split $s_i = s_i(p^*)$ attains $\tilde C(\Delta)$, and
 any optimal split satisfies
 $C_i'(q_i + s_i) + f_i \operatorname{sign}(s_i) = p^*$ for $s_i \ne 0$ and
-$\lvert p^* - m_i \rvert \le f_i$ for $s_i = 0$; (iii) the split is sparse:
-every maker whose quote band strictly contains $p^*$ trades exactly zero.*
+$\lvert p^* - m_i \rvert \le f_i$ for $s_i = 0$; (iii) the split has exact
+dead zones: every maker whose quote band strictly contains $p^*$ trades
+exactly zero.*
 
 **Proof.** (i) is the conjugate-sum identity applied to the convolution
 [@rockafellar1970convex]. For (ii), the split is feasible by choice of
@@ -409,15 +458,32 @@ condition for $\min\{\sum_i \tilde C_i(s_i) : \sum_i s_i = \Delta\}$.
 
 The computation is a scalar monotone root-find whatever $n$ is, and the fee
 costs nothing beyond a horizontal shift of each supply curve. The
-$\lvert s\rvert$ terms are an $\ell_1$ penalty, so sparsity arrives for the
-same reason it does in the lasso, and for the same reason proportional
-transaction costs produce no-trade regions and sparse portfolios
+$\lvert s\rvert$ terms are an $\ell_1$ penalty, so the *exact zero* arrives for
+the same reason it does in the lasso, and for the same reason proportional
+transaction costs produce no-trade regions
 [@olivaresnadal2018robust]. A small trade routes to whichever maker
 posts the best quote, and to that maker alone unless the best quote is
 tied; a growing trade pushes that maker's fee-adjusted marginal price
 through the next band and spills over, consuming makers in quote-price
 order, which coincides with fee order only when their marginal prices
 agree.
+
+The analogy stops short of sparsity in the allocation, and the distinction
+matters because the lasso is usually invoked for exactly that. What the
+$\ell_1$ term delivers is an *exact dead zone per maker*: maker $i$ trades
+identically zero, not merely a little, whenever $\lvert p^* - m_i\rvert
+\le f_i$. It does not deliver a sparse split. Take $n$ makers with
+identical costs and identical fees. Their bands coincide, so either all of
+them contain $p^*$ and nobody trades, or none does and every one of them
+trades the same amount; the split is $\Delta/n$ across the board, as dense
+as it can be, at every demand. Three distinct-fee makers at $f = 0.05,
+0.20, 0.50$ against a unit log-cosh cost illustrate the general pattern:
+the split is $(0.05, 0, 0)$ at demand $0.05$, $(0.33, 0.17, 0)$ at $0.5$,
+and $(0.56, 0.38, 0.06)$ at $1.0$ — sparse only while the demand is small
+relative to the fee gaps, and dense once it is not. Sparsity in the
+allocation needs the fees to separate the makers *and* the demand to stay
+below the spill-over point; the exact zero needs neither and is what the
+$\ell_1$ term actually buys.
 
 **Remark 7 (zero fees; known).** *With $f_i \equiv 0$ the convolution
 reduces to the fee-free merge: conjugate regularisers add, and for a

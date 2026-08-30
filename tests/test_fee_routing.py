@@ -158,3 +158,24 @@ def test_supply_reports_the_dual_domain_trichotomy():
     # Inside the quote band the maker sits out.
     assert m.dual_domain(0.0) == "interior"
     assert m.supply(0.0) == 0.0
+
+
+def test_l1_fee_gives_exact_dead_zones_but_not_a_sparse_split():
+    # The exact zero is real: a maker whose band contains p* trades identically 0.
+    ms = [LogCoshMaker(1.0, 0.05), LogCoshMaker(1.0, 0.20), LogCoshMaker(1.0, 0.50)]
+    fills, p_star = route(ms, 0.05)
+    assert fills[1] == 0.0 and fills[2] == 0.0          # not small, exactly zero
+    for m, s in zip(ms, fills):
+        if s == 0.0:
+            assert abs(p_star - m.marginal_price) <= m.fee + 1e-9
+
+    # But sparsity in the allocation is not guaranteed. As the demand grows past
+    # each band the split fills in, and identical makers never sparsify at all.
+    counts = [int((np.abs(route(ms, d)[0]) > 1e-9).sum()) for d in (0.05, 0.5, 1.0)]
+    assert counts == [1, 2, 3]
+
+    for n in (2, 3, 5):
+        same = [LogCoshMaker(b=1.0, fee=0.2) for _ in range(n)]
+        fills, _ = route(same, 2.0)
+        assert int((np.abs(fills) > 1e-9).sum()) == n   # dense at every demand
+        np.testing.assert_allclose(fills, np.full(n, 2.0 / n), atol=1e-6)

@@ -6,19 +6,28 @@ and its verification are fixed, and cross-checked at the end.
 
 ## Mandatory corrections
 
-- [ ] M1. `C(q)=100q` paragraph in the paper is false: the untruncated
+- [x] M1. `C(q)=100q` paragraph in the paper is false: the untruncated
   interval is `[100-f, 100+f]`, not `{100}`. Give the exact table and the
-  `f = 99` threshold.
-- [ ] M2. Proposition 1 needs compact payoffs (min attained) or a
+  `f = 99` threshold. Table added; the threshold is the arbitrage depth, and
+  the old text confused the untruncated interval's non-emptiness with the
+  truncated one's.
+- [x] M2. Proposition 1 needs compact payoffs (min attained) or a
   uniform-margin definition of arbitrage. Pointwise-strict differs from
-  positive worst-case margin without compactness.
-- [ ] M3. Proposition 2's attainment example needs lower semicontinuity;
-  coercive alone is not enough.
+  positive worst-case margin without compactness. Compactness added as an
+  explicit hypothesis, with the uniform-margin substitute spelled out for a
+  non-compact outcome set.
+- [x] M3. Proposition 2's attainment example needs lower semicontinuity;
+  coercive alone is not enough. Both hypotheses now stated, with the punctured
+  parabola `h(x) = x^2` off zero and `1` at zero as the counterexample, and the
+  two failure modes (escape to infinity, escape at a point) separated.
 - [ ] M4. "Between contact points the envelope is affine" is too broad;
   restrict to a connected component of `{C > C**}`, and qualify the jump.
-- [ ] M5. Sparsity is not guaranteed: exact dead zones yes, sparse
+- [x] M5. Sparsity is not guaranteed: exact dead zones yes, sparse
   allocation no (identical makers split evenly). Fix abstract, Lemma 6(iii),
-  the lasso analogy, and the module's "fee order" claim.
+  the lasso analogy, and the module's "fee order" claim. All four fixed. The
+  claim is now the exact dead zone, with `n` identical makers splitting
+  `size/n` at every demand as the counterexample, and a three-fee example
+  showing the split filling in from 1 to 3 makers as demand grows.
 - [x] M6. `route` bypasses internal clearing at zero demand; the special
   case must go and the root-find must run. Removed. Two symmetric makers at
   `q = +-1.5` with `f = 0.05` quote `[0.855, 0.955]` and `[-0.955, -0.855]`;
