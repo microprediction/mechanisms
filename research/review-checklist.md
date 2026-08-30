@@ -161,4 +161,10 @@ and its verification are fixed, and cross-checked at the end.
   module's degenerate inputs (zero leverage, zero position, zero gamma, zero
   open interest, zero reserves), each of which divided by zero.
 - [x] A9. Homepage and Connections slogans disagree with the corrected
-  mechanism pages.
+  mechanism pages. The CFMM page itself had been missed too.
+- [x] A10. Domain validation across the library: pools accepted negative
+  weights and negative forecast components and normalised zero-sum weights by
+  zero; `depth_trimmed_mean` validated nothing; `kelly_fraction` accepted
+  probabilities outside `[0, 1]`; `kelly_allocation` normalised negative
+  beliefs; `energy_score` reshaped a mismatched ensemble instead of erroring;
+  six PDLP entry points divided by zero. Calibration was done earlier with A3.

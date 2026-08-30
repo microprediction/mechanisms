@@ -29,19 +29,31 @@ import numpy as np
 __all__ = ["linear_opinion_pool", "logarithmic_opinion_pool", "depth_trimmed_mean"]
 
 
-def _stack_and_weights(forecasts, weights):
+def _as_forecast_matrix(forecasts) -> np.ndarray:
     P = np.atleast_2d(np.asarray(forecasts, dtype=float))
-    m = P.shape[0]
-    if weights is None:
-        w = np.full(m, 1.0 / m)
-    else:
-        w = np.asarray(weights, dtype=float)
-        if w.shape != (m,):
-            raise ValueError("weights must align with forecasts")
-        w = w / w.sum()
+    if P.ndim != 2 or P.shape[0] == 0 or P.shape[1] == 0:
+        raise ValueError("forecasts must be a non-empty 2-D array")
+    if not np.all(np.isfinite(P)) or np.any(P < 0):
+        raise ValueError("forecast components must be finite and non-negative")
     if not np.allclose(P.sum(axis=1), 1.0, atol=1e-6):
         raise ValueError("each forecast must be a probability vector summing to 1")
-    return P, w
+    return P
+
+
+def _stack_and_weights(forecasts, weights):
+    P = _as_forecast_matrix(forecasts)
+    m = P.shape[0]
+    if weights is None:
+        return P, np.full(m, 1.0 / m)
+    w = np.asarray(weights, dtype=float)
+    if w.shape != (m,):
+        raise ValueError("weights must align with forecasts")
+    if not np.all(np.isfinite(w)) or np.any(w < 0):
+        raise ValueError("pooling weights must be finite and non-negative")
+    total = w.sum()
+    if total <= 0:
+        raise ValueError("pooling weights must have a positive sum")
+    return P, w / total
 
 
 def linear_opinion_pool(forecasts, weights=None) -> np.ndarray:
@@ -67,7 +79,7 @@ def depth_trimmed_mean(forecasts, trim: float = 0.2) -> np.ndarray:
     """
     if not (0.0 <= trim < 1.0):
         raise ValueError("trim must be in [0, 1)")
-    P = np.atleast_2d(np.asarray(forecasts, dtype=float))
+    P = _as_forecast_matrix(forecasts)
     m = P.shape[0]
     med = np.median(P, axis=0)
     dist = np.abs(P - med).sum(axis=1)

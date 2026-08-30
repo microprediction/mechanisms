@@ -191,11 +191,19 @@ def energy_score(samples, y, beta: float = 1.0) -> float:
         raise ValueError("energy score is strictly proper only for beta in (0, 2)")
     x = np.atleast_2d(np.asarray(samples, dtype=float))
     if x.shape[0] == 1 and x.shape[1] != 1 and np.ndim(samples) == 1:
-        # a single 1-D sample vector was passed as the ensemble
+        # a 1-D input is m scalar samples, not one m-dimensional sample
         x = x.reshape(-1, 1)
     y = np.asarray(y, dtype=float).ravel()
+    if x.ndim != 2:
+        raise ValueError("samples must be (m, d)")
     if x.shape[1] != y.size:
-        x = x.reshape(-1, y.size)
+        raise ValueError(
+            f"sample dimension {x.shape[1]} does not match the outcome's {y.size}; "
+            "reshaping here would silently reinterpret the ensemble")
+    if x.shape[0] == 0 or y.size == 0:
+        raise ValueError("need at least one sample and a non-empty outcome")
+    if not np.all(np.isfinite(x)) or not np.all(np.isfinite(y)):
+        raise ValueError("samples and outcome must be finite")
     m = x.shape[0]
     term1 = np.mean(np.linalg.norm(x - y[None, :], axis=1) ** beta)
     diff = x[:, None, :] - x[None, :, :]

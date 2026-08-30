@@ -68,6 +68,8 @@ def kelly_fraction(p: float, b: float) -> float:
     b = float(b)
     if b <= 0:
         raise ValueError("net odds b must be positive")
+    if not (0.0 <= p <= 1.0):
+        raise ValueError("win probability p must lie in [0, 1]")
     return max(0.0, p - (1.0 - p) / b)
 
 
@@ -79,6 +81,10 @@ def kelly_growth_binary(p: float, b: float, f: float | None = None) -> float:
     """
     p = float(p)
     b = float(b)
+    if not (0.0 <= p <= 1.0):
+        raise ValueError("win probability p must lie in [0, 1]")
+    if b <= 0:
+        raise ValueError("net odds b must be positive")
     if f is None:
         f = kelly_fraction(p, b)
     f = float(f)
@@ -96,6 +102,10 @@ def kelly_allocation(p) -> np.ndarray:
     allocation is simply the (normalised) belief vector: *bet your beliefs*.
     """
     p = np.asarray(p, dtype=float)
+    if p.ndim != 1 or p.size == 0:
+        raise ValueError("beliefs must be a non-empty 1-D vector")
+    if not np.all(np.isfinite(p)) or np.any(p < 0):
+        raise ValueError("beliefs must be finite and non-negative")
     s = p.sum()
     if s <= 0:
         raise ValueError("belief vector must have positive mass")
@@ -112,6 +122,10 @@ def kelly_growth_rate(p, pi) -> float:
     """
     p = np.asarray(p, dtype=float)
     pi = np.asarray(pi, dtype=float)
+    if p.shape != pi.shape or p.ndim != 1:
+        raise ValueError("beliefs and prices must be 1-D of the same length")
+    if np.any(p < 0) or np.any(pi < 0) or p.sum() <= 0 or pi.sum() <= 0:
+        raise ValueError("beliefs and prices must be non-negative with positive mass")
     p = p / p.sum()
     pi = pi / pi.sum()
     mask = p > 0

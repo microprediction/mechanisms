@@ -292,3 +292,42 @@ def test_bts_prediction_score_is_a_negative_kl_on_valid_input():
     y_bar = np.exp(np.mean(np.log(np.array(preds)), axis=0))
     for i, k in enumerate(info):
         assert scores[i] == pytest.approx(np.log(x_bar[k] / y_bar[k]))
+
+
+# --------------------------------------------------------------------------- #
+# domain validation: inputs that used to pass silently or divide by zero
+# --------------------------------------------------------------------------- #
+def test_pools_reject_non_probabilities_and_bad_weights():
+    with pytest.raises(ValueError, match="non-negative"):
+        aggregation.linear_opinion_pool([[0.5, 0.5], [0.5, 0.5]], weights=[2, -1])
+    with pytest.raises(ValueError, match="non-negative"):
+        aggregation.linear_opinion_pool([[0.5, 0.5], [0.5, 0.5]], weights=[1, -1])
+    with pytest.raises(ValueError, match="forecast components"):
+        aggregation.linear_opinion_pool([[1.5, -0.5], [0.5, 0.5]])
+    with pytest.raises(ValueError, match="summing to 1"):
+        aggregation.depth_trimmed_mean([[5.0, 2.0], [3.0, 9.0]], trim=0.25)
+    # Zero-sum weights used to normalise by zero and return NaNs.
+    with pytest.raises(ValueError):
+        aggregation.logarithmic_opinion_pool([[0.5, 0.5], [0.5, 0.5]],
+                                             weights=[0.0, 0.0])
+
+
+def test_kelly_rejects_probabilities_outside_the_unit_interval():
+    from mechanisms import kelly
+    with pytest.raises(ValueError, match=r"\[0, 1\]"):
+        kelly.kelly_fraction(1.5, 2.0)
+    with pytest.raises(ValueError, match=r"\[0, 1\]"):
+        kelly.kelly_fraction(-0.2, 2.0)
+    with pytest.raises(ValueError, match="non-negative"):
+        kelly.kelly_allocation([0.8, -0.3, 0.5])
+    assert kelly.kelly_fraction(0.6, 1.0) == pytest.approx(0.2)
+
+
+def test_energy_score_refuses_to_reshape_a_mismatched_ensemble():
+    # Five 3-D samples against a 2-D outcome were silently reshaped to (7, 2)
+    # plus a leftover, reinterpreting the ensemble rather than erroring.
+    with pytest.raises(ValueError, match="does not match"):
+        sr.energy_score(np.zeros((5, 3)), np.zeros(2))
+    # The 1-D convention still holds: m scalar samples, not one m-vector.
+    assert sr.energy_score(np.array([0.0, 1.0]), 0.5) == pytest.approx(
+        sr.energy_score(np.array([[0.0], [1.0]]), np.array([0.5])))
