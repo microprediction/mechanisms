@@ -16,14 +16,33 @@ theory of how a polity should decide.
 
 Incentives. Under a **deterministic** argmax rule the conditional markets are not
 incentive compatible: a trader can move *which* action is chosen, and the markets
-for unchosen actions never settle, so reports there go unscored. The fix is a
-**stochastic** decision rule with full support — every action keeps positive
-probability of being taken, so every conditional market settles with positive
-probability and a risk-neutral trader maximises expected payoff by reporting its
-true conditional belief in each one (Othman & Sandholm 2010; Chen-Kash et al.
-2011). :func:`softmax_decision` and :func:`epsilon_greedy_decision` have full
-support; :func:`argmax_decision` does not, and is offered only as the
-(manipulable) baseline the stochastic rules repair.
+for unchosen actions never settle, so reports there go unscored. A **stochastic**
+rule with full support is the first half of the repair — every action keeps a
+positive probability of being taken, so every conditional market settles with
+positive probability. :func:`softmax_decision` and :func:`epsilon_greedy_decision`
+have full support; :func:`argmax_decision` does not.
+
+Full support alone is not sufficient, because the selection probability is itself
+a function of the reports, and a trader who moves a report moves the odds that it
+is ever scored. What restores propriety is dividing the realised score by that
+probability. Writing ``R(P, a) > 0`` for the chance action ``a`` is selected given
+the submitted conditionals ``P``, and scoring only the action taken,
+
+    S_R(P, a, w) = Sbar(P_a, w) / R(P, a),
+
+so that the expectation telescopes,
+
+    sum_a R(P,a) E[ Sbar(P_a, w) / R(P,a) ]  =  sum_a E[ Sbar(P_a, w) ],
+
+a sum of ordinary proper scores, one per action, each optimised by reporting that
+action's true conditional (Othman & Sandholm 2010; Chen, Kash, Ruberry & Shnayder
+2011). :func:`inverse_selection_score` applies the factor and
+:func:`expected_decision_score` is the sum on the right. Scores here are losses,
+as everywhere in :mod:`mechanisms.scoring_rules`, so the agent minimises.
+
+The factor is not free. When ``R(P, a)`` is small the realised transfer scales
+like ``1 / R(P, a)``, so near-deterministic selection buys identification with
+high-variance, potentially very large contingent payments.
 
 Functions
 ---------
@@ -31,6 +50,8 @@ conditional_expected_values  per-action ``E[value | a]`` from conditional rows
 argmax_decision              deterministic best action (one-hot; not full support)
 softmax_decision             Boltzmann choice distribution (full support, ``T>0``)
 epsilon_greedy_decision      epsilon-mixed argmax (full support, ``eps>0``)
+inverse_selection_score      a realised score divided by its selection probability
+expected_decision_score      expected score under the inverse-selection rule
 
 Class
 -----
@@ -42,12 +63,15 @@ from __future__ import annotations
 import numpy as np
 
 from .lmsr import LMSR
+from .scoring_rules import log_score
 
 __all__ = [
     "conditional_expected_values",
     "argmax_decision",
     "softmax_decision",
     "epsilon_greedy_decision",
+    "inverse_selection_score",
+    "expected_decision_score",
     "DecisionMarket",
 ]
 
@@ -69,8 +93,11 @@ def argmax_decision(values) -> np.ndarray:
     r"""Deterministic rule: all weight on the best action (ties split evenly).
 
     Returns a one-hot (tie-uniform) distribution over actions. It has **no full
-    support**, so the conditional markets it drives are manipulable — included as
-    the baseline the stochastic rules fix, not a recommended settlement rule.
+    support**, so unchosen actions are never scored and reports there can be
+    pushed around for free. Included as the manipulable baseline, and note that
+    swapping in a full-support rule is necessary but not sufficient: the
+    ``1 / R(P, a)`` factor of :func:`inverse_selection_score` is what makes
+    truthful reporting optimal.
     """
     v = np.asarray(values, float)
     best = np.flatnonzero(v == v.max())
@@ -105,6 +132,37 @@ def epsilon_greedy_decision(values, epsilon: float = 0.1) -> np.ndarray:
     best = np.flatnonzero(v == v.max())
     d[best] += (1.0 - epsilon) / best.size
     return d
+
+
+def inverse_selection_score(raw_score: float, selection_prob: float) -> float:
+    r"""The realised score divided by the probability the action was selected.
+
+    This is the whole of the construction that makes a decision market proper:
+    ``S_R(P, a, w) = Sbar(P_a, w) / R(P, a)``. Because only the taken action is
+    scored, the endogenous selection probability would otherwise reweight the
+    agent's objective; dividing by it cancels the reweighting exactly.
+    """
+    if not (0.0 < selection_prob <= 1.0):
+        raise ValueError("selection probability must lie in (0, 1]")
+    return float(raw_score) / float(selection_prob)
+
+
+def expected_decision_score(reports, true_conditionals, score=log_score) -> float:
+    r"""Expected inverse-selection score: ``sum_a E_{w ~ true(.|a)}[Sbar(P_a, w)]``.
+
+    The selection probabilities have already cancelled, which is the point, so
+    the decision rule does not appear. ``reports`` and ``true_conditionals`` are
+    ``(A, K)`` arrays of per-action outcome distributions. Every summand is an
+    ordinary expected proper score, so the whole is optimised report by report at
+    ``reports == true_conditionals``, whatever the rule does the selecting. Scores
+    here follow the module-wide loss convention, so *optimised* means minimised.
+    """
+    P = np.atleast_2d(np.asarray(reports, float))
+    Q = np.atleast_2d(np.asarray(true_conditionals, float))
+    if P.shape != Q.shape:
+        raise ValueError("reports and true conditionals must have the same shape")
+    return float(sum(sum(Q[a, k] * score(P[a], k) for k in range(P.shape[1]))
+                     for a in range(P.shape[0])))
 
 
 class DecisionMarket:
@@ -152,3 +210,19 @@ class DecisionMarket:
     def recommend(self, outcome_values) -> int:
         """The best action under the current conditional values (plain argmax)."""
         return int(np.argmax(self.values(outcome_values)))
+
+    def settle(self, action_taken: int, outcome: int, decision) -> float:
+        r"""Maker P&L on the taken action's market, scaled by ``1 / R(P, a)``.
+
+        Only the taken action settles, so the surviving market's payoff carries
+        the inverse-selection factor and the traders' mirror-image payoffs carry
+        it too. ``decision`` is the choice distribution the rule produced from
+        the reports that were standing when the action was drawn.
+
+        The scaling applies to the maker's downside as well: an LMSR bounded at
+        ``b log K`` becomes bounded at ``b log K / R(P, a)``, so a rule that
+        rarely picks an action needs correspondingly deeper pockets when it does.
+        """
+        prob = float(np.asarray(decision, float)[int(action_taken)])
+        raw = self.markets[int(action_taken)].realized_pnl(int(outcome))
+        return inverse_selection_score(raw, prob)

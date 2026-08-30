@@ -123,8 +123,11 @@ and its verification are fixed, and cross-checked at the end.
   the weights nor the value: `R = (100, 0)` fully locked answered `(2/3, 1/3)`
   at value 150 when asked for `(1/2, 1/2)` at 100. Solve the constrained
   program; report infeasibility with the minimum feasible value.
-- [ ] A5. `decision_market.py` does not implement the `1/R(P, a)`
-  inverse-selection settlement the page now describes.
+- [x] A5. `decision_market.py` does not implement the `1/R(P, a)`
+  inverse-selection settlement the page now describes. Added
+  `inverse_selection_score`, `expected_decision_score` and
+  `DecisionMarket.settle`, and a grid search that exhibits a strictly
+  profitable misreport (0.30 reported as 0.15) when the factor is dropped.
 - [ ] A6. Peer prediction: output agreement is not truthful in general;
   distinguish Correlated Agreement from Enforced Agreement; BTS validation
   claims need their assumptions.

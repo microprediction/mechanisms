@@ -61,3 +61,66 @@ def test_full_support_is_the_incentive_fix():
     # Stochastic full-support rules keep every conditional market live.
     assert np.all(m.decision(values, rule="softmax", temperature=0.5) > 0.0)
     assert np.all(m.decision(values, rule="epsilon_greedy", epsilon=0.1) > 0.0)
+
+
+def _unscaled_score(reports, truth, rule_probs, score):
+    """Expected score when only the taken action is scored, with no 1/R factor."""
+    return sum(rule_probs[a] * sum(truth[a, k] * score(reports[a], k)
+                                   for k in range(reports.shape[1]))
+               for a in range(reports.shape[0]))
+
+
+def test_inverse_selection_factor_is_what_makes_reporting_truthful():
+    from mechanisms.scoring_rules import log_score
+    truth = np.array([[0.8, 0.2], [0.3, 0.7]])
+    values = np.array([1.0, 0.0])
+
+    def scores(p0, p1):
+        reports = np.array([[p0, 1 - p0], [p1, 1 - p1]])
+        probs = dm.softmax_decision(reports @ values, temperature=0.15)
+        return (_unscaled_score(reports, truth, probs, log_score),
+                dm.expected_decision_score(reports, truth, score=log_score))
+
+    grid = np.linspace(0.02, 0.98, 97)
+    unscaled = np.array([[scores(a, b)[0] for b in grid] for a in grid])
+    scaled = np.array([[scores(a, b)[1] for b in grid] for a in grid])
+
+    # These are losses, so the agent minimises. With the factor the best report
+    # is the truth, to within the grid step.
+    i, j = np.unravel_index(np.argmin(scaled), scaled.shape)
+    assert grid[i] == pytest.approx(truth[0, 0], abs=0.011)
+    assert grid[j] == pytest.approx(truth[1, 0], abs=0.011)
+
+    # Without it, truthful reporting is strictly beaten: only the taken action
+    # is scored, so the agent shades reports to steer which one that is.
+    i, j = np.unravel_index(np.argmin(unscaled), unscaled.shape)
+    truthful = scores(truth[0, 0], truth[1, 0])[0]
+    assert unscaled[i, j] < truthful - 1e-6
+    assert abs(grid[i] - truth[0, 0]) > 0.05 or abs(grid[j] - truth[1, 0]) > 0.05
+
+
+def test_inverse_selection_score_matches_its_expectation():
+    from mechanisms.scoring_rules import log_score
+    rng = np.random.default_rng(21)
+    reports = np.array([[0.6, 0.4], [0.25, 0.75]])
+    truth = np.array([[0.55, 0.45], [0.3, 0.7]])
+    probs = dm.softmax_decision(reports @ np.array([1.0, 0.0]), temperature=0.4)
+
+    n = 400_000
+    actions = rng.choice(2, size=n, p=probs)
+    draws = np.empty(n)
+    for idx, a in enumerate(actions):
+        k = int(rng.choice(2, p=truth[a]))
+        draws[idx] = dm.inverse_selection_score(log_score(reports[a], k), probs[a])
+    assert float(draws.mean()) == pytest.approx(
+        dm.expected_decision_score(reports, truth, score=log_score), abs=0.02)
+
+
+def test_settle_scales_the_makers_payoff_and_its_bound():
+    market = dm.DecisionMarket(n_actions=2, n_outcomes=2, b=10.0)
+    market.trade(action=0, outcome=0, shares=5.0)
+    decision = np.array([0.25, 0.75])
+    raw = market.markets[0].realized_pnl(0)
+    assert market.settle(0, 0, decision) == pytest.approx(raw / 0.25)
+    with pytest.raises(ValueError):
+        market.settle(0, 0, np.array([0.0, 1.0]))

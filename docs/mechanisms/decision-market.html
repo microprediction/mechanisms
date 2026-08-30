@@ -173,7 +173,11 @@
       })();
     </script>
 
-    <p class="muted">Code: <code>mechanisms/decision_market.py</code>; demo
+    <p class="muted">Code: <code>mechanisms/decision_market.py</code>, where
+      <code>inverse_selection_score()</code> applies the $1/R(P,a)$ factor,
+      <code>expected_decision_score()</code> is the telescoped sum, and
+      <code>DecisionMarket.settle()</code> scales the settled market's payoff (and
+      so its loss bound) by the same factor; demo
       <a href="https://github.com/microprediction/mechanisms/blob/main/examples/sim_decision_market.py">examples/sim_decision_market.py</a> &middot;
       Related: <a href="./combinatorial.html">combinatorial &amp; conditional markets</a>,
       <a href="./lmsr.html">LMSR</a>, <a href="./aggregation.html">aggregation</a> &middot;
