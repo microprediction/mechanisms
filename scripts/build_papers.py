@@ -74,8 +74,7 @@ PAGE = """<!doctype html>
   </header>
 
   <main>
-    <p class="pagenav"><a href="../papers.html">&larr; Papers</a> &middot;
-      <a href="./{slug}.pdf">pdf</a> &middot;
+    <p class="pagenav"><a href="../papers.html">&larr; Papers</a> &middot;{pdf_link}
       <a href="https://github.com/microprediction/mechanisms/blob/main/papers/{src}">markdown source</a></p>
 {body}
   </main>
@@ -352,8 +351,13 @@ def build_one(name: str) -> tuple[Path, str]:
     if cited:
         body = body.replace(f"<p>{REFS_MARK}</p>", references_html(cited))
     body = fold_status(body)
+    slug = name[:-3]
+    # Not every note has a PDF: a merged stub has no build target, and linking
+    # to one that does not exist is a dead link on the deployed site.
+    pdf_link = (f'\n      <a href="./{slug}.pdf">pdf</a> &middot;'
+                if (OUT / f"{slug}.pdf").exists() else "")
     page = PAGE.format(title=html_mod.escape(title), src=name,
-                       slug=name[:-3], body=body)
+                       slug=slug, pdf_link=pdf_link, body=body)
     return OUT / (name[:-3] + ".html"), page
 
 
