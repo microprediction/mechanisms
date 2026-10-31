@@ -1,4 +1,4 @@
-# Likelihood versus CRPS: A New Perspective
+# Likelihood versus CRPS: A Compositional Perspective
 
 ### Composition, Chained Elicitation, and the Score under Which Density Refinements Add Up
 
