@@ -219,3 +219,14 @@ __marimo__/
 
 # macOS
 .DS_Store
+
+# LaTeX build artefacts (papers/*/ are compiled locally; the PDF is published under docs/papers/)
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.out
+*.toc
+papers/*/main.pdf

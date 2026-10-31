@@ -103,6 +103,14 @@ table.impl thead th {
 table.impl tbody td:first-child { font-weight: 600; white-space: nowrap; }
 table.impl tr:last-child td { border-bottom: none; }
 
+/* tables inside rendered papers (pipe tables from papers/*.md) */
+main table:not(.impl) { border-collapse: collapse; margin: 18px auto; font-size: 0.95rem; }
+main table:not(.impl) th, main table:not(.impl) td {
+  text-align: left; padding: 8px 14px; border-bottom: 1px solid var(--border); vertical-align: top;
+}
+main table:not(.impl) thead th { font-weight: 600; border-bottom: 2px solid var(--border); }
+main table:not(.impl) tr:last-child td { border-bottom: none; }
+
 /* interactive demos */
 .demo {
   background: var(--panel); border: 1px solid var(--border);

@@ -10,7 +10,7 @@ the HTML can never silently drift.
   python scripts/build_papers.py --check   # exit 1 if any rendered page is stale
 
 Scope: the constrained markdown these papers actually use — headings, bold,
-italics, links, inline code, blockquotes, lists, horizontal rules, display and
+italics, links, inline code, blockquotes, lists, pipe tables, horizontal rules, display and
 inline TeX math. Math spans are extracted before any other processing and
 restored verbatim afterwards, so `$p^*$`-style asterisks can never be mangled
 into emphasis; KaTeX renders them in the browser. Dependency-free.
@@ -164,6 +164,24 @@ def md_to_html(md: str) -> tuple[str, str]:
     para: list[str] = []
     in_list = in_quote = False
 
+    table: list = []
+
+    def flush_table():
+        nonlocal table
+        if table:
+            rows = [r for r in table if not set(r.replace('|', '').strip()) <= {'-', ':', ' '}]
+            def cells(r, tag):
+                return ''.join(f'<{tag}>' + _inline(c.strip()) + f'</{tag}>'
+                               for c in r.strip().strip('|').split('|'))
+            out.append('    <table>')
+            out.append('      <thead><tr>' + cells(rows[0], 'th') + '</tr></thead>')
+            out.append('      <tbody>')
+            for r in rows[1:]:
+                out.append('        <tr>' + cells(r, 'td') + '</tr>')
+            out.append('      </tbody>')
+            out.append('    </table>')
+            table = []
+
     def flush_para():
         nonlocal para
         if para:
@@ -172,6 +190,7 @@ def md_to_html(md: str) -> tuple[str, str]:
 
     def close_blocks():
         nonlocal in_list, in_quote
+        flush_table()
         flush_para()
         if in_list:
             out.append("    </ul>")
@@ -186,6 +205,10 @@ def md_to_html(md: str) -> tuple[str, str]:
         if not stripped:
             close_blocks()   # a blank line ends paragraph, list, and quote
             continue
+        if stripped.startswith("|") and stripped.endswith("|"):
+            flush_para(); table.append(stripped); continue
+        if table:
+            flush_table()
         if stripped.startswith("---") and set(stripped) <= {"-"}:
             close_blocks(); out.append("    <hr />"); continue
         m = re.match(r"^!\[(?P<cap>.*?)\]\((?P<src>[^)]+)\)$", stripped)

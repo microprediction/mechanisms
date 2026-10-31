@@ -105,7 +105,17 @@ f\lvert\cdot\rvert$ has conjugate</em></p>
 f\lvert s\rvert$ for all $s$. Dividing by $s &gt; 0$ gives $\mu \le d_q(s) +
 f$; dividing by $s &lt; 0$ reverses the inequality to $\mu \ge d_q(s) - f$; together these are the displayed interval, whose non-emptiness is $\sup_{s&lt;0} d_q - f \le \inf_{s&gt;0} d_q + f$. Under chord coherence both one-sided bounds are limits of chord slopes and so lie in the hull, which is convex, so the midpoint of a non-empty interval lies in the hull. For the last claim, off the contact set Proposition 2 gives every belief a strictly positive frictionless profit, so the $f = 0$ interval is empty. $\blacksquare$</p>
     <p>The hull intersection is not decoration, and the affine maker shows why. Without chord coherence, $C(q) = 100q$ has every chord slope equal to $100$, so $L(q) = U(q) = 100$ and the untruncated fee-adjusted interval is $[100 - f,\, 100 + f]$ — not the singleton $\{100\}$, which is only the $f = 0$ case. That interval is non-empty for every $f \ge 0$, but what matters is its intersection with the payoff hull $[-1, 1]$:</p>
-    <p>| $f$ | untruncated $[100-f,\,100+f]$ | $\cap\,[-1,1]$ | |---|---|---| | $0$ | $[100,\,100]$ | empty | | $50$ | $[50,\,150]$ | empty | | $98.9$ | $[1.1,\,198.9]$ | empty | | $99$ | $[1,\,199]$ | $\{1\}$ | | $100$ | $[0,\,200]$ | $[0,\,1]$ | | $101$ | $[-1,\,201]$ | $[-1,\,1]$ |</p>
+    <table>
+      <thead><tr><th>$f$</th><th>untruncated $[100-f,\,100+f]$</th><th>$\cap\,[-1,1]$</th></tr></thead>
+      <tbody>
+        <tr><td>$0$</td><td>$[100,\,100]$</td><td>empty</td></tr>
+        <tr><td>$50$</td><td>$[50,\,150]$</td><td>empty</td></tr>
+        <tr><td>$98.9$</td><td>$[1.1,\,198.9]$</td><td>empty</td></tr>
+        <tr><td>$99$</td><td>$[1,\,199]$</td><td>$\{1\}$</td></tr>
+        <tr><td>$100$</td><td>$[0,\,200]$</td><td>$[0,\,1]$</td></tr>
+        <tr><td>$101$</td><td>$[-1,\,201]$</td><td>$[-1,\,1]$</td></tr>
+      </tbody>
+    </table>
     <p>The threshold is $f = 99$, where the interval first touches the hull at the single belief $\mu = 1$. Below it no admissible belief declines to trade and the maker is arbitraged from every state; at or above it the maker can rest. The threshold is exactly the arbitrage depth, the amount by which the quote $100$ exits the hull. Note which interval decides it: the untruncated one is non-empty at every $f \ge 0$, so reading its non-emptiness as tenability would mislay the finite threshold that separates the two regimes.</p>
     <p>So friction does not merely widen an existing spread: at $2f \ge \Delta_q$ a state in the excluded inventory range becomes tenable, admitting no profitable trade at some admissible belief. Non-convexity makes an inventory range transient, frictionless rational flow jumps it (§3), and a large enough spread lets the maker rest inside it. For $C(q) = a\sin q$ at $q = 0$, a state sitting $a$ above its flat envelope, the belief $\mu = 0$ admits no profitable trade exactly when $f \ge a$, though every belief profits there frictionlessly.</p>
     <h2 id="6-makers-in-parallel">6. Makers in parallel</h2>
