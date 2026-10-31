@@ -1,6 +1,6 @@
 # Scoring Point-Cloud Distributional Submissions
 
-### The nearest-the-pin parimutuel, jittered outcomes, and the heat ladder
+### The Nearest-the-Pin Parimutuel, Jittered Outcomes, and the Heat Ladder
 
 Peter Cotton · Microprediction · peter.cotton@microprediction.com · *July 2026*
 
@@ -16,7 +16,7 @@ samples from a deconvolution of their belief by the smoothing kernel, rather
 than from the belief itself. For Gaussian beliefs and Gaussian kernels this
 incentive has the simple form "shave $h^2$ from the covariance." We show that
 the defect is repaired by adding outcome noise from the same kernel used to
-smooth the submission. More generally, composing a proper score with a fixed
+smooth the submission; more generally, composing a proper score with a fixed
 Markov kernel preserves propriety, and strict propriety for the original
 report is recovered exactly
 when the induced channel is injective; for convolution kernels this is
@@ -63,14 +63,14 @@ and it is also the standard evaluation protocol for sample-based generative
 models. Not every contest smooths: in the MidOne contests at CrunchDAO
 [@crunchdao_midone], participants supplied densities directly, through a
 shared convention for density specifications [@cotton_density], and the
-incentive analysed in §3 does not arise. This paper concerns cloud
+incentive analysed in §3 does not arise. The analysis here concerns cloud
 submissions.
 
-Two questions organise what follows. What does the pool built on this rule
-look like, and in what sense is it truthful (§2)? And, more delicately: *what cloud should a
+Two questions arise. What does the pool built on this rule
+look like, and in what sense is it truthful? And, more delicately: *what cloud should a
 rational participant submit?* The answer to the second is *not* "samples from
-your belief," and the failure has a closed form (§3), a one-line repair (§4),
-and, once repaired, a multi-scale structure (§5).
+your belief," and the failure has a closed form, a one-line repair,
+and, once repaired, a multi-scale structure.
 
 Two payout layers appear, and they are different mechanisms. The
 proportional pot split (NTP) of §2 is the parimutuel object: self-funding,
@@ -131,10 +131,10 @@ tested in [`pot_split`](../mechanisms/nearest_the_pin.py).)
 **Incentives of the pot split.** Work in the price-taking model: fix the field,
 write $r$ for the crowd's aggregate density, and treat the odds $1/r$ as
 unmoved by the participant's own stake (in (NTP) the player's $s_i q_i(z)$
-also sits in the denominator, so a non-infinitesimal player moves their own
+also appears in the denominator, so a non-infinitesimal player moves their own
 odds; that equilibrium is Open Problem 3). A unit staked
-as $q$ returns $q(z)/r(z)$ at the pin. One accounting identity organises
-everything: *in a parimutuel, cash is a bet on the crowd.* Staking the crowd
+as $q$ returns $q(z)/r(z)$ at the pin. *In a parimutuel, cash is a bet on the
+crowd.* Staking the crowd
 density $r$ returns exactly one whatever $z$ realises, so a participant
 holding fraction $1-b$ in cash and $b$ on submission $q$ holds total exposure
 $\tilde q = (1-b)\,r + b\,q$, and the classical argument applies to
@@ -196,8 +196,7 @@ does not make it truthful.
 These incentive statements concern the reported *density* $q$. In practice
 $q$ is constructed from a sample cloud by KDE, so the report space is the
 cloud and the mechanism applies $q = \rho * \varphi_h$. The truthful object
-and the submitted object come apart, and the next two sections are about the
-gap.
+and the submitted object come apart.
 
 ## 3. The deconvolution incentive
 
@@ -211,9 +210,9 @@ $$\mathbb E_{z\sim p^*}\,S_{\mathrm{raw}}(\rho,z)
 $\mathcal P$ is the set of probability laws. Consequently:*
 
 *(i) If $p^*\in T_h\mathcal P$, every $\rho$ with $T_h\rho=p^*$ is optimal.
-If in addition $T_h$ is injective — for the Gaussian kernel always, and in
+If in addition $T_h$ is injective, which holds for the Gaussian kernel always and in
 general whenever the characteristic function of $\varphi_h$ is nonvanishing
-on a dense set (Lemma 1) — the optimal pre-smoothing law
+on a dense set (Lemma 1), the optimal pre-smoothing law
 $\rho^\dagger := T_h^{-1}p^*$ is unique. For any non-degenerate kernel it
 differs from the truth, and truthful reporting is strictly suboptimal with
 truthfulness gap*
@@ -262,10 +261,10 @@ gives $h^4/(4\tau^4)$. $\blacksquare$
 
 **Remarks.** (a) When the deconvolution fails to exist ($\Sigma-h^2I\not\succeq
 0$, or a rough $p^*$), the optimum is the KL projection of $p^*$ onto
-$T_h\mathcal P$ and can degenerate toward atomic clouds — exactly the
+$T_h\mathcal P$ and can degenerate toward atomic clouds: exactly the
 point-mass exploit of @theis2016note, who observed the improperness (without
 the deconvolution characterization). (b) The gap is fourth order in $h$, which
-is why the flaw survives casual inspection — but it is a *slope*, and any
+is why the flaw survives casual inspection. But it is a *slope*, and any
 optimising submitter, human or fitted, walks down it. (c) The phenomenon is
 the log-score/bandwidth sibling of the "fair scores" findings for the ensemble
 CRPS [@fricker2013three; @ferro2014fair], where the analogous cheat is derived
@@ -278,7 +277,7 @@ along the ensemble-size axis.
 $$S_h(\rho,z)\;=\;\mathbb E_\varepsilon\big[\log (T_h\rho)(z+h\varepsilon)\big]
    \;=\;\big(\varphi_h * \log T_h\rho\big)(z).$$
 
-Operationally: *settle at a jittered outcome* $z'=z+h\varepsilon$ — or use the
+Operationally: *settle at a jittered outcome* $z'=z+h\varepsilon$, or use the
 right-hand form, which integrates the jitter analytically and makes settlement
 deterministic. The two have the same expectation, hence the same
 risk-neutral proper-score incentives; for risk-sensitive wealth dynamics
@@ -311,12 +310,12 @@ $\hat\varphi\,(\hat p+\epsilon\hat g)=\hat\varphi\,\hat p$: two distinct laws
 with identical smoothings. $\blacksquare$
 
 This is Wiener-flavoured (Wiener's Tauberian theorem is the $L^1$ statement);
-for probability measures the continuity of characteristic functions buys the
-dense-support version. Practical reading: Gaussian and Laplace jitter are
+for probability measures the continuity of characteristic functions gives the
+dense-support version. Gaussian and Laplace jitter are
 injective (nonvanishing characteristic functions); the uniform kernel is also
 fine (sinc zeros are isolated, hence the nonvanishing set is dense);
 band-limited kernels fail (e.g. Fejér-type kernels, whose characteristic
-function vanishes outside a bounded interval — two beliefs agreeing on low frequencies
+function vanishes outside a bounded interval, so two beliefs agreeing on low frequencies
 become indistinguishable). For compactly supported kernels Lemma 1 supplies
 the injectivity, but the log-score statement then requires the extended-real
 convention and a report class on which the expected score is well defined;
@@ -332,23 +331,23 @@ $$S_K(\rho,z)\;=\;\mathbb E_{z'\sim K(z,\cdot)}\big[S(T_K\rho,\,z')\big].$$
 $p,\rho$ under comparison (or adopt an extended-expectation convention), and
 (b) $T_K\mathcal P$ lies within the report class on which $S$ is defined. If
 $S$ is proper, $S_K$ is proper. If $S$ is strictly proper on
-$T_K\mathcal P$, then $S_K$ is strictly proper on $\mathcal P$ **iff**
+$T_K\mathcal P$, then $S_K$ is strictly proper on $\mathcal P$ iff
 $T_K$ is injective on $\mathcal P$. In particular the mollified log score
 $S_h$ is strictly proper for the pre-smoothing law whenever the zero set of
-$\hat\varphi$ has empty interior — for Gaussian jitter, always.*
+$\hat\varphi$ has empty interior (for Gaussian jitter, always).*
 
 **Proof.** By Fubini,
 $\mathbb E_{z\sim p^*}S_K(\rho,z)=\mathbb E_{w\sim T_Kp^*}S(T_K\rho,w)$: the
 expected score of the report $T_K\rho$ for the outcome law $T_Kp^*$, under
 $S$. Properness of $S$ maximizes this at $T_K\rho=T_Kp^*$, which the truthful
-$\rho=p^*$ achieves — properness. Strict properness of $S$ on the image class
+$\rho=p^*$ achieves; this is properness. Strict properness of $S$ on the image class
 forces $T_K\rho=T_Kp^*$ at any maximizer; injectivity of $T_K$ lifts this to
 $\rho=p^*$, and conversely if $T_K$ is not injective two distinct reports tie.
 For $S=\log$ and $K$ = convolution by $\varphi_h$: the log score is strictly
 proper on densities, $T_K\rho=\rho*\varphi_h$ is a density, and Lemma 1 gives
 injectivity. $\blacksquare$
 
-**How much to jitter? Exactly as much as you smooth.** The jitter is not a
+**Matching the jitter to the smoothing.** The jitter is not a
 free parameter; it is pinned, kernel for kernel, to the mechanism's own
 smoothing. Jittering with s.d. $j$ while smoothing with bandwidth $h$ pairs the
 jittered truth $p^**\varphi_j$ with the smoothed report $\rho*\varphi_h$, and
@@ -359,7 +358,7 @@ $$v^\ast \;=\; \tau^2 + j^2 - h^2 .$$
 At $j=0$ this is Theorem 1's shave. At $j=h$, and only at $j=h$, the optimum
 is the truth. At $j>h$ the mechanism pays padding by $j^2-h^2$. The formula
 holds where admissible ($v^\ast\ge0$); otherwise the Gaussian-family optimum
-sits on the boundary (the KL-projection case of Theorem 1(ii)). Under-jitter
+is on the boundary (the KL-projection case of Theorem 1(ii)). Under-jitter
 rewards sharpening, over-jitter rewards blurring, and matching the bandwidth is
 the unique fixed point (the general statement is Theorem 2 with the *same*
 kernel on both sides; a mismatched pair elicits
@@ -381,7 +380,7 @@ The incentives of participant-endogenous bandwidths are an open problem
 **Attribution.** The properness of the convolved score against a
 noised outcome is not new: @brocker2007proper [§5] prove it for a general
 observation-noise channel, and @ferro2017observation [Prop. 3] works out exactly the
-white-noise/Gaussian case. What both left open is strictness. Bröcker &
+white-noise/Gaussian case. Both left strictness open. Bröcker &
 Smith, verbatim: "If $S$ is strictly proper though, $\bar S$ is not
 necessarily strictly proper, because if $\bar q(z)=\bar p(z)$, this does not
 necessarily mean equality of $p(x)$ and $q(x)$." Lemma 1 closes exactly that
@@ -401,7 +400,7 @@ $$p^{(h)}_t := p^* * N(0,(h^2+t)I), \qquad
   \rho^{(h)}_t := \rho * N(0,(h^2+t)I),$$
 
 so the rung at flow time $t$ is the §4 score with kernel
-$\varphi_{\sqrt{h^2+t}}$ — for clouds this is free to compute, since it is
+$\varphi_{\sqrt{h^2+t}}$; for clouds this is free to compute, since it is
 *the same cloud* scored with bandwidth $\sqrt{h^2+t}$ against a pin jittered
 by the same kernel. Every rung the mechanism runs has total scale
 $h^2 + t \ge h^2 > 0$; below, $p^*_t$ and $\rho_t$ always abbreviate
@@ -452,7 +451,7 @@ stated regularity), automatic for the Gaussian and compactly supported cases
 used in the examples. $\blacksquare$
 
 The differential identity is de Bruijn's, in relative form [@stam1959some; @barron1986entropy; @lyu2009interpretation]; its integral form prices the likelihood of diffusion models
-[@song2021maximum]. Note the bandwidth floor does real work: at $t=0$ an empirical
+[@song2021maximum]. The bandwidth floor matters: at $t=0$ an empirical
 cloud has no density and the identity is vacuous; every rung the mechanism
 actually runs starts at $t\ge h^2$, where everything is smooth.
 
@@ -578,8 +577,9 @@ additive stake-weighted transfer of §5 driven by its negation,
 $\Delta W_i = s_i\big((-\mathrm{ES}_i) - \overline{(-\mathrm{ES})}\big)$:
 self-funding, and properness transfers cleanly because the payoff is affine in
 a proper score. A pot split *proportional* to a transformed score value is a
-different mechanism and is not covered by the properness theorem (§2). Three
-further cautions. Uniform directions give the exact identity (PROJ); a
+different mechanism and is not covered by the properness theorem (§2).
+
+Three further cautions. Uniform directions give the exact identity (PROJ); a
 non-uniform full-support direction law still yields a strictly proper sliced
 score in expectation, but it is an anisotropic projection score, no longer
 the Euclidean energy score. The directions must be drawn after submissions
@@ -604,7 +604,7 @@ device:
   guarantees need separate concentration arguments (Open Problem 7).
 - Sliced Wasserstein distances [@rabin2012wasserstein; @bonneel2015sliced]:
   average 1-D optimal-transport costs over random projections, a now-standard,
-  cheap surrogate for the multivariate Wasserstein distance — the
+  cheap surrogate for the multivariate Wasserstein distance, and the
   optimal-transport cousin of (PROJ).
 - Sliced score matching [@song2020sliced]: estimate high-dimensional score
   functions through random projections, for the same computational reasons.
@@ -613,10 +613,10 @@ device:
   projected differences; the projection representation is intrinsic, not a
   heuristic.
 
-The projection version is not an approximation bolted onto the mechanism; it
-is the *native* high-dimensional form of the additive proper-score wagering
-route, with the energy score represented, by construction, as an average of
-one-dimensional CRPS scores over random projections.
+The projection version is the *native* high-dimensional form of the additive
+proper-score wagering route, not an approximation to it: the energy score is,
+by construction, an average of one-dimensional CRPS scores over random
+projections.
 
 ## 7. Two routes to high-dimensional scoring
 
@@ -647,13 +647,13 @@ and they are the two sides of the same coin:
 
 | route | how the joint forecast is scored | regime it suits |
 |-------|----------------------------------|-----------------|
-| density | structured / damped joint density — Schur pseudo-likelihood, Vecchia factorisation | a parametric or covariance-shaped forecast; $p > n$ handled by damping |
-| projection | average 1-D CRPS over random directions — the sliced energy score (PROJ) | a free-form sample cloud; high $d$ handled by slicing |
+| density | structured / damped joint density: Schur pseudo-likelihood, Vecchia factorisation | a parametric or covariance-shaped forecast; $p > n$ handled by damping |
+| projection | average 1-D CRPS over random directions: the sliced energy score (PROJ) | a free-form sample cloud; high $d$ handled by slicing |
 
-The organising claim of the high-dimensional story: the density route
+The density route
 (Schur/Vecchia) and the projection route (energy/sliced) are alternative ways
 to make a joint forecast scoreable in high dimensions, and the pool can be run
-with either. A speculative synthesis, flagged as conjecture, is a
+with either. A conjectural synthesis is a
 *Schur-damped* projection score, in which the directions $u$ are not isotropic
 but shaped by a damped estimate of a reference covariance (project more often
 along the well-estimated directions), interpolating between the two columns
@@ -663,19 +663,19 @@ analysis is open, and a properness boundary is worked out in the
 strict properness survives only if the anisotropy comes from a reference
 covariance fixed in advance, not from the forecast under test. The same
 caution applies to the density column: a pseudo-likelihood score is proper
-only if the map from submitted forecast to scored factorisation — ordering,
-conditioning sets, damping, reference covariance — is fixed ex ante and
+only if the map from submitted forecast to scored factorisation (ordering,
+conditioning sets, damping, reference covariance) is fixed ex ante and
 sufficiently identifying. Letting any of them depend on the forecast under
 test reopens the endogenous-channel failure of §4, so the density route is a
 design direction here, not an established properness theorem.
 
-## 8. Microprediction, and a historical note
+## 8. Microprediction and the jitter precedent
 
 The nearest-the-pin parimutuel is one of the mechanisms of the microprediction
 vision [@cotton2022microprediction]: a web-scale network of autonomous
 forecasters continuously submitting *distributional* predictions and being
-paid by self-funding, truth-eliciting pools. Two further pieces close the
-loop:
+paid by self-funding, truth-eliciting pools. Two further pieces belong to the
+same design:
 
 - Calibration via Z-streams. The crowd's aggregate density $Q$ induces, for a
   scalar quantity, $z$-scores $\Phi^{-1}(F(x))$; if the market is calibrated
@@ -691,7 +691,7 @@ predictions over the course of its operation, 225 samples at a time, and added
 a small amount of noise to submissions and to the ground truth before settling
 its cloud-based lotteries. This was *merely intuitive*, a fairness-and-anti-gaming instinct
 about discreteness and ties, with no incentive theorem attached; the platform
-paper recorded the practice in one line and moved on. The verification
+paper recorded the practice in one line. The verification
 literature, meanwhile, treated outcome noise as a defect: something to be
 modelled away [@saetra2004effects; @candille2008impact], with
 @ferro2017observation doubting the value of perturbing observations.
@@ -713,15 +713,20 @@ direction for fitted ensembles in @siegert2019ensemble; the estimator view of
 KDE log scores [@kruger2021predictive]; ensemble dressing
 [@brocker2008dressing]; discrete impossibility and randomized repair
 [@kimpara2023proper]; sample elicitation via variational divergences
-[@wei2021sample]. Convolved scores under observation error:
+[@wei2021sample].
+
+Convolved scores under observation error:
 [@brocker2007proper; @ferro2017observation; @bessac2021forecast].
 Noisy-channel learning: [@patrini2017making; @vanrooyen2018theory]; surrogate
 scoring rules [@liu2022surrogate]. Transform-properness: @allen2023transformed
 [Prop. 4 published, Prop. 3 in arXiv v1] and @pic2025proper [Prop. 1] cover
 deterministic injective transforms; Theorem 2 is the Markov-kernel extension.
+
 The identity: [@stam1959some; @barron1986entropy; @lyu2009interpretation;
 @song2021maximum], with the denoising connection in @vincent2011connection.
-Local scores: [@hyvarinen2005score; @parry2012proper]. Nearest mechanism
+Local scores: [@hyvarinen2005score; @parry2012proper].
+
+Nearest mechanism
 neighbours, each missing a leg: @lang2025multiscale, a Gaussian scale-ladder
 of proper scores as a training loss; @dudik2021logtime, a multi-resolution
 market by partition refinement, subsidized rather than budget-balanced; and
@@ -736,11 +741,13 @@ self-funding cloud wagering at a single scale [@lambert2008selffinanced;
    the fair CRPS of @ferro2014fair, and its interaction with the jitter. All
    results here are population-level; the finite-cloud game is not covered by
    the theorems.
+
 2. **Endogenous bandwidth.** If the bandwidth is computed from the
    participant's own submission (Scott's rule on the cloud), the channel is no
    longer fixed and Theorem 2 does not apply; the participant controls both
    $\rho$ and $h(\rho)$. Characterize the optimal joint deviation, and whether
    any self-referential bandwidth rule preserves truthfulness.
+
 3. **Equilibrium of the proportional split.** For stake fraction $b<1$ the
    best response to crowd $r$ is $q = r + (p-r)/b$ truncated at zero (§2);
    truth is the symmetric equilibrium and the $b\to0$ limit degenerates.
@@ -748,16 +755,20 @@ self-funding cloud wagering at a single scale [@lambert2008selffinanced;
    and, more generally, the incentives of pot splits proportional to
    (transformed) score values, which are not affine in the score and are not
    covered by Theorem 2.
+
 4. **Choice of score.** Density pot-split (jittered, §4) vs. projection
    (sliced energy, §6) are both proper but reward different aspects of a
    forecast. Which yields better calibration and faster wealth concentration
    on skilled forecasters?
+
 5. **Optimal scale weights.** For wealth-concentration objectives, is there a
    closed-form optimal $w(t)$ in the ladder of §5, and does it recover the
    likelihood weighting of @song2021maximum?
+
 6. **Schur-damped projections.** Does anisotropic, covariance-shaped slicing
    with a reliability dial $\gamma$ (§7) dominate isotropic slicing in the
    $p>n$ regime, and does it inherit the closed-form $\gamma^\star$?
+
 7. **Variance of the sliced estimator.** How many directions are needed for
    the sliced score of §6 to rank participants correctly, as a function of $d$
    and the cloud size? (A Johnson–Lindenstrauss-style bound.)

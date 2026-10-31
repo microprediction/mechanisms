@@ -67,15 +67,14 @@ chosen by convention rather than by the function that generates it.
 The mechanisms also chain. The forecast one stage emits can be the message
 the next stage scores, or the coordinate in which the next stage settles.
 Chaining requires every mechanism to consume and emit the same kind of
-object, a distribution, and the mechanisms are written that way below. The
-multi-stage theory and its deployment on the microprediction platform are a
-companion report [@cotton2026multistage]. Two related results are also
-elsewhere: elicitation from finite point clouds
+object, a distribution, and the mechanisms are written that way. The
+multi-stage theory and its deployment on the microprediction platform are
+treated in a companion report [@cotton2026multistage]. Two related results
+are treated elsewhere: elicitation from finite point clouds
 [@cotton2026pointcloud] and the parimutuel account of a conformal
 predictor's information gap [@cotton2026conformalbetting].
 
-A running example is used throughout. The event has outcomes $A$, $B$ and
-$C$. The forecaster's belief is $q=(0.5,0.3,0.2)$, the false report under
+The running example has outcomes $A$, $B$ and $C$. The forecaster's belief is $q=(0.5,0.3,0.2)$, the false report under
 consideration is $p=(0.7,0.2,0.1)$, and the market maker, where there is one,
 has liquidity $b=10$. Numbers are rounded to two or three places.
 
@@ -277,7 +276,7 @@ $$C(\mathbf q)=\sup_{p\in\Delta}\big(\langle p,\mathbf q\rangle - R(p)\big).$$
 
 *(i) $C$ is convex and finite, the maximiser $p^\ast(\mathbf q)$ is unique,
 and $\nabla C(\mathbf q)=p^\ast(\mathbf q)\in\Delta$: prices are a probability
-vector. (Without strict convexity, prices live in $\partial C(\mathbf q)$.)*
+vector. (Without strict convexity, prices lie in $\partial C(\mathbf q)$.)*
 
 *(ii) $C$ is translation-equivariant, $C(\mathbf q+\alpha\mathbf 1)
 =C(\mathbf q)+\alpha$; costs telescope over any trade path, so round trips
@@ -295,7 +294,7 @@ $$\mathrm{loss}_i(\mathbf q) = q_i - C(\mathbf q) + C(\mathbf 0)
 $C(\mathbf q)=b\log\sum_i e^{q_i/b}$, Hanson's LMSR, with worst-case loss
 $b\log n$.*
 
-In the sequel $R=G$, the generator of Theorem 1 read as a penalty. Prices
+Take $R=G$, the generator of Theorem 1 read as a penalty. Prices
 are the gradient of the conjugate (Danskin's theorem), no-arbitrage is its
 translation-equivariance, and the loss bound is the range of the penalty
 over the simplex (Fenchel-Moreau). For the LMSR the penalty is
@@ -361,7 +360,7 @@ $r_1=\sqrt{k(1-p)/p}$, $r_2=\sqrt{kp/(1-p)}$. The value is largest, $\sqrt k$,
 when the two outcomes are priced equally, and falls to zero as either price
 goes to one. $V$ is concave, and reading $R(p)=-V(p)$ as the penalty of
 Theorem 2 gives a maker whose worst-case loss is the range of $R$ on
-$[0,1]$, namely $\sqrt k$: the geometric mean of the initial reserves. With
+$[0,1]$, namely $\sqrt k$, the geometric mean of the initial reserves. With
 $k=100$ and reserves of $10$ and $10$, the pool is worth $10$ at even prices,
 $6$ at prices $(0.9,0.1)$, and can lose at most $10$. The generator is not
 entropic, which is why constant-product markets and the LMSR price the same
@@ -511,7 +510,7 @@ with one agent per conditional-probability entry and show that equilibrium
 prices equal the network's probabilities.
 
 Parallel merge and serial composition are the two operations of a
-commutative semiring, the frame of the generalised distributive law
+commutative semiring, the setting of the generalised distributive law
 [@aji2000gdl]. Assign each factor the potential $\varphi_i=-\log p_i$.
 Parallel merge adds potentials, which is the conjugate statement of
 Proposition 5, and serial composition is the min-plus kernel product
@@ -571,7 +570,8 @@ gives $F(X_t)\sim\mathrm{Uniform}(0,1)$ even if valuable covariates were
 ignored, so marginally uniform PITs do not certify an informative forecast.
 A PIT critic witnesses miscalibration relative to its test class; it
 complements, and does not replace, a proper score that rewards sharp
-conditional distributions. Split-conformal prediction rests on exactly this distinction. For discrete forecasts the
+conditional distributions. Split-conformal prediction depends on this
+distinction. For discrete forecasts the
 randomized PIT preserves the exact uniform null, while the mid-PIT is a
 convenient deterministic diagnostic with a different null distribution.
 
@@ -636,11 +636,10 @@ mutual information between residual and input, which in the Gaussian case
 is $-\tfrac12\log(1-\rho^2)$ [@cotton2026conformalbetting]. That rate is
 the rent the clamp forfeits. Marginal coverage is the break-even statement
 of the clamped venue: the unconditional entry is priced correctly on
-average, which is what makes it safe and what leaves the conditional
-information unpriced. The gap does not close when the base forecast is
+average, so it is safe, and the conditional information is unpriced. The gap does not close when the base forecast is
 calibrated, because marginal correctness is not conditional correctness
-[@barber2021limits]. Run the residual stage as an actual pool and the rent
-is collected; the mechanism ran in production as the microprediction
+[@barber2021limits]. When the residual stage is run as an actual pool the
+rent is collected; the mechanism ran in production as the microprediction
 residual streams and the MidOne contest [@cotton2026multistage].
 
 **The unclamped end.** In a nearest-the-pin parimutuel over a continuum,
@@ -648,7 +647,7 @@ participants submit clouds of samples, the pot is split in proportion to
 the density each placed at the realised outcome, and entry is open; this
 was the reward engine behind monteprediction [@cotton2024monteprediction].
 Who enters, how much each stakes, what each conditions on, and how sharp a
-submission is are all live. Open entry brings its own design problems:
+submission is are all unclamped. Open entry brings its own design problems:
 scoring a kernel density at the raw outcome elicits a deconvolution of the
 belief rather than the belief [@cotton2026pointcloud].
 
@@ -679,7 +678,7 @@ scoring rules are in
 [`mechanisms/aggregation.py`](../mechanisms/aggregation.py). The chained
 elicitation-then-calibration pipeline runs in
 [`examples/sim_pipeline.py`](../examples/sim_pipeline.py). Scores are
-implemented in loss form; the text uses reward form.
+implemented in loss form, with the sign reversed from the reward form.
 
 ## References
 

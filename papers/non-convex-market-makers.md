@@ -1,6 +1,6 @@
 # Non-Convex Market Makers
 
-### Coherence without convexity, friction, and parallel composition
+### Coherence without Convexity, Friction, and Parallel Composition
 
 Peter Cotton · *Working draft v0.1* · August 29, 2026
 
@@ -8,30 +8,22 @@ Peter Cotton · *Working draft v0.1* · August 29, 2026
 
 ## Abstract
 
-Cost-function market makers are always assumed convex. We show convexity
-is not what makes them coherent. For a path-independent maker, the exact
-no-arbitrage condition is a chord condition, that every chord slope of
-the cost lie in the convex hull of payoffs; convexity enters the standard
-axiomatics through a separate requirement, monotone information
-incorporation, and dropping it leaves coherent non-convex makers.
-Rational flow against such a maker sees the convex envelope: optimal
-fills land on the contact set, and the non-convexity gap at the starting
-state passes through to the next trader, so non-convexity costs
-expressiveness rather than soundness. Bounded incoherence is priced: a
-proportional fee of at least the arbitrage depth restores no-arbitrage,
-and by conjugation that fee is exactly a bid-ask spread, with the exact
-no-trade interval given by fee-widened one-sided chord bounds for any
-cost whatever. Combining fee-bearing makers is an infimal convolution
-solved by a single monotone clearing-price root-find; the fees act as an
-L1 penalty, giving each maker an exact no-trade band, and the aggregate
-supply curve is a consolidated limit order book. Adding a deep quadratic co-quoter is
-Moreau smoothing, which preserves coherence at every depth while
-attenuating but never closing the envelope gap. Finally, separation makes
-model inconsistency financially discoverable: any quoted configuration
-outside the coherent hull admits a portfolio priced below its worst
-payoff, so arbitrageurs act as decentralized separation oracles, and
-coherence is relative to friction and to the cost of finding
-certificates.
+Cost-function market makers are always assumed convex, but convexity is
+not what makes them coherent. For a path-independent maker the exact
+no-arbitrage condition is that every chord slope of the cost lie in the
+convex hull of payoffs. Convexity enters the standard axiomatics only
+through monotone information incorporation, and dropping that axiom
+leaves coherent non-convex makers against which rational flow trades the
+convex envelope, so non-convexity costs expressiveness rather than
+soundness. Bounded incoherence is priced: a proportional fee of at least
+the arbitrage depth restores no-arbitrage, and by conjugation that fee is
+a bid-ask spread. Combining fee-bearing makers is an infimal convolution
+solved by a single monotone clearing-price root-find, the fees give each
+maker an exact no-trade band, and the aggregate supply curve is a
+consolidated limit order book. Any quoted configuration outside the
+coherent hull admits a portfolio priced below its worst payoff, so
+arbitrageurs act as decentralized separation oracles, and coherence is
+relative to friction and to the cost of finding certificates.
 
 ---
 
@@ -68,8 +60,8 @@ the response to a unit quadratic maker charging $\tfrac12 s^2 + g(s)$,
 since $\operatorname{prox}_g(x) = \arg\max_s \{x s - \tfrac12 s^2 -
 g(s)\}$; the quadratic term is the maker's own curvature, and without it
 the trader's problem is a bare conjugate, unbounded for
-$\lvert\mu\rvert > f$ in the $\ell_1$ case. Lemma 4 carries the base cost
-$g_q$ for exactly this reason. The two canonical penalties are then
+$\lvert\mu\rvert > f$ in the $\ell_1$ case. Lemma 4 includes the base cost
+$g_q$ for this reason. The two canonical penalties are then
 the two market primitives: ridge is a zero-quoting participant with
 capital $\lambda$, lasso is a fee of $\lambda$, and the theorem that
 regularization is robustness to data perturbation [@elghaoui1997robust;
@@ -77,42 +69,32 @@ regularization is robustness to data perturbation [@elghaoui1997robust;
 budget is priced rather than assumed.
 
 We ask the converse: which predictors are markets, and what does the
-market form demand? Sections 2–4 treat one maker: coherence, the
-biconjugate, and friction. Sections 5–7 treat makers in parallel: fees as
-spreads, routing, the order book. Section 8 turns cross-market
-inconsistency into arbitrage, and section 9 states the characterization
-and its limits. Serial composition, where markets are chained along a
+market form demand? Serial composition, where markets are chained along a
 factorization, is developed in a companion paper; nothing below depends
 on it.
 
-What is and is not new here should be said at the outset, because the
-nearest neighbours are close. The identities of the preceding two
-paragraphs are used and cited, not claimed. That competing makers operate in parallel,
+The nearest neighbours are close. That competing makers operate in parallel,
 that their aggregate is an infimal convolution, that conjugates add and
 liquidity adds, and that fees can be levied on the aggregate, are
 established in @bhaskara2023general; the risk-sharing form of the same
 law is @barrieu2005inf, and cost-function markets, their duality and
 their online-learning reading are @abernethy2013efficient and
-@chen2010newunderstanding. Against that background the residue claimed
-here is: coherence without convexity and the contact-set consequences
-(§§2–3); the exact scalar routing formula with fees inside the costs, its
-no-trade bands, and the consolidated-order-book
-reading (§§5–6); arbitrage depth, the friction characterization, and
-accessible coherence (§§4, 9); and the synthesis with regularization
-and incentive closure (§§1, 9). Results that are not new are labelled
-*Remark* and cited to their sources rather than numbered as
-contributions: Remark 7 is the aggregation law, used here and not
-claimed.
+@chen2010newunderstanding. Remark 7 restates the aggregation law from
+these sources. The new results are coherence without convexity and its
+contact-set consequences; the exact scalar routing formula with fees
+inside the costs, its no-trade bands, and the consolidated-order-book
+reading; arbitrage depth, the friction characterization, and accessible
+coherence; and the synthesis with regularization and incentive closure.
 
 Two payoff regimes appear and must not be conflated. In the *bounded*
 regime a scalar security settles at $\varphi(\omega) = \omega \in [-1,1]$,
 vector statements substituting the convex hull of payoff vectors; this is
-where Proposition 1 bites, where bounded worst-case loss is meaningful,
-and where sections 2–5 live. In the *unrestricted* regime the security
+where Proposition 1 applies and where bounded worst-case loss is
+meaningful. In the *unrestricted* regime the security
 settles at a real-valued quantity with payoff hull $\mathbb{R}$, so the
 chord condition is vacuous for finite positions and a quadratic maker
 $C(q) = mq + q^2/(2\lambda)$, whose chord slopes are unbounded, is
-admissible; this is the estimation regime of the Gaussian fusion of §6
+admissible; this is the estimation regime of the Gaussian fusion of Remark 7
 and of Proposition 10. Coherence statements
 transfer between the regimes only through the hull that defines them.
 Reference implementations and numerical theorem tests accompany the paper
@@ -178,7 +160,7 @@ by @lepinette2017nonconvex.
 
 ## 3. The market trades the biconjugate
 
-Assume for this section that $C$ is finite and admits an affine minorant,
+Assume for now that $C$ is finite and admits an affine minorant,
 equivalently that $C^*$ is proper, and let $\hat C = C^{**}$ denote the
 lower convex envelope [@rockafellar1970convex] and $g = C - \hat C \ge 0$
 the gap. Chord coherence alone does not give this. The cost
@@ -214,13 +196,12 @@ $\hat C(q)$. For (i), a maximizer of an affine function minus $C$ is a
 point where an affine minorant touches $C$, hence touches $\hat C$, so
 any attained optimum lies in the contact set. $\blacksquare$
 
-Attainment is a genuine hypothesis, not a formality, and it fails in two
-separate ways worth keeping apart.
+Attainment is a genuine hypothesis, and it fails in two separate ways.
 
 *The infimum can escape to infinity.* The chord-coherent cost
 $C(x) = \arctan x$ has lower convex envelope the constant $-\pi/2$ and
 hence empty contact set; at $\mu = 0$ the supremum $\pi/2$ is approached
-only as $x \to -\infty$. Where the relevant contact sits at infinity, the
+only as $x \to -\infty$. Where the relevant contact is at infinity, the
 language below about flow landing on contact points and off-contact
 states being transient describes a limit that no fill realizes.
 
@@ -230,7 +211,7 @@ attainment: the coercive
 $$h(x) = \begin{cases} x^2, & x \neq 0 \\ 1, & x = 0\end{cases}$$
 
 has infimum $0$ and no minimizer, because it is not lower semicontinuous
-at the one point where the infimum would sit. Coercivity controls the
+at the one point where the infimum would be attained. Coercivity controls the
 behaviour at infinity and says nothing about a puncture. Both hypotheses
 are needed, which is why they appear together in (i).
 
@@ -250,7 +231,7 @@ an arbitrary invariant is behaviorally equivalent to a concave one
 [@angeris2024geometry], with the limits of concavification mapped by
 @frongillo2024axiomatic.
 
-What the gap does to the book is the opposite of a gap in prices. Fix a
+The gap produces an inventory jump, not a price gap. Fix a
 connected component $(q_1, q_2)$ of the open set $\{C > \hat C\}$, so that
 $q_1$ and $q_2$ are contact points with no contact point between them.
 On that component the envelope is affine with a single supporting slope
@@ -269,19 +250,18 @@ rather than any two contact points.
 In the convexified supply correspondence this is an inventory jump of size
 $q_2 - q_1$ at the supporting price $\mu_0$, a depth spike rather than a
 missing price range. Against the original non-convex cost the jump is generally
-indivisible: for the double well of §6 the full trade from $-c$ to $c$
+indivisible: for the double well of Proposition 9 the full trade from $-c$ to $c$
 costs nothing while the half trade from $-c$ to $0$ costs $\alpha c$, so
 the prefixes of the block are not executable at $\mu_0$ and this is a
 lumpy endpoint trade, not a conventional divisible level. Non-convexity of $C$ also
 does not by itself make an implied density bimodal: $C^*$ is convex, so
 any factor read as $\exp(-C^*)$ is log-concave. The bimodal implied
 densities documented around binary events [@melick1997crude;
-@clark2017brexit] are a separate phenomenon, and no claim about them is
-made here.
+@clark2017brexit] are a separate phenomenon.
 
 ## 4. Frictions price the remaining failure
 
-The failure mode surviving §2 is chord slopes exiting the hull.
+The remaining failure mode is chord slopes exiting the hull.
 
 **Proposition 3 (fees buy bounded incoherence, exactly).** *Define the
 arbitrage depth*
@@ -304,18 +284,16 @@ $[\min_\omega \varphi(\omega)s - \Delta C]_+ / \lvert s\rvert > f$, and
 that fill earns $\lvert s\rvert$ times the excess, which is strictly
 positive. $\blacksquare$
 
-The direction usually stated is the sufficiency. The converse is what
-makes $\varepsilon$ a *price*: it is not merely a fee that works but the
-exact toll on the incoherence, so a venue quoting a wider spread than
-$\varepsilon$ is leaving surplus on the table and one quoting a narrower
-spread is being arbitraged, with no ambiguity in between. The affine
-maker of §5 is the sharp case: $C(q) = 100q$ has $\varepsilon = 99$, the
-excursion attained by a *sell*, since a seller's worst outcome is the
+The direction usually stated is the sufficiency. The converse makes
+$\varepsilon$ a *price*: a venue quoting a wider spread than
+$\varepsilon$ forgoes surplus and one quoting a narrower spread is
+arbitraged. The affine maker $C(q) = 100q$ is the sharp case: it has
+$\varepsilon = 99$, the excursion attained by a *sell*, since a seller's worst outcome is the
 hull's upper end. The interval of tenable beliefs is empty for every
 $f < 99$ and non-empty for every $f \ge 99$.
 
-Coherence and bounded loss are different properties, and it is worth
-saying so because the convex axiomatics deliver them together. Starting
+Coherence and bounded loss are different properties, though the convex
+axiomatics deliver them together. Starting
 from $q_0$ and settling at $\omega$ in the hull $[a,b]$, the maker's loss
 is $\omega(q - q_0) - [C(q) - C(q_0)]$, so its worst case over reachable
 states and outcomes is
@@ -340,9 +318,9 @@ exist, so nothing here forces a choice. Take $C' (q) = \tanh q +
 $[-1, 1]$ exactly, so the maker is coherent; the wiggle makes $C''$
 negative on infinitely many intervals, so it is genuinely non-convex; and
 because $C' \to \pm 1$ at $\pm\infty$ the conjugate is finite at both hull
-endpoints, giving $L(0) \approx 0.435$. What bounded loss really requires
-is that the *asymptotic* slopes reach the hull's edges, which is a
-condition on $C$ at infinity and not on its curvature anywhere.
+endpoints, giving $L(0) \approx 0.435$. Bounded loss requires that the
+*asymptotic* slopes reach the hull's edges, a condition on $C$ at
+infinity and not on its curvature.
 
 This is the mechanism-level counterpart of a theorem of mathematical
 finance: under regularity conditions such as sticky paths or full
@@ -354,7 +332,7 @@ precedent is fees sized to expected arbitrage profit restoring bounded loss
 under privacy noise [@cummings2016privacy; @frongillo2018private]. The
 $\varepsilon$ of Proposition 3 is the worst per-unit excursion of the
 cost's chord slopes beyond the payoff hull, and so the minimum viable
-half-spread (the quoted spread being $2f$, since bid and ask sit at
+half-spread (the quoted spread being $2f$, since bid and ask are
 $m \mp f$). A
 venue quoting a wide spread to cover a deeply incoherent cost is
 arbitrage-free but uninformative in proportion: the market prices the
@@ -427,10 +405,10 @@ the last claim, off the contact set Proposition 2 gives every belief a
 strictly positive frictionless profit, so the $f = 0$ interval is empty.
 $\blacksquare$
 
-The hull intersection is not decoration, and the affine maker shows why.
+The hull intersection matters, and the affine maker shows why.
 Without chord coherence, $C(q) = 100q$ has every chord slope equal to
 $100$, so $L(q) = U(q) = 100$ and the untruncated fee-adjusted interval is
-$[100 - f,\, 100 + f]$ — not the singleton $\{100\}$, which is only the
+$[100 - f,\, 100 + f]$, not the singleton $\{100\}$, which is only the
 $f = 0$ case. That interval is non-empty for every $f \ge 0$, but what
 matters is its intersection with the payoff hull $[-1, 1]$:
 
@@ -447,18 +425,17 @@ The threshold is $f = 99$, where the interval first touches the hull at
 the single belief $\mu = 1$. Below it no admissible belief declines to
 trade and the maker is arbitraged from every state; at or above it the
 maker can rest. The threshold is exactly the arbitrage depth, the amount
-by which the quote $100$ exits the hull. Note which interval decides it:
-the untruncated one is non-empty at every $f \ge 0$, so reading its
-non-emptiness as tenability would mislay the finite threshold that
-separates the two regimes.
+by which the quote $100$ exits the hull. The untruncated interval is
+non-empty at every $f \ge 0$, so its non-emptiness is not tenability; the
+intersection with the hull is.
 
 So friction does not merely widen an existing spread: at
 $2f \ge \Delta_q$ a state in the excluded inventory range becomes
 tenable, admitting no profitable trade at some admissible belief.
 Non-convexity makes an inventory range transient, frictionless rational
-flow jumps it (§3), and a large enough spread lets the maker rest inside
-it. For $C(q) = a\sin q$ at $q = 0$, a state
-sitting $a$ above its flat envelope, the belief $\mu = 0$ admits no
+flow jumps it (Proposition 2), and a large enough spread lets the maker
+rest inside it. For $C(q) = a\sin q$ at $q = 0$, a state $a$ above its
+flat envelope, the belief $\mu = 0$ admits no
 profitable trade exactly when $f \ge a$, though every belief profits there
 frictionlessly.
 
@@ -531,8 +508,8 @@ order, which coincides with fee order only when their marginal prices
 agree.
 
 The analogy stops short of sparsity in the allocation, and the distinction
-matters because the lasso is usually invoked for exactly that. What the
-$\ell_1$ term delivers is an *exact dead zone per maker*: maker $i$ trades
+matters because the lasso is usually invoked for exactly that. The
+$\ell_1$ term delivers an *exact dead zone per maker*: maker $i$ trades
 identically zero, not merely a little, whenever $\lvert p^* - m_i\rvert
 \le f_i$. It does not deliver a sparse split.
 
@@ -547,14 +524,14 @@ demand $0.05$, $(0.33, 0.17, 0)$ at $0.5$, and $(0.56, 0.38, 0.06)$ at
 $1.0$, sparse only while the demand is small relative to the fee gaps.
 Sparsity in the allocation needs the fees to separate the makers *and* the
 demand to stay below the spill-over point; the exact zero needs neither,
-and is what the $\ell_1$ term actually buys.
+and is what the $\ell_1$ term buys.
 
 **Remark 7 (zero fees; known).** *With $f_i \equiv 0$ the convolution
 reduces to the fee-free merge: conjugate regularisers add, and for a
 perspective family $C_b(q) = b\,C_1(q/b)$ liquidity adds,
 $C_{b_1} \square C_{b_2} = C_{b_1+b_2}$. This is the aggregation law of
-@bhaskara2023general, in risk-measure form @barrieu2005inf, and is used
-here rather than claimed. For quadratic makers the merge is Gaussian
+@bhaskara2023general, in risk-measure form @barrieu2005inf. For
+quadratic makers the merge is Gaussian
 fusion: the merged quote is the precision-weighted mean of the makers'
 quotes and the merged liquidity the sum of their precisions.*
 
@@ -569,8 +546,8 @@ depth is $S'(p) = \sum_{i\ \mathrm{active}} 1/C_i''(q_i + s_i(p))$.*
 Differentiability needs that extra hypothesis: the maker
 $C(q) = q^4$ at $q_i = -1$ is differentiable and strictly convex with
 supply $S(p) = (p/4)^{1/3} + 1$, active at $p = 0$ and not
-differentiable there. Read
-as a market: best bid and ask are the tightest quotes, $S(p)$ is the
+differentiable there. As a
+market, best bid and ask are the tightest quotes, $S(p)$ is the
 cumulative quantity executable up to price $p$ with local depth $S'(p)$
 where it exists, and large orders walk the levels. The aggregate of linear-fee makers is a consolidated
 limit order book, and in producer-theory terms Lemma 6 is Marshall's
@@ -629,8 +606,8 @@ $\pm\lambda\alpha$ while $\lambda\alpha < c$, giving separation
 $2\lambda\alpha$ and jump $2\alpha$, and at $\pm c$ once the co-quoter
 reaches the wells, giving $2c/\lambda$. $\blacksquare$
 
-Part (i) is the durable statement: adding depth reshapes a non-convex
-maker without ever creating arbitrage, at any $\lambda$. Depth does not,
+Part (i) says that adding depth reshapes a non-convex maker without ever
+creating arbitrage, at any $\lambda$. Depth does not,
 however, fill the excluded range at finite depth. For the double well
 $e_\lambda C(\pm c) = 0$ while
 $e_\lambda C(0) = \alpha c - \lambda\alpha^2/2$ for $\lambda\alpha < c$
@@ -641,21 +618,19 @@ depth. For *this* cost the gap eventually decays like $c^2/(2\lambda)$,
 and that rate is a fact about the double well rather than a general one:
 it is the deep regime $\lambda\alpha \ge c$, and before it the gap is
 $\alpha c - \lambda\alpha^2/2$, which is linear in $\lambda$ and not
-$1/\lambda$ at all. No universal rate is claimed here, and none should
-be: the decay is set by how far apart the competing minimizers sit, which
-is a property of $C$.
+$1/\lambda$ at all. The rate depends on how far apart the competing
+minimizers are, which is a property of $C$.
 
-The accurate statement is that depth attenuates the envelope gap and
-regularizes crossing geometry without creating chord incoherence; it does
-not close the off-contact interval, restore convexity, or make every
+Depth attenuates the envelope gap and regularizes crossing geometry
+without creating chord incoherence; it does not close the off-contact
+interval, restore convexity, or make every
 state reachable. Crossing kinks close at rate $1/\lambda$ only where the
 competing minimizers stay within a $\lambda$-independent diameter; the
 double well shows what happens otherwise, its jump holding at $2\alpha$
-until the depth exceeds $c/\alpha$. Smooth concave stretches lie outside
-the bound's scope entirely.
+until the depth exceeds $c/\alpha$. The bound does not cover smooth
+concave stretches.
 
-That convexity is never restored is a theorem, not an observation about
-this example.
+Convexity is never restored at any depth, and not only for this example.
 
 **Remark (Moreau does not convexify; known).** *For $C$ proper, lower
 semicontinuous and minorized by an affine function, conjugation turns
@@ -674,15 +649,15 @@ minimizer $x_0$, so for $y \ne x_0$ it strictly exceeds its value there,
 while at $y = x_0$ we have $C(x_0) > \hat C(x_0)$; hence
 $e_\lambda C(x) > e_\lambda(\hat C)(x) = (e_\lambda C)^{**}(x)$ and
 $e_\lambda C$ is not convex. The identity is standard
-[@rockafellar1970convex; @rockafellar1998variational]; it is recorded here
-because it settles a question a numerical study on a finite window cannot.
-For the wiggly cost of §3 sampled on $[-12, 12]$, the least second
-difference of $e_\lambda C$ turns positive somewhere beyond
-$\lambda \approx 50$, at magnitudes of $10^{-11}$ to $10^{-9}$ that are
-not monotone in $\lambda$. That is rounding, not convexification: the
-theorem says the sign cannot turn, and no refinement of the mesh
-distinguishes the two readings.* Here $\lambda$ is the
-co-quoter's liquidity: its price impact is $1/\lambda$, so large
+[@rockafellar1970convex; @rockafellar1998variational].*
+
+A numerical study on a finite window cannot settle the question. For the
+wiggly cost above sampled on $[-12, 12]$, the least second difference of
+$e_\lambda C$ turns positive somewhere beyond $\lambda \approx 50$, at
+magnitudes of $10^{-11}$ to $10^{-9}$ that are not monotone in
+$\lambda$. That is rounding, not convexification: the theorem says the
+sign cannot turn, and no refinement of the mesh distinguishes the two
+readings. Here $\lambda$ is the co-quoter's liquidity: its price impact is $1/\lambda$, so large
 $\lambda$ means a deep book, not a strong pull.
 
 The two repairs are the two market primitives again: friction ($\ell_1$,
@@ -702,10 +677,10 @@ off by informed flow.
 The discipline is a property of Lemma 6's routing, not of its
 minimization. The infimal convolution minimizes over allocations $s_i$
 with the fees held fixed; it does not minimize over the fees, and nothing
-in it constitutes a game in which makers choose $f_i$. What the surviving
-fee would be, and whether it is the competitive adverse-selection charge
-of classical microstructure [@glosten1985bidask; @biais2000competing],
-requires the strategic quote game, which is not solved here.
+in it constitutes a game in which makers choose $f_i$. The surviving fee,
+and whether it equals the competitive adverse-selection charge of
+classical microstructure [@glosten1985bidask; @biais2000competing], is
+determined by the strategic quote game, which is not solved here.
 
 Optimization already pays these frictions: a proximal step charges
 $\lVert\Delta\theta\rVert^2/(2\eta)$ per move, a trust region is an
@@ -713,8 +688,7 @@ infinite fee outside a band, weight decay is a zero-quoting participant.
 In market language the stabilizers of non-convex training are the
 market's two repairs: friction prices chord excursions (Proposition 3)
 and depth attenuates the envelope gap (Proposition 9); non-convexity by
-itself is not
-exploitability (§2).
+itself is not exploitability (Proposition 1).
 Path-dependent optimizers correspond to makers whose quotes depend on flow
 history, the adaptive-liquidity territory where path independence is
 deliberately traded away: no maker combines path independence, translation
@@ -728,8 +702,7 @@ itself can be run as online learning [@nueve2026adaptiveliquidity;
 
 ## 8. Inconsistency is arbitrage
 
-Sections 2–7 concern one venue and its aggregate. The same convex
-geometry says when *several* venues, quoting related securities, are
+The same convex geometry says when *several* venues, quoting related securities, are
 jointly incoherent, and it turns each incoherence into a portfolio that
 pays whoever finds it.
 
@@ -767,7 +740,7 @@ $x_i \in \{\pm 1\}$, the feasible quote set is the cut polytope, a strict
 subset of the PSD body [@deza1997cuts], so quotes can be positive
 semidefinite yet jointly unrealizable.
 
-Three coordinates already exhibit the gap, and exhibit it in closed form.
+Three coordinates exhibit the gap in closed form.
 Quote the three pairwise products at a common $\rho$. The matrix with unit
 diagonal and off-diagonal $\rho$ has eigenvalues $1 - \rho$ (twice) and
 $1 + 2\rho$, so it is PSD exactly for $\rho \ge -\tfrac12$. Binary
@@ -801,9 +774,8 @@ quoted beliefs that cannot be embedded in any joint distribution, detected
 here at second moments. Proposition 10 is a second-moment arbitrage
 result, not a theorem about loopy belief propagation in general: not
 every loopy-propagation error takes this form, and the reading of
-arbitrageurs as the loop correction is a conjecture about dynamics that
-this paper does not model. What it does establish is that
-the class it covers is, in a market, free money. Whether flow that
+arbitrageurs as the loop correction is a conjecture about dynamics not
+modelled here. The class it covers is, in a market, free money. Whether flow that
 harvests it converges, and to the true marginal, to a surrogate of the
 kind loopy propagation converges to, or to something the liquidity
 profile selects, is open.
@@ -852,8 +824,8 @@ proportional to the curvature: a deeper book, meaning smaller $L$, is
 worth more to the arbitrageur, not less.*
 
 The converse needs care. A separating margin *below* $f\lVert y\rVert$
-does not mean the venue is arbitrage-free. What Proposition 3 rules out is the first-order local
-trade in the direction $y$: for small $\delta$ the fee $f\delta\lVert
+does not mean the venue is arbitrage-free. Proposition 3 rules out only
+the first-order local trade in the direction $y$: for small $\delta$ the fee $f\delta\lVert
 y\rVert$ dominates the margin $\delta \cdot (\text{margin})$, so that
 particular infinitesimal trade loses money. It says nothing about
 directions other than $y$, and nothing about trades large enough for the
@@ -862,13 +834,13 @@ way can repay the fee that the linearization could not. Suppression is of
 a family of trades, not of arbitrage.
 
 The proof is the separating-hyperplane theorem read as a trade
-[@nau1991arbitrage; @daspremont2005market]; the payoff-hull hypothesis is
-what upgrades the separation certificate to an arbitrage, and for an
+[@nau1991arbitrage; @daspremont2005market]; the payoff-hull hypothesis
+upgrades the separation certificate to an arbitrage, and for an
 abstract consistency set the construction yields the certificate only. In
 an ordinary numerical method an infeasibility is a residual to be driven
 down by the algorithm; in a market it is a payoff, and whoever finds it
 is paid to act as the separation oracle. Arbitrageurs are decentralized
-separation oracles, and the friction of §4 sets the tolerance below which
+separation oracles, and the friction of Proposition 3 sets the tolerance below which
 infeasibility is allowed to persist.
 
 ## 9. Closing
@@ -882,16 +854,16 @@ inventories arbitrage depth is measured against the same norm,
 $$\varepsilon \;=\; \sup_{q,\,s \ne 0} \frac{\big[\inf_{z \in K}
 \langle z, s\rangle - C(q+s) + C(q)\big]_+}{\lVert s\rVert},$$
 
-the scalar case of §4 being $\lVert\cdot\rVert = \lvert\cdot\rvert$. A cost-based predictor
+the scalar case being $\lVert\cdot\rVert = \lvert\cdot\rvert$. A cost-based predictor
 admits a coherent market implementation if and only if its arbitrage depth
 is dominated by the permitted friction. The equivalence is close to
-definitional, arbitrage depth being the maximal normalized violation, and
-it is included to fix vocabulary rather than to carry weight; what does
-carry weight is that the depth is finite for costs no axiom set in the
-literature admits, and that §§2–4 identify what finiteness costs. Chord
-coherence is the $f = 0$
-special case, and convexity is the separate, further property of monotone
-information incorporation. Three words are kept apart throughout:
+definitional, since arbitrage depth is the maximal normalized violation.
+The depth is finite for costs no axiom set in the literature admits, and
+Propositions 1 to 3 identify what finiteness costs. Chord coherence is
+the $f = 0$ special case, and convexity is the separate, further property
+of monotone information incorporation.
+
+Three words are kept apart throughout:
 *coherence* (chord slopes stay in the payoff hull), *convexity* (marginal
 prices respond monotonically to flow), and *expressiveness* (which
 inventory states rational flow can leave the maker in). Within the
@@ -906,11 +878,10 @@ so the original cost deletes the envelope's off-contact optimizers, and
 from an off-contact state the next rational trader extracts the gap
 $g(q)$. Coherence alone promises no
 more than this, since $C(q) = -\alpha\lvert q\rvert$ is coherent with
-unbounded speculative profit (§3).
+unbounded speculative profit.
 
-The target operation throughout is *marketization*, of which this paper
-realizes the single-maker and parallel parts; the serial part is the
-subject of the companion paper. Given an
+The target operation throughout is *marketization*; serial composition
+is the subject of the companion paper. Given an
 operator $T$ from inputs to outputs, a marketization is a mechanism whose
 clearing computes $T$; whose local contributions compose, in parallel and
 in series, to compute composite operators; in which inconsistent
@@ -921,7 +892,7 @@ becomes one maker and combining evidence becomes parallel composition;
 composing conditional operators is serial composition, developed
 separately. A statistical
 procedure specifies how information would be combined if supplied
-honestly; its marketization implements the same operator against
+truthfully; its marketization implements the same operator against
 self-interested sources. In this sense a market is the incentive closure
 of a predictor: the computation, plus the dual certificates of its
 constraints, plus payment to whoever holds one. Duality alone supplies
@@ -938,8 +909,8 @@ and the closure adds the third: a marketized computation is self-policing
 in proportion to the value of its own errors, with friction the exchange
 rate between tolerated error and the cost of participation.
 
-The definition has neighbors in four literatures, and each holds one
-column.
+The definition has neighbors in four literatures, and each corresponds
+to one column.
 
 Markets that compute are old. A combinatorial auction cleared airport
 slots by integer programming [@rassenti1982slots], electricity markets pay
@@ -951,7 +922,7 @@ allocation by computing competitive equilibria of artificial economies
 Algorithmic mechanism design asks when optimization is compatible with
 incentives [@nisan2001algorithmic], and the classification of what can be
 computed incentive-compatibly was posed as a program by
-@feigenbaum2002distributed. That column carries a lower bound: any
+@feigenbaum2002distributed. That column also contains a lower bound: any
 communication protocol realizing an efficient allocation must reveal
 supporting prices [@nisan2006communication], so certificates are not
 optional.
@@ -967,12 +938,11 @@ $n\varepsilon$, vanishing for $\varepsilon < 1/n$ on integer data
 [@bertsekas1992auction], and Proposition 3 is the same shape of bound with
 the $\varepsilon$ charged to traders.
 
-The connective tissue, the closure operation itself, serial composition of
-mechanisms, and the identification of violation certificates with
-separating portfolios, appears unoccupied.
+The closure operation itself, serial composition of mechanisms, and the
+identification of violation certificates with separating portfolios do
+not appear in any of the four.
 
-One principle qualifies everything above, so it is stated apart from the
-open problems it generates.
+One principle qualifies everything above.
 
 **Principle (accessible arbitrage).** *Market coherence is relative not
 only to friction but to the cost of discovering violations. Write $K$ for
@@ -1007,7 +977,7 @@ K_{\mathcal{A}, f}$: a violation persists whenever every available
 separation procedure costs at least as much, net of friction, as the
 certificate it finds is worth.*
 
-Every feature of $V_f$ does work. The supremum ranges over procedures,
+Each feature of $V_f$ is needed. The supremum ranges over procedures,
 not certificates: two procedures can find the same portfolio at very
 different costs, so coherence is relative to a class of arbitrageurs. The
 null procedure makes the supremum at least zero, so that
@@ -1019,9 +989,9 @@ non-positive value.
 The profit must also be realizable. A separating functional may be scaled
 by any positive constant, so against fixed linear prices its nominal value
 is unbounded and no finite search cost could ever leave a violation
-standing. It is the nonlinear book, the finite executable depth, and the
-position constraint that make $K_f \subsetneq K_{\mathcal{A}, f}$ possible
-at all. Equivalently one may normalize certificates to
+standing. The nonlinear book, the finite executable depth, and the
+position constraint make $K_f \subsetneq K_{\mathcal{A}, f}$ possible.
+Equivalently one may normalize certificates to
 $\lVert y \rVert \le 1$ and price them against available depth.
 
 Instantiating $\mathcal{A}$ gives polynomial-time coherence,
@@ -1055,7 +1025,8 @@ latency-constrained arbitrageurs against cascading settlements. And
 characterize the mechanisms in which the stream of certificate payments
 funds the ongoing computation.
 
-*The equilibrium fee.* Section 7 argues discipline, not equilibrium. In a
+*The equilibrium fee.* The routing argument gives discipline, not
+equilibrium. In a
 flow model where most coefficients are zero and informed trades carry
 signal plus noise, does the fee that survives undercutting reproduce the
 universal threshold $\sigma\,(2\log p)^{1/2}$ of the shrinkage
@@ -1065,18 +1036,18 @@ cross-validation equals the adverse-selection cost of the data source.
 
 *Arbitrage depth as a capacity measure.* On a specified compact domain,
 with a fixed payoff hull and norm, the arbitrage depth of a trained
-model's loss landscape is well defined and plausibly estimable or
+model's loss surface is well defined and plausibly estimable or
 boundable, though computing it exactly is a global problem; whether it
 tracks quantities learning theory names (sharpness, mode connectivity) is
 open.
 
-*From endpoint jumps to quoted depth.* Section 3 predicts an inventory
-jump at a single supporting price, and notes the jump is generally lumpy
-rather than divisible. The map from that endpoint correspondence to
-anything observable in a quoted book is missing, and is what a test
-against venues with non-convex liquidity, or against the bimodal implied
+*From endpoint jumps to quoted depth.* The contact-set analysis predicts
+an inventory jump at a single supporting price, and the jump is generally
+lumpy rather than divisible. The map from that endpoint correspondence to
+anything observable in a quoted book is missing, and a test against
+venues with non-convex liquidity, or against the bimodal implied
 densities documented around binary events [@melick1997crude;
-@clark2017brexit], would require first.
+@clark2017brexit], needs it first.
 
 ## References
 
