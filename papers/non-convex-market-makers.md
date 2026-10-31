@@ -555,7 +555,11 @@ horizontal summation of firm supply curves [@marshall1890principles;
 @mascolell1995microeconomic] with the reversibility of share production
 patched by the fee. The economics of the book assembled from competing
 liquidity suppliers is @glosten1994limit, with convergence of strategic
-schedules in @biais2000competing.
+schedules in @biais2000competing. The multi-contract version of Lemma 6
+and Corollary 8, with a vector fee, the conjugate as an $\ell_\infty$-ball
+smearing, closed-form supply curves for the $\log\cosh$ family, and the
+addition of inverse Hessians near the origin, is the aggregation theorem of
+[@cotton2026bounded].
 
 **Proposition 9 (a deep co-quoter is Moreau smoothing).** *Let $C$ be
 finite, lower semicontinuous and minorized by an affine function, and let
