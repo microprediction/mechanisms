@@ -386,7 +386,9 @@ any outcome that either forecaster rules out.
 The two pools are the two senses of "closest to all the forecasts" under the
 Kullback-Leibler divergence, which is not symmetric. The linear pool
 minimises the divergence from each forecast to the average. The logarithmic
-pool minimises the divergence from the average to each forecast.
+pool minimises the divergence from the average to each forecast. @abbas2009kl
+gives this view of the two pools, with the weights as the decision maker's
+assessment of each source.
 
 **Proposition 4 (the linear and logarithmic pools are the two KL
 barycenters).** *Let $q_1,\dots,q_m$ be densities with respect to a common
@@ -466,7 +468,20 @@ A *stage* is such a transducer, written
 $$M:\ (\mathrm{Dist}^m,\ w,\ x)\ \longmapsto\ (\mathrm{Dist},\ w',\ \pi).$$
 
 A stage takes $m$ forecasts, the current wealths and possibly an outcome, and
-returns one forecast, the new wealths and the payments. A scoring rule is
+returns one forecast, the new wealths and the payments.
+
+The signature fixes what a stage consumes and emits, and nothing more. It
+does not make the chain a proper mechanism: an upstream report can move a downstream stage's
+settlement variable, its rewards, or the capital available to it, so a
+report that maximises one stage's expected payment need not maximise the
+total. The condition under which a chain is proper, an exogenous outcome
+anchoring every stage, is the subject of the companion report
+[@cotton2026multistage].
+
+Compositional game theory [@ghani2018compositional] composes open games in sequence and in parallel
+while carrying each player's best response and its dependence on the
+surrounding game; the stages here carry beliefs and transfers but not best
+responses, which is the difference between a wiring diagram and a game. A scoring rule is
 the transfer component $\lambda$ of a stage, not itself a map
 $\mathrm{Dist}\to\mathrm{Dist}$. A market maker is a stage whose state is
 the inventory vector and whose emitted belief is the price. An opinion pool
