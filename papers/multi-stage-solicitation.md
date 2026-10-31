@@ -10,11 +10,9 @@ Peter Cotton · *Working draft v0.3* · 2026
 
 The microprediction platform built distributional prediction supply chains,
 chaining pools so that one's output became the message or the settled outcome of
-the next. This
-note is a self-critical, ex-post look at the game theory of those chains: the
-games were built first, and here we ask, of each, whether truthful reporting was
-really the best move. A chain is proper where an exogenous outcome anchors every
-stage; a downstream stage can then be scored on its own residual or, for the log
+the next. The games were built before their game theory was examined, and the
+question for each is whether truthful reporting was really the best move. A
+chain is proper where an exogenous outcome anchors every stage; a downstream stage can then be scored on its own residual or, for the log
 score, at the top level. By that test the games mostly hold up, one of them only
 by a lucky accident. Flaws aside, the setup has continuing pedagogical merit, as
 it illustrates the inherent limitation of conformal prediction.
@@ -41,12 +39,12 @@ chained probabilistic outputs this way: the retired microprediction platform,
 which ran several such chains at once.
 The only near-relative, Manifold's resolves-to-market markets, settles on
 another market's price with no exogenous outcome anywhere in the chain, the
-invalid unanchored case (§2). Chaining on point outputs is common, but that is
+invalid unanchored case. Chaining on point outputs is common, but that is
 derivative structure, not composition of probabilistic elicitation.
 
 Conformal prediction is a closer cousin. It has drawn wide attention lately, and
 it is exactly a prescription for residual modeling, which we read here as a
-restricted, invitation-only variety of chained market (§4).
+restricted, invitation-only variety of chained market.
 
 **The microprediction platform.** A *stream* was a live quantity that someone
 published to the platform one value at a time: airport wait times, the
@@ -56,7 +54,7 @@ to forecast the next value of a stream before it arrived. A forecaster submitted
 distribution. When the value landed, the pot was split in proportion to how
 near her scenarios fell to it: the nearest-the-pin rule. A contributor who bets
 to maximize her long-run wealth does best under it to place her scenarios
-according to her honest distribution, the log-optimal all-in Kelly bet
+according to her true distribution, the log-optimal all-in Kelly bet
 [@cotton2022microprediction]; a contributor optimizing something else stakes
 differently, so truthfulness here is the log-optimal player's property, not the
 pot split's.
@@ -73,12 +71,13 @@ rather than a Gaussian, composed with the inverse normal $\Phi^{-1}$. Because
 $F_1$ is the market's implied distribution, it is a risk-neutral z-score.]^[The
 streams could equally have been left uniform on $[0,1]$; the normal scale was
 chosen because it was felt to make sharp, well-calibrated prediction slightly
-easier.] The z-score opened its own stream, `z1~`: forecast the distribution of
-the next one.
-A participant who can say more about it than the community can, because the
+easier.]
+
+The z-score opened its own stream, `z1~`: forecast the distribution of the next
+one. A participant who can say more about it than the community can, because the
 community is biased, is the wrong shape, or is blind to a covariate she holds,
-is paid for the difference. In the language of §2 this is a residual stage,
-eliciting the law of that z-score.
+is paid for the difference. This is a residual stage: it elicits the law of
+that z-score.
 
 Dependence used the same idea. The joint behaviour of two streams is
 two-dimensional, but a pool settles one number. Each stream's z-score was mapped
@@ -92,7 +91,7 @@ copula contest ran exactly this on the five-minute comovements of five
 cryptocurrencies, contributors submitting 225 samples packed through the
 z-curve [@cotton2020copula].
 
-![The Morton z-curve threads the unit square of two percentiles into a single line, so a bivariate copula is priced as one univariate pool. The thread is not distance-preserving: the two red points are neighbours in the square but far apart along the curve, so a nearness-based pool on the folded scalar prices a metric the curve chose, not the joint's (§3).^[The author was aware of the distortion; the z-curve was a practical choice that avoided a major refactoring of the platform.]](figures/z-curve)
+![The Morton z-curve threads the unit square of two percentiles into a single line, so a bivariate copula is priced as one univariate pool. The thread is not distance-preserving: the two red points are neighbours in the square but far apart along the curve, so a nearness-based pool on the folded scalar prices a metric the curve chose, not the joint's.^[The author was aware of the distortion; the z-curve was a practical choice that avoided a major refactoring of the platform.]](figures/z-curve)
 
 A related stacked-lottery design let competing algorithms contribute monotone
 maps that composed into one forecast [@cotton2020lottery, slides 29-31]. The
@@ -120,7 +119,7 @@ single-name CDS. These books settle independently, their consistency left to
 arbitrage [@harville1973assigning; @hausch1981efficiency], so parallel is not
 chained and the two can disagree.
 
-## 2. What can be proven
+## 2. Propriety of chained stages
 
 Each of these games composes stages that share one form. A *stage* is a
 transducer over one message type: it carries a wealth state, consumes reports
@@ -155,9 +154,9 @@ This is not a Nash equilibrium of the full game: a participant who reports
 upstream and holds a downstream stake holds a derivative on an upstream
 settlement, with the usual incentive to distort the underlying
 [@kumar1992futures; @jarrow1994derivative; @hanson2009manipulator;
-@ostrovsky2012information]. The platform's chains lived inside this caveat.
+@ostrovsky2012information]. This caveat applied to the platform's chains.
 
-**The residual stage, and two ways to score it.** The operator that chains is
+**Two ways to score the residual stage.** The operator that chains is
 the residual: a stage emits an aggregate $F_1$ for an outcome $Y$, and a second
 market elicits the law of the residual z-score $Z=\Phi^{-1}(F_1(Y))$, settling at
 $z=\Phi^{-1}(F_1(y))$. If $F_1$ were the truth then $F_1(Y)$ is uniform (the
@@ -210,7 +209,7 @@ bid up by a crowd; the shrinkage is endogenous, set by how much wealth backs
 each correction rather than by a hyperparameter; and there is no explicit
 regulariser, only the propriety of each stage's score. Whether the iteration
 converges to the true conditional law, as boosting does under its assumptions,
-is open (§6).
+is open.
 
 **Dependence factors the same way.** By Sklar's theorem [@sklar1959] a joint
 density is $\prod_i f_i(x_i)\cdot c(u_1,\dots,u_d)$ in terms of the coordinate
@@ -220,12 +219,12 @@ $$\log p(x)\;=\;\sum_{i=1}^d \log f_i(x_i)+\log c(u),\qquad u_i=F_i(x_i).$$
 
 A pipeline of $d$ margin stages and one rank stage settled on the rank vector
 pays each stage a log score of its own object, and the rank stage's report is
-strictly proper for the copula given correct margins — the multivariate
-residual, one dimension per margin.
+strictly proper for the copula given correct margins. The copula is the
+multivariate residual, one dimension per margin.
 
-**What the pool actually elicits.** The base game does not receive a density;
-it receives samples and smooths them. That smoothing is where propriety is won
-or lost.
+**Sample elicitation.** The base game does not receive a density; it receives
+samples and smooths them. Whether the game is proper depends on how that
+smoothing is settled.
 
 **Proposition 3 (sample elicitation; @cotton2026pointcloud, Thms 1-2).** *Score
 the bandwidth-$h$ kernel density estimate of a submitted cloud by the log score.
@@ -234,34 +233,31 @@ the belief, not the belief. Settled at the outcome jittered by the same kernel,
 truthful sampling is optimal, strictly so when the kernel's characteristic
 function is nonvanishing on a dense set.*
 
-The correction is a jitter of the settlement, and it is the hinge on which the
-built games turn.
+The correction is a jitter of the settlement. Whether each of the built games
+was proper depends on whether it applied one.
 
-## 3. Were the games valid?
-
-Take the games of §1 to the tests of §2.
+## 3. Validity of the games
 
 **The base pool: approximately proper by lucky accident.** The nearest-the-pin pool paid each
 contributor the density their smoothed samples placed at the realized value.
 By Proposition 3, scored at the raw outcome that rewards a deconvolution of the
-belief, not the belief: a contributor whose honest law is Gaussian would be paid
+belief, not the belief: a contributor whose true law is Gaussian would be paid
 most by submitting samples with variance $h^2$ *below* the truth.
 
 The platform mostly escaped this, but by luck. Discrete outcomes caused computational trouble (ties
 when the outcome fell on a submitted sample, degenerate estimates), so the
 implementation jittered the settlement to smooth them over. A jitter of the
 outcome is the repair Proposition 3 prescribes, and it removed the deconvolution
-incentive — a fortunate accident, even though the amount added for numerical
-comfort was not quite equal to the amount matched to the smoothing scale that
-strict propriety asks. The hack that kept the arithmetic well behaved was the
-hinge that kept the game roughly honest.
+incentive, although the amount added for numerical comfort was not quite the
+amount matched to the smoothing scale that strict propriety asks. The jitter
+added for numerical reasons is what kept the game approximately proper.
 
 monteprediction is the same rule in
 eleven continuous dimensions, and here the accident is not available: its score
 reads an exponential-kernel density of the submitted scenarios at the raw
 realised vector, with no jitter. By Proposition 3 that is the improper case,
-unrepaired — the reward tilts, by about the kernel scale, toward scenarios a
-little tighter than the forecaster's honest ones. The leave-one-dimension-out
+unrepaired: the reward tilts, by about the kernel scale, toward scenarios a
+little tighter than the forecaster's true ones. The leave-one-dimension-out
 blend in the score guards against high-dimensional fragility but not this tilt,
 and a matched jitter, or a fair finite-sample correction, would remove it. This
 is a live contest, so the point is not academic.
@@ -271,10 +267,10 @@ realized z-score is a proper elicitation of its law, anchored by the exogenous
 outcome (with the same jitter caveat as the base pool). It pays for any edge
 over the community: a forecaster who conditions on a covariate the base game
 ignored forecasts the z-score's conditional law, beats the community's flat one,
-and collects the missed information as log-wealth growth, at the rate $I(R;X)$ —
+and collects the missed information as log-wealth growth, at the rate $I(R;X)$,
 the mutual information between the residual $R$ and the conditioning covariate $X$
-[@cotton2026conformalbetting]. This is where conformal prediction sits, as a
-weak entry; §4 develops the comparison.
+[@cotton2026conformalbetting]. Conformal prediction is an unconditional entry
+in this market.
 
 **The `z2~`/`z3~` copula streams: proper elicitation, distorted metric.** Given
 correct margins, folding two percentiles onto one axis and pricing the folded
@@ -300,16 +296,15 @@ that pays for the edge it adds, and the composition is a chain of them. Like
 Where they settled on an exogenous outcome and scored a residual, they were
 proper (the residual and copula elicitations). The base pool would have leaked an edge
 of order the bandwidth, but an accidental jitter introduced for discrete
-outcomes stood in for the settlement correction and kept it roughly honest.
+outcomes stood in for the settlement correction and kept it roughly proper.
 Where they folded a joint onto a space-filling curve, the elicitation held but
 the implied metric did not.
 
-## 4. Conformal prediction, nested and embarrassed
+## 4. Conformal prediction as a one-entry residual market
 
 Conformal prediction can be read as a degenerate case of a two-stage
 solicitation: a base forecast, then a residual market in which competition has
-been restricted, probably unwisely, to a single unconditional entry. This can be
-seen in two ways.
+been restricted, probably unwisely, to a single unconditional entry.
 
 Forecasters come in two types, and the split has nothing to do with which
 contest they enter. An *unconditional* forecaster submits a single distribution
@@ -323,7 +318,7 @@ still a gap, but it is not this mutual information.
 Split-conformal prediction is an unconditional recipe. It forms one residual law
 from the calibration data and applies it at every input, reading that marginal
 off the residuals rather than assuming any shape; as a forecaster it simply does
-not condition. So conformal prediction is the residual market of §2 with the
+not condition. So conformal prediction is a residual market with the
 field restricted to unconditional entries. A market would let that entry compete
 and pay it only while no conditioning rival beats it; conformal instead declares
 it the answer in advance, forfeiting $I(R;X)$ to anyone who conditions. Adaptive
@@ -376,14 +371,16 @@ one-shot split and the chain for streaming settlement.
    $D_G(q,\pi)$, can grow or shrink through an interface stage. For the log
    score the edge is $\mathrm{KL}(q\Vert\pi)$ and the data-processing inequality
    caps it [@csiszar1967information]; no such inequality holds for a general
-   Bregman edge — coarsening can *raise* the Brier edge. Open: characterize the
+   Bregman edge, and coarsening can *raise* the Brier edge. Open: characterize the
    generators and channels for which an interface cannot increase the edge.
+
 2. *Residual markets.* A chain of residual markets is stagewise boosting with
    wealth as the learning rate (Proposition 2). Open: who funds each residual
    pot, whether a forecaster free to enter several stages withholds upstream to
    sell downstream, and whether the iteration converges to the conditional law.
    Split-conformal prediction is the one-participant degenerate case, its rent
    the discarded information $I(R;X)$ [@cotton2026conformalbetting].
+
 3. *Copula settlement.* The `z2~`/`z3~` streams show that a copula elicits
    properly but its settlement metric is the fold's, not the problem's. Open:
    the right embedding for $d\ge2$, the space-filling curves as deployed against
@@ -395,8 +392,8 @@ one-shot split and the chain for streaming settlement.
 The chain treats calibration, dependence, and residual edge as separate objects,
 each with its own market. A base pool elicits the level, a z-stream prices its
 calibration, a rank-settled stage prices the copula, and a residual stage prices
-whatever conditional structure the level left behind. What a single distributional
-contest folds into one hard-to-price object, the chain lets specialised
+whatever conditional structure the level left behind. A single distributional
+contest folds these into one hard-to-price object; the chain lets specialised
 participants earn against one piece at a time. The cost is the loss of a
 simultaneous equilibrium and a dependence on the order of the stages; the gain is
 that a hard, repeated forecast can be assembled, and paid for, one standardised
