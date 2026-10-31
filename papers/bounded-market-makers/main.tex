@@ -268,6 +268,10 @@ conjugate is $C^{*}(\cdot)-\ip{q}{\cdot}+C(q)$. In the separable case item 2 rea
 which is the soft-threshold formula.
 \end{proof}
 
+For a single contract, the fee--spread duality for any convex cost and the exact no-trade interval for any cost
+whatever are Lemmas 4 and 5 of \citet{cotton2026nonconvex}; the statement above is the multi-contract form, with
+the $\ell_\infty$-ball of item 3 in place of the scalar interval.
+
 Item 2 is a lasso. The trader's problem $\max_\delta\ip{\delta}{\pi}-[C(q+\delta)-C(q)]-\ip{f}{|\delta|}$ has an
 $\ell_1$ penalty, so its solution is \emph{exactly} sparse: contracts whose price lies inside the band are not
 touched at all, however small the fee. This is the mechanism behind the sparse routing of
@@ -338,6 +342,11 @@ $\nabla C_k$ at the origin; invert once more. (5) Solve $\tanh((q_k+\delta_k)/b_
 monotonicity and continuity follow from those of $\artanh$ and the matching of the three branches at the band edges;
 the derivative is $\tfrac{d}{d\pi}\,b_k\artanh(\pi\mp f_k)$.
 \end{proof}
+
+For one contract and general convex costs, items 1 to 3 are Lemma 6 and Corollary 8 of
+\citet{cotton2026nonconvex}, where the dead zones and the walk through the book are established without the
+bounded family. Items 4 and 5, the addition of inverse Hessians and the closed-form supply curves, use the
+bounded family.
 
 \paragraph{The consolidated book.} Item 2 is the law of one price: a trade clears at a single marginal price per
 contract, and every maker that participates is indifferent at the margin. Item 3 says that a maker's quote is
@@ -472,7 +481,9 @@ origin (the quoted covariance $VV^{\top}$) and after loading.}
 Cost-function market makers originate with Hanson's market scoring rules \citep{hanson2003,hanson2007}; the
 utility-based view is \citet{chen2007utility}; the convex-analytic framework, including the characterisation of
 bounded loss through the conjugate and the identification of price dynamics with follow-the-regularised-leader, is
-\citet{abernethy2013}. Liquidity-sensitive and profit-charging variants of LMSR are studied by
+\citet{abernethy2013}. The scalar fee--spread duality, the exact no-trade interval for non-convex costs, and the order book as the
+horizontal sum of fee-shifted supplies are developed in \citet{cotton2026nonconvex}. The many-contract form and the
+closed-form family extend them. Liquidity-sensitive and profit-charging variants of LMSR are studied by
 \citet{othman2013}; our fee differs in that it is per unit and $\ell_1$, which produces exact sparsity and a dead
 band rather than a continuously widening spread.
 
